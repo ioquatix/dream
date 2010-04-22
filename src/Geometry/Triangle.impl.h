@@ -1,0 +1,74 @@
+/*
+ *  Geometry/Triangle.impl.h
+ *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
+ *
+ *  Created by Samuel Williams on 2/12/08.
+ *  Copyright 2008 Orion Transfer Ltd. All rights reserved.
+ *
+ */
+
+#ifndef _DREAM_GEOMETRY_TRIANGLE_H
+#error This header should not be included manually. Include Plane.h instead.
+#endif
+
+#include "Plane.h"
+
+namespace Dream
+{
+	namespace Geometry
+	{
+
+		/// http://www.blackpawn.com/texts/pointinpoly/default.html
+		template <typename NumericT>
+		bool sameSide(const Vector<3, NumericT> &p1, const Vector<3, NumericT> &p2, const Vector<3, NumericT> &a, const Vector<3, NumericT> &b) {
+			Vector<3, NumericT> cp1 = (b-a).cross(p1-a);
+			Vector<3, NumericT> cp2 = (b-a).cross(p2-a);
+			
+			if (cp1.dot(cp2) >= 0) return true;
+			
+			return false;
+		}
+		
+		template <unsigned D, typename NumericT>
+		Triangle<D, NumericT>::Triangle (const Vector<D, NumericT> & p1, const Vector<D, NumericT> & p2, const Vector<D, NumericT> & p3)
+		{
+			this->m_points[0] = p1;
+			this->m_points[1] = p2;
+			this->m_points[2] = p3;	
+		}
+		
+		template <unsigned D, typename NumericT>
+		Vector<D, NumericT> Triangle<D, NumericT>::normal () const
+		{
+			return this->m_points[0].normal(this->m_points[1], this->m_points[2]);	
+		}
+		
+		template <unsigned D, typename NumericT>
+		IntersectionResult Triangle<D, NumericT>::intersectsWith (const Line<3, NumericT> & line, Vector<D, NumericT> & at) const
+		{
+			Plane<D, NumericT> p (*this);
+			
+			IntersectionResult result = p.intersectsWith(line, at);
+			if (!result) return NO_INTERSECTION;
+			
+			if (sameSide(at, this->m_points[0], this->m_points[1], this->m_points[2]) && 
+				sameSide(at, this->m_points[1], this->m_points[0], this->m_points[2]) &&
+				sameSide(at, this->m_points[2], this->m_points[0], this->m_points[1]))
+				return SHAPES_INTERSECT;
+			
+			return NO_INTERSECTION;			
+		}
+		
+		template <unsigned D, typename NumericT>
+		AlignedBox<D, NumericT> Triangle<D, NumericT>::boundingBox ()
+		{
+			AlignedBox<D, NumericT> box(this->m_points[0], this->m_points[1]);
+			
+			box.unionWithPoint(this->m_points[2]);
+			
+			return box;
+		}
+		
+
+	}
+}

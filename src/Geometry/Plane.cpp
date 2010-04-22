@@ -1,0 +1,41 @@
+/*
+ *  Geometry/Plane.cpp
+ *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
+ *
+ *  Created by Samuel Williams on 23/09/06.
+ *  Copyright 2006 Samuel G. D. Williams. All rights reserved.
+ *
+ */
+
+#include "Plane.h"
+
+#include "Line.h"
+#include "Triangle.h"
+
+#include <iostream>
+
+namespace Dream {
+	namespace Geometry {
+
+#pragma mark -
+#pragma mark Unit Tests
+		
+#ifdef ENABLE_TESTING
+		UNIT_TEST(Plane)
+		{
+			testing("Intersection");
+			
+			Plane3 p1(10.0, Vec3(1.0, 0.0, 0.0));
+			
+			assertTrue(p1.closestPoint(Vec3(ZERO)) == Vec3(10, 0, 0), "Closest point is correct");
+			
+			Plane3 p2(10.0, Vec3(0.0, 1.0, 0.0));
+			Line3 l1, l2(Vec3(10, 10, 0), Vec3(0, 0, 1));
+			
+			assertTrue(p1.intersectsWith(p2, l1), "Planes intersect");
+			assertTrue(l1.equivalent(l2), "Planes intersect at correct line");
+		}
+#endif
+
+	}	
+}

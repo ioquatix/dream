@@ -1,0 +1,219 @@
+/*
+ *  Network/Message.h
+ *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
+ *
+ *  Created by Administrator on 1/11/07.
+ *  Copyright 2007 Samuel Williams. All rights reserved.
+ *
+ */
+
+#ifndef _DREAM_NETWORK_MESSAGE_H
+#define _DREAM_NETWORK_MESSAGE_H
+
+#include "Socket.h"
+#include "../Core/Endian.h"
+#include "../Core/Buffer.h"
+
+#include <queue>
+
+namespace Dream {
+	namespace Network {
+		/// The message header contains the type and length of the message that has been sent or received.
+		struct PACKED MessageHeader {
+			/// The length in bytes.
+			Core::Ordered<uint32_t> length;
+			/// The packet type.
+			Core::Ordered<uint16_t> ptype;
+		};
+		
+		/** A message that can be sent across the network.
+		 
+		 This class aids in the construction and interpretation of structured data sent across the network. It provides a basic header structure and size
+		 information so discrete data can be conveniently sent across the network. It ties in with MessageClientSocket which can send and receive messages
+		 reliably.
+		 
+		 */
+		class Message : public Object {
+			EXPOSE_CLASS(Message)
+			
+			class Class : public Object::Class {
+				EXPOSE_CLASSTYPE
+			};
+			
+		protected:
+			Core::BufferT m_packet;
+			
+		public:			
+			/// The length of the header segment.
+			uint32_t headerLength () const;
+			
+			/// The length of the data segment.
+			uint32_t dataLength () const;
+			
+			/// Used to indiciate that a complete header is currently available in the message.
+			bool headerComplete () const;
+			/// Used to indicate that the correct amount of data has been received for this message.
+			bool dataComplete () const;
+			
+			/// Returns a pointer to the header structure so that it can be easily interpreted and manipulated.
+			const MessageHeader * header () const;
+			MessageHeader * header ();
+			
+			/// Returns a pointer to the entire message data buffer.
+			const Core::BufferT & packet () const;
+			Core::BufferT & packet ();
+			
+			/// Reset the message to zero-size.
+			void resetHeader ();
+			/// After adding data into the message, you need to update the header before data is sent.
+			void updateSize ();
+			/// Check if the message data is valid.
+			bool isValid () const;
+			
+			/// Read structured data out of the message buffer.
+			template <typename type_t>
+			bool read (type_t & s, IndexT offset = 0) const {
+				offset += headerLength();
+				IndexT sz = sizeof(type_t);
+				
+				if (offset + sz > m_packet.size()) {
+					return false;
+				}
+				
+				memcpy(&s, &m_packet[offset], sz);
+				return true;
+			}
+			
+			/// Write structured data into the message buffer.
+			template <typename type_t>
+			void insert (type_t & s) {
+				IndexT offset = m_packet.size();
+				IndexT sz = sizeof(type_t);
+				
+				// Make room at the end
+				m_packet.resize(offset + sz);
+				
+				memcpy(&m_packet[offset], &s, sz);
+				updateSize();
+			}
+		};
+		
+		/** Sends a Message via a ClientSocket.
+		 
+		 This class will send a single message. Once it is done, it can be reset with another message to send.
+		 
+		 */
+		class MessageSender {
+		protected:
+			REF(Message) m_message;
+			unsigned m_offset;
+			
+		public:
+			MessageSender (REF(Message) msg);
+			MessageSender ();
+			
+			/// Cancel sending the current message. Note: Resetting the message part way through will corrupt the connection if the remote end expects
+			/// a complete message. Therefore, a MessageSender should only be reset once a complete message has been sent.
+			void reset ();
+			
+			/// Prepare to send another message.
+			void reset (REF(Message) msg);
+			
+			/// Returns true if a message is currently waiting to be sent or in progress.
+			bool hasMessageToSend () const;
+			
+			/// Writes data to the socket to send the message to the remote peer.
+			bool sendViaSocket(ClientSocket * socket);
+			
+			/// Returns true once the message has been sent completely.
+			bool transmissionComplete () const;
+		};
+		
+		/** Receives a Message via a ClientSocket.
+		 
+		 This class will receive a single message. Once it is done, it returns true, so that it can be reset.
+		 
+		 */
+		class MessageReceiver {
+		protected:
+			REF(Message) m_message;
+			
+		public:
+			MessageReceiver ();
+			
+			/// Resets the message.
+			/// This should be done when the receiveFromSocket() method returns true.
+			void reset ();
+			
+			/// Retrieve the complete or partial message.
+			REF(Message) message ();
+			
+			/// Read data from the socket to add to the incoming message.
+			/// @returns true when the message is complete.
+			bool receiveFromSocket (ClientSocket * socket);
+		};
+		
+#pragma mark -
+#pragma mark class MessageClientSocket
+		
+		/** Provides asynchronous message sending and retrival with good efficiency and reliability.
+		 
+		 This class contains two queues, a receive queue and send queue. These queues feed directly into an instance of both MessageSender and MessageReceiver.
+		 Messages in the queues will be sent and received in the background, and can be pushed and popped as needed.
+		 
+		 It is expected that this class will provide the basis for any custom network APIs.
+		 
+		 */
+		class MessageClientSocket : public ClientSocket {
+			EXPOSE_CLASS(MessageClientSocket)
+			
+			class Class : public ClientSocket::Class {
+				EXPOSE_CLASSTYPE
+			};
+			
+		protected:
+			MessageSender m_sender;
+			MessageReceiver m_receiver;
+			
+			typedef std::queue<REF(Message)> QueueT;
+			QueueT m_recvq, m_sendq;
+			
+			/// Processes any outgoing messages.
+			void updateSender ();
+			
+			/// @returns true when a complete message was received.
+			bool updateReceiver ();
+			
+		public:
+			MessageClientSocket (const SocketHandleT & h, const Address & address);
+			MessageClientSocket ();
+			
+			virtual ~MessageClientSocket ();
+			
+			/// Cancel all messages on the send queue.
+			void flushSendQueue ();
+			
+			/// Remove any messages in the receive queue.
+			void flushReceiveQueue ();
+			
+			/// @returns true if there are currently messages to be sent or being sent.
+			bool hasMessagesToSend ();
+			
+			/// Queues a message to be sent.
+			void sendMessage (REF(Message) msg);
+			
+			/// Returns the queue containing incoming messages
+			QueueT & receivedMessages ();
+			const QueueT & receivedMessages () const;
+			
+			/// Calls updateSender() and updateReceiver() as needed.
+			virtual void processEvents (Events::Loop *, Events::Event);
+			
+			/// Delegate function to handle incoming messages. Called when a message is received.
+			boost::function<void (MessageClientSocket *)> messageReceivedCallback;
+		};
+		
+	}
+}
+
+#endif

@@ -1,0 +1,4 @@
+821c821
+<     linkopts=
+---
+>     linkopts=$LDFLAGS

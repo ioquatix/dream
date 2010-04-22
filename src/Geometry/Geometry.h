@@ -1,0 +1,110 @@
+/*
+ *  Geometry/Geometry.h
+ *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
+ *
+ *  Created by Samuel Williams on 11/11/08.
+ *  Copyright 2008 Orion Transfer Ltd. All rights reserved.
+ *
+ */
+
+#ifndef _DREAM_GEOMETRY_GEOMETRY_H
+#define _DREAM_GEOMETRY_GEOMETRY_H
+
+#include "../Framework.h"
+#include "../Numerics/Vector.h"
+
+namespace Dream {
+	/**
+	 Geometry groups a set of mathematical constructs which model geometrical phenomenon, such as lines, spheres and boxes. These classes try to be as abstract
+	 as possible, therefore, most classes provide template elements for the number of dimensions, and the type of number to use.
+	 */
+	namespace Geometry {
+		using namespace Numerics;
+		
+		/**
+		 A general abstraction of a shape in D-space with P points. Used as a base class for several shapes. Provides access to points and some general
+		 functions.
+		 */
+		template <unsigned D, unsigned P, typename NumericT>
+		class Shape
+		{
+		public:
+			typedef Vector<D, NumericT> VectorT;
+			
+		protected:
+			Vector<D, NumericT> m_points[P];
+		
+		public:			
+			VectorT center () const
+			{
+				VectorT total(m_points[0]);
+				for (unsigned i = 1; i < P; i++)
+					total += m_points[i];
+				
+				return total / (NumericT)P;
+			}
+			
+			const VectorT & operator[] (unsigned i) const
+			{
+				return m_points[i];
+			}
+			
+			VectorT & operator[] (unsigned i)
+			{
+				return m_points[i];
+			}
+		};
+		
+		/**
+		 An intersection test generally has three kinds of results which are distinct. There was no intersection, the edges touched, or the shapes overlapped.
+		 */
+		enum IntersectionResult
+		{
+			/// There is no geometric intersection.
+			NO_INTERSECTION = 0,
+			
+			/// Edges of the shapes touch, but the shapes themselves do not overlap.
+			EDGES_INTERSECT = 16,
+			
+			/// The shapes intersect.
+			SHAPES_INTERSECT = 32,
+			
+			/// The shape being tested is completely embedded.
+			SHAPE_EMBEDDED = 64
+		};
+		
+		enum Direction {
+			LEFT	= 1 << 0,	// x-axis
+			RIGHT	= 1 << 1,	// x-axis
+			TOP		= 1 << 2,	// y-axis
+			BOTTOM	= 1 << 3,	// y-axis
+			NEAR	= 1 << 4,	// z-axis
+			FAR		= 1 << 5	// z-axis
+		};
+		
+		/*
+			Geometry is very inter-dependant, for example, a plane can be constructed from a triangle, but a triangle also relies on planes for intersection
+			tests. Therefore, we predefine all general geometry classes here.
+		 */
+		
+		template <unsigned D, typename NumericT = RealT>
+		class Triangle;
+		
+		template <unsigned D, typename NumericT = RealT>
+		class Sphere;
+		
+		template <unsigned D, typename NumericT = RealT>
+		class Plane;
+		
+		template <unsigned D, typename NumericT = RealT>
+		class Line;
+		
+		template <unsigned D, typename NumericT = RealT>
+		class LineSegment;
+		
+		template <unsigned D, typename NumericT = RealT>
+		class AlignedBox;
+	}
+}
+
+#endif

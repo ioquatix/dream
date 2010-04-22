@@ -1,0 +1,8 @@
+.DS_Store
+build/
+docs/
+ext/src/
+ext/darwin-universal/
+ext/darwin-iphone/
+ext/darwin-iphone-simulator/
+include/
