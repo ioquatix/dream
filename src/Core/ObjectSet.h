@@ -10,7 +10,7 @@
 #ifndef _DREAM_CORE_OBJECTSET_H
 #define _DREAM_CORE_OBJECTSET_H
 
-#include "Class.h"
+#include "../Class.h"
 
 #include <vector>
 #include <list>

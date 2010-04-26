@@ -137,7 +137,7 @@ namespace Dream {
 		}
 		
 		void MessageReceiver::reset () {
-			m_message = ptr(new Message);
+			m_message = new Message;
 		}
 		
 		REF(Message) MessageReceiver::message () {

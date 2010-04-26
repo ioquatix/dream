@@ -114,7 +114,7 @@ namespace Dream {
 				void upload (const VertexBuffer::Mode &mode = VertexBuffer::StaticDraw) {
 					ensure(!m_compacted);
 					
-					m_buffer = ptr(new VertexBuffer(TARGET));
+					m_buffer = new VertexBuffer(TARGET);
 					m_buffer->bind();
 					m_buffer->setData(m_vector.size() * sizeof(t) * E, (ByteT*)&(m_vector[0]), mode);
 				}

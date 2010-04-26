@@ -1,5 +1,5 @@
 /*
- *  Imaging/Text/TextBlock.cpp
+ *  Client/Text/TextBlock.cpp
  *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
  *
  *  Created by Samuel Williams on 31/07/07.
@@ -15,7 +15,7 @@
 
 namespace Dream
 {
-	namespace Imaging
+	namespace Client
 	{
 		namespace Text
 		{

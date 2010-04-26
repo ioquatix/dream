@@ -1,5 +1,5 @@
 /*
- *  Imaging/Text/FontFace.cpp
+ *  Client/Text/FontFace.cpp
  *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
  *
  *  Created by Administrator on 30/11/07.
@@ -12,7 +12,7 @@
 
 namespace Dream
 {
-	namespace Imaging
+	namespace Client
 	{
 		namespace Text
 		{

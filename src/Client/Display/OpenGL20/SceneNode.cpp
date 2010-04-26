@@ -30,7 +30,7 @@ namespace Dream {
 			}
 			
 			REF(RenderState) SceneNode::createRenderState (REF(IShader) shader) {
-				REF(RenderState) r = ptr(new RenderState);
+				REF(RenderState) r = new RenderState;
 				r->setShader(shader);
 				
 				m_renderState = r;

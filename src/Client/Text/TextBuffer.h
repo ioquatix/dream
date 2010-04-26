@@ -1,5 +1,5 @@
 /*
- *  Imaging/Text/TextBuffer.h
+ *  Client/Text/TextBuffer.h
  *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
  *
  *  Created by Samuel Williams on 26/09/06.
@@ -15,7 +15,7 @@
 
 namespace Dream
 {
-	namespace Imaging
+	namespace Client
 	{
 		namespace Text
 		{

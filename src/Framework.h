@@ -11,7 +11,6 @@
 #define _DREAM_FRAMEWORK_H
 
 #include <boost/utility.hpp>
-#include <boost/shared_ptr.hpp>
 
 #define abstract = 0
 
@@ -35,11 +34,6 @@
  */
 namespace Dream
 {
-#pragma mark -
-#pragma mark Pointers
-
-	using boost::shared_ptr;
-
 #pragma mark -
 #pragma mark Types
 

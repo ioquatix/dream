@@ -26,7 +26,7 @@ namespace Dream
 			
 			IMPLEMENT_CLASS(MaterialFactory)
 			
-			MaterialFactory::MaterialFactory (String name, const ILoader * loader) : m_name(name), m_shaderPathSet(false), m_loader(ptr(loader)),
+			MaterialFactory::MaterialFactory (String name, const ILoader * loader) : m_name(name), m_shaderPathSet(false), m_loader(loader),
 			m_blendingEnabled(false)
 			{
 				
@@ -146,7 +146,7 @@ namespace Dream
 				REF(Shader) shader;
 				
 				// Create a new render state object.
-				REF(RenderState) renderState = ptr(new RenderState);
+				REF(RenderState) renderState = new RenderState;
 				
 				// If a shader is not set in the configuration file, don't try to load it.
 				if (m_shaderPathSet) {
@@ -189,7 +189,7 @@ namespace Dream
 			REF(RenderState) MaterialFactory::createRenderState (Renderer * renderer) const
 			{
 				// Create a new render state object.
-				REF(RenderState) renderState = ptr(new RenderState);
+				REF(RenderState) renderState = new RenderState;
 				
 				if (m_blendFuncSrc != "") {
 					renderState->setBlendFunction(blendFunctionValue(m_blendFuncSrc, GL_ONE), blendFunctionValue(m_blendFuncDst, GL_ZERO));
@@ -224,7 +224,7 @@ namespace Dream
 			}
 
 			REF(Object) MaterialLibrary::Class::initFromData (const REF(Data) data, const ILoader * loader) {
-				return ptr(new MaterialLibrary(data, loader));
+				return new MaterialLibrary(data, loader);
 			}
 												
 			MaterialLibrary::~MaterialLibrary() {

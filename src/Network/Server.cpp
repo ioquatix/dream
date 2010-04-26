@@ -219,7 +219,7 @@ namespace Dream {
 			testing("Connecting and Message Sending");
 			
 			REF(Loop) eventLoop = Loop::klass.init();
-			REF(TestServer) server = ptr(new TestServer(eventLoop, "7979", SOCK_STREAM));
+			REF(TestServer) server = new TestServer(eventLoop, "7979", SOCK_STREAM);
 						
 			g_addressIndex = 0;
 			g_messageReceivedCount = 0;

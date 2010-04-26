@@ -1,5 +1,5 @@
 /*
- *  Imaging/Text/Font.h
+ *  Client/Text/Font.h
  *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
  *
  *  Created by Samuel Williams on 8/05/07.
@@ -10,14 +10,16 @@
 #ifndef _DREAM_IMAGING_TEXT_FONT_H
 #define _DREAM_IMAGING_TEXT_FONT_H
 
-#include "../Image.h"
+#include "../../Imaging/Image.h"
 
 namespace Dream
 {
-	namespace Imaging
+	namespace Client
 	{
 		namespace Text
 		{
+			using namespace Dream::Imaging;
+		
 			/* Use std::stringstream to easily manage dynamic strings */
 			
 			class TypographyException : public std::exception {

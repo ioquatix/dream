@@ -90,8 +90,8 @@ namespace Dream
 			KQueueFileDescriptorMonitor ();
 			virtual ~KQueueFileDescriptorMonitor ();
 			
-			virtual void addSource (REF(IFileDescriptorSource) source);
-			virtual void removeSource (REF(IFileDescriptorSource) source);
+			virtual void addSource (PTR(IFileDescriptorSource) source);
+			virtual void removeSource (PTR(IFileDescriptorSource) source);
 			
 			virtual int sourceCount () const;
 			
@@ -110,7 +110,7 @@ namespace Dream
 			close(m_kqueue);
 		}
 		
-		void KQueueFileDescriptorMonitor::addSource (REF(IFileDescriptorSource) source)
+		void KQueueFileDescriptorMonitor::addSource (PTR(IFileDescriptorSource) source)
 		{
 			FileDescriptorT fd = source->fileDescriptor();
 			m_fileDescriptorHandles.insert(source);
@@ -137,7 +137,7 @@ namespace Dream
 			return m_fileDescriptorHandles.size();
 		}
 		
-		void KQueueFileDescriptorMonitor::removeSource (REF(IFileDescriptorSource) source)
+		void KQueueFileDescriptorMonitor::removeSource (PTR(IFileDescriptorSource) source)
 		{
 			FileDescriptorT fd = source->fileDescriptor();
 			
@@ -208,9 +208,11 @@ namespace Dream
 						
 						if (events[i].filter == EVFILT_WRITE)
 							s->processEvents(loop, WRITE_READY);
+					} catch (FileDescriptorClosed & ex) {
+						removeSource(s);
 					} catch (std::runtime_error & ex) {
-						//std::cerr << "Exception thrown by runloop " << this << ": " << ex.what() << std::endl;
-						//std::cerr << "Removing file descriptor " << s->fileDescriptor() << " ..." << std::endl;
+						std::cerr << "Exception thrown by runloop " << this << ": " << ex.what() << std::endl;
+						std::cerr << "Removing file descriptor " << s->fileDescriptor() << " ..." << std::endl;
 						
 						removeSource(s);
 					}
@@ -242,8 +244,8 @@ namespace Dream
 			PollFileDescriptorMonitor ();
 			virtual ~PollFileDescriptorMonitor ();
 			
-			virtual void addSource (REF(IFileDescriptorSource) source);
-			virtual void removeSource (REF(IFileDescriptorSource) source);
+			virtual void addSource (PTR(IFileDescriptorSource) source);
+			virtual void removeSource (PTR(IFileDescriptorSource) source);
 			
 			virtual int sourceCount () const;
 			
@@ -260,12 +262,12 @@ namespace Dream
 		{	
 		}
 		
-		void PollFileDescriptorMonitor::addSource (REF(IFileDescriptorSource) source)
+		void PollFileDescriptorMonitor::addSource (PTR(IFileDescriptorSource) source)
 		{
 			m_fileDescriptorHandles.insert(source);
 		}
 		
-		void PollFileDescriptorMonitor::removeSource (REF(IFileDescriptorSource) source)
+		void PollFileDescriptorMonitor::removeSource (PTR(IFileDescriptorSource) source)
 		{
 			if (m_currentFileDescriptorSource == source) {
 				m_deleteCurrentFileDescriptorHandle = true;
@@ -369,13 +371,13 @@ namespace Dream
 		
 		REF(Loop) Loop::Class::init ()
 		{
-			return ptr(new Loop);
+			return new Loop;
 		}
 				
 		Loop::Loop () : m_stopWhenIdle(true), m_rateLimit(20)
 		{
 			// Setup file descriptor monitor
-			m_fileDescriptorMonitor = ptr(new KQueueFileDescriptorMonitor);
+			m_fileDescriptorMonitor = new KQueueFileDescriptorMonitor;
 			
 			// Setup timers
 			m_stopwatch.start();
@@ -384,7 +386,7 @@ namespace Dream
 			reopenStandardFileDescriptorsAsPipes();
 			
 			// Create and open an urgent notification pipe
-			m_urgentNotificationPipe = ptr(new NotificationPipeSource);
+			m_urgentNotificationPipe = new NotificationPipeSource;
 			monitorFileDescriptor(m_urgentNotificationPipe);
 		}
 		
@@ -437,7 +439,7 @@ namespace Dream
 				{
 					// Enqueue the notification to be processed
 					scoped_lock lock(m_notifications.lock);
-					m_notifications.sources->push(note);
+					m_notifications.sources.push(note);
 				}
 				
 				if (urgent) {
@@ -447,7 +449,7 @@ namespace Dream
 			}
 		}
 			
-		void Loop::monitorFileDescriptor (REF(IFileDescriptorSource) source)
+		void Loop::monitorFileDescriptor (PTR(IFileDescriptorSource) source)
 		{
 			ensure(source->fileDescriptor() != -1);
 			//std::cerr << this << " monitoring fd: " << fd << std::endl;
@@ -456,7 +458,7 @@ namespace Dream
 			m_fileDescriptorMonitor->addSource(source);
 		}
 		
-		void Loop::stopMonitoringFileDescriptor (REF(IFileDescriptorSource) source)
+		void Loop::stopMonitoringFileDescriptor (PTR(IFileDescriptorSource) source)
 		{
 			ensure(source->fileDescriptor() != -1);
 			
@@ -493,14 +495,13 @@ namespace Dream
 		
 		Loop::Notifications::Notifications ()
 		{
-			sources.reset(new QueueT);
-			processing.reset(new QueueT);
+		
 		}
 		
 		void Loop::Notifications::swap ()
 		{
 			// This function assumes that the structure has been locked..
-			sources.swap(processing);
+			std::swap(sources, processing);
 		}
 		
 		void Loop::processNotifications ()
@@ -510,7 +511,7 @@ namespace Dream
 			// Escape quickly - if this is not thread-safe, we still shouldn't have a problem unless
 			// the data-structure itself gets corrupt, but this shouldn't be possible because empty() is const.
 			// If we get a false positive, we still check below by locking the structure properly.
-			if (m_notifications.sources->empty())
+			if (m_notifications.sources.empty())
 				return;
 						
 			{
@@ -522,21 +523,21 @@ namespace Dream
 			
 			unsigned rate = m_rateLimit;
 			
-			while (!m_notifications.processing->empty()  && (rate-- || m_rateLimit == 0))
+			while (!m_notifications.processing.empty()  && (rate-- || m_rateLimit == 0))
 			{
-				REF(INotificationSource) note = m_notifications.processing->front();
-				m_notifications.processing->pop();
+				REF(INotificationSource) note = m_notifications.processing.front();
+				m_notifications.processing.pop();
 				
 				note->processEvents(this, NOTIFICATION);
 			}
 			
 			if (rate == 0 && m_rateLimit != 0) {
-				std::cerr << "Warning: Notifications were rate limited! " << m_notifications.processing->size() << " rescheduled notification(s)!" << std::endl;
+				std::cerr << "Warning: Notifications were rate limited! " << m_notifications.processing.size() << " rescheduled notification(s)!" << std::endl;
 				
-				while (!m_notifications.processing->empty())
+				while (!m_notifications.processing.empty())
 				{
-					REF(INotificationSource) note = m_notifications.processing->front();
-					m_notifications.processing->pop();
+					REF(INotificationSource) note = m_notifications.processing.front();
+					m_notifications.processing.pop();
 					
 					postNotification(note, false);
 				}
@@ -788,7 +789,7 @@ namespace Dream
 			eventLoop->scheduleTimer(TimerSource::klass.init(markAndStopCallback, 1.0));
 			
 			ThreadGroup children;
-			children.create_thread(bind(sendStopAfterDelay, eventLoop));
+			children.create_thread(boost::bind(sendStopAfterDelay, eventLoop));
 			
 			// Will be stopped after 2 seconds from the above thread
 			eventLoop->runForever();

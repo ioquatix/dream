@@ -28,7 +28,7 @@ namespace Dream {
 					EXPOSE_CLASSTYPE
 					
 					virtual REF(Object) init () {
-						return ptr(new PointCamera());
+						return new PointCamera();
 					}
 				};
 				

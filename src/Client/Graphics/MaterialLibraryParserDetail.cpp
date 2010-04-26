@@ -129,7 +129,7 @@ namespace Dream
 					
 					void beginNewMaterial(const ByteT *s, const ByteT *e) const {
 						String materialName(s, e);
-						m_state.material = ptr(new MaterialFactory(materialName, m_state.loader));
+						m_state.material = new MaterialFactory(materialName, m_state.loader);
 					}
 					
 					void finishedMaterial () const {
@@ -215,7 +215,7 @@ namespace Dream
 				};
 			}
 			
-			MaterialLibrary::MaterialLibrary(const REF(Data) data, const ILoader * loader) : m_loader(ptr(loader))
+			MaterialLibrary::MaterialLibrary(const REF(Data) data, const ILoader * loader) : m_loader(loader)
 			{
 				Detail::CommentsParser commentsParser;
 				Detail::MaterialsParserState s(this, loader);

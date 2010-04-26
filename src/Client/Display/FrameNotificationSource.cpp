@@ -20,7 +20,7 @@ namespace Dream
 
 			REF(FrameNotificationSource) FrameNotificationSource::Class::init (FrameCallbackT callback) const
 			{
-				return ptr(new FrameNotificationSource(callback));
+				return new FrameNotificationSource(callback);
 			}
 
 			FrameNotificationSource::FrameNotificationSource (FrameCallbackT callback) : m_callback(callback), m_processed(true)

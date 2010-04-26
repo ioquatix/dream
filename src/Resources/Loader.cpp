@@ -221,7 +221,7 @@ namespace Dream {
 			static REF(Loader) s_applicationLoader;
 			
 			if (!s_applicationLoader)
-				s_applicationLoader = ptr(new Loader);
+				s_applicationLoader = new Loader;
 			
 			return s_applicationLoader;
 		}

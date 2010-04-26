@@ -1,5 +1,5 @@
 /*
- *  Imaging/Text/Font.cpp
+ *  Client/Text/Font.cpp
  *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
  *
  *  Created by Samuel Williams on 8/05/07.
@@ -20,7 +20,7 @@
 
 namespace Dream
 {
-	namespace Imaging
+	namespace Client
 	{
 		namespace Text
 		{
@@ -53,11 +53,11 @@ namespace Dream
 			}
 			
 			REF(Object) Font::Class::initWithPath(const Path & p) {
-				return ptr(new Font(p));
+				return new Font(p);
 			}
 			
 			REF(Object) Font::Class::initFromData(const REF(Data) data, const ILoader * loader) {
-				return ptr(new Font(data));
+				return new Font(data);
 			}
 			
 			Font::Font (const Path & p) : m_face(NULL)
@@ -127,7 +127,7 @@ namespace Dream
 			{
 				ensure(m_face != NULL);
 				
-				REF(Image) img = ptr(new Image(computeBoundingBox(text) << 1U, m_face->pixelFormat(), UBYTE));
+				REF(Image) img = new Image(computeBoundingBox(text) << 1U, m_face->pixelFormat(), UBYTE);
 				img->zero();
 				
 				m_face->processText(text, img);

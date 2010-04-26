@@ -71,7 +71,7 @@ namespace Dream
 				
 				REF(IContext) Context::Class::init ()
 				{
-					return ptr(new Context());
+					return new Context();
 				}
 				
 				void Context::setTitle (String title) {
@@ -89,7 +89,7 @@ namespace Dream
 						m_impl->view = [[[DreamView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]] autorelease];
 						[m_impl->window addSubview:m_impl->view];
 						
-						m_impl->renderer = ptr(new TouchRenderer());
+						m_impl->renderer = new TouchRenderer();
 						
 						std::cerr << "OpenGL Context Initialized..." << std::endl;
 						std::cerr << "OpenGL Vendor: " << glGetString(GL_VENDOR) << std::endl;

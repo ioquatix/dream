@@ -41,7 +41,7 @@ namespace Dream
 			
 			REF(Sound) decodeLinearCodec (const Buffer * buf, ALint channelCount, ALint bitsPerSample, ALfloat sampleFrequency)
 			{
-				return ptr(new Sound(dataFormat(channelCount, bitsPerSample), sampleFrequency, buf));
+				return new Sound(dataFormat(channelCount, bitsPerSample), sampleFrequency, buf);
 			}
 			
 			REF(Sound) decodePCM8SCodec (const Buffer * buf, ALint channelCount, ALint bitsPerSample, ALfloat sampleFrequency)
@@ -55,14 +55,14 @@ namespace Dream
 				for (i = 0; i < copy.size(); i++)
 					d[i] += (int8_t) 128;
 				
-				return ptr(new Sound(dataFormat(channelCount, bitsPerSample), sampleFrequency, &copy));
+				return new Sound(dataFormat(channelCount, bitsPerSample), sampleFrequency, &copy);
 			}
 			
 			const Endian PCM16Endian = LITTLE;
 			REF(Sound) decodePCM16Codec (const Buffer * buf, ALint channelCount, ALint bitsPerSample, ALfloat sampleFrequency)
 			{
 				if (hostEndian() == PCM16Endian) {
-					return ptr(new Sound(dataFormat(channelCount, bitsPerSample), sampleFrequency, buf));
+					return new Sound(dataFormat(channelCount, bitsPerSample), sampleFrequency, buf);
 				} else {
 					DynamicBuffer copy(buf->size(), true);
 					
@@ -73,7 +73,7 @@ namespace Dream
 						copy.append(sample);
 					}
 					
-					return ptr(new Sound(dataFormat(channelCount, bitsPerSample), sampleFrequency, &copy));
+					return new Sound(dataFormat(channelCount, bitsPerSample), sampleFrequency, &copy);
 				}
 			}
 						

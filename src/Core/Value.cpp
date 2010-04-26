@@ -77,7 +77,7 @@ namespace Dream
 
 		void Value::clear ()
 		{
-			m_ptr.reset();
+			m_ptr.clear();
 		}
 
 		bool Value::defined () const

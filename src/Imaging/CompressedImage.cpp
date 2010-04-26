@@ -167,7 +167,7 @@ namespace Dream {
 			}
 			
 			// Allocate the image_data buffer.
-			resultImage = ptr(new Image(Vector<3, unsigned>(desc->dwWidth, desc->dwHeight, 1), format, dataType));
+			resultImage = new Image(Vector<3, unsigned>(desc->dwWidth, desc->dwHeight, 1, format, dataType));
 			ByteT *imageBytes = resultImage->pixelData();
 			ensure(imageBytes != NULL);
 			

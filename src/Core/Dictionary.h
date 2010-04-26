@@ -10,7 +10,7 @@
 #ifndef _DREAM_CORE_DICTIONARY_H
 #define _DREAM_CORE_DICTIONARY_H
 
-#include "Class.h"
+#include "../Class.h"
 #include "Value.h"
 #include "Data.h"
 

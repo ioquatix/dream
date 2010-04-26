@@ -120,7 +120,7 @@ namespace Dream
 			
 			REF(Mixer) Mixer::Class::init ()
 			{
-				return ptr(new Mixer);
+				return new Mixer;
 			}
 			
 			Mixer::Mixer ()
@@ -176,7 +176,7 @@ namespace Dream
 			
 			REF(Source) Mixer::createSource ()
 			{
-				return ptr(new Source);
+				return new Source;
 			}
 			
 			void Mixer::setListenerOrientation (const Vec3 & lookingAt, const Vec3 & up)

@@ -443,7 +443,7 @@ namespace Dream {
 					SocketHandleT h;
 					Address a;
 					if (accept(h, a))
-						m_testSocket = ptr(new TestClientSocket(h, a));
+						m_testSocket = new TestClientSocket(h, a);
 					eventLoop->monitorFileDescriptor(m_testSocket);
 					
 					eventLoop->stopMonitoringFileDescriptor(this);
@@ -484,9 +484,9 @@ namespace Dream {
 			{
 				Address localhost = Address::interfaceAddressesForPort(2000, SOCK_STREAM)[0];
 				std::cerr << "Initializing server..." << std::endl;
-				REF(TestServerSocket) serverSocket = ptr(new TestServerSocket(localhost));
+				REF(TestServerSocket) serverSocket = new TestServerSocket(localhost);
 				std::cerr << "Initializing client..." << std::endl;
-				REF(TestClientSocket) clientSocket = ptr(new TestClientSocket);
+				REF(TestClientSocket) clientSocket = new TestClientSocket;
 				
 				std::cerr << "Connecting to server..." << std::endl;
 				clientSocket->connect(localhost);

@@ -472,11 +472,6 @@ namespace Dream
 			return buffer;
 		}
 
-		PackedBuffer::Ptr PackedBuffer::sharedBuffer (IndexT size)
-		{
-			return PackedBuffer::Ptr(newBuffer(size));
-		}
-
 		IndexT PackedBuffer::size () const
 		{
 			return m_size;

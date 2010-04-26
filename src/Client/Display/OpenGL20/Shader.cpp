@@ -58,10 +58,10 @@ namespace Dream {
 				}
 				
 				REF(Object) ShaderFactory::Class::initFromData (const REF(Data) data, const ILoader * loader) {
-					return ptr(new ShaderFactory(data, loader));
+					return new ShaderFactory(data, loader);
 				}
 				
-				ShaderFactory::ShaderFactory (const REF(Data) data, const ILoader * loader) : m_data(data), m_loader(ptr(loader)) {
+				ShaderFactory::ShaderFactory (const REF(Data) data, const ILoader * loader) : m_data(data), m_loader(loader) {
 				}
 				
 				ShaderFactory::~ShaderFactory () {
@@ -71,7 +71,7 @@ namespace Dream {
 					StaticBuffer buf(m_data->start(), m_data->size());
 					BufferStream ds(buf);
 					
-					REF(Shader) shader = ptr(new Shader(ds, definitions));
+					REF(Shader) shader = new Shader(ds, definitions);
 					
 					return shader;
 				}
@@ -181,8 +181,8 @@ namespace Dream {
 				}
 				
 				void Shader::initFromSource (String vertexSource, String fragmentSource) {		
-					m_vertexShader = ptr(new ShaderHandle(VERTEX_SHADER));
-					m_fragmentShader = ptr(new ShaderHandle(FRAGMENT_SHADER));
+					m_vertexShader = new ShaderHandle(VERTEX_SHADER);
+					m_fragmentShader = new ShaderHandle(FRAGMENT_SHADER);
 					
 					if (!m_vertexShader->compile(vertexSource))
 						std::cerr << m_vertexShader->infoLog() << std::endl;
@@ -190,7 +190,7 @@ namespace Dream {
 					if (!m_fragmentShader->compile(fragmentSource))
 						std::cerr << m_fragmentShader->infoLog() << std::endl;
 					
-					m_shaderProgram = ptr(new ShaderProgramHandle);
+					m_shaderProgram = new ShaderProgramHandle;
 					
 					m_shaderProgram->attach(m_vertexShader);
 					m_shaderProgram->attach(m_fragmentShader);

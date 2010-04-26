@@ -44,13 +44,13 @@ namespace Dream
 		{
 			using namespace std;
 
-			CodeTest::StatisticsPtr overall = CodeTest::StatisticsPtr(new CodeTest::Statistics("Code Test Registry"));
+			REF(CodeTest::Statistics) overall = new CodeTest::Statistics("Code Test Registry");
 
 			foreach (CodeTest * test, m_codeTests)
 			{
 				test->performTests ();
 
-				CodeTest::StatisticsPtr stats = test->overallStatistics ();
+				REF(CodeTest::Statistics) stats = test->overallStatistics();
 				*overall += *stats;
 			}
 
@@ -70,7 +70,7 @@ namespace Dream
 
 		void CodeTest::testing (std::string testName)
 		{
-			m_tests.push_back (StatisticsPtr(new Statistics(testName)));
+			m_tests.push_back(new Statistics(testName));
 		}
 
 		void CodeTest::assertTrue (bool condition, std::string testSummary)
@@ -141,7 +141,7 @@ namespace Dream
 			std::cout << " out of " << m_failed + m_passed << " total" << std::endl;
 		}
 
-		CodeTest::StatisticsPtr CodeTest::currentTest ()
+		PTR(CodeTest::Statistics) CodeTest::currentTest ()
 		{
 			if (m_tests.size() == 0)
 				testing ("Unnamed");
@@ -149,11 +149,11 @@ namespace Dream
 			return m_tests.back();
 		}
 
-		CodeTest::StatisticsPtr CodeTest::overallStatistics ()
+		REF(CodeTest::Statistics) CodeTest::overallStatistics ()
 		{
-			StatisticsPtr overall = StatisticsPtr(new Statistics(m_name));
+			REF(Statistics) overall = new Statistics(m_name);
 
-			foreach(StatisticsPtr stats, m_tests)
+			foreach(PTR(Statistics) stats, m_tests)
 			{
 				*overall += *stats;
 			}
@@ -163,7 +163,7 @@ namespace Dream
 
 		void CodeTest::printSummaries () const
 		{
-			foreach (StatisticsPtr stats, m_tests)
+			foreach (PTR(Statistics) stats, m_tests)
 			{
 				stats->printSummary();
 			}

@@ -29,7 +29,7 @@ namespace Dream
 
 		REF(NotificationSource) NotificationSource::Class::init (CallbackT callback) const
 		{
-			return ptr(new NotificationSource(callback));
+			return new NotificationSource(callback);
 		}
 		
 		NotificationSource::NotificationSource (CallbackT callback) : m_callback(callback)
@@ -55,7 +55,7 @@ namespace Dream
 		
 		REF(NotificationSource) NotificationSource::stopLoopNotification ()
 		{
-			return ptr(new NotificationSource(stopRunLoopCallback));
+			return new NotificationSource(stopRunLoopCallback);
 		}
 		
 #pragma mark -
@@ -66,7 +66,7 @@ namespace Dream
 		
 		REF(TimerSource) TimerSource::Class::init (CallbackT callback, TimeT duration, bool repeats) const
 		{
-			return ptr(new TimerSource(callback, duration, repeats));
+			return new TimerSource(callback, duration, repeats);
 		}
 		
 		TimerSource::TimerSource (CallbackT callback, TimeT duration, bool repeats) : m_repeats(repeats), m_duration(duration), m_callback(callback), 
@@ -192,17 +192,17 @@ namespace Dream
 		
 		REF(FileDescriptorSource) FileDescriptorSource::forStandardIn (CallbackT callback)
 		{
-			return ptr(new FileDescriptorSource(callback, STDIN_FILENO));
+			return new FileDescriptorSource(callback, STDIN_FILENO);
 		}
 		
 		REF(FileDescriptorSource) FileDescriptorSource::forStandardOut (CallbackT callback)
 		{
-			return ptr(new FileDescriptorSource(callback, STDOUT_FILENO));
+			return new FileDescriptorSource(callback, STDOUT_FILENO);
 		}
 		
 		REF(FileDescriptorSource) FileDescriptorSource::forStandardError (CallbackT callback)
 		{
-			return ptr(new FileDescriptorSource(callback, STDERR_FILENO));			
+			return new FileDescriptorSource(callback, STDERR_FILENO);			
 		}
 		
 #pragma mark -

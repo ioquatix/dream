@@ -30,7 +30,7 @@ namespace Dream {
 				m_staticFocusedView = NULL;
 				m_dynamicFocusedView = NULL;
 				
-				m_principal = ptr(p);
+				m_principal = p;
 			}
 
 			bool View::Controller::resize(const ResizeInput &ipt) {
@@ -111,7 +111,7 @@ namespace Dream {
 			}
 			
 			void View::Controller::didBecomeCurrent (ISceneManager * manager, IScene * scene) {
-				assert(m_principal != NULL);
+				ensure(m_principal);
 				
 				m_principal->didBecomeCurrent(manager, scene);
 			}
@@ -160,7 +160,7 @@ namespace Dream {
 
 			View::View (View *parent) : m_parent(parent) {
 				// This is a subview of m_parent
-				m_parent->registerChildView(ptr(this));
+				m_parent->registerChildView(this);
 				m_controller = m_parent->controller();
 				m_enabled = m_parent->isEnabled();
 				

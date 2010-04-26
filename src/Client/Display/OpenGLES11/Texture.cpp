@@ -273,7 +273,7 @@ namespace Dream {
 				
 				REF(Texture) TextureController::createTexture (PTR(IPixelBuffer) pixelBuffer, const TextureParameters & params)
 				{
-					REF(Texture) tex = ptr(new Texture(this));
+					REF(Texture) tex = new Texture(this);
 
 					tex->loadPixelData(pixelBuffer->size(), pixelBuffer->pixelData(), pixelBuffer->pixelFormat(), pixelBuffer->pixelDataType(), params);
 					

@@ -287,7 +287,7 @@ namespace Dream
 				static REF(VoidScene) s_voidSceneSharedInstance;
 				
 				if (!s_voidSceneSharedInstance)
-					s_voidSceneSharedInstance = ptr(new VoidScene);
+					s_voidSceneSharedInstance = new VoidScene;
 				
 				return s_voidSceneSharedInstance;
 			}

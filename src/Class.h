@@ -11,15 +11,11 @@
 #define _DREAM_CLASS_H
 
 #include "Framework.h"
+#include "Reference.h"
 
 #include <typeinfo>
-#include <boost/intrusive_ptr.hpp>
 #include <boost/type_traits/is_base_and_derived.hpp>
 #include <boost/mpl/if.hpp>
-
-/// Shorthand for pointer types.
-#define REF(cls) Dream::intrusive_ptr<cls> 
-#define PTR(cls) REF(cls) &
 
 /// Use in a class to provide support for abstract instantiation.
 /// @sa IClass
@@ -109,23 +105,6 @@ ClassType<I##type> * I##type::staticType () \
 
 namespace Dream
 {
-	using boost::intrusive_ptr;
-	typedef int RefCountT;
-
-	/** A helper function for returning intrusive_ptr values.
-
-	 @code
-	 REF(MyClass) = ptr(new MyClass);
-	 @endcode
-	 */
-	template <typename object_t>
-	inline intrusive_ptr<object_t> ptr (object_t * o)
-	{
-		return intrusive_ptr<object_t>(o);
-	}
-
-	using boost::dynamic_pointer_cast;
-
 	class IObject;
 	class IClass;
 	class Object;
@@ -227,7 +206,7 @@ namespace Dream
 
 	 REF(MyClass) MyClass::Class::initWithCount (unsigned i)
 	 {
-		return ptr(new MyClass(i));
+		return new MyClass(i);
 	 }
 
 	 void main ()
@@ -313,34 +292,18 @@ namespace Dream
 	//ClassType<class_t> ClassType<class_t>::s_classType;
 
 	class IObject;
-	/// boost::intrusive_ptr reference counting. Increases reference count by one.
-	void intrusive_ptr_add_ref (const IObject * obj);
-	/// boost::intrusive_ptr reference counting. Decreases reference count by one and will delete object when count
-	/// reaches 0.
-	void intrusive_ptr_release (const IObject * obj);
 
 	/** Root object for class hierarchy.
 
 	 This class must have no data members, and no virtual functions that are not abstract.
 	 */
-	class IObject
+	class IObject : public SharedObject
 	{
-	protected:
-		friend void intrusive_ptr_add_ref (const IObject *);
-		friend void intrusive_ptr_release (const IObject *);
-
-		/// Increase the reference count by one.
-		virtual void retain () const abstract;
-		/// Decrease the reference count by one.
-		virtual bool release () const abstract;
 	public:
 		/// Abstract class type.
 		typedef IClass Class;
 
 		virtual ~IObject ();
-
-		/// The current reference count for this object.
-		virtual RefCountT referenceCount () const abstract;
 
 		/// The Class * that represents this object.
 		virtual Class * objectClass () const abstract;
@@ -358,17 +321,6 @@ namespace Dream
 		{
 			return isKindOf(klass.classType());
 		}
-		
-		/// Helper function for casting objects
-		///
-		/// @code
-		/// REF(MyDeriviedType) derived = object->cast<MyDerivedType>();
-		/// @endcode
-		template <typename return_t>
-		intrusive_ptr<return_t> cast ()
-		{
-			return dynamic_pointer_cast<return_t> (ptr (this));
-		}
 	};
 
 	/** The top level concrete object class.
@@ -378,13 +330,6 @@ namespace Dream
 	class Object : IMPLEMENTS (Object)
 	{
 	protected:
-		/// Default constructor for Object. Sets the reference count to 0.
-		Object ();
-		/// Default copy constructor for Object. Sets the reference count of this object to 0.
-		Object (const Object & other);
-		/// Copy operator for Object. Sets the reference count of this object to 0.
-		void operator= (const Object & other);
-
 		EXPOSE_CLASS (Object)
 
 		class Class : IMPLEMENTS (Object::Class)
@@ -392,28 +337,8 @@ namespace Dream
 			EXPOSE_CLASSTYPE
 		};
 
-	private:
-		/// The actual reference count variable.
-		volatile mutable RefCountT m_referenceCount;
-	
-	protected:
-		/// Increments m_referenceCount.
-		virtual void retain () const;
-		/// Decrements m_referenceCount.
-		/// To implement your own memory management, override this function and handle the case where the reference
-		/// count hits zero. Never return true.
-		/// @returns True if this object is no longer needed and needs to be deleted. (i.e. reference count has hit 0)
-		/// @returns False if this object is still useful. (i.e. reference count is greater than zero)
-		virtual bool release () const;
-
 	public:
 		virtual ~Object ();
-
-		/// Return the reference count of the object.
-		RefCountT referenceCount () const
-		{
-			return m_referenceCount;
-		}
 	};
 }
 

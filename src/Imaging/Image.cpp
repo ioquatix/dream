@@ -44,7 +44,7 @@ namespace Dream {
 		
 		REF(Object) Image::Class::initWithSize(const Vector<3, unsigned> &size, ImagePixelFormat format, ImageDataType dataType)
 		{
-			return ptr(new Image(size, format, dataType));
+			return new Image(size, format, dataType);
 		}
 		
 		REF(Object) Image::Class::initFromData(const REF(Data) data, const ILoader * loader)

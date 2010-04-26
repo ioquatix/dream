@@ -103,7 +103,7 @@ namespace Dream
 			
 			REF(IContext) CocoaContext::Class::init ()
 			{
-				return ptr(new CocoaContext());
+				return new CocoaContext();
 			}
 			
 			void setupApplicationMenu () {
@@ -236,7 +236,7 @@ namespace Dream
 				
 				//glPolygonOffset (1.0f, 1.0f);
 				
-				m_impl->renderer = ptr(new MacOSXOpenGLRenderer());
+				m_impl->renderer = new MacOSXOpenGLRenderer();
 				
 				std::cerr << "OpenGL Context Initialized..." << std::endl;
 				std::cerr << "OpenGL Vendor: " << glGetString(GL_VENDOR) << std::endl;

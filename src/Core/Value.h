@@ -45,7 +45,7 @@ namespace Dream
 
 		/** Abstract typed value base. Provides a basic set of functionality for dealing with values of unknown type.
 		 */
-		class ITypedValue : IMPLEMENTS (Type)
+		class ITypedValue : IMPLEMENTS (Type), public SharedObject
 		{
 		public:
 			/// Compares two values
@@ -224,9 +224,8 @@ namespace Dream
 		 */
 		class Value
 		{
-			typedef shared_ptr<ITypedValue> ValuePtr;
-
-			ValuePtr m_ptr;
+			REF(ITypedValue) m_ptr;
+			
 		public:
 			/// Construct an undefined value.
 			Value ();
@@ -280,7 +279,7 @@ namespace Dream
 			template <typename ValueT>
 			void set (const ValueT & value)
 			{
-				m_ptr = ValuePtr(new TypedValue<ValueT>(value));
+				m_ptr = new TypedValue<ValueT>(value);
 			}
 
 			/// Check whether this value is equal to another value

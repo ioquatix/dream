@@ -138,7 +138,7 @@ namespace Dream
 		protected:
 			virtual void connectionCallbackHandler (Loop * eventLoop, ServerSocket * serverSocket, const SocketHandleT & h, const Address & a)
 			{
-				REF(MessageClientSocket) clientSocket = ptr(new MessageClientSocket(h, a));
+				REF(MessageClientSocket) clientSocket = new MessageClientSocket(h, a);
 				
 				//std::cerr << "Accepted connection " << clientSocket << " from " << clientSocket->remoteAddress().description();
 				//std::cerr << " (" << clientSocket->remoteAddress().addressFamilyName() << ")" << std::endl;
@@ -153,7 +153,7 @@ namespace Dream
 					REF(Message) msg = client->receivedMessages().front();
 					client->receivedMessages().pop();
 					
-					REF(Message) pongMsg = ptr(new Message);
+					REF(Message) pongMsg = new Message;
 					pongMsg->resetHeader();
 					pongMsg->header()->ptype = PK_PING;
 					
@@ -174,7 +174,6 @@ namespace Dream
 		};
 	
 		IMPLEMENT_CLASS(PingPongServer)		
-		
 		
 		UNIT_TEST(CompleteServer) {
 			using namespace boost;

@@ -310,16 +310,10 @@ namespace Dream
 			const ByteT * data () const;
 
 		public:
-			/// Reference-counted pointer.
-			typedef shared_ptr<PackedBuffer> Ptr;
-
 			virtual ~PackedBuffer ();
 
 			/// Create a new buffer.
 			static PackedBuffer * newBuffer (IndexT size);
-
-			/// Create a new shared buffer. Reference counted.
-			static Ptr sharedBuffer (IndexT size);
 
 			virtual IndexT size () const;
 

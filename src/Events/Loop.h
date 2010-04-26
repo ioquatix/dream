@@ -46,10 +46,10 @@ namespace Dream
 			
 		public:			
 			/// Remove a source to be monitored
-			virtual void addSource (REF(IFileDescriptorSource) source) abstract;
+			virtual void addSource (PTR(IFileDescriptorSource) source) abstract;
 			
 			/// Add a source to be monitored
-			virtual void removeSource (REF(IFileDescriptorSource) source) abstract;
+			virtual void removeSource (PTR(IFileDescriptorSource) source) abstract;
 			
 			/// Count of active file descriptors
 			virtual int sourceCount () const abstract;
@@ -60,7 +60,11 @@ namespace Dream
 			/// If timeout <= 0, this call blocks indefinitely
 			virtual int waitForEvents (TimeT timeout, Loop * loop) abstract;
 		};
-				
+		
+		class FileDescriptorClosed
+		{
+		};
+		
 #pragma mark -
 		
 		/**
@@ -103,8 +107,8 @@ namespace Dream
 				boost::mutex lock;
 				
 				/// A queue of notifications that need to be processed
-				shared_ptr<QueueT> sources;
-				shared_ptr<QueueT> processing;
+				QueueT sources;
+				QueueT processing;
 			};			
 			
 			Notifications m_notifications;
@@ -171,9 +175,9 @@ namespace Dream
 			void postNotification (REF(INotificationSource) note, bool urgent = false);
 			
 			/// Monitor a file descriptor and process any read/write events when it is possible to do so.
-			void monitorFileDescriptor (REF(IFileDescriptorSource) source);
+			void monitorFileDescriptor (PTR(IFileDescriptorSource) source);
 			/// Stop monitoring a file descriptor.
-			void stopMonitoringFileDescriptor (REF(IFileDescriptorSource) source);
+			void stopMonitoringFileDescriptor (PTR(IFileDescriptorSource) source);
 			
 			/// Stops the event loop. This function is thread-safe. If called from a separate thread, sends an urgent stop notification.
 			void stop ();

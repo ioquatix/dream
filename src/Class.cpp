@@ -88,52 +88,10 @@ namespace Dream
 
 	IMPLEMENT_CLASS (Object)
 
-	Object::Object () : m_referenceCount (0)
-	{
-	}
-
-	Object::Object (const Object & other) : m_referenceCount (0)
-	{
-	}
-
-	void Object::operator= (const Object & other)
-	{
-		// Don't touch m_referenceCount
-	}
-
 	Object::~Object ()
 	{
 	}
-
-	void Object::retain () const
-	{
-		// m_referenceCount += 1;
-		/// @todo This should be put into a file specific for Darwin
-		OSAtomicIncrement32((int32_t*)&m_referenceCount);
-	}
-
-	bool Object::release () const
-	{
-		// m_referenceCount -= 1;
-		/// @todo This should be put into a file specific for Darwin
-		int32_t count = OSAtomicDecrement32((int32_t*)&m_referenceCount);
-
-		return count == 0 ? true : false;
-	}
-
-	void intrusive_ptr_add_ref (const IObject * obj)
-	{
-		obj->retain();
-	}
-
-	void intrusive_ptr_release (const IObject * obj)
-	{
-		if (obj->release())
-		{
-			delete obj;
-		}
-	}
-
+	
 #pragma mark -
 #pragma mark Unit Tests
 
@@ -168,7 +126,7 @@ namespace Dream
 
 			virtual REF(ITestInterface) init ()
 			{
-				return ptr(new ObjectImplementation);
+				return new ObjectImplementation;
 			}
 		};
 
@@ -194,7 +152,7 @@ namespace Dream
 
 			virtual REF(ITestInterface) init ()
 			{
-				return ptr(new OtherImplementation);
+				return new OtherImplementation;
 			}
 		};
 
@@ -220,7 +178,7 @@ namespace Dream
 
 				virtual REF(ITestInterface) init ()
 				{
-					return ptr(new DerivedImplementation);
+					return new DerivedImplementation;
 				}
 			};
 

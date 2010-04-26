@@ -1,5 +1,5 @@
 /*
- *  Imaging/Text/TextBlock.h
+ *  Client/Text/TextBlock.h
  *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
  *
  *  Created by Samuel Williams on 19/08/07.
@@ -20,7 +20,7 @@
 
 namespace Dream
 {
-	namespace Imaging
+	namespace Client
 	{
 		namespace Text
 		{

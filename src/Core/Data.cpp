@@ -29,12 +29,12 @@ namespace Dream
 
 		REF(Data) Data::Class::initWithPath (const Path & path)
 		{
-			return ptr(new Data(path));
+			return new Data(path);
 		}
 		
 		REF(Data) Data::Class::initWithBuffer (const Buffer & buf)
 		{
-			return ptr(new Data(buf));
+			return new Data(buf);
 		}
 		
 		Data::Data (const Path & p)

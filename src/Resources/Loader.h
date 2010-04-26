@@ -77,7 +77,7 @@ namespace Dream {
 				
 				if (!ptr) std::cerr << "Resource failed to load: '" << res.string() << "'" << std::endl;
 				
-				REF(InterfaceT) result = dynamic_pointer_cast<InterfaceT> (ptr);
+				REF(InterfaceT) result = ptr;
 				
 				if (!result) std::cerr << "Resource was not correct type: '" << res.string() << "' -> " << InterfaceT::staticType()->name() << std::endl;
 				
