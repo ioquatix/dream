@@ -23,7 +23,7 @@ namespace Dream
 			
 		}
 		
-		ConnectionShutdown::ConnectionShutdown (const std::string & what) : ConnectionError(what)
+		ConnectionShutdown::ConnectionShutdown (const std::string & what) : m_what(what)
 		{
 			
 		}

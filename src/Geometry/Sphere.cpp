@@ -41,11 +41,11 @@ namespace Dream {
 			LineSegment<2> segmentB(Vec2(-50, -10), Vec2(50, -10));
 			
 			assertTrue(b.intersectsWith(segmentA, t1, t2) == SHAPES_INTERSECT, "Line and sphere overlap at two points");
-			assertEqual(segmentA.pointAtTime(t1), Vec2(-10.0, 0), "Line intersects surface of sphere");
-			assertEqual(segmentA.pointAtTime(t2), Vec2(10.0, 0), "Line intersects surface of sphere");
+			assertEquivalent(segmentA.pointAtTime(t1), Vec2(-10.0, 0), "Line intersects surface of sphere");
+			assertEquivalent(segmentA.pointAtTime(t2), Vec2(10.0, 0), "Line intersects surface of sphere");
 			
 			assertTrue(b.intersectsWith(segmentB, t1, t2) == EDGES_INTERSECT, "Line and sphere touch at one point");
-			assertEqual(segmentB.pointAtTime(t1), Vec2(0, -10.0), "Line intersects surface of sphere");
+			assertEquivalent(segmentB.pointAtTime(t1), Vec2(0, -10.0), "Line intersects surface of sphere");
 		}
 	}
 }

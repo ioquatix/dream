@@ -282,11 +282,14 @@ namespace Dream
 {
 	namespace Core
 	{
-		/// CodeTest helpers for testing floating point numbers.
-		bool testEquivalency (const float & lhs, const float & rhs);
+		namespace CodeTestAssertions
+		{
+			/// CodeTest helpers for testing floating point numbers.
+			bool equivalent (const float & lhs, const float & rhs);
 
-		/// CodeTest helpers for testing floating point numbers.
-		bool testEquivalency (const double & lhs, const double & rhs);
+			/// CodeTest helpers for testing floating point numbers.
+			bool equivalent (const double & lhs, const double & rhs);
+		}
 	}
 }
 #endif

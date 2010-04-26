@@ -263,56 +263,7 @@ namespace Dream
 #pragma mark -
 #pragma mark Unit Tests
 
-		// TODO: What is this junk test?
 #ifdef ENABLE_TESTING
-		template <typename AnyT>
-		class EquivalentTest : public Core::CodeTest::Assertion
-		{
-		protected:
-			const AnyT m_lhs;
-			const AnyT m_rhs;
-
-			bool testEquivalent (const float & lhs, const float & rhs) const
-			{
-				return equivalent(lhs, rhs);
-			}
-
-			bool testEquivalent (const double & lhs, const double & rhs) const
-			{
-				return equivalent(lhs, rhs);
-			}
-
-			template <unsigned N, typename T>
-			bool testEquivalent (const Vector<N, T> & lhs, const Vector<N, T> & rhs) const
-			{
-				return lhs.equivalent(rhs);
-			}
-
-		public:
-			EquivalentTest (AnyT lhs, AnyT rhs) : m_lhs (lhs), m_rhs (rhs)
-			{
-			}
-
-			virtual std::string summary () const
-			{
-				std::stringstream s;
-				s << m_lhs << " ~~ " << m_rhs;
-
-				return s.str();
-			}
-
-			virtual bool test () const
-			{
-				return testEquivalent(m_lhs, m_rhs);
-			}
-		};
-
-		template <typename LhsT, typename RhsT>
-		EquivalentTest<LhsT> equivalence (const LhsT & lhs, const RhsT & rhs)
-		{
-			return EquivalentTest<LhsT>(lhs, (LhsT)rhs);
-		}
-
 		UNIT_TEST(Quaternion)
 		{
 			testing("Construction");
@@ -320,8 +271,8 @@ namespace Dream
 			Quat q(R90, vec(1.0, 0.0, 0.0));
 			Mat44 m = Mat44::rotatingMatrix(R90, vec(1.0, 0.0, 0.0));
 
-			assertTrue(equivalence(q.rotationAxis(), vec(1.0, 0.0, 0.0)));
-			assertTrue(equivalence(q.rotationAngle(), R90));
+			assertEqual(q.rotationAxis(), vec(1.0, 0.0, 0.0), "Rotation axis is correct");
+			assertEqual(q.rotationAngle(), R90, "Rotation angle is correct");
 
 			Vec3 si(15.14, -12.5, 4.55);
 

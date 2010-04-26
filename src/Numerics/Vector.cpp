@@ -32,6 +32,8 @@ namespace Dream
 
 		UNIT_TEST(Vector)
 		{
+			BEGIN_TEST
+			
 			testing("Construction");
 
 			Vector<1, int> b1(1);

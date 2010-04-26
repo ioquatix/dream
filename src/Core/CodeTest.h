@@ -12,6 +12,7 @@
 
 #include "Core.h"
 #include "../Class.h"
+#include "../Reference.h"
 
 #include <sstream>
 #include <list>
@@ -25,6 +26,8 @@ name##CodeTest () : ::Dream::Core::CodeTest (#name " Test") \
 void test (); \
 } name##CodeTestInstance; \
 void name##CodeTest::test ()
+
+#define BEGIN_TEST using namespace Dream::Core::CodeTestAssertions;
 
 #include <boost/type_traits/is_arithmetic.hpp>
 #include <boost/mpl/if.hpp>
@@ -78,8 +81,7 @@ namespace Dream
 		public:
 			std::string m_name;
 
-			class Statistics
-			{
+			class Statistics : public SharedObject {
 			protected:
 				int m_failed;
 				int m_passed;
@@ -94,12 +96,10 @@ namespace Dream
 				void operator+= (const Statistics & other);
 			};
 
-			typedef shared_ptr<Statistics> StatisticsPtr;
+			std::list<REF(Statistics)> m_tests;
 
-			std::list<StatisticsPtr> m_tests;
-
-			StatisticsPtr currentTest ();
-			StatisticsPtr overallStatistics ();
+			PTR(Statistics) currentTest ();
+			REF(Statistics) overallStatistics ();
 
 			void printSummaries () const;
 
@@ -109,14 +109,13 @@ namespace Dream
 			virtual void test () abstract;
 
 		public:
-			class Assertion
+			struct Assertion
 			{
-			public:
-				virtual ~Assertion ();
-
-				virtual std::string summary () const abstract;
-
-				virtual bool test () const abstract;
+				bool value;
+				std::string message;
+				
+				explicit Assertion (bool _value);
+				Assertion operator! ();
 			};
 
 			CodeTest (std::string name);
@@ -126,65 +125,71 @@ namespace Dream
 
 			/// Assert that the value is true, and mark a failed test if it is not.
 			void assertTrue (bool condition, std::string testSummary);
-
 			void assertTrue (const Assertion & assertion);
+
+			template <typename LeftT, typename RightT>
+			void assertEqual (const LeftT & left, const RightT & right, std::string summary);
+			
+			template <typename LeftT, typename RightT>
+			void assertEquivalent (const LeftT & left, const RightT & right, std::string summary);
 
 			/// Assert that the value is false, and mark a failed test if it is not.
 			void assertFalse (bool condition, std::string testSummary);
-
 			void assertFalse (const Assertion & assertion);
-
-			/// Assert that the values are equal, and mark a failed test if they are not.
-			template <typename LhsT, typename RhsT>
-			void assertEqual (const LhsT & lhs, const RhsT & rhs, std::string testSummary);
-
-			/// Assert that the values are not equal, and mark a failed test if they are.
-			template <typename LhsT, typename RhsT>
-			void assertNotEqual (const LhsT & lhs, const RhsT & rhs, std::string testSummary);
 			
 			/// A helper function to perform the test and print out statistics.
 			virtual void performTests ();
-
 		};
 		
-		template <typename LhsT, typename RhsT>
-		bool testEquivalency (const LhsT & lhs, const RhsT & rhs)
+		namespace CodeTestAssertions {
+			typedef CodeTest::Assertion Assertion;
+			
+			template <typename LeftT, typename RightT>
+			Assertion equal (const LeftT & lhs, const RightT & rhs, std::string summary)
+			{
+				Assertion result(lhs == rhs);
+				
+				if (result.value) {
+					result.message = summary;
+				} else {
+					std::stringstream error;
+					error << summary << " : " << lhs << " == " << rhs << " failed!";
+					result.message = error.str();
+				}
+				
+				return result;
+			}
+			
+			template <typename LeftT, typename RightT>
+			Assertion equivalent (const LeftT & lhs, const RightT & rhs, std::string summary)
+			{
+				Assertion result(lhs.equivalent(rhs));
+				
+				if (result.value) {
+					result.message = summary;
+				} else {
+					std::stringstream error;
+					error << summary << " : " << lhs << " ~= " << rhs << " failed!";
+					result.message = error.str();
+				}
+				
+				return result;
+			}
+		};
+		
+		template <typename LeftT, typename RightT>
+		void CodeTest::assertEqual (const LeftT & left, const RightT & right, std::string summary)
 		{
-			return lhs == rhs;
+			assertTrue(CodeTestAssertions::equal(left, right, summary));
+		}
+		
+		template <typename LeftT, typename RightT>
+		void CodeTest::assertEquivalent (const LeftT & left, const RightT & right, std::string summary)
+		{
+			assertTrue(CodeTestAssertions::equivalent(left, right, summary));
 		}
 		
 		std::ostream & operator<< (std::ostream & out, const std::type_info & rhs);
-		
-		template <typename LhsT, typename RhsT>
-		void CodeTest::assertEqual (const LhsT & lhs, const RhsT & rhs, std::string testSummary)
-		{
-			if (testEquivalency(lhs, rhs))
-			{
-				assertTrue(true, testSummary);
-				return;
-			}
-
-			std::stringstream s;
-			s << lhs << " == " << rhs << " failed: " << testSummary;
-
-			assertTrue(false, s.str());
-		}
-
-		template <typename LhsT, typename RhsT>
-		void CodeTest::assertNotEqual (const LhsT & lhs, const RhsT & rhs, std::string testSummary)
-		{
-			if (!testEquivalency(lhs, rhs))
-			{
-				assertTrue(true, testSummary);
-				return;
-			}
-
-			std::stringstream s;
-			s << lhs << " != " << rhs << " failed: " << testSummary;
-
-			assertTrue(false, s.str());
-		}
-
 	}
 }
 

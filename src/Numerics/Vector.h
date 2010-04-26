@@ -606,24 +606,4 @@ Vector<E, NumericT> & operator OP (Vector<E, NumericT> & lhs, const OtherNumeric
 
 #include "Vector.impl.h"
 
-#ifdef ENABLE_TESTING
-namespace Dream
-{
-	namespace Core
-	{
-		template <unsigned E>
-		bool testEquivalency (const Numerics::Vector<E, float> & lhs, const Numerics::Vector<E, float> & rhs)
-		{
-			return lhs.equivalent(rhs);
-		}
-		
-		template <unsigned E>
-		bool testEquivalency (const Numerics::Vector<E, double> & lhs, const Numerics::Vector<E, double> & rhs)
-		{
-			return lhs.equivalent(rhs);
-		}		
-	}
-}
-#endif
-
 #endif

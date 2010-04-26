@@ -396,8 +396,7 @@ namespace Dream {
 			}
 			
 			TestClientSocket ()
-			{
-				
+			{	
 			}
 			
 			virtual void processEvents(Events::Loop * eventLoop, Events::Event events)

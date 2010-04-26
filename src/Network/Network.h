@@ -14,6 +14,7 @@
 
 #include "../Core/Endian.h"
 #include "../Core/Data.h"
+#include "../Events/Loop.h"
 
 #include <exception>
 #include <stdexcept>
@@ -47,8 +48,11 @@ namespace Dream {
 		 
 		 @sa Socket::shutdown
 		 */
-		class ConnectionShutdown : public ConnectionError
+		class ConnectionShutdown : public Events::FileDescriptorClosed
 		{
+		protected:
+			const std::string & m_what;
+		
 		public:
 			explicit ConnectionShutdown (const std::string & what);
 		};

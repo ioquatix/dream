@@ -75,14 +75,19 @@ namespace Dream
 {
 	namespace Core
 	{
-		bool testEquivalency (const float & lhs, const float & rhs)
+		namespace CodeTestAssertions
 		{
-			return Numerics::Number<float>::equivalent(lhs, rhs);
-		}
 		
-		bool testEquivalency (const double & lhs, const double & rhs)
-		{
-			return Numerics::Number<double>::equivalent(lhs, rhs);
+			bool equivalent (const float & lhs, const float & rhs)
+			{
+				return Numerics::Number<float>::equivalent(lhs, rhs);
+			}
+			
+			bool equivalent (const double & lhs, const double & rhs)
+			{
+				return Numerics::Number<double>::equivalent(lhs, rhs);
+			}
+
 		}
 	}
 }

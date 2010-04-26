@@ -364,18 +364,4 @@ namespace Dream {
 
 #include "AlignedBox.impl.h"
 
-#ifdef ENABLE_TESTING
-namespace Dream
-{
-	namespace Core
-	{
-		template <unsigned E, typename NumericT>
-		bool testEquivalency (const Geometry::AlignedBox<E, NumericT> & lhs, const Geometry::AlignedBox<E, NumericT> & rhs)
-		{
-			return lhs.equivalent(rhs);
-		}
-	}
-}
-#endif
-
 #endif

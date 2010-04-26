@@ -94,12 +94,12 @@ namespace Dream
 
 		void CodeTest::assertTrue (const Assertion & assertion)
 		{
-			assertTrue(assertion.test(), assertion.summary());
+			assertTrue(assertion.value, assertion.message);
 		}
 
 		void CodeTest::assertFalse (const Assertion & assertion)
 		{
-			assertFalse(assertion.test(), assertion.summary());
+			assertFalse(assertion.value, assertion.message);
 		}
 
 		void CodeTest::performTests ()
@@ -168,9 +168,16 @@ namespace Dream
 				stats->printSummary();
 			}
 		}
-
-		CodeTest::Assertion::~Assertion ()
+		
+		CodeTest::Assertion::Assertion (bool _value) : value(_value)
 		{
+		}
+		
+		CodeTest::Assertion CodeTest::Assertion::operator! ()
+		{
+			Assertion copy(*this);
+			copy.value = !value;
+			return *this;
 		}
 	}
 }
