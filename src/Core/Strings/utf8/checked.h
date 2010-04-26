@@ -1,7 +1,7 @@
 // Copyright 2006 Nemanja Trifunovic
- *  Core/Strings/utf8/checked.h
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
- *
+
+/*
+Permission is hereby granted, free of charge, to any person or organization
 obtaining a copy of the software and accompanying documentation covered by
 this license (the "Software") to use, reproduce, display, distribute,
 execute, and transmit the Software, and to prepare derivative works of the

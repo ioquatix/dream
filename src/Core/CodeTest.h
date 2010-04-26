@@ -12,7 +12,6 @@
 
 #include "Core.h"
 #include "../Class.h"
-#include "../Reference.h"
 
 #include <sstream>
 #include <list>
@@ -79,7 +78,8 @@ namespace Dream
 		public:
 			std::string m_name;
 
-			class Statistics : public SharedObject {
+			class Statistics
+			{
 			protected:
 				int m_failed;
 				int m_passed;
@@ -94,10 +94,12 @@ namespace Dream
 				void operator+= (const Statistics & other);
 			};
 
-			std::list<REF(Statistics)> m_tests;
+			typedef shared_ptr<Statistics> StatisticsPtr;
 
-			PTR(Statistics) currentTest ();
-			REF(Statistics) overallStatistics ();
+			std::list<StatisticsPtr> m_tests;
+
+			StatisticsPtr currentTest ();
+			StatisticsPtr overallStatistics ();
 
 			void printSummaries () const;
 
