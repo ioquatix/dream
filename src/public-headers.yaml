@@ -1,6 +1,7 @@
 --- 
 - Assertion.h
 - Class.h    
+- Reference.h
 - Client/Audio/Mixer.h
 - Client/Audio/Sound.h
 - Client/Display/Application.h
@@ -29,6 +30,9 @@
 - Client/Graphics/TexturedQuadRenderer.h
 - Client/Graphics/WireframeRenderer.h
 - Client/Graphics/View.h
+- Client/Text/Font.h
+- Client/Text/TextBlock.h
+- Client/Text/TextBuffer.h
 - Core/Buffer.h
 - Core/CodeTest.h
 - Core/Core.h
@@ -68,9 +72,6 @@
 - Imaging/PerlinNoise.h
 - Imaging/PixelBuffer.h
 - Imaging/PixelBufferSaver.h
-- Imaging/Text/Font.h
-- Imaging/Text/TextBlock.h
-- Imaging/Text/TextBuffer.h
 - Network/Address.h
 - Network/Message.h
 - Network/Network.h
