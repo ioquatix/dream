@@ -17,8 +17,8 @@
 #include "../../Geometry/AlignedBox.h"
 #include "../Display/Input.h"
 #include "../Display/Layer.h"
-#include "../../Imaging/Text/Font.h"
-#include "../../Imaging/Text/TextBuffer.h"
+#include "../Text/Font.h"
+#include "../Text/TextBuffer.h"
 
 #include "TexturedQuadRenderer.h"
 #include <boost/function.hpp>
@@ -195,8 +195,8 @@ namespace Dream {
 				OnActivateT onActivate;
 			};
 			
-			using Imaging::Text::Font;
-			using Imaging::Text::TextBuffer;
+			using Text::Font;
+			using Text::TextBuffer;
 			
 			class TextView : public View {
 				EXPOSE_CLASS(TextView)
@@ -206,7 +206,7 @@ namespace Dream {
 				};
 			
 			protected:
-				REF(Imaging::Text::TextBuffer) m_textBuffer;
+				REF(Text::TextBuffer) m_textBuffer;
 				
 				bool m_editable;
 				unsigned int m_offset;

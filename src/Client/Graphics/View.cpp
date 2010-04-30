@@ -402,7 +402,7 @@ namespace Dream {
 			IMPLEMENT_CLASS(TextView)
 			
 			TextView::TextView (View * parent, REF(Font) font) : View(parent), m_offset(0) {
-				m_textBuffer = new Imaging::Text::TextBuffer(font);
+				m_textBuffer = new Text::TextBuffer(font);
 			}
 			
 			TextView::~TextView () {

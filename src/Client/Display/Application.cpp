@@ -10,7 +10,7 @@
 #include "Application.h"
 
 #include "../../Imaging/Image.h"
-#include "../../Imaging/Text/Font.h"
+#include "../../Client/Text/Font.h"
 #include "../Audio/Sound.h"
 #include "../Graphics/MaterialLibraryParser.h"
 
@@ -74,7 +74,7 @@ namespace Dream
 				
 				Dream::Imaging::Image::staticClass()->registerLoaderTypes(resourceLoader);
 				Dream::Client::Audio::Sound::staticClass()->registerLoaderTypes(resourceLoader);
-				Dream::Imaging::Text::Font::staticClass()->registerLoaderTypes(resourceLoader);
+				Dream::Client::Text::Font::staticClass()->registerLoaderTypes(resourceLoader);
 				Dream::Client::Graphics::MaterialLibrary::staticClass()->registerLoaderTypes(resourceLoader);
 				
 				m_resourceLoader = resourceLoader;
