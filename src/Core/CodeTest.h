@@ -175,7 +175,7 @@ namespace Dream
 				
 				return result;
 			}
-		};
+		}
 		
 		template <typename LeftT, typename RightT>
 		void CodeTest::assertEqual (const LeftT & left, const RightT & right, std::string summary)
