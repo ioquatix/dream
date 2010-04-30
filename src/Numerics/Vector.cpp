@@ -36,10 +36,10 @@ namespace Dream
 			
 			testing("Construction");
 
-			Vector<1, int> b1(1);
-			Vector<2, int> b2(1, 2);
-			Vector<3, int> b3(1, 2, 3);
-			Vector<4, int> b4(1, 2, 3, 4);
+			Vector<1, int> b1 = vec(1);
+			Vector<2, int> b2 = vec(1, 2);
+			Vector<3, int> b3 = vec(1, 2, 3);
+			Vector<4, int> b4 = vec(1, 2, 3, 4);
 
 			assertEqual(b1.sum(), 1, "Vector components constructed correctly");
 			assertEqual(b2.sum(), 3, "Vector components constructed correctly");

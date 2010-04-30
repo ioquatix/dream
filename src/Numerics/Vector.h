@@ -182,15 +182,16 @@ namespace Dream
 			template <typename OtherNumericT>
 			Vector (const Vector<E, OtherNumericT> & other);
 
-			/// Construct a 1-space vector.
+			/// Construct a vector with all elements of value x.
 			Vector (const NumericT & x);
+			
 			/// Construct a 2-space vector.
 			Vector (const NumericT & x, const NumericT & y);
 			/// Construct a 3-space vector.
 			Vector (const NumericT & x, const NumericT & y, const NumericT & z);
 			/// Construct a 4-space vector.
 			Vector (const NumericT & x, const NumericT & y, const NumericT & z, const NumericT & w);
-
+			
 			/// Construct a vector from raw data.
 			Vector (const NumericT * data)
 			{

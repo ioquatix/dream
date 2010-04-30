@@ -154,14 +154,16 @@ namespace Dream
 		template <unsigned E, typename NumericT>
 		Vector<E, NumericT>::Vector (const NumericT & x)
 		{
-			BOOST_STATIC_ASSERT(E == 1);
-			m_vector[0] = x;
+			for (unsigned i = 0; i < E; i += 1) {
+				m_vector[i] = x;
+			}
 		}
 
 		template <unsigned E, typename NumericT>
 		Vector<E, NumericT>::Vector (const NumericT & x, const NumericT & y)
 		{
 			BOOST_STATIC_ASSERT(E == 2);
+		
 			m_vector[0] = x;
 			m_vector[1] = y;
 		}
@@ -170,6 +172,7 @@ namespace Dream
 		Vector<E, NumericT>::Vector (const NumericT & x, const NumericT & y, const NumericT & z)
 		{
 			BOOST_STATIC_ASSERT(E == 3);
+		
 			m_vector[0] = x;
 			m_vector[1] = y;
 			m_vector[2] = z;
@@ -179,6 +182,7 @@ namespace Dream
 		Vector<E, NumericT>::Vector (const NumericT & x, const NumericT & y, const NumericT & z, const NumericT & w)
 		{
 			BOOST_STATIC_ASSERT(E == 4);
+			
 			m_vector[0] = x;
 			m_vector[1] = y;
 			m_vector[2] = z;
