@@ -17,6 +17,9 @@ namespace Dream
 {
 	namespace Numerics
 	{
+		template <typename NumericT>
+		class Number;
+	
 		/** Functionality common to all numeric types.
 		 */
 		template <typename NumericT>
@@ -66,16 +69,14 @@ namespace Dream
 				return (NumericT)1.0 / n;
 			}
 
-			/// return a number between 0 and m, wrapped into that range.
-			/// @todo Crap implementation... remove loops!!
+			/// Returns a number in the range 0...m
 			static inline NumericT wrap (const NumericT & n, const NumericT & m)
 			{
-				NumericT r = n;
-
-				while (r < 0) r += m;
-				while (r > m) r -= m;
-
-				return r;
+				if (n < 0) {
+					return Number<NumericT>::mod(n, m) + m;
+				} else {
+					return Number<NumericT>::mod(n, m);
+				}
 			}
 		};
 
