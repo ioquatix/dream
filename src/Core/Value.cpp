@@ -173,6 +173,8 @@ namespace Dream
 #ifdef ENABLE_TESTING
 		UNIT_TEST(Value)
 		{
+			BEGIN_TEST
+			
 			testing("Typed Value");
 			TypedValue<int> intValue (10);
 
@@ -222,7 +224,7 @@ namespace Dream
 			v2.set(5);
 
 			assertEqual(v1, v2, "Values are equal");
-			assertNotEqual(v1, v3, "Values are not equal");
+			assertFalse(equal(v1, v3, "Values are not equal"));
 
 			testing("Input and Output");
 
