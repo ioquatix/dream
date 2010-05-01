@@ -37,6 +37,10 @@
 		7E3C87920FADF6200049ABA3 /* STLAdditions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3C87900FADF6200049ABA3 /* STLAdditions.cpp */; };
 		7E3C87940FADF6200049ABA3 /* STLAdditions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3C87900FADF6200049ABA3 /* STLAdditions.cpp */; };
 		7E3C87950FADF6200049ABA3 /* STLAdditions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3C87900FADF6200049ABA3 /* STLAdditions.cpp */; };
+		7E3E1FEB118C5AFF00DA4F84 /* Color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3E1FEA118C5AFF00DA4F84 /* Color.cpp */; };
+		7E3E1FEC118C5AFF00DA4F84 /* Color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3E1FEA118C5AFF00DA4F84 /* Color.cpp */; };
+		7E3E1FED118C5AFF00DA4F84 /* Color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3E1FEA118C5AFF00DA4F84 /* Color.cpp */; };
+		7E3E1FEE118C5AFF00DA4F84 /* Color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3E1FEA118C5AFF00DA4F84 /* Color.cpp */; };
 		7E41DB8B1162C59200FB1449 /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E41DB891162C59200FB1449 /* Mesh.cpp */; };
 		7E41DB8D1162C59200FB1449 /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E41DB891162C59200FB1449 /* Mesh.cpp */; };
 		7E41DB8E1162C59200FB1449 /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E41DB891162C59200FB1449 /* Mesh.cpp */; };
@@ -451,6 +455,8 @@
 		7E3B942F0F9CA7BC002B6541 /* ObjectHandle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ObjectHandle.cpp; sourceTree = "<group>"; };
 		7E3C878F0FADF6200049ABA3 /* STLAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STLAdditions.h; sourceTree = "<group>"; };
 		7E3C87900FADF6200049ABA3 /* STLAdditions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = STLAdditions.cpp; sourceTree = "<group>"; };
+		7E3E1EDF118B575A00DA4F84 /* Color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Color.h; sourceTree = "<group>"; };
+		7E3E1FEA118C5AFF00DA4F84 /* Color.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Color.cpp; sourceTree = "<group>"; };
 		7E3EA859118086DB00F6C40B /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		7E3EA85B118088C600F6C40B /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		7E3F2C010EF366230051D321 /* Console.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Console.cpp; sourceTree = "<group>"; };
@@ -844,6 +850,8 @@
 				7E3B8AB90F9C09E5002B6541 /* Vector.h */,
 				7E3B8ABA0F9C09E5002B6541 /* Vector.impl.h */,
 				7E82EBFF0EB9D09D0017567C /* Vector.cpp */,
+				7E3E1EDF118B575A00DA4F84 /* Color.h */,
+				7E3E1FEA118C5AFF00DA4F84 /* Color.cpp */,
 				7E3B8ABB0F9C09EF002B6541 /* Matrix.h */,
 				7E3B8ABC0F9C09EF002B6541 /* Matrix.impl.h */,
 				7E82EC040EB9D09D0017567C /* Matrix.cpp */,
@@ -1365,6 +1373,7 @@
 				7EC248B91185597300DAFE5A /* Message.cpp in Sources */,
 				7EC248BA1185597300DAFE5A /* Server.cpp in Sources */,
 				7EC248BB1185597300DAFE5A /* ServerTest.cpp in Sources */,
+				7E3E1FEE118C5AFF00DA4F84 /* Color.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1454,6 +1463,7 @@
 				7ED0B7781112F64F0067D470 /* BirdsEyeCamera.cpp in Sources */,
 				7E41DB8E1162C59200FB1449 /* Mesh.cpp in Sources */,
 				7EC2469D11832E3200DAFE5A /* Reference.cpp in Sources */,
+				7E3E1FED118C5AFF00DA4F84 /* Color.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1543,6 +1553,7 @@
 				7ED0B7791112F64F0067D470 /* BirdsEyeCamera.cpp in Sources */,
 				7E41DB8D1162C59200FB1449 /* Mesh.cpp in Sources */,
 				7EC2469C11832E3200DAFE5A /* Reference.cpp in Sources */,
+				7E3E1FEB118C5AFF00DA4F84 /* Color.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1632,6 +1643,7 @@
 				7ED0B77A1112F6500067D470 /* BirdsEyeCamera.cpp in Sources */,
 				7E41DB8B1162C59200FB1449 /* Mesh.cpp in Sources */,
 				7EC245B711831DB600DAFE5A /* Reference.cpp in Sources */,
+				7E3E1FEC118C5AFF00DA4F84 /* Color.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

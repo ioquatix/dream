@@ -78,6 +78,7 @@
 - Network/Server.h
 - Network/Socket.h
 - Numerics/Average.h
+- Numerics/Color.h
 - Numerics/Interpolate.h
 - Numerics/Matrix.h
 - Numerics/Matrix.impl.h
