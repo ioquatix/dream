@@ -6,3 +6,4 @@ ext/darwin-universal/
 ext/darwin-iphone/
 ext/darwin-iphone-simulator/
 include/
+opt/
