@@ -584,7 +584,6 @@
 		7EC04B4A0FBADEA60027A3DB /* utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utf8.h; sourceTree = "<group>"; };
 		7EC245B411831DB600DAFE5A /* Reference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reference.h; sourceTree = "<group>"; };
 		7EC245B511831DB600DAFE5A /* Reference.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Reference.cpp; sourceTree = "<group>"; };
-		7EC246BD1184638F00DAFE5A /* DreamBase-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DreamBase-Info.plist"; sourceTree = "<group>"; };
 		7EC451900EE7DE99000D47C2 /* Context.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Context.cpp; sourceTree = "<group>"; };
 		7EC451940EE7DE99000D47C2 /* CocoaContext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CocoaContext.mm; sourceTree = "<group>"; };
 		7EC451A10EE7DEF0000D47C2 /* Input.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Input.cpp; sourceTree = "<group>"; };
@@ -718,7 +717,6 @@
 				089C1665FE841158C02AAC07 /* Resources */,
 				0867D69AFE84028FC02AAC07 /* Frameworks */,
 				034768DFFF38A50411DB9C8B /* Products */,
-				7EC246BD1184638F00DAFE5A /* DreamBase-Info.plist */,
 			);
 			name = Dream;
 			sourceTree = "<group>";
