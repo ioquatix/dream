@@ -50,7 +50,7 @@ namespace Dream {
 			/// Sets the center of the sphere.
 			void setRadius (const NumericT & radius);
 			
-			/// Displacement returns the vector between the two centers.
+			/// Displacement returns the vector between the two circles.
 			NumericRealT distanceBetweenEdges (const Sphere<D, NumericT> & other, Vector<D, NumericT> & displacement) const;
 
 			/// Displacement returns the vector between the two centers.
