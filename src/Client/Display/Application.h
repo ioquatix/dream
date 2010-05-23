@@ -13,9 +13,6 @@
 #include "Input.h"
 #include "Context.h"
 
-#include "../../Events/Loop.h"
-#include "../../Resources/Loader.h"
-
 namespace Dream
 {	
 	namespace Client
@@ -25,11 +22,13 @@ namespace Dream
 			
 			class IContext;
 			
-			using namespace Dream::Events;
-			using namespace Dream::Resources;
-			
 			/**
 			 Controller class for running an application.
+			 
+			 This class is an incredibly simple interface for building complete apps with only a few lines of code. It 
+			 is not designed to be flexible, and you shouldn't implement much code inside your IApplication. Typically,
+			 you'd do most of this in your Scenes, so that it can be easily reused.
+				
 			 */
 			class IApplication : IMPLEMENTS(Object), IMPLEMENTS(InputHandler)
 			{
@@ -42,40 +41,12 @@ namespace Dream
 				};
 			
 			public:
-				/// Creates an instance of the supplied application class and invokes run().
+				/// Creates an instance of the supplied application class and 
 				static void start (IApplication::Class * appKlass);
-				
-				/// You generally shouldn't call run directly.
+								
+				/// Start the event loop and begin processing events
 				virtual void run () abstract;
 			};
-			
-			class ApplicationBase : public Object, IMPLEMENTS(Application)
-			{
-				EXPOSE_CLASS(ApplicationBase)
-				
-				class Class : public Object::Class, IMPLEMENTS(Application::Class)
-				{
-					EXPOSE_CLASSTYPE
-					
-					virtual REF(IApplication) init ();
-				};
-				
-			protected:
-				REF(Events::Loop) m_eventLoop;
-				REF(IContext) m_displayContext;
-				REF(Resources::ILoader) m_resourceLoader;
-				
-				virtual void frameCallback (TimeT at) abstract;
-			
-			private:
-				void setupResourceLoader ();
-				
-			public:
-				ApplicationBase ();
-				
-			protected:
-				virtual void run ();
-			};		
 		}
 	}
 }
