@@ -1,7 +1,9 @@
 
+PRIVATE_HEADERS_YAML = File.join(SOURCE_PATH, "private-headers.yaml")
+
 namespace :dream do
 	task :copy_headers do
-		files = YAML::load(File.read(HEADERS_YAML))
+		private_headers = YAML.load_file(PRIVATE_HEADERS_YAML)
 		public_path = INCLUDE_PATH
 
 		updated = lambda do |path|
@@ -13,7 +15,9 @@ namespace :dream do
 		end
 
 		Dir.chdir(SOURCE_PATH) do
-			files.each do |path|
+			Dir["**/*.{h}"].each do |path|
+				next if private_headers.include?(path)
+
 				dir = File.dirname(path)
 
 				if updated.call(path)
@@ -23,5 +27,6 @@ namespace :dream do
 				end
 			end
 		end
+		
 	end
 end

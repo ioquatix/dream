@@ -6,7 +6,6 @@ require 'yaml'
 
 PROJECT_PATH = File.dirname(__FILE__)
 SOURCE_PATH = File.join(PROJECT_PATH, "src")
-HEADERS_YAML = File.join(SOURCE_PATH, "public-headers.yaml")
 INCLUDE_PATH = File.join(PROJECT_PATH, "include", "Dream")
 CPP_SOURCE = ['h', 'c', 'cpp']
 
