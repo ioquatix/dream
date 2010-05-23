@@ -1,12 +1,12 @@
-using darwin : 4.0.1~iphone 
-   : /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/arm-apple-darwin9-g++-4.0.1 
--arch arm 
-   : <striper> 
-   : <architecture>arm <target-os>iphone <macosx-version>iphone-2.0 
-   ; 
+using darwin : 4.2.1~iphone
+	: /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc-4.2 -arch armv6 -mthumb -fvisibility=hidden -fvisibility-inlines-hidden -miphoneos-version-min=3.1
+	: <striper>
+	: <architecture>arm <target-os>iphone <macosx-version>iphone-3.1
+	;
 
-using darwin : 4.0.1~iphonesim 
-   : /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/g++ 
-   : <striper> 
-   : <architecture>x86 <target-os>iphone <macosx-version>iphonesim-2.0 
-   ; 
+using darwin : 4.2.1~iphonesim
+	: /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc-4.2 -arch i386 -fvisibility=hidden  -fvisibility-inlines-hidden -miphoneos-version-min=3.1
+	: <striper>
+	: <architecture>x86 <target-os>iphone <macosx-version>iphonesim-3.1
+	;
+

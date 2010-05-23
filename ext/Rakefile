@@ -4,23 +4,24 @@
 #   http://robertcarlsen.net/blog/2009/03/25/openframeworks-iphone-libs-593
 
 require 'fileutils'
+require 'pathname'
 
 EXT_PATH = File.dirname(__FILE__)
 SRC_PATH = File.join(EXT_PATH, "src")
 
 LIBRARIES = {
-  :boost => "boost_1_40_0",
-  :libpng => "libpng-1.2.35",
-  :jpeg => "jpeg-6b",
-  :freetype => "freetype-2.3.9",
-  :libvorbis => "libvorbis-1.2.3"
+	:boost => "boost_1_42_0",
+	:libpng => "libpng-1.2.35",
+	:jpeg => "jpeg-6b",
+	:freetype => "freetype-2.3.12",
+#	:libvorbis => "libvorbis-1.2.3"
 }
 
 TARGETS = {
-  :darwin_universal => "darwin-universal",
-#  :darwin_iphone => "darwin-iphone",
-#  :darwin_iphone_simulator => "darwin-iphone-simulator"
-#  :linux_x86 = "linux-x86"
+	:darwin_universal => "darwin-universal",
+	:darwin_iphone => "darwin-iphone",
+	:darwin_iphone_simulator => "darwin-iphone-simulator"
+	#  :linux_x86 = "linux-x86"
 }
 
 PREFIX_PATHS = {}
@@ -29,279 +30,318 @@ SOURCE_PATHS = {}
 TARGETS.each { |target, name| PREFIX_PATHS[target] = File.join(EXT_PATH, name) }
 LIBRARIES.each { |library, name| SOURCE_PATHS[library] = File.join(SRC_PATH, name) }
 
+CFLAGS = "-O2 -Wall -Wmissing-prototypes -std=c99 -ffast-math -fno-strict-aliasing -mdynamic-no-pic -fvisibility=hidden -pipe"
+# CXXFLAGS = "-O2 -Wall -fno-strict-aliasing"
+# GCC_VERSION = "4.2"
+# LDFLAGS = "-Wl,-dead_strip"
+
+DARWIN_SDK = Pathname.new("/Developer/SDKs/MacOSX10.5.sdk")
+DARWIN_VERSION = "10.5"
+
 DARWIN_UNIVERSAL_BUILD_FLAGS = {
-  "MACOSX_DEPLOYMENT_TARGET" => "10.5",
-  "CFLAGS" => "-O2 -isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386",
-#  "LIBTOOL" => "/Developer/usr/bin/libtool",
-  "LDFLAGS" => "-arch ppc -arch i386"
+	"CFLAGS" => "-O2 -arch ppc -arch i386 -arch x86_64 #{CFLAGS} -isysroot #{DARWIN_SDK} -mmacosx-version-min=#{DARWIN_VERSION}",
+	"LDFLAGS" => "-arch ppc -arch i386 -arch x86_64 -mmacosx-version-min=#{DARWIN_VERSION}"
 }
+
+IPHONE_VERSION = "3.1"
+
+IPHONE_OS = Pathname.new("/Developer/Platforms/iPhoneOS.platform")
+IPHONE_OS_SDK = IPHONE_OS + "Developer/SDKs/iPhoneOS3.1.sdk"
 
 IPHONE_BUILD_FLAGS = {
-  "CC" => "=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/arm-apple-darwin9-gcc-4.0.1",
-  "CFLAGS" => "-O2 -arch armv6 -pipe -mdynamic-no-pic -std=c99 -Wno-trigraphs -fasm-blocks -O0 -Wreturn-type -Wunused-variable -fmessage-length=0 -fvisibility=hidden -miphoneos-version-min=2.0 -gdwarf-2 -mthumb -Dasm=__asm__ -I/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS2.0.sdk/usr/include/libxml2 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS2.0.sdk",
-  "CPP" => "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/cpp",
-  "AR" => "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/ar",
-#  "LIBTOOL" => "/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/libtool",
-  "LDFLAGS" => "-arch armv6 -isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS2.0.sdk -Wl,-dead_strip -miphoneos-version-min=2.0"
+	"CC" => IPHONE_OS + "Developer/usr/bin/gcc",
+	"CPP" => IPHONE_OS + "Developer/usr/bin/cpp",
+	"LD" => IPHONE_OS + "Developer/usr/bin/ld",
+	"CFLAGS" => "-O2 -arch armv6 #{CFLAGS} -isysroot #{IPHONE_OS_SDK} -miphoneos-version-min=#{IPHONE_VERSION}",
+	"LDFLAGS" => "-arch armv6 -isysroot #{IPHONE_OS_SDK} -miphoneos-version-min=#{IPHONE_VERSION}"
 }
+
+IPHONE_SIMULATOR = Pathname.new("/Developer/Platforms/iPhoneSimulator.platform")
+IPHONE_SIMULATOR_SDK = IPHONE_SIMULATOR + "Developer/SDKs/iPhoneSimulator3.1.sdk"
 
 IPHONE_SIMULATOR_BUILD_FLAGS = {
-  "CC" => "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc-4.0",
-  "CFLAGS" => "-O2 -arch i686 -pipe -mdynamic-no-pic -std=c99 -Wno-trigraphs -fasm-blocks -O0 -Wreturn-type -Wunused-variable -fmessage-length=0 -fvisibility=hidden -mmacosx-version-min=10.5 -I/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk/usr/include/ -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk",
-  "CPP" => "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/cpp",
-  "AR" => "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/ar",
-#  "LIBTOOL" => "/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/libtool",
-  "LDFLAGS" => "-arch i686 -isysroot /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator2.0.sdk -Wl,-dead_strip -mmacosx-version-min=10.5"
+	"CC" => IPHONE_SIMULATOR + "Developer/usr/bin/gcc",
+	"CPP" => IPHONE_SIMULATOR + "Developer/usr/bin/cpp",
+	"LD" => IPHONE_OS + "Developer/usr/bin/ld",
+	"CFLAGS" => "-O2 -arch i686 #{CFLAGS} -isysroot #{IPHONE_SIMULATOR_SDK} -mmacosx-version-min=#{DARWIN_VERSION}",
+	"LDFLAGS" => "-arch i686 -isysroot #{IPHONE_SIMULATOR_SDK} -mmacosx-version-min=#{DARWIN_VERSION}"
 }
 
-def execute(*args)
-  puts " *** " + args.join(" ")
-  system(*args)
-end
+BOOST_USER_CONFIG = File.join(File.dirname(__FILE__), "iphone-user-config.jam")
 
 def environment (new_env = nil, &block)
-  old_env = ENV.to_hash
-  
-  ENV.update(new_env) if new_env
-  
-  yield
-  
-  ENV.clear
-  ENV.update(old_env)
+	old_env = ENV.to_hash
+
+	$stderr.puts "Changing environment:"
+
+	new_env.each do |k, v|
+		$stderr.puts "\t	#{k} = #{v}"
+		ENV[k.to_s] = v.to_s
+	end
+	
+	yield
+
+	ENV.clear
+	ENV.update(old_env)
 end
 
 namespace :boost do
-  namespace :build do
-    task :darwin_universal do
-      src, target = SOURCE_PATHS[:boost], PREFIX_PATHS[:darwin_universal]
-      
-      Dir.chdir(src) do
-        #  --with-thread --with-date_time --with-filesystem --with-regex --with-system 
-		# cxxflags='-isysroot /Developer/SDKs/MacOSX10.4u.sdk' linkflags='-isysroot /Developer/SDKs/MacOSX10.4u.sdk'
+	namespace :build do
+
+		# --disable-long-double
+		BOOST_MODULES = "--with-filesystem --with-thread --with-system"
+		BJAM = File.join(SOURCE_PATHS[:boost], "bjam")
 		
-        execute("bjam --prefix=#{target.dump} --build-type=minimal toolset=darwin link=static threading=multi architecture=combined  install")
-      end
-    end
-    
-    task :darwin_iphone do
-      src, target = SOURCE_PATHS[:boost], PREFIX_PATHS[:darwin_iphone]
-      
-      Dir.chdir(src) do
-        execute("bjam --prefix=#{target.dump} --build-type=minimal toolset=darwin architecture=arm target-os=iphone macosx-version=iphone-2.0 link=static threading=single define=_LITTLE_ENDIAN install")
-      end
-    end
-    
-    task :darwin_iphone_simulator do
-      src, target = SOURCE_PATHS[:boost], PREFIX_PATHS[:darwin_iphone_simulator]
-      
-      Dir.chdir(src) do
-        execute("bjam --prefix=#{target.dump} --build-type=minimal toolset=darwin architecture=x86 target-os=iphone macosx-version=iphonesim-2.0 link=static threading=single install")
-      end
-    end
-    
-    task :all => TARGETS.keys
-  end
+		task :bootstrap do
+			src = SOURCE_PATHS[:boost]
+			
+			Dir.chdir(src) do
+				sh("./bootstrap.sh")
+			end
+		end
+		
+		task :darwin_universal => :bootstrap do
+			src, target = SOURCE_PATHS[:boost], PREFIX_PATHS[:darwin_universal]
+			
+			Dir.chdir(src) do
+				sh("#{BJAM} --prefix=#{target.dump} --build-type=minimal #{BOOST_MODULES} toolset=darwin link=static threading=multi architecture=combined install")
+			end
+		end
+
+		task :darwin_iphone => :bootstrap do
+			src, target = SOURCE_PATHS[:boost], PREFIX_PATHS[:darwin_iphone]
+
+			Dir.chdir(src) do
+				sh("#{BJAM} --prefix=#{target.dump} --user-config=#{BOOST_USER_CONFIG.dump} --build-type=minimal #{BOOST_MODULES} toolset=darwin architecture=arm target-os=iphone macosx-version=iphone-#{IPHONE_VERSION} link=static threading=single install")
+			end
+		end
+
+		task :darwin_iphone_simulator => :bootstrap do
+			src, target = SOURCE_PATHS[:boost], PREFIX_PATHS[:darwin_iphone_simulator]
+
+			Dir.chdir(src) do
+				sh("#{BJAM} --prefix=#{target.dump} --user-config=#{BOOST_USER_CONFIG.dump} --build-type=minimal #{BOOST_MODULES} toolset=darwin architecture=x86 target-os=iphone macosx-version=iphonesim-#{IPHONE_VERSION} link=static threading=single install")
+			end
+		end
+
+		task :all => TARGETS.keys
+	end
 end
 
 namespace :freetype do
-  namespace :build do
-    task :darwin_universal do
-      src, target = SOURCE_PATHS[:freetype], PREFIX_PATHS[:darwin_universal]
-      
-      environment(DARWIN_UNIVERSAL_BUILD_FLAGS) do
-        Dir.chdir(src) do
-          execute("make", "clean")
-          execute("./configure", "--prefix=#{target}", "--enable-static=yes", "--enable-shared=no")
-          execute("make install")
-        end
-      end
-    end
-    
-    task :darwin_iphone do
-      src, target = SOURCE_PATHS[:freetype], PREFIX_PATHS[:darwin_iphone]
-      
-      environment(IPHONE_BUILD_FLAGS) do
-        Dir.chdir(src) do
-          execute("make", "clean")
-          execute("./configure", "--prefix=#{target}", "--host=arm-apple-darwin", "--enable-static=yes", "--enable-shared=no")
-          execute("make install")
-        end
-      end
-    end
-    
-    task :darwin_iphone_simulator do
-      src, target = SOURCE_PATHS[:freetype], PREFIX_PATHS[:darwin_iphone_simulator]
-      
-      environment(IPHONE_SIMULATOR_BUILD_FLAGS) do
-        Dir.chdir(src) do
-          execute("make", "clean")
-          execute("./configure", "--prefix=#{target}", "--enable-static=yes", "--enable-shared=no")
-          execute("make install")
-        end
-      end
-    end
-    
-    task :all => TARGETS.keys
-    
-  end
+	namespace :build do
+		task :darwin_universal do
+			src, target = SOURCE_PATHS[:freetype], PREFIX_PATHS[:darwin_universal]
+
+			environment(DARWIN_UNIVERSAL_BUILD_FLAGS) do
+				Dir.chdir(src) do
+					sh("make", "distclean")
+					sh("./configure", "--prefix=#{target}", "--enable-static=yes", "--enable-shared=no")
+					sh("make install")
+				end
+			end
+		end
+
+		task :darwin_iphone do
+			src, target = SOURCE_PATHS[:freetype], PREFIX_PATHS[:darwin_iphone]
+
+			environment(IPHONE_BUILD_FLAGS) do
+				Dir.chdir(src) do
+					sh("make", "distclean")
+					sh("./configure", "--prefix=#{target}", "--host=arm-apple-darwin9", "--enable-static=yes", "--enable-shared=no")
+					sh("make install")
+				end
+			end
+		end
+
+		task :darwin_iphone_simulator do
+			src, target = SOURCE_PATHS[:freetype], PREFIX_PATHS[:darwin_iphone_simulator]
+
+			environment(IPHONE_SIMULATOR_BUILD_FLAGS) do
+				Dir.chdir(src) do
+					sh("make", "distclean")
+					sh("./configure", "--prefix=#{target}", "--enable-static=yes", "--enable-shared=no")
+					sh("make install")
+				end
+			end
+		end
+
+		task :all => TARGETS.keys
+
+	end
 end
 
 namespace :libpng do
-  namespace :build do
-    task :darwin_universal do
-      src, target = SOURCE_PATHS[:libpng], PREFIX_PATHS[:darwin_universal]
-      
-      environment(DARWIN_UNIVERSAL_BUILD_FLAGS) do
-        Dir.chdir(src) do
-          execute("make", "clean")
-          execute("./configure", "--prefix=#{target}", "--disable-dependency-tracking", "--enable-static=yes", "--enable-shared=no")
-          execute("make install")
-        end
-      end
-    end
-    
-    task :darwin_iphone do
-      src, target = SOURCE_PATHS[:libpng], PREFIX_PATHS[:darwin_iphone]
-      
-      environment(IPHONE_BUILD_FLAGS) do
-        Dir.chdir(src) do
-          execute("make", "clean")
-          execute("./configure", "--prefix=#{target}", "--host=arm-apple-darwin", "--enable-static=yes", "--enable-shared=no")
-          execute("make install")
-        end
-      end
-    end
-    
-    task :darwin_iphone_simulator do
-      src, target = SOURCE_PATHS[:libpng], PREFIX_PATHS[:darwin_iphone_simulator]
-      
-      environment(IPHONE_SIMULATOR_BUILD_FLAGS) do
-        Dir.chdir(src) do
-          execute("make", "clean")
-          execute("./configure", "--prefix=#{target}", "--enable-static=yes", "--enable-shared=no")
-          execute("make install")
-        end
-      end
-    end
-    
-    task :all => TARGETS.keys
-    
-  end
+	namespace :build do
+		task :darwin_universal do
+			src, target = SOURCE_PATHS[:libpng], PREFIX_PATHS[:darwin_universal]
+
+			environment(DARWIN_UNIVERSAL_BUILD_FLAGS) do
+				Dir.chdir(src) do
+					sh("make", "clean")
+					sh("./configure", "--prefix=#{target}", "--disable-dependency-tracking", "--enable-static=yes", "--enable-shared=no")
+					sh("make install")
+				end
+			end
+		end
+
+		task :darwin_iphone do
+			src, target = SOURCE_PATHS[:libpng], PREFIX_PATHS[:darwin_iphone]
+
+			environment(IPHONE_BUILD_FLAGS) do
+				Dir.chdir(src) do
+					sh("make", "clean")
+					sh("./configure", "--prefix=#{target}", "--build=i686-apple-darwin9", "--host=arm-apple-darwin9", "--enable-static=yes", "--enable-shared=no")
+					sh("make install")
+				end
+			end
+		end
+
+		task :darwin_iphone_simulator do
+			src, target = SOURCE_PATHS[:libpng], PREFIX_PATHS[:darwin_iphone_simulator]
+
+			environment(IPHONE_SIMULATOR_BUILD_FLAGS) do
+				Dir.chdir(src) do
+					sh("make", "clean")
+					sh("./configure", "--prefix=#{target}", "--enable-static=yes", "--enable-shared=no")
+					sh("make install")
+				end
+			end
+		end
+
+		task :all => TARGETS.keys
+
+	end
+end
+
+namespace :libvorbis do
+	namespace :build do
+		task :darwin_universal do
+			src, target = SOURCE_PATHS[:libvorbis], PREFIX_PATHS[:darwin_universal]
+
+			environment(DARWIN_UNIVERSAL_BUILD_FLAGS) do
+				Dir.chdir(src) do
+					sh("make", "clean")
+					sh("./configure", "--prefix=#{target}", "--disable-dependency-tracking", "--enable-static=yes", "--enable-shared=no")
+					sh("make install")
+				end
+			end
+		end
+	end
 end
 
 namespace :jpeg do
-  namespace :build do
-    task :patch_libtool do
-      ["ltconfig", "ltmain.sh"].each do |patch|
-        FileUtils.cp(File.join(EXT_PATH, "patches", "jpeg-6b", patch), SOURCE_PATHS[:jpeg])
-      end
-      
-      ltmain_patch = File.join(EXT_PATH, "patches", "jpeg-6b", "ltmain-darwin-universal.patch")
-      
-      Dir.chdir(SOURCE_PATHS[:jpeg]) do
-        execute("patch", "-N", "ltmain.sh", ltmain_patch)
-      end      
-    end
-    
-    task :patch_makefile do
-      makefile_patch = File.join(EXT_PATH, "patches", "jpeg-6b", "makefile.cfg.patch")
-      
-      Dir.chdir(SOURCE_PATHS[:jpeg]) do
-        execute("patch", "-N", "makefile.cfg", makefile_patch)
-      end
-    end
-    
-    
-    task :patch_libtool_config do
-      Dir.chdir(SOURCE_PATHS[:jpeg]) do
-        # On Darwin, ltconfig doesn't seem to work correctly, so we copy the default files
-        execute("cp /usr/share/libtool/config.* .")
-      end
-    end
-    
-    task :create_man_directory do
-      PREFIX_PATHS.values.each do |dst|
-        FileUtils.mkdir_p(File.join(dst, "share", "man", "man1"))
-        FileUtils.ln_s("share/man", File.join(dst, "man")) unless File.exists?(File.join(dst, "man"))
-      end
-    end
-    
-    task :prepare_darwin => [:patch_libtool, :patch_makefile, :patch_libtool_config, :create_man_directory]
-    
-    task :darwin_universal => :prepare_darwin do
-      # Building the universal libjpeg is quite complex..
-      #   http://www.kyngchaos.com/macosx:build:libjpeg
-      
-      src, target = SOURCE_PATHS[:jpeg], PREFIX_PATHS[:darwin_universal]
-      
-      environment(DARWIN_UNIVERSAL_BUILD_FLAGS) do
-        Dir.chdir(src) do
-          # Build the shared library
-          execute("make", "clean")
-          execute("./configure", "--prefix=#{target}", "--disable-dependency-tracking", "--enable-shared=no", "--enable-static=yes")
-          
-          # Install the files
-          execute("make install")
-          execute("make install-lib")
-        end
-      end
-    end
-    
-    task :darwin_iphone => :prepare_darwin do
-      src, target = SOURCE_PATHS[:jpeg], PREFIX_PATHS[:darwin_iphone]
-      
-      environment(IPHONE_BUILD_FLAGS) do
-        Dir.chdir(src) do
-          execute("make", "clean")
-          execute("./configure", "--prefix=#{target}", "--host=arm-apple-darwin", "--enable-static=yes", "--enable-shared=no")
-          
-          execute("make install")
-          execute("make install-lib")
-        end
-      end
-    end
-    
-    task :darwin_iphone_simulator => :prepare_darwin do
-      src, target = SOURCE_PATHS[:jpeg], PREFIX_PATHS[:darwin_iphone_simulator]
-      
-      environment(IPHONE_SIMULATOR_BUILD_FLAGS) do
-        Dir.chdir(src) do
-          execute("make", "clean")
-          execute("./configure", "--prefix=#{target}", "--enable-static=yes", "--enable-shared=no")
-          
-          execute("make install")
-          execute("make install-lib")
-        end
-      end
-    end
-    
-    task :all => TARGETS.keys
-    
-  end
+	namespace :build do
+		task :patch_libtool do
+			["ltconfig", "ltmain.sh"].each do |patch|
+				FileUtils.cp(File.join(EXT_PATH, "patches", "jpeg-6b", patch), SOURCE_PATHS[:jpeg])
+			end
+
+			ltmain_patch = File.join(EXT_PATH, "patches", "jpeg-6b", "ltmain-darwin-universal.patch")
+
+			Dir.chdir(SOURCE_PATHS[:jpeg]) do
+				sh("patch", "-N", "ltmain.sh", ltmain_patch)
+			end      
+		end
+
+		task :patch_makefile do
+			makefile_patch = File.join(EXT_PATH, "patches", "jpeg-6b", "makefile.cfg.patch")
+
+			Dir.chdir(SOURCE_PATHS[:jpeg]) do
+				sh("patch", "-N", "makefile.cfg", makefile_patch) rescue nil
+			end
+		end
+
+		task :patch_libtool_config do
+			Dir.chdir(SOURCE_PATHS[:jpeg]) do
+				# On Darwin, ltconfig doesn't seem to work correctly, so we copy the default files
+				sh("cp /usr/share/libtool/config/config.* .")
+			end
+		end
+
+		task :create_man_directory do
+			PREFIX_PATHS.values.each do |dst|
+				FileUtils.mkdir_p(File.join(dst, "share", "man", "man1"))
+				FileUtils.ln_s("share/man", File.join(dst, "man")) unless File.exists?(File.join(dst, "man"))
+			end
+		end
+
+		task :prepare_darwin => [:patch_libtool, :patch_makefile, :patch_libtool_config, :create_man_directory]
+
+		task :darwin_universal => :prepare_darwin do
+			# Building the universal libjpeg is quite complex..
+			#   http://www.kyngchaos.com/macosx:build:libjpeg
+
+			src, target = SOURCE_PATHS[:jpeg], PREFIX_PATHS[:darwin_universal]
+
+			environment(DARWIN_UNIVERSAL_BUILD_FLAGS) do
+				Dir.chdir(src) do
+					# Build the shared library
+					sh("make", "clean")
+					sh("./configure", "--prefix=#{target}", "--disable-dependency-tracking", "--enable-shared=no", "--enable-static=yes")
+
+					# Install the files
+					sh("make install")
+					sh("make install-lib")
+				end
+			end
+		end
+
+		task :darwin_iphone => :prepare_darwin do
+			src, target = SOURCE_PATHS[:jpeg], PREFIX_PATHS[:darwin_iphone]
+
+			environment(IPHONE_BUILD_FLAGS) do
+				Dir.chdir(src) do
+					sh("make", "clean")
+					sh("./configure", "--prefix=#{target}", "--host=arm-apple-darwin9", "--enable-static=yes", "--enable-shared=no")
+
+					sh("make install")
+					sh("make install-lib")
+				end
+			end
+		end
+
+		task :darwin_iphone_simulator => :prepare_darwin do
+			src, target = SOURCE_PATHS[:jpeg], PREFIX_PATHS[:darwin_iphone_simulator]
+
+			environment(IPHONE_SIMULATOR_BUILD_FLAGS) do
+				Dir.chdir(src) do
+					sh("make", "clean")
+					sh("./configure", "--prefix=#{target}", "--enable-static=yes", "--enable-shared=no")
+
+					sh("make install")
+					sh("make install-lib")
+				end
+			end
+		end
+
+		task :all => TARGETS.keys
+
+	end
 end
 
 namespace :build do
-  task :all do
-    LIBRARIES.keys.each do |lib|
-      puts "-(( " + "Building #{lib}".center(40) + " ))-"
-      TARGETS.keys.each do |target|
-        puts "-(( " + "Target #{target}".center(40) + " ))-"
-        Rake::Task[lib.to_s + ":build:" + target.to_s].execute
-      end
-    end
-  end
-  
-  task :clean do
-    PREFIX_PATHS.values.each do |path|
-      execute("rm -rf #{path.dump}")
-    end
-  end
-  
-  # This task links the various different static targets into the main Dream headers
-  task :dream_headers do
-    TARGETS.keys.each do |target|
-      dst = File.join(PREFIX_PATHS[target], "include", "Dream")
-      FileUtils.ln_s("../../../include", dst)
-    end
-  end
+	task :all do
+		LIBRARIES.keys.each do |lib|
+			puts "-(( " + "Building #{lib}".center(40) + " ))-"
+			TARGETS.keys.each do |target|
+				puts "-(( " + "Target #{target}".center(40) + " ))-"
+				Rake::Task[lib.to_s + ":build:" + target.to_s].execute
+			end
+		end
+	end
+
+	task :clean do
+		PREFIX_PATHS.values.each do |path|
+			sh("rm -rf #{path.dump}")
+		end
+	end
+
+	# This task links the various different static targets into the main Dream headers
+	task :dream_headers do
+		TARGETS.keys.each do |target|
+			dst = File.join(PREFIX_PATHS[target], "include", "Dream")
+			FileUtils.ln_s("../../../include", dst)
+		end
+	end
 end
