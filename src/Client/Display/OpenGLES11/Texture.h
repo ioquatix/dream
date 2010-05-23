@@ -56,6 +56,8 @@ namespace Dream {
 					GLenum getTarget(GLenum defaultTarget) const;
 				};
 				
+				class TextureController;
+				
 				class Texture : public Object
 				{
 					EXPOSE_CLASS(Texture)

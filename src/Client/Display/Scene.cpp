@@ -166,13 +166,7 @@ namespace Dream
 				
 			}
 			
-			bool Scene::process (const Input & input)
-			{
-				bool result = processInputForLayers(input);
-				return IScene::process(input) || result;
-			}
-			
-			DefaultRendererT * Scene::renderer ()
+			RendererT * Scene::renderer ()
 			{
 				ensure(m_sceneManager);
 				
@@ -200,17 +194,11 @@ namespace Dream
 			void Scene::didBecomeCurrent () {
 				Display::ResizeInput initialSize(Vec2(ZERO), m_sceneManager->displayContext()->resolution());
 				process(initialSize);
-			
-				for(unsigned i = 0; i < m_layers.size(); i += 1)
-					m_layers[i]->didBecomeCurrent(m_sceneManager, this);
 			}
 			
 			void Scene::willRevokeCurrent (ISceneManager * sceneManager)
 			{
 				std::cerr << "Scene will revoke current: " << className() << std::endl;
-				
-				for(unsigned i = 0; i < m_layers.size(); i += 1)
-					m_layers[i]->willRevokeCurrent(sceneManager, this);
 				
 				m_sceneManager = NULL;
 			}
@@ -225,22 +213,6 @@ namespace Dream
 				return true;
 			}
 			
-			void Scene::renderLayersForTime (TimeT time)
-			{
-				for(unsigned i = 0; i < m_layers.size(); i += 1)
-					m_layers[i]->renderFrameForTime(this, time);
-			}
-			
-			bool Scene::processInputForLayers (const Input & input)
-			{
-				bool result = false;
-				
-				for(unsigned i = 0; i < m_layers.size(); i += 1)
-					result = m_layers[i]->process(input) | result;
-				
-				return result;
-			}
-			
 			void Scene::renderFrameForTime (TimeT time)
 			{
 				if (m_firstFrame) {
@@ -249,8 +221,6 @@ namespace Dream
 				}
 				
 				m_currentTime = time;
-				
-				renderLayersForTime(m_currentTime);
 			}
 			
 			TimeT Scene::currentTime () const

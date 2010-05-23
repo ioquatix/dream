@@ -383,8 +383,8 @@ namespace Dream
 					}
 					
 					// Event Debugging
-					if (!consumed)
-						NSLog(@"Event Not Consumed: %@", e);
+					//if (!consumed)
+					//	NSLog(@"Event Not Consumed: %@", e);
 					
 					[NSApp sendEvent:e];
 				}

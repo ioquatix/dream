@@ -32,16 +32,16 @@ namespace Dream
 				
 				void setFilled (bool filled);
 				
-				void renderGrid (Display::DefaultRendererT *);
-				void renderAxis (Display::DefaultRendererT *);
+				void renderGrid (Display::RendererT *);
+				void renderAxis (Display::RendererT *);
 				
-				void render (Display::DefaultRendererT *, const std::vector<Vec3> &);
+				void render (Display::RendererT *, const std::vector<Vec3> &);
 				
-				void render (Display::DefaultRendererT *, const Geometry::LineSegment<2> &);
-				void render (Display::DefaultRendererT *, const Geometry::LineSegment<3> &);
+				void render (Display::RendererT *, const Geometry::LineSegment<2> &);
+				void render (Display::RendererT *, const Geometry::LineSegment<3> &);
 								
-				void render (Display::DefaultRendererT *, const Geometry::AlignedBox<2> &);
-				void render (Display::DefaultRendererT *, const Geometry::AlignedBox<3> &);
+				void render (Display::RendererT *, const Geometry::AlignedBox<2> &);
+				void render (Display::RendererT *, const Geometry::AlignedBox<3> &);
 				
 				void setPrimaryColor (const Vec4 &);
 			};

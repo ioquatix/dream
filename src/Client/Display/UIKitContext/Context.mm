@@ -9,6 +9,7 @@
 
 #include "Context.h"
 #include "DreamView.h"
+#include "DreamAppDelegate.h"
 
 namespace Dream
 {
@@ -20,7 +21,7 @@ namespace Dream
 			{
 				UIKitContext::setApplicationInstance(appKlass->init());
 				
-				UIApplicationMain(0, NULL, nil, @"DreamAppDelegate");
+				[DreamAppDelegate start];
 			}
 			
 			namespace UIKitContext
@@ -98,7 +99,7 @@ namespace Dream
 						glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 						glPixelStorei(GL_PACK_ALIGNMENT, 1);
 						
-						[m_impl->view beginDrawing];
+						//[m_impl->view beginDrawing];
 					}
 				
 					[m_impl->window makeKeyAndVisible];
@@ -138,8 +139,6 @@ namespace Dream
 						std::cerr << "OpenGL Error " << "#" << error << ": " << glGetString(error) << std::endl;
 					
 					[m_impl->view flipBuffers];
-					
-					[m_impl->view beginDrawing];
 				}
 				
 				void Context::processPendingEvents (IInputHandler * handler)
@@ -150,7 +149,7 @@ namespace Dream
 					
 					do {
 						result = CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, TRUE);
-					} while(result == kCFRunLoopRunHandledSource);
+					} while (result == kCFRunLoopRunHandledSource);
 					
 					g_inputHandler = NULL;
 				}

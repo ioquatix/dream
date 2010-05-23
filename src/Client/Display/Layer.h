@@ -20,7 +20,8 @@ namespace Dream {
 			class IScene;
 			class ISceneManager;
 			
-			class ILayer : IMPLEMENTS(Object), IMPLEMENTS(InputHandler) {
+			class ILayer : IMPLEMENTS(Object), IMPLEMENTS(InputHandler)
+			{
 				EXPOSE_INTERFACE(Layer)
 				
 				class Class : IMPLEMENTS(Object::Class), IMPLEMENTS(InputHandler::Class)
@@ -33,7 +34,7 @@ namespace Dream {
 					virtual void didBecomeCurrent (ISceneManager * manager, IScene * scene) abstract;
 					virtual void willRevokeCurrent (ISceneManager * manager, IScene * scene) abstract;
 			};
-		
+			
 		}
 	}
 }

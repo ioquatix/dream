@@ -71,7 +71,7 @@ namespace Dream
 					
 #ifdef DREAM_USE_OPENGLES11
 					virtual REF(OpenGLES11::Renderer) renderer ();
-#endif			
+#endif
 				};
 			}
 		}

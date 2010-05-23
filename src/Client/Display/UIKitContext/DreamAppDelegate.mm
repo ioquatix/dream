@@ -13,6 +13,10 @@
 
 @implementation DreamAppDelegate
 
++ (void) start {
+	UIApplicationMain(0, NULL, nil, @"DreamAppDelegate");
+}
+
 @synthesize window;
 @synthesize view;
 
@@ -25,31 +29,30 @@
 	return self;
 }
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application {
-	//glView.animationInterval = 1.0 / 60.0;
-	//[glView startAnimation];
-	
-	[application setStatusBarHidden:YES];
-	
+- (void) runApplicationCallback: (id)sender {
 	Dream::Client::Display::UIKitContext::runApplicationCallback();
 	
 	exit(0);
 }
 
+- (void)applicationDidFinishLaunching:(UIApplication *)application {
+	// [[NSFileManager defaultManager] changeCurrentDirectoryPath: [[NSBundle mainBundle] resourcePath]];
+	[application setStatusBarHidden:YES];
+
+	[self performSelector:@selector(runApplicationCallback:) withObject:nil afterDelay:0.0];
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-	//glView.animationInterval = 1.0 / 5.0;
+
 }
 
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-	//glView.animationInterval = 1.0 / 60.0;
+
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-	//SDL_SendQuit();
-	// hack to prevent automatic termination.  See SDL_uikitevents.m for details
-	//longjmp(*(jump_env()), 1);
+
 }
 
 - (void)dealloc {

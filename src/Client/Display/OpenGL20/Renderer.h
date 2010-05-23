@@ -16,7 +16,6 @@
 #include "../../../Geometry/AlignedBox.h"
 #include "OpenGL20.h"
 
-#include <boost/scoped_ptr.hpp>
 #include <set>
 
 namespace Dream
@@ -29,7 +28,6 @@ namespace Dream
 			{
 				using namespace Dream::Core;
 				using namespace Dream::Geometry;
-				using boost::scoped_ptr;
 				
 				class Renderer;
 				class TextureController;
@@ -46,8 +44,7 @@ namespace Dream
 					
 				protected:				
 					REF(RenderState) m_currentRenderState;
-					
-					scoped_ptr<TextureController> m_textureController;
+					TextureController * m_textureController;
 					
 					std::set<String> m_extensions;
 					
@@ -83,7 +80,7 @@ namespace Dream
 				
 			}
 			
-			typedef OpenGL20::Renderer DefaultRendererT;
+			typedef OpenGL20::Renderer RendererT;
 		}
 	}
 }

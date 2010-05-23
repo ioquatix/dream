@@ -56,10 +56,7 @@ namespace Dream
 				{
 				};
 				
-			public:			
-				/// Load all required resources from the given resource loader.
-				//virtual void loadResources () abstract;
-				
+			public:
 				/// Callback from the ISceneManager to indicate that the scene will begin rendering frames.
 				virtual void willBecomeCurrent (ISceneManager *) abstract;
 				
@@ -74,7 +71,7 @@ namespace Dream
 				virtual void renderFrameForTime (TimeT time) abstract;
 				
 				/// The renderer for the scene
-				virtual DefaultRendererT * renderer () abstract;
+				virtual RendererT * renderer () abstract;
 				
 				/// The current scene manager controlling this scene
 				virtual ISceneManager * manager () abstract;
@@ -189,9 +186,7 @@ namespace Dream
 				
 				virtual void setFinishedCallback (FinishedCallbackT callback);
 			};
-			
-			class ILayer;
-			
+						
 			class Scene : public Object, IMPLEMENTS(Scene)
 			{
 				EXPOSE_CLASS(Scene)
@@ -207,18 +202,10 @@ namespace Dream
 				bool m_firstFrame;
 				TimeT m_startTime, m_currentTime;
 				
-				/// Layers should (generally) be allocated in the Scene constructor, so that
-				/// they will be invoked correctly for willBecomeCurrent and willRevokeCurrent.
-				std::vector<REF(ILayer)> m_layers;
-				
-				void renderLayersForTime (TimeT time);
-				bool processInputForLayers (const Input & input);
 			public:
 				Scene ();
 				virtual ~Scene();
-				
-				virtual bool process (const Input & input);
-				
+								
 				virtual void willBecomeCurrent (ISceneManager *);
 				
 				/// Used to process layers which have been created in willBecomeCurrent.
@@ -228,7 +215,7 @@ namespace Dream
 				
 				virtual bool resize (const Display::ResizeInput & ipt);
 				
-				virtual DefaultRendererT * renderer ();
+				virtual RendererT * renderer ();
 				virtual ISceneManager * manager ();
 				virtual ILoader * loader ();
 				virtual TimeT currentTime () const;

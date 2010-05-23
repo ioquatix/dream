@@ -22,7 +22,7 @@ namespace Dream
 			class TexturedQuadRenderer
 			{
 			public:
-				void render (Display::DefaultRendererT *, const Geometry::AlignedBox<2> &, bool flip = true);
+				void render (Display::RendererT *, const Geometry::AlignedBox<2> &, bool flip = true);
 			};
 			
 			class PixelBufferRenderer : public Object

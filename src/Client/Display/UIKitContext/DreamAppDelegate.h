@@ -1,9 +1,9 @@
-//
+/*
  *  Client/Display/UIKitContext/DreamAppDelegate.h
  *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
  *
-//  Created by Samuel Williams on 18/04/09.
-//  Copyright Orion Transfer Ltd 2009. All rights reserved.
+ *  Created by Samuel Williams on 18/04/09.
+ *  Copyright Orion Transfer Ltd 2009. All rights reserved.
  *
  */
 
@@ -19,6 +19,8 @@
     UIWindow * window;
     DreamView * view;
 }
+
++ (void) start;
 
 @property (nonatomic, retain) IBOutlet UIWindow * window;
 @property (nonatomic, retain) IBOutlet DreamView * view;

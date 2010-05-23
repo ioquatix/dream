@@ -83,7 +83,7 @@ namespace Dream {
 				virtual void scheduleFrameNotificationCallback (REF(Events::Loop) loop, FrameCallbackT callback) abstract;
 				
 				/// The renderer for this display context.
-				virtual REF(DefaultRendererT) renderer () abstract;
+				virtual REF(RendererT) renderer () abstract;
 			};
 			
 		}

@@ -24,7 +24,7 @@ namespace Dream {
 			}
 			
 #if defined(DREAM_USE_OPENGLES11) || defined(DREAM_USE_OPENGL20)	
-			void WireframeRenderer::renderGrid (Display::DefaultRendererT * renderer) {
+			void WireframeRenderer::renderGrid (Display::RendererT * renderer) {
 				std::vector<Vec3> points;
 				const RealT LOWER = -1000;
 				const RealT UPPER = 1000;
@@ -41,7 +41,7 @@ namespace Dream {
 				render(renderer, points);
 			}
 			
-			void WireframeRenderer::renderAxis (Display::DefaultRendererT *)
+			void WireframeRenderer::renderAxis (Display::RendererT *)
 			{
 				std::vector<Vec3> vertices;
 				std::vector<Vec3> colors;
@@ -80,7 +80,7 @@ namespace Dream {
 				glLineWidth(1.0);
 			}
 
-			void WireframeRenderer::render (Display::DefaultRendererT *, const std::vector<Vec3> & vertices) {
+			void WireframeRenderer::render (Display::RendererT *, const std::vector<Vec3> & vertices) {
 				glColor(m_color);
 
 				glVertexPointer(3, GL_FLOAT, 0, &vertices[0]);
@@ -115,11 +115,11 @@ namespace Dream {
 			
 			}
 
-			void WireframeRenderer::render (Display::DefaultRendererT *, const Geometry::LineSegment<2> & lineSegment) {
+			void WireframeRenderer::render (Display::RendererT *, const Geometry::LineSegment<2> & lineSegment) {
 				WireframeRenderer_renderLineSegment(m_color, lineSegment);
 			}
 			
-			void WireframeRenderer::render (Display::DefaultRendererT *, const Geometry::LineSegment<3> & lineSegment) {
+			void WireframeRenderer::render (Display::RendererT *, const Geometry::LineSegment<3> & lineSegment) {
 				WireframeRenderer_renderLineSegment(m_color, lineSegment);				
 			}
 
