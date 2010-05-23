@@ -58,8 +58,10 @@ namespace Dream
 				alSourcef(m_sourceID, AL_REFERENCE_DISTANCE, dist);
 			}
 			
-			void Source::setSound (REF(Sound) sound)
+			void Source::setSound (PTR(Sound) sound)
 			{
+				m_sound = sound;
+				
 				alSourcei(m_sourceID, AL_BUFFER, sound->m_bufferID);
 			}
 			
@@ -123,13 +125,23 @@ namespace Dream
 				return new Mixer;
 			}
 			
+			ALCdevice * _defaultAudioDevice () {
+				static ALCdevice * device = NULL;
+				
+				if (!device) {
+					device = alcOpenDevice(NULL);
+				}
+				
+				return device;
+			}
+			
 			Mixer::Mixer ()
 			{
 				const ALCchar * deviceName;
 				
 				deviceName = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
 				
-				m_audioDevice = alcOpenDevice(NULL);
+				m_audioDevice = _defaultAudioDevice();
 				m_audioContext = alcCreateContext(m_audioDevice, NULL);
 				
 				bool result = alcMakeContextCurrent(m_audioContext);
@@ -142,7 +154,7 @@ namespace Dream
 				setListenerVelocity(Vec3(ZERO));
 				setListenerOrientation(Vec3(0.0, 0.0, -1.0), Vec3(0.0, 1.0, 0.0));
 				
-				ensure(result);
+				ensure(result && "Failed to initialize audio hardware!?");
 			}
 			
 			Mixer::~Mixer ()
@@ -150,8 +162,8 @@ namespace Dream
 				if (m_audioContext)
 					alcDestroyContext(m_audioContext);
 				
-				if (m_audioDevice)
-					alcCloseDevice(m_audioDevice);
+				//if (m_audioDevice)
+				//	alcCloseDevice(m_audioDevice);
 			}
 			
 			void Mixer::suspendProcessing ()

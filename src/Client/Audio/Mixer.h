@@ -38,6 +38,7 @@ namespace Dream
 				};
 			protected:
 				ALuint m_sourceID;
+				REF(Sound) m_sound;
 				
 			public:
 				Source ();
@@ -51,7 +52,7 @@ namespace Dream
 				void setReferenceDistance (float dist);
 				
 				void setSound (ALuint bufferID);
-				void setSound (REF(Sound));
+				void setSound (PTR(Sound) sound);
 												
 				void setLooping (bool);
 				
