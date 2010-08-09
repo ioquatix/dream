@@ -83,7 +83,7 @@ namespace Dream {
 
 			void BasicApplication::frameCallback (TimeT at)
 			{			
-				m_stats.beginTimer(at);
+				m_stats.beginTimer(m_eventLoop->stopwatch().time());
 	
 				m_sceneManager->processPendingEvents();
 				m_sceneManager->renderFrameForTime(at);
@@ -94,7 +94,7 @@ namespace Dream {
 				
 				if (m_stats.updateCount() > (60 * 20))
 				{
-					std::cerr << "FPS: " << 1.0 / m_stats.updatesPerSecond() << std::endl;
+					std::cerr << "FPS: " << m_stats.updatesPerSecond() << std::endl;
 					m_stats.reset();
 				}
 			}
