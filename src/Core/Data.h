@@ -53,6 +53,7 @@ namespace Dream
 		 */
 		class Data : public Object, IMPLEMENTS (Data)
 		{
+			Path m_path;
 			Buffer * m_buffer;
 
 			Data (const Path & p);
@@ -79,6 +80,11 @@ namespace Dream
 			virtual IndexT size () const;
 			
 			virtual Buffer * buffer ();
+			
+			/// If the data was loaded from a file system path, this path is non-empty.
+			/// This is a hack for APIs which don't provide memory based loaders - it
+			/// should be avoided if at all possible.
+			const Path & path () const;
 		};
 
 	}

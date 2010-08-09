@@ -39,6 +39,7 @@ namespace Dream
 		
 		Data::Data (const Path & p)
 		{
+			m_path = p;
 			m_buffer = new FileBuffer(p);
 		}
 
@@ -69,6 +70,11 @@ namespace Dream
 		Buffer * Data::buffer ()
 		{
 			return m_buffer;
+		}
+		
+		const Path & Data::path () const
+		{
+			return m_path;
 		}
 		
 #pragma mark -
