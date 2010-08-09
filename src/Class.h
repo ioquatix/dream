@@ -41,7 +41,7 @@ static bool isClassOf(const Dream::IObject * object);
 /// @sa IClass
 #define EXPOSE_CLASSTYPE \
 public: \
-virtual IClassType * classType ();
+virtual Dream::IClassType * classType ();
 
 /// Use in the implementation file for a class that uses EXPOSE_CLASS.
 /// @sa EXPOSE_CLASS
@@ -53,7 +53,7 @@ type::Class * type::objectClass() const \
 	return &klass; \
 } \
 \
-IClassType * type::objectType() const \
+Dream::IClassType * type::objectType() const \
 { \
 	return staticType(); \
 } \
@@ -65,11 +65,11 @@ bool type::isClassOf(const IObject * object) \
 \
 Dream::ClassType<type> * type::staticType () \
 { \
-	static ClassType<type> s_classType; \
+	static Dream::ClassType<type> s_classType; \
 	return & s_classType; \
 } \
 \
-IClassType * type::Class::classType () \
+Dream::IClassType * type::Class::classType () \
 { \
 	return staticType();\
 }
@@ -85,7 +85,7 @@ public: \
 virtual ~I##type (); \
 class Class; \
 typedef I##type this_t; \
-static ClassType<I##type> * staticType (); \
+static Dream::ClassType<I##type> * staticType (); \
 \
 static bool isClassOf(const IObject * object) \
 { \
@@ -97,9 +97,9 @@ virtual Class * objectClass() const abstract;
 #define IMPLEMENT_INTERFACE(type) \
 I##type::~I##type () {}\
 \
-ClassType<I##type> * I##type::staticType () \
+Dream::ClassType<I##type> * I##type::staticType () \
 { \
-	static ClassType<I##type> s_classType; \
+	static Dream::ClassType<I##type> s_classType; \
 	return & s_classType; \
 }
 
