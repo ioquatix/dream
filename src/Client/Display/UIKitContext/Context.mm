@@ -17,9 +17,9 @@ namespace Dream
 	{
 		namespace Display
 		{
-			void IApplication::start (IApplication::Class * appKlass)
+			void IApplication::start (IApplication::Class * appKlass, PTR(Dictionary) config)
 			{
-				UIKitContext::setApplicationInstance(appKlass->init());
+				UIKitContext::setApplicationInstance(appKlass->init(config));
 				
 				[DreamAppDelegate start];
 			}
@@ -70,9 +70,9 @@ namespace Dream
 					std::cout << "Registering Context..." << std::endl;
 				}
 				
-				REF(IContext) Context::Class::init ()
+				REF(IContext) Context::Class::init (PTR(Dictionary) config)
 				{
-					return new Context();
+					return new Context(config);
 				}
 				
 				void Context::setTitle (String title) {
@@ -114,7 +114,7 @@ namespace Dream
 					//[[[m_impl->window contentView] openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval];
 				}
 				
-				Context::Context () : m_impl(NULL) {
+				Context::Context (PTR(Dictionary) config) : m_impl(NULL) {
 				
 				}
 				

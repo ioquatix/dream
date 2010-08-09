@@ -41,7 +41,7 @@ namespace Dream
 						
 						Class ();
 						
-						virtual REF(IContext) init ();
+						virtual REF(IContext) init (PTR(Dictionary) config);
 					};
 					
 				protected:
@@ -51,7 +51,7 @@ namespace Dream
 					REF(FrameTimerSource) m_timerSource;
 					
 				public:
-					Context ();
+					Context (PTR(Dictionary) config);
 					virtual ~Context ();
 					
 					virtual void setTitle (String title);
