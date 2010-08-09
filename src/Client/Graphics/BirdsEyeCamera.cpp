@@ -15,7 +15,7 @@ namespace Dream {
 			
 			IMPLEMENT_CLASS(BirdsEyeCamera)
 			
-			BirdsEyeCamera::BirdsEyeCamera () : m_up(0.0, 1.0, 0.0), m_left(-1.0, 0.0, 0.0), m_center(ZERO), m_multiplier(IDENTITY, 1) {
+			BirdsEyeCamera::BirdsEyeCamera () : m_up(0.0, 0.0, 1.0), m_left(-1.0, 0.0, 0.0), m_center(ZERO), m_multiplier(IDENTITY, 1) {
 				
 				m_distance = -100;
 				m_azimuth = R45;
@@ -60,13 +60,15 @@ namespace Dream {
 			bool BirdsEyeCamera::motion(const MotionInput & input) {
 				const Vec3 & d = input.motion();
 				
-				m_azimuth -= (d[X] * m_multiplier[X] * (R90 / 90));
-				m_incidence += (d[Y] * m_multiplier[Y] * (R90 / 90));
+				if (input.key().button() == MouseScroll) {
+					m_distance += (d[Y] * m_multiplier[Z]);					
+				} else {					
+					m_azimuth -= (d[X] * m_multiplier[X] * (R90 / 90));
+					m_incidence += (d[Y] * m_multiplier[Y] * (R90 / 90));
+				}
 				
-				m_distance += (d[Z] * m_multiplier[Z]) / 8.0;
-				
-				std::cout << "azi: " << m_azimuth << " inc: " << m_incidence << " dist: " << m_distance << std::endl;
-				
+				// std::cout << "azi: " << m_azimuth << " inc: " << m_incidence << " dist: " << m_distance << std::endl;
+			
 				return true;
 			}
 			

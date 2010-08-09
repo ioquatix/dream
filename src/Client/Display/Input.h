@@ -50,8 +50,10 @@ namespace Dream {
 				MouseMiddleButton = 2,
 				MouseRightButton = 3,
 				
-				/* Meta keys */
-				MouseScrollWheel = 0xF1,
+				/// Trackpad / Scroll Wheel input
+				MouseScroll = 0xF1,
+				
+				/// Window Events
 				MouseEntered = 0xF2,
 				MouseExited = 0xF3
 			};
