@@ -10,6 +10,7 @@
 #ifndef _DREAM_CLIENT_DISPLAY_CONTEXT_H
 #define _DREAM_CLIENT_DISPLAY_CONTEXT_H
 
+#include "../../Core/Dictionary.h"
 #include "../../Core/Strings.h"
 #include "../../Numerics/Vector.h"
 #include "../../Events/Loop.h"
@@ -45,7 +46,7 @@ namespace Dream {
 				public:
 					unsigned priority () const;
 					
-					virtual REF(IContext) init () abstract;					
+					virtual REF(IContext) init (PTR(Dictionary) config) abstract;					
 				};
 				
 			protected:
