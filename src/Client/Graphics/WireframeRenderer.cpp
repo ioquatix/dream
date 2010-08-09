@@ -26,11 +26,11 @@ namespace Dream {
 #if defined(DREAM_USE_OPENGLES11) || defined(DREAM_USE_OPENGL20)	
 			void WireframeRenderer::renderGrid (Display::RendererT * renderer) {
 				std::vector<Vec3> points;
-				const RealT LOWER = -1000;
-				const RealT UPPER = 1000;
-				const RealT STEP = 20;
+				const RealT LOWER = -200;
+				const RealT UPPER = 200;
+				const RealT STEP = 10;
 				
-				for (RealT x = LOWER; x += STEP; x <= UPPER) {
+				for (RealT x = LOWER; x <= UPPER; x += STEP) {
 					points.push_back(Vec3(x, LOWER, 0));
 					points.push_back(Vec3(x, UPPER, 0));
 					
@@ -66,7 +66,7 @@ namespace Dream {
 				
 				glLineWidth(5.0);
 				
-				glColorPointer(4, GL_FLOAT, 0, &colors[0]);
+				glColorPointer(3, GL_FLOAT, 0, &colors[0]);
 				glEnableClientState(GL_COLOR_ARRAY);
 				
 				glVertexPointer(3, GL_FLOAT, 0, &vertices[0]);
@@ -86,7 +86,7 @@ namespace Dream {
 				glVertexPointer(3, GL_FLOAT, 0, &vertices[0]);
 				glEnableClientState(GL_VERTEX_ARRAY);
 				
-				glDrawArrays(GL_LINE_LOOP, 0, vertices.size());
+				glDrawArrays(GL_LINES, 0, vertices.size());
 				
 				glDisableClientState(GL_VERTEX_ARRAY);
 			}
