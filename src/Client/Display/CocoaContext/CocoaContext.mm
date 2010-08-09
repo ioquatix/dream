@@ -32,9 +32,9 @@ namespace Dream
 		namespace Display
 		{
 			
-			void IApplication::start (IApplication::Class * appKlass)
+			void IApplication::start (IApplication::Class * appKlass, PTR(Dictionary) config)
 			{
-				REF(IApplication) app = appKlass->init();
+				REF(IApplication) app = appKlass->init(config);
 				
 				app->run();
 			}
@@ -101,9 +101,9 @@ namespace Dream
 				
 			}
 			
-			REF(IContext) CocoaContext::Class::init ()
+			REF(IContext) CocoaContext::Class::init (PTR(Dictionary) config)
 			{
-				return new CocoaContext();
+				return new CocoaContext(config);
 			}
 			
 			void setupApplicationMenu () {
@@ -168,49 +168,60 @@ namespace Dream
 				
 				std::cerr << "VSync = " << vsync << std::endl;
 				
-				[[[m_impl->window contentView] openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval];
+				[[m_impl->view openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval];
 			}
 			
-			CocoaContext::CocoaContext () {
+			CocoaContext::CocoaContext (PTR(Dictionary) config) {
 				m_impl = new CocoaContextImpl;
 				m_impl->pool = [[NSAutoreleasePool alloc] init];
-				
+
 				[NSApplication sharedApplication];
-				[NSApp setMainMenu:[[NSMenu alloc] init]];
 				
-				setupApplicationMenu();
-				setupWindowMenu();
+				NSWindow * configWindow = NULL;
+				if (config->get("CocoaContext.Window", configWindow)) {
+					m_impl->window = configWindow;
+				} else {
+					[NSApp setMainMenu:[[NSMenu alloc] init]];
 				
-				NSRect windowSize = NSMakeRect(50, 50, 1024, 768);
-				unsigned windowStyle = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask;
+					NSRect windowSize = NSMakeRect(50, 50, 1024, 768);
+					unsigned windowStyle = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask;
+
+					m_impl->window = [[NSWindow alloc] initWithContentRect:windowSize styleMask:windowStyle backing:NSBackingStoreBuffered defer:YES];
+					
+					setupApplicationMenu();
+					setupWindowMenu();
+					
+					[m_impl->window setAcceptsMouseMovedEvents:YES];
+				}
 				
-				m_impl->window = [[NSWindow alloc] initWithContentRect:windowSize styleMask:windowStyle backing:NSBackingStoreBuffered defer:YES];
-				
-				NSOpenGLPixelFormatAttribute attribs[] = {
-					NSOpenGLPFAWindow,
-					NSOpenGLPFADoubleBuffer,	// double buffered
-					NSOpenGLPFAAccelerated,
-					NSOpenGLPFANoRecovery,
-					/* Anti-aliasing */
-					//NSOpenGLPFASampleBuffers, (NSOpenGLPixelFormatAttribute)3, /* 3 looks awsome */
-					//NSOpenGLPFASamples, (NSOpenGLPixelFormatAttribute)4,
-					/* --- --- --- */
-					NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)24,
-					NSOpenGLPFAColorSize, (NSOpenGLPixelFormatAttribute)32,
-					NSOpenGLPFAStencilSize, (NSOpenGLPixelFormatAttribute)8,
-					(NSOpenGLPixelFormatAttribute)nil
-				};
-				
-				NSOpenGLPixelFormat * pf = [[NSOpenGLPixelFormat alloc] initWithAttributes:attribs];
-				
-				NSOpenGLView * graphicsView = [[[NSOpenGLView alloc] initWithFrame:[[m_impl->window contentView] frame] pixelFormat:pf] autorelease];
-				m_impl->view = graphicsView;
-				
-				[graphicsView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
-				
-				//[[m_impl->window contentView] addSubview:graphicsView];
-				[m_impl->window setContentView:graphicsView];
-				[m_impl->window setAcceptsMouseMovedEvents:YES];
+				NSOpenGLView * graphicsView = NULL;
+				if (config->get("CocoaContext.View", graphicsView)) {
+					m_impl->view = graphicsView;
+				} else {
+					NSOpenGLPixelFormatAttribute attribs[] = {
+						NSOpenGLPFAWindow,
+						NSOpenGLPFADoubleBuffer,	// double buffered
+						NSOpenGLPFAAccelerated,
+						NSOpenGLPFANoRecovery,
+						/* Anti-aliasing */
+						//NSOpenGLPFASampleBuffers, (NSOpenGLPixelFormatAttribute)3, /* 3 looks awsome */
+						//NSOpenGLPFASamples, (NSOpenGLPixelFormatAttribute)4,
+						/* --- --- --- */
+						NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)24,
+						NSOpenGLPFAColorSize, (NSOpenGLPixelFormatAttribute)32,
+						(NSOpenGLPixelFormatAttribute)nil
+					};
+
+					NSOpenGLPixelFormat * pf = [[NSOpenGLPixelFormat alloc] initWithAttributes:attribs];
+					
+					graphicsView = [[[NSOpenGLView alloc] initWithFrame:[[m_impl->window contentView] frame] pixelFormat:pf] autorelease];
+					m_impl->view = graphicsView;
+					
+					[graphicsView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];				
+
+					//[[m_impl->window contentView] addSubview:graphicsView];
+					[m_impl->window setContentView:graphicsView];
+				}
 				
 				// ***** SETUP CVDisplayLink *****
 				// Synchronize buffer swaps with vertical refresh rate
@@ -364,7 +375,7 @@ namespace Dream
 								consumed = true;
 								break;
 							case NSScrollWheel:
-								if (handleMouseEvent(e, MouseScrollWheel, handler)) continue;
+								if (handleMouseEvent(e, MouseScroll, handler)) continue;
 								consumed = true;
 								break;
 							case NSMouseMoved:

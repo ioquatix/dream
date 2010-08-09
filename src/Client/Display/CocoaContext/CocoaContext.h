@@ -30,7 +30,7 @@ namespace Dream
 					
 					Class ();
 					
-					virtual REF(IContext) init ();
+					virtual REF(IContext) init (PTR(Dictionary) config);
 					
 					//virtual WindowModeList availableModes ();
 				};
@@ -56,7 +56,7 @@ namespace Dream
 				
 				virtual void flipBuffers ();
 				
-				CocoaContext ();
+				CocoaContext (PTR(Dictionary) config);
 				virtual ~CocoaContext ();
 				
 				virtual void processPendingEvents (IInputHandler * handler);

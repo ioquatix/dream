@@ -29,7 +29,7 @@ namespace Dream {
 				{
 					EXPOSE_CLASSTYPE
 					
-					virtual REF(IApplication) init ();
+					virtual REF(IApplication) init (PTR(Dictionary) config);
 				};
 			
 				private:
@@ -50,11 +50,11 @@ namespace Dream {
 					virtual void run ();
 
 				public:
-					BasicApplication ();
+					BasicApplication (PTR(Dictionary) config);
 					
 					void append (PTR(IScene) scene);
 					void push (PTR(IScene) scene);
-					void replace(PTR(IScene) scene);
+					void replace (PTR(IScene) scene);
 			};
 			
 			class BasicScene : public Scene

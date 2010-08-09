@@ -40,12 +40,12 @@ namespace Dream {
 
 			IMPLEMENT_CLASS(BasicApplication)
 
-			REF(IApplication) BasicApplication::Class::init ()
+			REF(IApplication) BasicApplication::Class::init (PTR(Dictionary) config)
 			{
-				return new BasicApplication();
+				return new BasicApplication(config);
 			}
 
-			BasicApplication::BasicApplication ()
+			BasicApplication::BasicApplication (PTR(Dictionary) config)
 			{
 				m_eventLoop = Loop::klass.init();
 				setupResourceLoader();
@@ -53,12 +53,11 @@ namespace Dream {
 				IContext::Class * contextClass = IContext::bestContextClass();
 				ensure(contextClass != NULL);
 
-				m_displayContext = contextClass->init();
+				m_displayContext = contextClass->init(config);
 				m_displayContext->setTitle(String("Dream Framework (") + String(buildRevision()) + ")");
 
 				// Setup the display context notification
 				m_displayContext->scheduleFrameNotificationCallback(m_eventLoop, boost::bind(&BasicApplication::frameCallback, this, _1));
-
 
 				m_sceneManager = new SceneManager(m_displayContext, m_eventLoop, m_resourceLoader);
 				m_sceneManager->setFinishedCallback(boost::bind(&BasicApplication::finishedCallback, this));

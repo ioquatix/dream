@@ -37,12 +37,12 @@ namespace Dream
 				class Class : IMPLEMENTS(Object::Class), IMPLEMENTS(InputHandler::Class)
 				{
 				public:
-					virtual REF(IApplication) init () abstract;
+					virtual REF(IApplication) init (PTR(Dictionary) config) abstract;
 				};
 			
 			public:
 				/// Creates an instance of the supplied application class and 
-				static void start (IApplication::Class * appKlass);
+				static void start (IApplication::Class * appKlass, PTR(Dictionary) config);
 								
 				/// Start the event loop and begin processing events
 				virtual void run () abstract;
