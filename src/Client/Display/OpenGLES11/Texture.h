@@ -43,8 +43,13 @@ namespace Dream {
 					/// The texture target.
 					GLenum target;
 					
+					/// The internal format for the texture. Optional (set to 0)
+					GLenum internalFormat;
+					
 					/// Construct a TextureParameters object to use default values unless specified.
-					TextureParameters () : generateMipMaps(true), minFilter(0), magFilter(0), target(0) {
+					TextureParameters ()
+						: generateMipMaps(true), minFilter(0), magFilter(0), target(0), internalFormat(0)
+					{
 					}
 					
 					/// Returns the specified minification filter or the default if none was specified.
@@ -53,7 +58,9 @@ namespace Dream {
 					GLenum getMagFilter () const;
 					
 					/// Returns the target if specified or defaultTarget if none was given.
-					GLenum getTarget(GLenum defaultTarget) const;
+					GLenum getTarget (GLenum defaultTarget) const;
+					
+					GLenum getInternalFormat (GLenum defaultInternalFormat) const;
 				};
 				
 				class TextureController;

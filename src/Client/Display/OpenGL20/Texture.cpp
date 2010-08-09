@@ -37,6 +37,13 @@ namespace Dream {
 						return defaultTarget;
 				}
 				
+				GLenum TextureParameters::getInternalFormat (GLenum defaultInternalFormat) const {
+					if (internalFormat)
+						return internalFormat;
+					else
+						return defaultInternalFormat;
+				}
+				
 #pragma mark -
 #pragma mark class Texture
 				
@@ -78,8 +85,7 @@ namespace Dream {
 					m_params = params;
 					
 					// Internal format used to be chosen by the TextureParameters, but for now it isn't.
-					// GLenum internalFormat = params.getInternalFormat(format);
-					m_internalFormat = format;
+					m_internalFormat = params.getInternalFormat(format);
 					m_target = params.target;
 					
 					// Figure out who is currently bound
