@@ -60,7 +60,7 @@ namespace Dream
 		/// 180 degree rotation
 		const double R180 = M_PI;
 		/// 360 degree rotation
-		const double R360 = R180 * 2;
+		const double R360 = M_2_PI;
 
 		/// Radians to degrees multiplier
 		const RealT R2D = (180.0 / M_PI);

@@ -90,11 +90,20 @@ namespace Dream
 
 			return a1.cross(b1).normalize();
 		}
+		
+		template <typename NumericT>
+		Vector<2, NumericT> VectorTraits<2, NumericT>::normal () const
+		{
+			const VectorT &v = *static_cast<const VectorT*>(this);
+			Vector<3, NumericT> up(0.0, 0.0, 1.0);
+		
+			return (v << 0.0).cross(up).reduce();
+		}
 
 		template <typename NumericT>
 		Vector<3, NumericT> VectorTraits<3, NumericT>::cross (const Vector<3, NumericT> & other) const
 		{
-			const Vector<3, NumericT> &v = *static_cast<const VectorT*>(this);
+			const VectorT &v = *static_cast<const VectorT*>(this);
 			Vector<3, NumericT> result;
 
 			result[0] = v[1] * other[2] - v[2] * other[1];
@@ -113,7 +122,6 @@ namespace Dream
 		template <typename NumericT>
 		Vector<3, NumericT> VectorTraits<3, NumericT>::normal (const Vector<3, NumericT> & a, const Vector<3, NumericT> & b) const
 		{
-			typedef Vector<3, NumericT> VectorT;
 			return surfaceNormal (*static_cast<const VectorT*>(this), a, b);
 		}
 

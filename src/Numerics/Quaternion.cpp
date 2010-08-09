@@ -271,8 +271,8 @@ namespace Dream
 			Quat q(R90, vec(1.0, 0.0, 0.0));
 			Mat44 m = Mat44::rotatingMatrix(R90, vec(1.0, 0.0, 0.0));
 
-			assertEqual(q.rotationAxis(), vec(1.0, 0.0, 0.0), "Rotation axis is correct");
-			assertEqual(q.rotationAngle(), R90, "Rotation angle is correct");
+			assertEquivalent(q.rotationAxis(), vec(1.0, 0.0, 0.0), "Rotation axis is correct");
+			assertTrue(equivalent((RealT)q.rotationAngle(), (RealT)R90), "Rotation angle is correct");
 
 			Vec3 si(15.14, -12.5, 4.55);
 

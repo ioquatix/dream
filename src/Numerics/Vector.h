@@ -78,6 +78,17 @@ namespace Dream
 		{
 		};
 
+		template <typename NumericT>
+		class VectorTraits<2, NumericT>
+		{
+		private:
+			typedef Vector<2, NumericT> VectorT;
+			
+		public:
+			/// Returns an orthogonal 2D vector.
+			Vector<2, NumericT> normal () const;
+		};
+
 		/// Calculates the surface normal of a triangle given by three points.
 		template <typename NumericT>
 		Vector<3, NumericT> surfaceNormal (const Vector<3, NumericT> & a, const Vector<3, NumericT> & b, const Vector<3, NumericT> & c);
