@@ -79,11 +79,14 @@ namespace Dream
 
 			PixelBufferRenderer::PixelBufferRenderer () : m_size(ZERO)
 			{
+				m_textureParameters.target = GL_TEXTURE_2D;
+				m_textureParameters.minFilter = GL_NEAREST;
+				m_textureParameters.magFilter = GL_NEAREST;
+				m_textureParameters.generateMipMaps = false;
 			}
 
 			PixelBufferRenderer::~PixelBufferRenderer ()
 			{
-			
 			}
 			
 			void PixelBufferRenderer::change (Renderer * renderer, REF(IPixelBuffer) pixels, const Geometry::AlignedBox<2> & box, Vector<2, bool> flip)
@@ -95,15 +98,7 @@ namespace Dream
 					
 					m_texture->updatePixelData(pixels, Vector<3, unsigned>(ZERO));
 				} else {
-					/// @todo Maybe make constructor for TextureParameters have an argument
-					/// i.e. TextureParameters tp(LOW_QUALITY || HIGH_QUALITY || TEXT_QUALITY) etc
-					TextureParameters tp;					
-					tp.target = GL_TEXTURE_2D;
-					tp.minFilter = GL_NEAREST;
-					tp.magFilter = GL_NEAREST;
-					tp.generateMipMaps = false;
-					
-					m_texture = renderer->textureController()->createTexture(pixels, tp);
+					m_texture = renderer->textureController()->createTexture(pixels, m_textureParameters);
 				}
 				
 				m_texCoords.clear();

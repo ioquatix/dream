@@ -41,9 +41,14 @@ namespace Dream
 				std::vector<Vec2> m_texCoords;
 				std::vector<Vec2> m_vertices;
 				
+				TextureParameters m_textureParameters;
+				
 			public:
 				PixelBufferRenderer ();
 				virtual ~PixelBufferRenderer ();
+				
+				TextureParameters & textureParameters() { return m_textureParameters; }
+				const TextureParameters & textureParameters() const { return m_textureParameters; }
 				
 				void change (Renderer * renderer, REF(IPixelBuffer) pixels, const Geometry::AlignedBox<2> & box, Vector<2, bool> flip);
 				
