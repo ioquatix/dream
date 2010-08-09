@@ -73,6 +73,14 @@
 		7E696FFF107C140F007D2740 /* OggStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E696FFB107C140F007D2740 /* OggStream.cpp */; };
 		7E697000107C140F007D2740 /* OggStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E696FFB107C140F007D2740 /* OggStream.cpp */; };
 		7E800EF411A930A700E6D994 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E800EF311A930A700E6D994 /* libfreetype.a */; };
+		7EA6EF80120F95D400175ED9 /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA6EF7E120F95D400175ED9 /* libjpeg.a */; };
+		7EA6EF81120F95D400175ED9 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA6EF7F120F95D400175ED9 /* libpng.a */; };
+		7EA6EF82120F95D400175ED9 /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA6EF7E120F95D400175ED9 /* libjpeg.a */; };
+		7EA6EF83120F95D400175ED9 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA6EF7F120F95D400175ED9 /* libpng.a */; };
+		7EA6EF84120F961700175ED9 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E800EF311A930A700E6D994 /* libfreetype.a */; };
+		7EA6EF89120F964500175ED9 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA6EF88120F964500175ED9 /* libz.dylib */; };
+		7EA6EF8E120F966300175ED9 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA6EF8D120F966300175ED9 /* CoreVideo.framework */; };
+		7EA6EFDF120F969A00175ED9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA6EFDE120F969A00175ED9 /* Cocoa.framework */; };
 		7EB7BCD80F9B3F5A00452BDE /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EB7BCD00F9B3F5A00452BDE /* libjpeg.a */; };
 		7EB7BCD90F9B3F5A00452BDE /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EB7BCD10F9B3F5A00452BDE /* libfreetype.a */; };
 		7EB7BCE80F9B3F7E00452BDE /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EB7BCE00F9B3F7E00452BDE /* libjpeg.a */; };
@@ -511,6 +519,11 @@
 		7E82EC250EB9D4F80017567C /* Numerics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Numerics.cpp; sourceTree = "<group>"; };
 		7E92B4410F369D470028676D /* Mixer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Mixer.cpp; path = Audio/Mixer.cpp; sourceTree = "<group>"; };
 		7E92B4500F36DB6E0028676D /* Sound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Sound.cpp; path = Audio/Sound.cpp; sourceTree = "<group>"; };
+		7EA6EF7E120F95D400175ED9 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = "ext/darwin-universal/lib/libjpeg.a"; sourceTree = "<group>"; };
+		7EA6EF7F120F95D400175ED9 /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = "ext/darwin-universal/lib/libpng.a"; sourceTree = "<group>"; };
+		7EA6EF88120F964500175ED9 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
+		7EA6EF8D120F966300175ED9 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = /System/Library/Frameworks/CoreVideo.framework; sourceTree = "<absolute>"; };
+		7EA6EFDE120F969A00175ED9 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		7EA911FC0EB414FB0080E66D /* Strings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Strings.cpp; sourceTree = "<group>"; };
 		7EA911FE0EB414FB0080E66D /* Class.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Class.cpp; sourceTree = "<group>"; };
 		7EA912000EB414FB0080E66D /* Value.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Value.cpp; sourceTree = "<group>"; };
@@ -623,6 +636,12 @@
 				7EBC1F080FA5174600D2CA1D /* libboost_thread.a in Frameworks */,
 				7EBC1F090FA5174600D2CA1D /* libboost_system.a in Frameworks */,
 				7EBC1F0B0FA5174600D2CA1D /* libboost_filesystem.a in Frameworks */,
+				7EA6EF82120F95D400175ED9 /* libjpeg.a in Frameworks */,
+				7EA6EF83120F95D400175ED9 /* libpng.a in Frameworks */,
+				7EA6EF84120F961700175ED9 /* libfreetype.a in Frameworks */,
+				7EA6EF89120F964500175ED9 /* libz.dylib in Frameworks */,
+				7EA6EF8E120F966300175ED9 /* CoreVideo.framework in Frameworks */,
+				7EA6EFDF120F969A00175ED9 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -660,6 +679,8 @@
 				7EC86C8C0FAD7150005DD627 /* libboost_system.a in Frameworks */,
 				7EC86C8E0FAD7150005DD627 /* libboost_filesystem.a in Frameworks */,
 				7E800EF411A930A700E6D994 /* libfreetype.a in Frameworks */,
+				7EA6EF80120F95D400175ED9 /* libjpeg.a in Frameworks */,
+				7EA6EF81120F95D400175ED9 /* libpng.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -889,6 +910,11 @@
 		7EB7BA220F98B7D900452BDE /* Darwin-Universal */ = {
 			isa = PBXGroup;
 			children = (
+				7EA6EFDE120F969A00175ED9 /* Cocoa.framework */,
+				7EA6EF8D120F966300175ED9 /* CoreVideo.framework */,
+				7EA6EF88120F964500175ED9 /* libz.dylib */,
+				7EA6EF7E120F95D400175ED9 /* libjpeg.a */,
+				7EA6EF7F120F95D400175ED9 /* libpng.a */,
 				7E800EF311A930A700E6D994 /* libfreetype.a */,
 				7EB7BD720F9B4C8F00452BDE /* libboost_thread.a */,
 				7EB7BD730F9B4C8F00452BDE /* libboost_system.a */,
@@ -1003,10 +1029,10 @@
 			children = (
 				7EBC15A30FA31F3500D2CA1D /* Application.h */,
 				7EBC15A20FA31F3500D2CA1D /* Application.cpp */,
-				7EDBEE88119C401700CE9509 /* Basic.h */,
-				7EDBEE89119C401700CE9509 /* Basic.cpp */,
 				7EBC15A50FA31F3500D2CA1D /* Scene.h */,
 				7EBC15A40FA31F3500D2CA1D /* Scene.cpp */,
+				7EDBEE88119C401700CE9509 /* Basic.h */,
+				7EDBEE89119C401700CE9509 /* Basic.cpp */,
 				7E4EA796101BFBA900629DAA /* Layer.h */,
 				7E4EA7F6101C184A00629DAA /* Layer.cpp */,
 				7EBC22210FA8097300D2CA1D /* Scancodes.h */,
