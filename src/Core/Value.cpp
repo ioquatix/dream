@@ -50,6 +50,23 @@ namespace Dream
 		{
 			return "The value is undefined";
 		}
+		
+#pragma mark -
+#pragma mark class ValueUndefinedError
+
+		SerializationError::SerializationError () throw ()
+		{
+		}
+
+		SerializationError::~SerializationError () throw ()
+		{
+		}
+
+		/// Returns a C-style character string describing the general cause of the current error.
+		const char * SerializationError::what () const throw ()
+		{
+			return "The value could not be serialized.";
+		}
 
 #pragma mark -
 #pragma mark Stream Functions
@@ -64,7 +81,7 @@ namespace Dream
 		std::istream & operator>> (std::istream & ins, ITypedValue & value)
 		{
 			value.readFromStream(ins);
-
+		
 			return ins;
 		}
 
@@ -101,14 +118,14 @@ namespace Dream
 				return false;
 
 			// Compare the actual ITypedValues
-			return *(m_ptr.get()) == *(other.m_ptr.get());
+			return m_ptr.get()->equal(other.m_ptr.get());
 		}
 
 		bool Value::operator== (const ITypedValue & other) const
 		{
 			if (undefined()) return false;
 
-			return *(m_ptr.get()) == other;
+			return m_ptr.get()->equal(&other);
 		}
 		
 		const ITypedValue * Value::typedValue () const
@@ -118,9 +135,11 @@ namespace Dream
 
 		std::ostream & operator<< (std::ostream & outs, const Value & value)
 		{
-			if (value.undefined()) throw ValueUndefinedError();
-
-			outs << *(value.m_ptr);
+			if (value.undefined()) {
+				outs << "undefined";
+			} else {
+				outs << *(value.m_ptr);
+			}
 
 			return outs;
 		}
@@ -228,17 +247,28 @@ namespace Dream
 
 			testing("Input and Output");
 
-			std::stringstream buf;
+			std::stringstream b1, b2;
 
-			buf << 15;
-			buf >> v1;
-
+			b1 << 15;
+			b1 >> v1;
+			
 			assertEqual(v1.extract<int>(), 15, "Value was parsed correctly");
 
-			buf << v1;
-			buf >> v2;
+			b2 << v1;
+			b2 >> v2;
 
 			assertEqual(v1, v2, "Values are equal");
+			
+			testing("Pointers");
+			
+			int i = 1;
+			float f = 1.0;
+			v1.set(&i);
+			v2.set(&i);
+			v3.set(&f);
+			
+			assertEqual(v1, v2, "Values are equal");
+			assertFalse(v2 == v3, "Values are not equal");
 		}
 #endif
 	}

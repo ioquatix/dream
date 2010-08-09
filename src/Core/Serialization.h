@@ -63,29 +63,35 @@ namespace Dream
 		
 		template <unsigned Index>
 		class TypeSerialization
+		{
+		public:
+			typedef typename TypeIdentifierValueTraits<Index>::TypeT TypeT;
+			
+			static TypeT readFromBuffer (const Buffer & buf, IndexT & offset)
 			{
-			public:
-				typedef typename TypeIdentifierValueTraits<Index>::TypeT TypeT;
-				
-				static TypeT readFromBuffer (const Buffer & buf, IndexT & offset)
-				{
-					TypeT value;
-					offset += buf.read(offset, value);
-					return orderRead(value, libraryEndian(), hostEndian());
-				}
-				
-				static void appendToBuffer (ResizableBuffer & buf, const TypeT & value)
-				{
-					TypeT convertedValue = orderRead(value, hostEndian(), libraryEndian());
-					buf.append(sizeof(TypeT), (const ByteT *)&convertedValue);
-				}
-				
-				//static void writeToBuffer (const ResizableBuffer & buf, IndexT & offset, const TypeT & value)
-				//{
-				//	TypeT value = orderRead(value, hostEndian(), libraryEndian());
-				//	buf.write(offset, value);
-				//}
-			};
+				TypeT value;
+				offset += buf.read(offset, value);
+				return orderRead(value, libraryEndian(), hostEndian());
+			}
+			
+			static void appendToBuffer (ResizableBuffer & buf, const TypeT & value)
+			{
+				TypeT convertedValue = orderRead(value, hostEndian(), libraryEndian());
+				buf.append(sizeof(TypeT), (const ByteT *)&convertedValue);
+			}
+			
+			//static void writeToBuffer (const ResizableBuffer & buf, IndexT & offset, const TypeT & value)
+			//{
+			//	TypeT value = orderRead(value, hostEndian(), libraryEndian());
+			//	buf.write(offset, value);
+			//}
+		};
+		
+		template <>
+		class TypeSerialization<TI_UNDEFINED>
+		{
+		public:
+		};
 		
 		template <>
 		class TypeSerialization<TI_STRING>
@@ -109,7 +115,7 @@ namespace Dream
 			static void appendToBuffer (ResizableBuffer & buf, const TypeT & value)
 			{
 				buf.append((uint32_t)value.length());
-				buf.append(value.length(), (const ByteT *)value.c_str());
+				buf.append(value.length(), (const ByteT *)value.data());
 			}
 		};
 		

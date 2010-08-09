@@ -42,15 +42,33 @@ namespace Dream
 			/// Returns a C-style character string describing the general cause of the current error.
 			virtual const char * what () const throw ();
 		};
+		
+		/** Thrown when a value unable to be serialized.
+		 */
+		class SerializationError : public std::exception
+		{
+		public:
+			SerializationError () throw ();
+			virtual ~SerializationError () throw ();
+
+			/// Returns a C-style character string describing the general cause of the current error.
+			virtual const char * what () const throw ();
+		};
 
 		/** Abstract typed value base. Provides a basic set of functionality for dealing with values of unknown type.
 		 */
 		class ITypedValue : IMPLEMENTS (Type), public SharedObject
 		{
 		public:
+			/// @sa equal
+			bool operator== (const ITypedValue & other) const
+			{
+				return equal(&other);
+			}
+			
 			/// Compares two values
-			/// @returns True if the TypedValue objects are of the same type and contained value.
-			virtual bool operator== (const ITypedValue &) const abstract;
+			/// @returns True if the TypedValue objects are of the same type and contained value.			
+			virtual bool equal (const ITypedValue *) const abstract;
 
 			virtual void writeToStream (std::ostream &) const abstract;
 			virtual void readFromStream (std::istream &) abstract;
@@ -85,6 +103,37 @@ namespace Dream
 		std::ostream & operator<< (std::ostream &, const ITypedValue &);
 		std::istream & operator>> (std::istream &, const ITypedValue &);
 
+		template <unsigned TypeIdentifier>
+		struct TypedValueSerializer {
+			template <typename ValueT>
+			void readFromStream (std::istream & stream, ValueT & value)
+			{
+				stream >> value;
+			}
+		
+			template <typename ValueT>
+			void appendToBuffer (ResizableBuffer & buf, ValueT & value) const
+			{
+				buf.append((TypeIdentifierT)TypeIdentifier);
+				TypeSerialization<TypeIdentifier>::appendToBuffer(buf, value);
+			}
+		};
+		
+		template <>
+		struct TypedValueSerializer<0> {
+			template <typename ValueT>
+			void readFromStream (std::istream & stream, ValueT & value)
+			{
+				throw SerializationError();
+			}
+
+			template <typename ValueT>
+			void appendToBuffer (ResizableBuffer & buf, ValueT & value) const
+			{
+				throw SerializationError();
+			}
+		};
+
 		/** A simple typed value wrapper class.
 
 		 @code
@@ -93,10 +142,11 @@ namespace Dream
 		 @endcode
 		 */
 		template <typename ValueT>
-		class TypedValue : IMPLEMENTS (TypedValue)
+		class TypedValue : IMPLEMENTS (TypedValue), protected TypedValueSerializer<TypeIdentifierTypeTraits<ValueT>::TypeIdentifierValue>
 		{
 		protected:
 			ValueT m_value;
+			typedef TypedValueSerializer<TypeIdentifierTypeTraits<ValueT>::TypeIdentifierValue> TypedValueSerializerT;
 
 		public:
 			TypedValue ()
@@ -145,10 +195,10 @@ namespace Dream
 				return m_value;
 			}
 
-			virtual bool operator== (const ITypedValue & other) const
+			virtual bool equal (const ITypedValue * other) const
 			{
 				typedef TypedValue<ValueT> TypedValueT;
-				const TypedValueT * otherTypedValue = dynamic_cast<const TypedValueT *>(this);
+				const TypedValueT * otherTypedValue = dynamic_cast<const TypedValueT *>(other);
 
 				if (otherTypedValue != NULL)
 					return this->value() == otherTypedValue->value();
@@ -160,19 +210,15 @@ namespace Dream
 			{
 				stream << m_value;
 			}
-
+			
 			virtual void readFromStream (std::istream & stream)
 			{
-				stream >> m_value;
+				TypedValueSerializerT::readFromStream(stream, m_value);
 			}
 			
 			virtual void appendToBuffer (ResizableBuffer & buf) const
 			{
-				TypeIdentifierT typeIdentifier = TypeIdentifierTypeTraits<ValueT>::TypeIdentifierValue;
-				
-				buf.append(typeIdentifier);
-				
-				TypeSerialization<TypeIdentifierTypeTraits<ValueT>::TypeIdentifierValue>::appendToBuffer(buf, m_value);
+				TypedValueSerializerT::appendToBuffer(buf, m_value);
 			}
 		};
 

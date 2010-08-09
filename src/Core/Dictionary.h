@@ -57,6 +57,20 @@ namespace Dream
 				return v.extract<ValueT>();
 			}
 			
+			template <typename ValueT>
+			bool get (const KeyT & key, ValueT & value)
+			{
+				Value v = getValue(key);
+				
+				if (v.defined()) {
+					value = v.extract<ValueT>();
+					
+					return true;
+				} else {
+					return false;
+				}
+			}
+			
 			/// Updates a value if the key exists in the dictionary.
 			template <typename t>
 			bool update (const KeyT & key, t & value) const
