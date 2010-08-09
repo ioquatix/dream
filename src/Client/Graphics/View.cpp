@@ -17,7 +17,7 @@ namespace Dream {
 		
 			IMPLEMENT_CLASS(View::Controller)
 	
-			View::Controller::Controller () {
+			View::Controller::Controller () : m_debug(false) {
 				m_staticFocusedView = NULL;
 				m_dynamicFocusedView = NULL;
 			}
