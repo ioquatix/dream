@@ -145,11 +145,11 @@ namespace Dream {
 				return Scene::process(input) || result;
 			}
 			
-			void BasicScene::didBecomeCurrent () {
-				Scene::didBecomeCurrent();
-				
+			void BasicScene::didBecomeCurrent () {				
 				for(unsigned i = 0; i < m_layers.size(); i += 1)
 					m_layers[i]->didBecomeCurrent(m_sceneManager, this);
+
+				Scene::didBecomeCurrent();
 			}
 			
 			void BasicScene::willRevokeCurrent (ISceneManager * sceneManager)
