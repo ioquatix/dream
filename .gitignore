@@ -1,9 +1,9 @@
 .DS_Store
 build/
 docs/
-ext/src/
-ext/darwin-universal/
-ext/darwin-iphone/
-ext/darwin-iphone-simulator/
+ext/packages/*/*/
+ext/darwin_macosx/
+ext/darwin_iphoneos/
+ext/darwin_iphonesimulator/
 include/
 opt/

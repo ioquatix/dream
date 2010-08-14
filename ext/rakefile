@@ -1,0 +1,194 @@
+#!/usr/bin/env ruby
+
+require 'rexec/environment'
+require 'stringio'
+require 'fileutils'
+require 'pathname'
+require 'yaml'
+
+EXT_PATH = Pathname.new(__FILE__).dirname
+PACKAGES_PATH = EXT_PATH + "packages"
+
+class Package
+	ALL = {}
+	
+	def self.all
+		ALL.values
+	end
+	
+	class BuildError < StandardError
+	end
+	
+	def initialize(name, path)
+		@name = name
+		@path = path
+		@variants = {}
+		
+		ALL[name] = self
+	end
+	
+	attr :name
+	attr :path
+	attr :variants
+	
+	def src
+		@path + @name
+	end
+	
+	def self.define(name, &block)
+		package = Package.new(name, PACKAGES_PATH + name)
+		
+		yield(package)
+	end
+	
+	def variant(name, &block)
+		@variants[name] = Proc.new
+	end
+	
+	def build(platform)
+		puts " Building #{@name} for #{platform.name} ".center(80, "-")
+		callback = @variants[platform.name] || @variants[:all]
+		
+		if (callback)
+			callback.call(platform, platform.config)
+		else
+			raise BuildError.new("Could not find variant #{platform.name}")
+		end
+	end
+	
+	def self.require(name)
+		unless ALL[name]
+			load PACKAGES_PATH + name + "build.rb"
+		end
+		
+		return ALL[name]
+	end
+end
+
+class Platform
+	ALL = {}
+	
+	def self.all
+		ALL.values
+	end
+	
+	class Config
+		def initialize
+			@values = {}
+		end
+		
+		attr :values
+		
+		def method_missing(name, *args)
+			if name.to_s.match(/^(.*?)(\=)?$/)
+				if $2
+					return @values[$1] = args[0]
+				else
+					return @values[$1]
+				end
+			else
+				super(name, *args)
+			end
+		end
+	end
+	
+	def prefix
+		EXT_PATH + @name.to_s
+	end
+	
+	def initialize(name, &block)
+		@name = name
+		@config = Config.new
+		
+		yield @config
+		
+		ALL[name] = self
+	end
+	
+	attr :name
+	attr :config
+end
+
+GLOBAL_CFLAGS = "-O2 -Wall -Wmissing-prototypes -std=c99 -ffast-math -fno-strict-aliasing -mdynamic-no-pic -fvisibility=hidden -pipe"
+MACOSX_SDK_VERSION = "10.5"
+IPHONE_SDK_VERSION = "3.2"
+
+Platform.new(:darwin_macosx) do |config|
+	config.platform = Pathname.new("/")
+	config.sdk_version = MACOSX_SDK_VERSION
+	config.sdk = config.platform + Pathname.new("Developer/SDKs/MacOSX#{config.sdk_version}.sdk")
+	
+	config.arch = "-arch ppc -arch i386 -arch x86_64"
+	config.cflags = "#{config.arch} #{GLOBAL_CFLAGS} -isysroot #{config.sdk} -mmacosx-version-min=#{config.sdk_version}"
+	config.configure = []
+	
+	config.build_flags = {
+		"CFLAGS" => "#{GLOBAL_CFLAGS} #{config.cflags}",
+		"LDFLAGS" => "#{config.cflags}"
+	}
+end
+
+Platform.new(:darwin_iphoneos) do |config|
+	config.platform = Pathname.new("/Developer/Platforms/iPhoneOS.platform")
+	config.sdk_version = IPHONE_SDK_VERSION
+	config.sdk = config.platform + "Developer/SDKs/iPhoneOS#{config.sdk_version}.sdk"
+	
+	config.arch = "-arch armv6"
+	config.cflags = "#{config.arch} -isysroot #{config.sdk} -miphoneos-version-min=#{config.sdk_version}"
+	config.configure = ["--host=arm-apple-darwin"]
+	
+	config.build_flags = {
+		# This line must be a compiler that will produce ARM code.
+		"CC" => config.platform + "Developer/usr/bin/arm-apple-darwin9-gcc-4.0.1",
+		"CPP" => config.platform + "Developer/usr/bin/cpp",
+		"LD" => config.platform + "Developer/usr/bin/ld",
+		"CFLAGS" => "#{GLOBAL_CFLAGS} #{config.cflags}",
+		"LDFLAGS" => "#{config.cflags}"
+	}
+end
+
+Platform.new(:darwin_iphonesimulator) do |config|
+	config.platform = Pathname.new("/Developer/Platforms/iPhoneSimulator.platform")
+	config.sdk_version = IPHONE_SDK_VERSION
+	config.sdk = config.platform + "Developer/SDKs/iPhoneSimulator#{config.sdk_version}.sdk"
+	
+	config.arch = "-arch i386"
+	config.cflags = "#{config.arch} -isysroot #{config.sdk} -miphoneos-version-min=#{config.sdk_version}"
+	config.configure = []
+	
+	config.build_flags = {
+		"CC" => config.platform + "Developer/usr/bin/gcc",
+		"CPP" => config.platform + "Developer/usr/bin/cpp",
+		"LD" => config.platform + "Developer/usr/bin/ld",
+		"CFLAGS" => "#{GLOBAL_CFLAGS} #{config.cflags}",
+		"LDFLAGS" => "#{config.cflags}"
+	}
+end
+
+Dir[PACKAGES_PATH + "*"].each do |path|
+	Package.require(File.basename(path))
+end
+
+task :default do
+	Platform.all.each do |platform|
+		# For testing...
+		# next unless platform.name == :darwin_iphonesimulator
+		Package.all.each do |package|
+			# next unless package.name == "boost_1_43_0"
+			package.build(platform)
+		end
+	end
+end
+
+task :build, [:package] do |task, arguments|
+	package_name = arguments[:package]
+	Platform.all.each do |platform|
+		Package::ALL[package_name].build(platform)
+	end
+end
+
+task :list do
+	Package::ALL.each do |name, package|
+		puts "Package: #{name.inspect}"
+	end
+end
