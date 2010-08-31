@@ -15,7 +15,6 @@
 
 namespace Dream {
 	namespace Imaging {
-		using namespace Dream::Core;
 		using namespace Dream::Numerics;
 		
 		/// Pixel data type.

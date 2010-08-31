@@ -55,7 +55,7 @@ namespace Dream
 			return -1;
 		}
 		
-		REF(Data) savePixelBufferAsPNG (IPixelBuffer * pixelBuffer)
+		REF(Core::Data) savePixelBufferAsPNG (IPixelBuffer * pixelBuffer)
 		{
 			Vec3u size = pixelBuffer->size();
 		
