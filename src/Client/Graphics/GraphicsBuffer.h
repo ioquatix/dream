@@ -1,5 +1,5 @@
 /*
- *  Client/Display/OpenGL20/VertexBuffer.h
+ *  Client/Display/OpenGL20/GraphicsBuffer.h
  *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
  *
  *  Created by Samuel Williams on 19/10/06.
@@ -7,49 +7,51 @@
  *
  */
 
-#ifndef _DREAM_CLIENT_DISPLAY_OPENGL20_VERTEXBUFFER_H
-#define _DREAM_CLIENT_DISPLAY_OPENGL20_VERTEXBUFFER_H
+#ifndef _DREAM_CLIENT_GRAPHICS_GRAPHICSBUFFER_H
+#define _DREAM_CLIENT_GRAPHICS_GRAPHICSBUFFER_H
 
 #include "Graphics.h"
-#include "OpenGL.h"
-
 #include <vector>
 
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
-			
+
 			//For further information:
 			//http://oss.sgi.com/projects/ogl-sample/registry/ARB/vertex_buffer_object.txt
 			
-			class Buffer : public Object {
+			class GraphicsBuffer : public ObjectHandle {
 			protected:
-				GLuint m_id;
 				GLenum m_target;
 				
 			public:
-				class Class : public Object::Class {
+				class Class : public ObjectHandle::Class {
 				public:
 					EXPOSE_CLASSTYPE
 				};
 				
-				EXPOSE_CLASS(VertexBuffer)
+				EXPOSE_CLASS(GraphicsBuffer)
 				
 				enum Target {
 					Array = GL_ARRAY_BUFFER,
-					ElementArray = GL_ELEMENT_ARRAY_BUFFER,
-					PixelPackBuffer = GL_PIXEL_PACK_BUFFER_ARB,
-					PixelUnpackBuffer = GL_PIXEL_UNPACK_BUFFER_ARB
+					ElementArray = GL_ELEMENT_ARRAY_BUFFER
+					// Not supported on OpenGL ES
+					//PixelPackBuffer = GL_PIXEL_PACK_BUFFER_ARB,
+					//PixelUnpackBuffer = GL_PIXEL_UNPACK_BUFFER_ARB,
 				};
 				
+#ifndef DREAM_USE_OPENGLES11 || DREAM_USE_OPENGLES20
 				enum Access {
 					Read = GL_READ_ONLY,
 					Write = GL_WRITE_ONLY,
 					ReadWrite = GL_READ_WRITE
 				};
+#endif
 				
 				enum Mode {
+#ifndef DREAM_USE_OPENGLES11 || DREAM_USE_OPENGLES20
 					StreamDraw = GL_STREAM_DRAW,
+#endif
 					//StreamRead = GL_STREAM_READ,
 					//StreamCopy = GL_STREAM_COPY,
 					StaticDraw = GL_STATIC_DRAW,
@@ -60,8 +62,8 @@ namespace Dream {
 					//DynamicCopy = GL_DYNAMIC_COPY
 				};
 				
-				VertexBuffer (const Target & t = Array);
-				~VertexBuffer ();
+				GraphicsBuffer (const Target & t = Array);
+				~GraphicsBuffer ();
 				
 				void bind () const;
 				void unbind () const;
@@ -70,28 +72,30 @@ namespace Dream {
 				void setData (IndexT offset, IndexT length, const ByteT *data);
 				
 				//ByteT* getData (IndexT offset, IndexT length
-				
+
+#ifndef DREAM_USE_OPENGLES11 || DREAM_USE_OPENGLES20
 				ByteT* mapBuffer (const Access &access);
 				void unmapBuffer ();
+#endif
 			};
 			
-			template <unsigned E, typename t = real_t, VertexBuffer::Target TARGET = VertexBuffer::Array>
+			template <unsigned E, typename t = RealT, GraphicsBuffer::Target TARGET = GraphicsBuffer::Array>
 			class BufferedArray {
 			public:
-				typedef Vector<E, t> element_t;
+				typedef Vector<E, t> ElementT;
 			
 			protected:
-				REF(VertexBuffer) m_buffer;
+				REF(GraphicsBuffer) m_buffer;
 				bool m_compacted;
-				std::vector<element_t> m_vector;
+				std::vector<ElementT> m_vector;
 			
 			public:
 				BufferedArray () : m_compacted(false) {
 					
 				}
 			
-				const std::vector<element_t> & vector () const { return m_vector; }
-				std::vector<element_t> & vector () { return m_vector; }
+				const std::vector<ElementT> & vector () const { return m_vector; }
+				std::vector<ElementT> & vector () { return m_vector; }
 			
 				void bind () const {
 					if (m_buffer) m_buffer->bind();
@@ -111,10 +115,10 @@ namespace Dream {
 					glDisableClientState(type);
 				}
 				
-				void upload (const VertexBuffer::Mode &mode = VertexBuffer::StaticDraw) {
+				void upload (const GraphicsBuffer::Mode &mode = GraphicsBuffer::StaticDraw) {
 					ensure(!m_compacted);
 					
-					m_buffer = new VertexBuffer(TARGET);
+					m_buffer = new GraphicsBuffer(TARGET);
 					m_buffer->bind();
 					m_buffer->setData(m_vector.size() * sizeof(t) * E, (ByteT*)&(m_vector[0]), mode);
 				}
@@ -130,7 +134,7 @@ namespace Dream {
 				
 				const void* base (const IndexT &offset = 0) const {
 					if (m_buffer) {
-						return (void*)(offset * sizeof(element_t));
+						return (void*)(offset * sizeof(ElementT));
 					} else {
 						ensure(!m_compacted);
 						
@@ -140,36 +144,35 @@ namespace Dream {
 				
 			};
 			
-			template <unsigned E, typename t = real_t>
-			class VectorArray : public BufferedArray<E, t, VertexBuffer::Array> {
+			template <unsigned E, typename t = RealT>
+			class VectorArray : public BufferedArray<E, t, GraphicsBuffer::Array> {
 			public:
-				void glVertexPointer () const {
-					::glVertexPointer(E, GL<t>::TYPE, 0, this->base());
+				void vertexPointer () const {
+					::glVertexPointer(E, GLTypeTraits<t>::TYPE, 0, this->base());
 				}
 		
-				void glTexCoordPointer () const {
-					::glTexCoordPointer(E, GL<t>::TYPE, 0, this->base());
+				void texCoordPointer () const {
+					::glTexCoordPointer(E, GLTypeTraits<t>::TYPE, 0, this->base());
 				}
 		
-				void glColorPointer () const {
-					::glColorPointer(E, GL<t>::TYPE, 0, this->base());
+				void colorPointer () const {
+					::glColorPointer(E, GLTypeTraits<t>::TYPE, 0, this->base());
 				}
 				
-				void glNormalPointer () const {
-					::glNormalPointer(GL<t>::TYPE, 0, this->base());
+				void normalPointer () const {
+					::glNormalPointer(GLTypeTraits<t>::TYPE, 0, this->base());
 				}
 			};
 
-			template <typename _index_t = GLuint>
-			struct IndexArray : public BufferedArray<1, _index_t, VertexBuffer::ElementArray> {
+			template <typename _ElementIndexT = GLuint>
+			struct IndexArray : public BufferedArray<1, _ElementIndexT, GraphicsBuffer::ElementArray> {
 			public:
-				typedef _index_t index_t;	
+				typedef _ElementIndexT ElementIndexT;	
 
-				void glDrawElements(GLenum mode) const {
-					::glDrawElements(mode, this->m_vector.size(), GL<index_t>::TYPE, this->base());
+				void drawElements(GLenum mode) const {
+					::glDrawElements(mode, this->m_vector.size(), GLTypeTraits<ElementIndexT>::TYPE, this->base());
 				}
 			};
-
 		}
 	}
 }

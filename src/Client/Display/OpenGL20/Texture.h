@@ -20,9 +20,7 @@
 namespace Dream {
 	namespace Client {
 		namespace Display {
-			namespace OpenGL20 {
-				
-				using namespace Dream::Core;
+			namespace OpenGL20 {				
 				using Dream::Imaging::IPixelBuffer;
 				
 				/**

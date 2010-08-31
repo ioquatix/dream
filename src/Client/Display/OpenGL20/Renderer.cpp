@@ -65,7 +65,7 @@ namespace Dream
 
 				void Renderer::setViewport (const Vector<2, int> & origin, const Vector<2, int> & size)
 				{
-					// std::cerr << "*** Setting viewport: origin=" << origin << " size=" << size << std::endl;
+					//std::cerr << "*** Setting viewport: origin=" << origin << " size=" << size << std::endl;
 					
 					glViewport(origin[X], origin[Y], size[WIDTH], size[HEIGHT]);
 				}
@@ -82,7 +82,7 @@ namespace Dream
 
 				void Renderer::setPerspectiveView (RealT ratio, RealT fov, RealT near, RealT far)
 				{
-					// std::cerr << "*** Setting perspective view: ratio=" << ratio << " fov=" << fov << " near=" << near << " far=" << far << std::endl;
+					//std::cerr << "*** Setting perspective view: ratio=" << ratio << " fov=" << fov << " near=" << near << " far=" << far << std::endl;
 					
 					glMatrixMode(GL_PROJECTION);
 					glLoadIdentity();
@@ -100,7 +100,7 @@ namespace Dream
 					top = box.max()[Y];
 					bottom = box.min()[Y];
 					
-					// std::cerr << "*** Setting orthographic view: left=" << left << " right=" << right << " bottom=" << bottom << " top=" << top << std::endl;
+					//std::cerr << "*** Setting orthographic view: left=" << left << " right=" << right << " bottom=" << bottom << " top=" << top << std::endl;
 					
 					glMatrixMode(GL_PROJECTION);
 					glLoadIdentity();
@@ -121,7 +121,7 @@ namespace Dream
 				Mat44 Renderer::projectionMatrix () const
 				{
 					Mat44 m;
-					glGetFloatv(GL_PROJECTION_MATRIX, m.values());
+					glGetFloatv(GL_PROJECTION_MATRIX, m.value());
 					
 					return m;
 				}
@@ -129,7 +129,7 @@ namespace Dream
 				Mat44 Renderer::modelViewMatrix () const
 				{
 					Mat44 m;
-					glGetFloatv(GL_MODELVIEW_MATRIX, m.values());
+					glGetFloatv(GL_MODELVIEW_MATRIX, m.value());
 					
 					return m;
 				}
@@ -170,7 +170,7 @@ namespace Dream
 					glMatrixMode(GL_MODELVIEW);
 					glLoadIdentity();
 				
-					glMultMatrixf(viewMatrix.values());
+					glMultMatrixf(viewMatrix.value());
 				}
 				
 				TextureController * Renderer::textureController()

@@ -40,7 +40,6 @@ namespace Dream
 		{
 			namespace OpenGL20
 			{				
-				using namespace Dream::Core;
 				using namespace Dream::Numerics;
 				
 				template <typename t>

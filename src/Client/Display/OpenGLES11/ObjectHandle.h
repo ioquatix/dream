@@ -1,5 +1,5 @@
 /*
- *  Client/Display/OpenGL20/ObjectHandle.h
+ *  Client/Display/OpenGLES11/ObjectHandle.h
  *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
  *
  *  Created by Samuel Williams on 1/05/08.
@@ -7,15 +7,15 @@
  *
  */
 
-#ifndef _DREAM_CLIENT_DISPLAY_OPENGL20_OBJECTHANDLE_H
-#define _DREAM_CLIENT_DISPLAY_OPENGL20_OBJECTHANDLE_H
+#ifndef _DREAM_CLIENT_DISPLAY_OPENGLES11_OBJECTHANDLE_H
+#define _DREAM_CLIENT_DISPLAY_OPENGLES11_OBJECTHANDLE_H
 
-#include "OpenGL20.h"
+#include "OpenGLES11.h"
 
 namespace Dream {
 	namespace Client {
 		namespace Display {
-			namespace OpenGL20 {
+			namespace OpenGLES11 {
 				
 				class ObjectHandle : public Object {
 					EXPOSE_CLASS(ObjectHandle)
@@ -26,11 +26,7 @@ namespace Dream {
 					};
 					
 				protected:
-#ifdef GL_VERSION_2_0
 					typedef GLuint HandleT;
-#else
-					typedef GLhandleARB HandleT;
-#endif
 
 					HandleT m_handle;
 				public:

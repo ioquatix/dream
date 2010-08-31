@@ -96,6 +96,8 @@ namespace Dream {
 					else
 						glTexParameteri(m_target, GL_GENERATE_MIPMAP, GL_FALSE);
 					
+					//std::cerr << "loadPixelData: " << size << std::endl;
+					
 					if (m_target == GL_TEXTURE_1D) {
 						glTexImage1D(m_target, 0, m_internalFormat, size[WIDTH], 0, format, dataType, pixels);
 					} else if (m_target == GL_TEXTURE_2D) {
@@ -117,6 +119,8 @@ namespace Dream {
 					m_textureController->unit(0)->enable(this);
 									
 					GLenum dataType = GL_UNSIGNED_BYTE;
+					
+					//std::cerr << "resize: " << newSize << std::endl;
 				
 					if (m_target == GL_TEXTURE_1D) {
 						glTexImage1D(m_target, 0, m_internalFormat, newSize[WIDTH], 0, m_internalFormat, dataType, NULL);
@@ -136,6 +140,19 @@ namespace Dream {
 					Vec3u size = pixelBuffer->size();
 					GLenum format = pixelBuffer->pixelFormat();
 					GLenum dataType = pixelBuffer->pixelDataType();
+					
+					// Debugging texture data upload
+					/*
+					std::cerr << "updatePixelData: " << size << std::endl;
+					
+					GLint w, h, d;
+					
+					glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
+					glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
+					glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_DEPTH, &d);
+					
+					std::cerr << "internalSize = " << Vec3u(w, h, d) << std::endl;
+					*/
 					
 					if (m_target == GL_TEXTURE_1D) {
 						glTexSubImage1D(m_target, 0, offset[X], size[WIDTH], format, dataType, pixelBuffer->pixelData());

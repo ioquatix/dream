@@ -85,9 +85,9 @@ namespace Dream {
 								
 				bool ShaderProgramHandle::link () {
 #ifdef GL_VERSION_2_0
-					glLinkProgram(get());
+					glLinkProgram(handle());
 #else
-					glLinkProgramARB(get());
+					glLinkProgramARB(handle());
 #endif
 					
 					GLint linked = 0;

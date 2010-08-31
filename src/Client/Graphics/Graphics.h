@@ -12,6 +12,7 @@
 
 #include "../../Numerics/Numerics.h"
 #include "../Display/Renderer.h"
+#include "../Display/Layer.h"
 
 namespace Dream
 {
@@ -20,6 +21,7 @@ namespace Dream
 		namespace Graphics
 		{
 			using namespace Dream::Numerics;
+			using namespace Dream::Client::Display;
 		
 #ifdef DREAM_USE_OPENGL20
 			using namespace Dream::Client::Display::OpenGL20;
@@ -27,8 +29,8 @@ namespace Dream
 			using namespace Dream::Client::Display::OpenGL31;
 #elif DREAM_USE_OPENGLES11
 			using namespace Dream::Client::Display::OpenGLES11;
-#endif			
-			
+#endif
+
 		}
 	}
 }

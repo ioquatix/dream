@@ -84,17 +84,17 @@ namespace Dream {
 					
 					virtual ~ShaderHandle () {
 #ifdef GL_VERSION_2_0
-						glDeleteShader(get());
+						glDeleteShader(handle());
 #else
-						glDeleteObjectARB(get());
+						glDeleteObjectARB(handle());
 #endif
 					}
 					
 					void property (ShaderProperty pname, GLint* dst) {
 #ifdef GL_VERSION_2_0
-						glGetShaderiv(get(), pname, dst);
+						glGetShaderiv(handle(), pname, dst);
 #else
-						glGetObjectParameterivARB(get(), pname, dst);
+						glGetObjectParameterivARB(handle(), pname, dst);
 #endif
 					}
 					
@@ -104,11 +104,11 @@ namespace Dream {
 						const char *buf = code.c_str();
 						
 #ifdef GL_VERSION_2_0	
-						glShaderSource(get(), 1, &buf, NULL);
-						glCompileShader(get());
+						glShaderSource(handle(), 1, &buf, NULL);
+						glCompileShader(handle());
 #else
-						glShaderSourceARB(get(), 1, &buf, NULL);
-						glCompileShaderARB(get());
+						glShaderSourceARB(handle(), 1, &buf, NULL);
+						glCompileShaderARB(handle());
 #endif
 						property(COMPILE_STATUS, &compiled);
 						
@@ -127,9 +127,9 @@ namespace Dream {
 							log = (char *)malloc(len);
 							
 #ifdef GL_VERSION_2_0
-							glGetShaderInfoLog(get(), len, &chars, log);
+							glGetShaderInfoLog(handle(), len, &chars, log);
 #else
-							glGetInfoLogARB(get(), len, &chars, log);
+							glGetInfoLogARB(handle(), len, &chars, log);
 #endif
 							buf = log;
 							free(log);
@@ -158,25 +158,25 @@ namespace Dream {
 					
 					virtual ~ShaderProgramHandle () {
 #ifdef GL_VERSION_2_0
-						glDeleteProgram(get());
+						glDeleteProgram(handle());
 #else
-						glDeleteObjectARB(get());
+						glDeleteObjectARB(handle());
 #endif
 					}
 					
-					void attach (REF(ObjectHandle) handle) {
+					void attach (REF(ObjectHandle) object) {
 #ifdef GL_VERSION_2_0
-						glAttachShader(get(), handle->get());
+						glAttachShader(handle(), object->handle());
 #else
-						glAttachObjectARB(get(), handle->get());
+						glAttachObjectARB(handle(), object->handle());
 #endif
 					}
 					
 					void enable () const {
 #ifdef GL_VERSION_2_0
-						glUseProgram(get());
+						glUseProgram(handle());
 #else
-						glUseProgramObjectARB(get());
+						glUseProgramObjectARB(handle());
 #endif
 					}
 					
@@ -190,9 +190,9 @@ namespace Dream {
 					
 					GLuint uniformLocation (const char* name) const {
 #ifdef GL_VERSION_2_0
-						return glGetUniformLocation(get(), name);
+						return glGetUniformLocation(handle(), name);
 #else
-						return glGetUniformLocationARB(get(), name);
+						return glGetUniformLocationARB(handle(), name);
 #endif		
 					}
 					
@@ -200,9 +200,9 @@ namespace Dream {
 					
 					void property (ShaderProperty pname, GLint* dst) {
 #ifdef GL_VERSION_2_0
-						glGetProgramiv(get(), pname, dst);
+						glGetProgramiv(handle(), pname, dst);
 #else
-						glGetObjectParameterivARB(get(), pname, dst);
+						glGetObjectParameterivARB(handle(), pname, dst);
 #endif
 					}
 					
@@ -217,9 +217,9 @@ namespace Dream {
 							log = (char *)malloc(len);
 							
 #ifdef GL_VERSION_2_0
-							glGetProgramInfoLog(get(), len, &chars, log);
+							glGetProgramInfoLog(handle(), len, &chars, log);
 #else
-							glGetInfoLogARB(get(), len, &chars, log);
+							glGetInfoLogARB(handle(), len, &chars, log);
 #endif
 							buf = log;
 							free(log);
