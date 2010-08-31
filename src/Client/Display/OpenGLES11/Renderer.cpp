@@ -21,7 +21,7 @@ namespace Dream {
 
 				Renderer::Renderer () : m_textureController(new TextureController)
 				{
-					assert(softwareVersion() >= 1.1 && "OpenGLES 1.1 support required");
+					ensure(softwareVersion() >= 1.1 && "OpenGLES 1.1 support required");
 					
 					const char * exts = (const char *)glGetString(GL_EXTENSIONS);
 					split(exts, ' ', std::inserter(m_extensions, m_extensions.begin()));
@@ -134,7 +134,7 @@ namespace Dream {
 				Mat44 Renderer::projectionMatrix () const
 				{
 					Mat44 m;
-					glGetFloatv(GL_PROJECTION_MATRIX, m.values());
+					glGetFloatv(GL_PROJECTION_MATRIX, m.value());
 					
 					return m;
 				}
@@ -142,7 +142,7 @@ namespace Dream {
 				Mat44 Renderer::modelViewMatrix () const
 				{
 					Mat44 m;
-					glGetFloatv(GL_MODELVIEW_MATRIX, m.values());
+					glGetFloatv(GL_MODELVIEW_MATRIX, m.value());
 					
 					return m;
 				}
@@ -151,7 +151,7 @@ namespace Dream {
 					glDisable (GL_DEPTH_TEST); // ensure text is not remove by death buffer test.
 					// for text alpha blending
 					glEnable (GL_BLEND);
-					glBlendFunc (GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+					glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 					
 					// set orthograhic 1:1  pixel transform in local view coords
 					glMatrixMode(GL_PROJECTION);
@@ -180,7 +180,7 @@ namespace Dream {
 					glMatrixMode(GL_MODELVIEW);
 					glLoadIdentity();
 				
-					glMultMatrixf(viewMatrix.values());
+					glMultMatrixf(viewMatrix.value());
 				}
 				
 				TextureController * Renderer::textureController()

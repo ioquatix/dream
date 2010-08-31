@@ -29,7 +29,6 @@ namespace Dream
 		{
 			namespace OpenGLES11
 			{
-				using namespace Dream::Core;
 				using namespace Dream::Numerics;
 
 				template <typename t>

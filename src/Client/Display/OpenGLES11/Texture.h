@@ -20,9 +20,7 @@
 namespace Dream {
 	namespace Client {
 		namespace Display {
-			namespace OpenGLES11 {
-				
-				using namespace Dream::Core;
+			namespace OpenGLES11 {				
 				using Dream::Imaging::IPixelBuffer;
 				
 				/**

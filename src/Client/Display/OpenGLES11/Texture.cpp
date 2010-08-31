@@ -38,7 +38,7 @@ namespace Dream {
 				}
 				
 				GLenum TextureParameters::getInternalFormat (GLenum defaultInternalFormat) const {
-					if (intenralFormat)
+					if (internalFormat)
 						return internalFormat;
 					else
 						return defaultInternalFormat;
@@ -66,7 +66,7 @@ namespace Dream {
 					m_params = params;
 					
 					// OpenGL ES 1.1 requires internal format and format to be the same
-					assert(params.internalFormat == 0 || params.internalFormat == format);
+					ensure(params.internalFormat == 0 || params.internalFormat == format);
 					
 					m_format = format;
 					
