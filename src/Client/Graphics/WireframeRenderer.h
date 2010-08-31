@@ -21,11 +21,11 @@ namespace Dream
 		{
 			using namespace Dream::Numerics;
 			
+			/// These primatives are really designed for debugging purposes.
 			class WireframeRenderer
 			{
 			protected:
 				Vec4 m_color;
-				bool m_filled;
 				
 			public:
 				WireframeRenderer ();
@@ -39,6 +39,20 @@ namespace Dream
 				
 				void render (Display::RendererT *, const Geometry::LineSegment<2> &);
 				void render (Display::RendererT *, const Geometry::LineSegment<3> &);
+								
+				void render (Display::RendererT *, const Geometry::AlignedBox<2> &);
+				void render (Display::RendererT *, const Geometry::AlignedBox<3> &);
+				
+				void setPrimaryColor (const Vec4 &);
+			};
+			
+			class SolidRenderer
+			{
+			protected:
+				Vec4 m_color;
+			
+			public:
+				SolidRenderer ();
 								
 				void render (Display::RendererT *, const Geometry::AlignedBox<2> &);
 				void render (Display::RendererT *, const Geometry::AlignedBox<3> &);

@@ -108,7 +108,7 @@ namespace Dream
 				AlignedBox<2> texCoordBox(Vec2(ZERO), texCoordMax);
 				
 				// N shape triangle strip
-				const bool CORNERS[] = {false, false, false, true, true, false, true, true};
+				const bool CORNERS[] = {false, false, true, false, false, true, true, true};
 				
 				for (unsigned i = 0; i < 8; i += 2) {
 					Vector<2, bool> c = vec(CORNERS[i], CORNERS[i+1]);
