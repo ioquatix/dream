@@ -23,7 +23,6 @@ namespace Dream
 	{
 		namespace Audio
 		{
-			using namespace Dream::Core;
 			using namespace Dream::Numerics;
 			
 			class Sound;
