@@ -14,7 +14,7 @@ It has the following features:
 	High performance graphics using OpenGL (Support for OpenGL 2.0 and OpenGLES1.1)
 
 This framework has been designed for cross-platform compilation. It currently has support for the following targets:
-	Linux [Full]
+	Linux [Partial]
 	Windows [Partial]
 	iPhone [Full]
 	Mac OS X [Full]
