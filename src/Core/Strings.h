@@ -16,16 +16,12 @@
 #include <iostream>
 #include <sstream>
 
-#include <boost/format.hpp>
-#include <set>
-
 namespace Dream
 {
 	namespace Core
 	{
 		typedef std::string String;
-
-		using boost::format;
+		typedef std::stringstream StringStreamT;
 
 		// It is important to consider file encoding when using these functions
 		// and wchar_t/wstring. Deprecated
