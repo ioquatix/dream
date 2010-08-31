@@ -1,11 +1,21 @@
 /*
- *  Geometry/Mesh.cpp
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
+ *  Mesh.cpp
+ *  Model Builder
  *
- *  Created by Samuel Williams on 31/03/10.
- *  Copyright 2010 __MyCompanyName__. All rights reserved.
+ *  Created by Samuel Williams on 15/03/06.
+ *  Copyright 2006 Samuel Williams. All rights reserved.
  *
  */
 
 #include "Mesh.h"
 
+#include "Triangle.h"
+#include "Line.h"
+
+namespace Dream {
+	namespace Geometry {
+		void BasicMeshTraits::VertexProperties::apply (const Mat44 & transform) {
+			vertex = transform * vertex;
+		}
+	}
+}
