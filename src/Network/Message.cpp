@@ -289,10 +289,10 @@ namespace Dream {
 			m1->insert(body);
 			m1->updateSize();
 			
-			assertEqual(m1->dataLength(), sizeof(MsgTest), "Body is correct size");
+			check(m1->dataLength() == sizeof(MsgTest)) << "Body is correct size";
 			
-			assertTrue(m1->headerComplete(), "Header is complete");
-			assertTrue(m1->dataComplete(), "Data is complete");
+			check(m1->headerComplete()) << "Header is complete";
+			check(m1->dataComplete()) << "Data is complete";
 		}
 		
 #endif

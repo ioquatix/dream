@@ -506,7 +506,7 @@ namespace Dream
 			uint8_t v;
 			buf.read(2, v);
 			
-			assertEqual(v, 'b', "Read value is equal");
+			check(v == 'b') << "Read value is equal";
 		}
 		
 		UNIT_TEST(DynamicBuffer)
@@ -518,14 +518,14 @@ namespace Dream
 
 			DynamicBuffer a(100), b;
 
-			assertTrue(a.size() == 100, "Size set by constructor");
-			assertTrue(b.size() == 0, "Size set by constructor");
+			check(a.size() == 100) << "Size set by constructor";
+			check(b.size() == 0) << "Size set by constructor";
 
-			assertFalse(a.empty(), "Sized construtor is not empty");
-			assertTrue(b.empty(), "Default construtor is empty");
+			check(!a.empty()) << "Sized construtor is not empty";
+			check(b.empty()) << "Default construtor is empty";
 
-			assertTrue(a.capacity() >= a.size(), "Capacity >= size");
-			assertTrue(b.capacity() >= b.size(), "Capacity >= size");
+			check(a.capacity() >= a.size()) << "Capacity >= size";
+			check(b.capacity() >= b.size()) << "Capacity >= size";
 
 			testing("Assigning Data");
 
@@ -534,39 +534,39 @@ namespace Dream
 			a.assign((const ByteT*)data, (const ByteT*)data + dataLength);
 
 			// Performance check
-			assertTrue(a.capacity() == prevCapacity, "Don't realloc if size is within capacity");
+			check(a.capacity() == prevCapacity) << "Don't realloc if size is within capacity";
 
 			b.resize(dataLength);
 			b.assign((const ByteT*)data, (const ByteT*)data + dataLength);
 
-			assertTrue(a == b, "Data and size is the same");
-			assertTrue(a[5] == data[5], "Data indexing is correct");
+			check(a == b) << "Data and size is the same";
+			check(a[5] == data[5]) << "Data indexing is correct";
 
 			testing("Clearing buffers");
 
 			a.clear();
-			assertTrue(a.empty(), "Cleared buffer is empty");
+			check(a.empty()) << "Cleared buffer is empty";
 
-			assertFalse(a == b, "Buffers are different after being cleared");
+			check(a != b) << "Buffers are different after being cleared";
 
 			b.clear();
-			assertTrue(a == b, "Cleared buffers are equivalent");
+			check(a == b) << "Cleared buffers are equivalent";
 
 			testing("Capacity");
 
 			a.reserve(200);
-			assertTrue(a.capacity() == 200, "Reserved capacity for 200 bytes");
+			check(a.capacity() == 200) << "Reserved capacity for 200 bytes";
 
 			b.reserve(400);
-			assertTrue(b.capacity() == 400, "Reserved capacity for 400 bytes");
+			check(b.capacity() == 400) << "Reserved capacity for 400 bytes";
 
 			a.resize(600);
-			assertTrue(a.size() == 600, "Size increase was successful");
-			assertTrue(a.capacity() >= 600, "Capacity increased after size increase");
+			check(a.size() == 600) << "Size increase was successful";
+			check(a.capacity() >= 600) << "Capacity increased after size increase";
 			
 			a.expand(100);
 			
-			assertTrue(a.size() == 700, "Size expansion was successful");
+			check(a.size() == 700) << "Size expansion was successful";
 			
 			testing("Appending");
 			
@@ -574,8 +574,8 @@ namespace Dream
 			a.append(5, (const ByteT *)"abcde");
 			a.append(5, (const ByteT *)"abcde");
 			
-			assertEqual(a.size(), 10, "Size is correct after appending 10 characters");
-			assertEqual(a[1], 'b', "Character is correct");
+			check(a.size() == 10) << "Size is correct after appending 10 characters";
+			check(a[1] == 'b') << "Character is correct";
 		}
 
 		UNIT_TEST(PackedBuffer)
@@ -588,15 +588,15 @@ namespace Dream
 			testing("Construction");
 
 			buffer = PackedBuffer::newBuffer(dataLength);
-			assertTrue(buffer != NULL, "Buffer was created successfully");
+			check(buffer != NULL) << "Buffer was created successfully";
 
 			testing("Assigning Data");
 
 			buffer->assign((const ByteT*)data, (const ByteT*)data + dataLength, 0);
-			assertEqual(buffer->size(), dataLength, "Data size is consistent");
+			check(buffer->size() == dataLength) << "Data size is consistent";
 
 			for (unsigned i = 0; i < buffer->size(); i += 1)
-				assertEqual((*buffer)[i], data[i], "Data is correct");
+				check((*buffer)[i] == data[i]) << "Data is correct";
 		}
 		
 		UNIT_TEST(ReadingAndWritingBuffers)
@@ -633,10 +633,10 @@ namespace Dream
 			std::string writeString(writeBuffer->begin(), writeBuffer->end());
 			std::string readString(readBuffer.begin(), readBuffer.end());
 			
-			assertEqual(writeBuffer->size(), readBuffer.size(), "Data size is consistent");
-			assertEqual(writeBuffer->checksum(), readBuffer.checksum(), "Data is correct");
+			check(writeBuffer->size() == readBuffer.size()) << "Data size is consistent";
+			check(writeBuffer->checksum() == readBuffer.checksum()) << "Data is correct";
 			
-			assertEqual(writeString, readString, "Data string is equal");
+			check(writeString == readString) << "Data string is equal";
 			
 			writeBuffer->hexdump(std::cout);
 			readBuffer.hexdump(std::cout);

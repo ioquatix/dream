@@ -236,8 +236,8 @@ namespace Dream {
 
 			eventLoop->runForever();
 			
-			assertTrue(g_messageSentCount >= 1, "Messages sent");
-			assertEqual(g_messageSentCount, g_messageReceivedCount, "Messages sent and received successfully");
+			check(g_messageSentCount >= 1) << "Messages sent";
+			check(g_messageSentCount == g_messageReceivedCount) << "Messages sent and received successfully";
 		}
 		
 #endif

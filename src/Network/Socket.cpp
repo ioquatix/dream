@@ -498,10 +498,10 @@ namespace Dream {
 			eventLoop->runForever ();
 			eventLoop = NULL;
 			
-			assertTrue(g_clientConnected, "Client connected");
-			assertTrue(g_messageSent, "Message sent");
-			assertEqual(g_messageLengthSent, g_messageLengthReceived, "Message length is correct");
-			assertTrue(g_messageReceived, "Message received");
+			check(g_clientConnected) << "Client connected";
+			check(g_messageSent) << "Message sent";
+			check(g_messageLengthSent == g_messageLengthReceived) << "Message length is correct";
+			check(g_messageReceived) << "Message received";
 		}
 #endif
 		

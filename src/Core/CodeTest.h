@@ -27,8 +27,6 @@ void test (); \
 } name##CodeTestInstance; \
 void name##CodeTest::test ()
 
-#define BEGIN_TEST using namespace Dream::Core::CodeTestAssertions;
-
 #include <boost/type_traits/is_arithmetic.hpp>
 #include <boost/mpl/if.hpp>
 
@@ -68,7 +66,7 @@ namespace Dream
 			testing("Construction");
 
 			MyClassBeingTesting t;
-			assertTrue(t.good(), "Object is good");
+			check(t.good()) << "Object is good";
 		 }
 		 @endcode
 
@@ -95,7 +93,7 @@ namespace Dream
 
 				void operator+= (const Statistics & other);
 			};
-
+			
 			std::list<REF(Statistics)> m_tests;
 
 			PTR(Statistics) currentTest ();
@@ -109,85 +107,37 @@ namespace Dream
 			virtual void test () abstract;
 
 		public:
-			struct Assertion
-			{
-				bool value;
-				std::string message;
-				
-				explicit Assertion (bool _value);
-				Assertion operator! ();
-			};
-
 			CodeTest (std::string name);
 
 			/// Used to indicate the next set of assertions are testing a particular feature or functionality.
 			void testing (std::string testName);
-
-			/// Assert that the value is true, and mark a failed test if it is not.
-			void assertTrue (bool condition, std::string testSummary);
-			void assertTrue (const Assertion & assertion);
-
-			template <typename LeftT, typename RightT>
-			void assertEqual (const LeftT & left, const RightT & right, std::string summary);
-			
-			template <typename LeftT, typename RightT>
-			void assertEquivalent (const LeftT & left, const RightT & right, std::string summary);
-
-			/// Assert that the value is false, and mark a failed test if it is not.
-			void assertFalse (bool condition, std::string testSummary);
-			void assertFalse (const Assertion & assertion);
 			
 			/// A helper function to perform the test and print out statistics.
 			virtual void performTests ();
+			
+			/// Logs errors that occur when performing unit tests
+			class ErrorLogger
+			{
+				protected:
+					bool m_error;
+				
+				public:
+					ErrorLogger (bool error);
+					~ErrorLogger ();
+					
+					template <typename AnyT>
+					ErrorLogger& operator<< (const AnyT & fragment)
+					{
+						if (m_error)
+							std::cerr << fragment;
+						
+						return *this;
+					}
+			};
+			
+			/// Assert that the value is true, and mark a failed test if it is not.
+			class ErrorLogger check (bool condition);
 		};
-		
-		namespace CodeTestAssertions {
-			typedef CodeTest::Assertion Assertion;
-			
-			template <typename LeftT, typename RightT>
-			Assertion equal (const LeftT & lhs, const RightT & rhs, std::string summary)
-			{
-				Assertion result(lhs == rhs);
-				
-				if (result.value) {
-					result.message = summary;
-				} else {
-					std::stringstream error;
-					error << summary << " : " << lhs << " == " << rhs << " failed!";
-					result.message = error.str();
-				}
-				
-				return result;
-			}
-			
-			template <typename LeftT, typename RightT>
-			Assertion equivalent (const LeftT & lhs, const RightT & rhs, std::string summary)
-			{
-				Assertion result(lhs.equivalent(rhs));
-				
-				if (result.value) {
-					result.message = summary;
-				} else {
-					std::stringstream error;
-					error << summary << " : " << lhs << " ~= " << rhs << " failed!";
-					result.message = error.str();
-				}
-				
-				return result;
-			}
-		}
-		
-		template <typename LeftT, typename RightT>
-		void CodeTest::assertEqual (const LeftT & left, const RightT & right, std::string summary)
-		{
-			assertTrue(CodeTestAssertions::equal(left, right, summary));
-		}
-		
-		template <typename LeftT, typename RightT>
-		void CodeTest::assertEquivalent (const LeftT & left, const RightT & right, std::string summary)
-		{
-			assertTrue(CodeTestAssertions::equivalent(left, right, summary));
-		}
 		
 		std::ostream & operator<< (std::ostream & out, const std::type_info & rhs);
 	}

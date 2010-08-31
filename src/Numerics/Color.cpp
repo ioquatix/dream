@@ -30,42 +30,42 @@ namespace Dream
 			testing("RGB <-> HSL");
 			
 			t1 = RGB2HSL(c1);
-			assertEquivalent(t1, hsl1, "RGB -> HSL");
+			check(t1.equivalent(hsl1)) << "RGB -> HSL";
 			
 			t2 = HSL2RGB(t1);
-			assertEquivalent(c1, t2, "RGB -> HSL -> RGB");
+			check(c1.equivalent(t2)) << "RGB -> HSL -> RGB";
 
 			t1 = RGB2HSL(c2);
-			assertEquivalent(t1, hsl2, "RGB -> HSL");
+			check(t1.equivalent(hsl2)) << "RGB -> HSL";
 			
 			t2 = HSL2RGB(t1);
-			assertEquivalent(c2, t2, "RGB -> HSL -> RGB");
+			check(c2.equivalent(t2)) << "RGB -> HSL -> RGB";
 			
 			t1 = RGB2HSL(c3);
-			assertEquivalent(t1, hsl3, "RGB -> HSL");
+			check(t1.equivalent(hsl3)) << "RGB -> HSL";
 			
 			t2 = HSL2RGB(t1);
-			assertEquivalent(c3, t2, "RGB -> HSL -> RGB");
+			check(c3.equivalent(t2)) << "RGB -> HSL -> RGB";
 			
 			testing("RGB <-> HSV");
 			
 			t1 = RGB2HSV(c1);
-			assertEquivalent(t1, hsv1, "RGB -> HSV");
+			check(t1.equivalent(hsv1)) << "RGB -> HSV";
 			
 			t2 = HSV2RGB(t1);
-			assertEquivalent(c1, t2, "RGB -> HSV -> RGB");
+			check(c1.equivalent(t2)) << "RGB -> HSV -> RGB";
 			
 			t1 = RGB2HSV(c2);
-			assertEquivalent(t1, hsv2, "RGB -> HSV");
+			check(t1.equivalent(hsv2)) << "RGB -> HSV";
 			
 			t2 = HSV2RGB(t1);
-			assertEquivalent(c2, t2, "RGB -> HSV -> RGB");
+			check(c2.equivalent(t2)) << "RGB -> HSV -> RGB";
 			
 			t1 = RGB2HSV(c3);
-			assertEquivalent(t1, hsv3, "RGB -> HSV");
+			check(t1.equivalent(hsv3)) << "RGB -> HSV";
 			
 			t2 = HSV2RGB(t1);
-			assertEquivalent(c3, t2, "RGB -> HSV -> RGB");
+			check(c3.equivalent(t2)) << "RGB -> HSV -> RGB";
 		}		
 #endif
 	}

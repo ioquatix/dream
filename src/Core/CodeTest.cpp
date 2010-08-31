@@ -57,7 +57,7 @@ namespace Dream
 			cout << endl << center(" Summary ", 60, '_') << endl;
 			overall->printSummary();
 		}
-
+		
 		void CodeTestRegistry::performAllTests ()
 		{
 			g_codeTestRegistry::instance()._performAllTests();
@@ -73,39 +73,24 @@ namespace Dream
 			m_tests.push_back(new Statistics(testName));
 		}
 
-		void CodeTest::assertTrue (bool condition, std::string testSummary)
+		CodeTest::ErrorLogger CodeTest::check (bool condition)
 		{
-			if (condition == false)
-			{
-				std::cout << "Failed: " << testSummary << std::endl;
-				std::cout << std::string(60, ' ') << "\t***" << std::endl;
+			if (condition == false) {
 				currentTest()->failTest();
-			} else
-			{
-				//std::cout << "Passed: " << testSummary << std::endl;
+				
+				std::cerr << "Test Failed: ";
+				
+				return ErrorLogger(true);
+			} else {
 				currentTest()->passTest();
+				return ErrorLogger(false);
 			}
-		}
-
-		void CodeTest::assertFalse (bool condition, std::string testSummary)
-		{
-			assertTrue(!condition, testSummary);
-		}
-
-		void CodeTest::assertTrue (const Assertion & assertion)
-		{
-			assertTrue(assertion.value, assertion.message);
-		}
-
-		void CodeTest::assertFalse (const Assertion & assertion)
-		{
-			assertFalse(assertion.value, assertion.message);
 		}
 
 		void CodeTest::performTests ()
 		{
 			using namespace std;
-			cout << endl << center((format(" %1% ") % m_name).str(), 60, '_') << endl;
+			cout << endl << center(" " + m_name + " ", 60, '=') << endl;
 
 			test();
 
@@ -140,6 +125,18 @@ namespace Dream
 
 			std::cout << " out of " << m_failed + m_passed << " total" << std::endl;
 		}
+		
+		CodeTest::ErrorLogger::ErrorLogger (bool error)
+			: m_error(error)
+		{
+		
+		}
+		
+		CodeTest::ErrorLogger::~ErrorLogger ()
+		{
+			if (m_error)
+				std::cerr << std::endl;
+		}
 
 		PTR(CodeTest::Statistics) CodeTest::currentTest ()
 		{
@@ -168,16 +165,6 @@ namespace Dream
 				stats->printSummary();
 			}
 		}
-		
-		CodeTest::Assertion::Assertion (bool _value) : value(_value)
-		{
-		}
-		
-		CodeTest::Assertion CodeTest::Assertion::operator! ()
-		{
-			Assertion copy(*this);
-			copy.value = !value;
-			return *this;
-		}
+
 	}
 }

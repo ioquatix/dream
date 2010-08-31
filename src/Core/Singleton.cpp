@@ -55,8 +55,8 @@ namespace Dream
 			testing("Construction and Access");
 
 			myFunction2(10);
-			assertEqual(myFunction1(), 10, "Value was set correctly");
-			assertEqual(myFunction3(), 10, "Value was set correctly");
+			check(myFunction1() == 10) << "Value was set correctly";
+			check(myFunction3() == 10) << "Value was set correctly";
 		}
 #endif
 	}

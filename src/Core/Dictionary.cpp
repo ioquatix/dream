@@ -96,7 +96,7 @@ namespace Dream
 				
 				int key1 = dict1->get<int>("Key1");
 				
-				assertEqual(key1, 5, "Value is equal");
+				check(key1 == 5) << "Value is equal";
 				
 				REF(IData) data = dict1->serialize();
 				
@@ -104,7 +104,7 @@ namespace Dream
 				
 				dict2->deserialize(data);
 				
-				assertEqual(dict1->get<int>("Key1"), dict2->get<int>("Key1"), "Values are equal");
+				check(dict1->get<int>("Key1") == dict2->get<int>("Key1")) << "Values are equal";
 				
 				dict1->set("Dictionary Name", "dict1");
 				

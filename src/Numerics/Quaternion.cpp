@@ -267,12 +267,15 @@ namespace Dream
 		UNIT_TEST(Quaternion)
 		{
 			testing("Construction");
+			
 			// Angle axis
 			Quat q(R90, vec(1.0, 0.0, 0.0));
 			Mat44 m = Mat44::rotatingMatrix(R90, vec(1.0, 0.0, 0.0));
 
-			assertEquivalent(q.rotationAxis(), vec(1.0, 0.0, 0.0), "Rotation axis is correct");
-			assertTrue(equivalent((RealT)q.rotationAngle(), (RealT)R90), "Rotation angle is correct");
+			check(q.rotationAxis().equivalent(Vec3(1.0, 0.0, 0.0))) << "Rotation axis is correct";
+			check(equivalent((RealT)R90, (RealT)q.rotationAngle())) << "Rotation angle is correct";
+
+			testing("Multiplication");
 
 			Vec3 si(15.14, -12.5, 4.55);
 
@@ -281,7 +284,41 @@ namespace Dream
 			r1 = q * si;
 			r2 = m * si;
 
-			assertTrue(r1.equivalent(r2), "Represented rotation is same");
+			check(r1.equivalent(r2)) << "Represented rotation is same";
+			
+			Quat a(R90, Vec3(1, 0, 0).normalizedVector());
+			Quat b(R90, Vec3(0, 1, 0).normalizedVector());
+			Quat c = a.rotationTo(b);
+			
+			check((a * c).vector().equivalent(b.vector())) << "Rotations are equivalent";
+
+			testing("Axis Extraction");
+
+			Quat identity(IDENTITY);
+
+			check(identity.extractAxis(X).equivalent(Vec3(1, 0, 0))) << "X axis is correct";
+			check(identity.extractAxis(Y).equivalent(Vec3(0, 1, 0))) << "Y axis is correct";
+			check(identity.extractAxis(Z).equivalent(Vec3(0, 0, 1))) << "Z axis is correct";
+
+			check(a.extractAxis(X).equivalent(Vec3(1, 0, 0))) << "X axis is correct";
+			check(a.extractAxis(Y).equivalent(Vec3(0, 0, 1))) << "Y axis is correct";
+			check(a.extractAxis(Z).equivalent(Vec3(0, -1, 0))) << "Z axis is correct";
+			
+			testing("Rotation Matrix");
+			
+			Quat d(R360 * 0.34, Vec3(0.52, 0.1, -0.9).normalizedVector());
+			Vec3 va(1, 0, 0), vb(0, 1, 0), vc(0, 0, 1);
+			
+			Mat44 t = d.rotatingMatrix();
+
+			check(d.extractAxis(X).equivalent(t * va)) << "X axis is correct";
+			check(d.extractAxis(Y).equivalent(t * vb)) << "Y axis is correct";
+			check(d.extractAxis(Z).equivalent(t * vc)) << "Z axis is correct";
+			
+			// Transformation by matrix and transformation by multiplication is not correct
+			// check((d * va).equivalent(t * va)) << "X rotation is correct";
+			// check((d * vb).equivalent(t * vb)) << "Y rotation is correct";
+			// check((d * vc).equivalent(t * vc)) << "Z rotation is correct";
 		}
 #endif
 	}

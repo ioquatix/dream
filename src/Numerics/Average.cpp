@@ -25,14 +25,14 @@ namespace Dream
 			s += 5;
 			s += 15;
 
-			assertEqual(s.average(), 10, "Average calculated correctly");
+			check(s.average() == 10) << "Average calculated correctly";
 
 			Average<int> q;
 			q += 20;
 			q += 20;
 			q += s;
 
-			assertEqual(q.average(), 15, "Average calculated correctly");
+			check(q.average() == 15) << "Average calculated correctly";
 		}
 #endif
 	}

@@ -113,30 +113,28 @@ namespace Dream {
 
 	UNIT_TEST(Reference)
 	{
-		BEGIN_TEST
-		
 		testing("Shared Object");
 		
 		REF(SharedObject) s1, s2, s3;
 		
-		assertEqual(s1, s2, "Null objects are equal");
+		check(s1 == s2) << "Null objects are equal";
 		
 		s1 = new SharedObject;
 		
-		assertFalse(equal(s1, s2, "Null and non-null objects are not equal"));
+		check(s1 != s2) << "Null and non-null objects are not equal";
 		
 		s2 = new SharedObject;
 		s3 = new SharedObject;
 		
-		assertEqual(s1, s1, "Objects are equal");
-		assertFalse(equal(s1, s2, "Objects are not equal"));
+		check(s1 == s1) << "Objects are equal";
+		check(s1 != s2) << "Objects are not equal";
 		
 		std::set<REF(SharedObject)> objects;
 		objects.insert(s1);
 		objects.insert(s2);
 		objects.insert(s3);
 		
-		assertEqual(objects.size(), 3, "Set contains correct number of objects");
+		check(objects.size() == 3) << "Set contains correct number of objects";
 	}
 #endif
 	

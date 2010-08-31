@@ -91,7 +91,7 @@ namespace Dream
 
 			REF(IData) a = Data::klass.initWithBuffer(sb);
 
-			assertTrue(a->size() == strlen(data), "Data length is correct");
+			check(a->size() == strlen(data)) << "Data length is correct";
 		}
 #endif
 	}

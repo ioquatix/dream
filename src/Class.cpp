@@ -194,14 +194,14 @@ namespace Dream
 	{
 		testing("Static Type");
 
-		assertEqual(ITestInterface::staticType()->objectClass(), (IClass*)NULL, "Interface has no object class");
-		assertTrue(ITestInterface::staticType()->isInterface(), "Interface is marked correctly");
+		check(ITestInterface::staticType()->objectClass() == (IClass*)NULL) << "Interface has no object class";
+		check(ITestInterface::staticType()->isInterface()) << "Interface is marked correctly";
 
-		assertEqual(ObjectImplementation::staticType()->objectClass(), ObjectImplementation::staticClass(), "Object has object class");
-		assertFalse(DerivedImplementation::staticType()->isInterface(), "Interface is marked correctly");
+		check(ObjectImplementation::staticType()->objectClass() == ObjectImplementation::staticClass()) << "Object has object class";
+		check(!DerivedImplementation::staticType()->isInterface()) << "Interface is marked correctly";
 
-		assertEqual(sizeof(ObjectImplementation), ObjectImplementation::staticType()->size(), "Object size is reported correctly");
-		assertEqual(typeid(ObjectImplementation), ObjectImplementation::staticType()->typeinfo(), "Typeinfo is reported correctly");
+		check(sizeof(ObjectImplementation) == ObjectImplementation::staticType()->size()) << "Object size is reported correctly";
+		check(typeid(ObjectImplementation) == ObjectImplementation::staticType()->typeinfo()) << "Typeinfo is reported correctly";
 
 		testing("Construction");
 
@@ -209,13 +209,13 @@ namespace Dream
 		REF(ITestInterface) o2 = OtherImplementation::staticClass()->init();
 		REF(ITestInterface) o3 = DerivedImplementation::staticClass()->init();
 
-		assertEqual(o1->referenceCount(), 1, "Reference count is correct");
-		assertEqual(o2->referenceCount(), 1, "Reference count is correct");
-		assertEqual(o3->referenceCount(), 1, "Reference count is correct");
+		check(o1->referenceCount() == 1) << "Reference count is correct";
+		check(o2->referenceCount() == 1) << "Reference count is correct";
+		check(o3->referenceCount() == 1) << "Reference count is correct";
 
-		assertEqual(o1->objectClass(), ObjectImplementation::staticClass(), "Dynamic class is the same as static class");
-		assertEqual(o2->objectClass(), OtherImplementation::staticClass(), "Dynamic class is the same as static class");
-		assertEqual(o3->objectClass(), DerivedImplementation::staticClass(), "Dynamic class is the same as static class");
+		check(o1->objectClass() == ObjectImplementation::staticClass()) << "Dynamic class is the same as static class";
+		check(o2->objectClass() == OtherImplementation::staticClass()) << "Dynamic class is the same as static class";
+		check(o3->objectClass() == DerivedImplementation::staticClass()) << "Dynamic class is the same as static class";
 
 		testing("Instantiation");
 
@@ -228,16 +228,16 @@ namespace Dream
 		REF(ITestInterface) o5 = cls2->init();
 		REF(ITestInterface) o6 = cls3->init();
 
-		assertEqual(o1->objectType(), o4->objectType(), "Dynamic instantiation returned correct type");
-		assertEqual(o2->objectType(), o5->objectType(), "Dynamic instantiation returned correct type");
-		assertEqual(o3->objectType(), o6->objectType(), "Dynamic instantiation returned correct type");
+		check(o1->objectType() == o4->objectType()) << "Dynamic instantiation returned correct type";
+		check(o2->objectType() == o5->objectType()) << "Dynamic instantiation returned correct type";
+		check(o3->objectType() == o6->objectType()) << "Dynamic instantiation returned correct type";
 
 		testing("Inheritance");
 
 		// o3 is a kind of o1
-		assertTrue(o1->objectType()->isClassOf(o3), "Derived is class of parent");
-		assertTrue(o3->isKindOf(o1->objectType()), "Derived is class of parent shorthand");
-		assertFalse(o1->isKindOf(o3->objectType()), "Parent is not class of child");
+		check(o1->objectType()->isClassOf(o3)) << "Derived is class of parent";
+		check(o3->isKindOf(o1->objectType())) << "Derived is class of parent shorthand";
+		check(!o1->isKindOf(o3->objectType())) << "Parent is not class of child";
 	}
 	
 	class IPerformanceTest

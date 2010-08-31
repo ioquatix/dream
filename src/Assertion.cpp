@@ -73,7 +73,7 @@ namespace Dream
 			exceptionThrown = true;
 		}
 
-		assertTrue(exceptionThrown, "Ensure threw exception");
+		check(exceptionThrown) << "Ensure threw exception";
 
 		exceptionThrown = false;
 		try
@@ -85,7 +85,7 @@ namespace Dream
 			exceptionThrown = true;
 		}
 
-		assertFalse(exceptionThrown, "Ensure didn't throw exception");
+		check(!exceptionThrown) << "Ensure didn't throw exception";
 	}
 #endif
 }

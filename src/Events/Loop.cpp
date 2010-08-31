@@ -704,7 +704,7 @@ namespace Dream
 			
 			eventLoop->runForever ();
 			
-			assertEqual(ticks, 100, "Ticker callback called correctly");
+			check(ticks == 100) << "Ticker callback called correctly";
 			
 			eventLoop = Loop::klass.init();
 			
@@ -714,7 +714,7 @@ namespace Dream
 			
 			eventLoop->runUntilTimeout(1.01);
 			
-			assertEqual(ticks, 10, "Ticker callback called correctly within specified timeout");
+			check(ticks == 10) << "Ticker callback called correctly within specified timeout";
 		}
 		
 		int notified;
@@ -760,7 +760,7 @@ namespace Dream
 			
 			eventLoop->runForever();
 			
-			assertEqual(notified, 10, "Notification occurred");
+			check(notified == 10) << "Notification occurred";
 		}
 		
 		static void sendStopAfterDelay (REF(Loop) eventLoop)
@@ -794,7 +794,7 @@ namespace Dream
 			// Will be stopped after 2 seconds from the above thread
 			eventLoop->runForever();
 			
-			assertFalse(timerStopped, "Thread stopped runloop");
+			check(!timerStopped) << "Thread stopped runloop";
 		}
 		
 #endif

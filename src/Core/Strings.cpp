@@ -98,9 +98,9 @@ namespace Dream
 		{
 			testing("Formatting");
 
-			assertEqual(center("Apple", 10, ' '), "   Apple  ", "String is centered");
-			assertEqual(center("Apple", 11, ' '), "   Apple   ", "String is centered");
-			assertEqual(center("Apple", 11, '-'), "---Apple---", "String is centered");
+			check(center("Apple", 10, ' ') == "   Apple  ") << "String is centered";
+			check(center("Apple", 11, ' ') == "   Apple   ") << "String is centered";
+			check(center("Apple", 11, '-') == "---Apple---") << "String is centered";
 		}
 		
 		UNIT_TEST(StringConversions)
@@ -109,9 +109,9 @@ namespace Dream
 			
 			std::wstring result = convertStringToUTF16(s1);
 			
-			assertEqual(result.size(), 4, "Converted string is correct length");
-			assertEqual(result[2], 0xd834, "Converted character is correct value");
-			assertEqual(result[3], 0xdd1e, "Converted character is correct value");
+			check(result.size() == 4) << "Converted string is correct length";
+			check(result[2] == 0xd834) << "Converted character is correct value";
+			check(result[3] == 0xdd1e) << "Converted character is correct value";
 		}
 #endif
 	}

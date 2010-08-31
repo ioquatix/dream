@@ -51,6 +51,8 @@ namespace Dream
 #include "Assertion.h"
 #include "Class.h"
 
+#ifdef ENABLE_TESTING
 #include "Core/CodeTest.h"
+#endif
 
 #endif

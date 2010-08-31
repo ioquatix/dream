@@ -40,8 +40,8 @@ namespace Dream
 
 			a.loadTestPattern();
 
-			assertEqual(a, a * I, "Matricies are equivalent after multiplication by identity");
-			assertEqual(I * a, a, "Matricies are equivalent after multiplication by identity");
+			check(a == a * I) << "Matricies are equivalent after multiplication by identity";
+			check(I * a == a) << "Matricies are equivalent after multiplication by identity";
 
 			testing("Vector Multiplication");
 			Vec4 r, pt(10.0, 0.0, 0.0, 1.0);
@@ -49,13 +49,13 @@ namespace Dream
 
 			r = b * pt;
 
-			assertTrue(r.equivalent(vec(0.0, 0.0, 10.0, 1.0)), "Rotation was successful");
+			check(r.equivalent(vec(0.0, 0.0, 10.0, 1.0))) << "Rotation was successful";
 
 			b = rotation(R180, vec(0.0, 1.0, 0.0), vec(0.0, 10.0, 10.0));
 
 			r = b * pt;
 
-			assertTrue(r.equivalent(vec(-10.0, 0.0, -20.0, 1.0)), "Rotation was successful");
+			check(r.equivalent(vec(-10.0, 0.0, -20.0, 1.0))) << "Rotation was successful";
 		}
 		
 		UNIT_TEST(MatrixVector)
@@ -68,7 +68,7 @@ namespace Dream
 			
 			a.set(0, 0, vecIdent, 5);
 			
-			assertEqual(a, matIdent, "Vector was copied correctly");
+			check(a == matIdent) << "Vector was copied correctly";
 			
 			Vec4 c1(0, 1, 2, 3), c2(4, 5, 6, 7), c3(8, 10, 12, 14), c4(9, 11, 13, 15);
 			a.zero();
@@ -81,7 +81,7 @@ namespace Dream
 			Mat44 testPattern;
 			testPattern.loadTestPattern();
 			
-			assertEqual(a, testPattern, "Vector was copied correctly");
+			check(a == testPattern) << "Vector was copied correctly";
 		}
 #endif
 	}

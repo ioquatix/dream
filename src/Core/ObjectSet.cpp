@@ -240,16 +240,16 @@ namespace Dream
 				ObjectSet::ObjectID oid3 = objects->insert(new TestResource);
 				ObjectSet::ObjectID oid4 = objects->insert(new TestResource);
 				
-				assertEqual(objects->size(), 4, "Object set contains 4 objects");
+				check(objects->size() == 4) << "Object set contains 4 objects";
 				
 				objects->erase(oid3);
 				
-				assertEqual(objects->size(), 3, "Object set contains 3 objects");
+				check(objects->size() == 3) << "Object set contains 3 objects";
 				
 				ObjectSet::ObjectID oid5 = objects->insert(new TestResource);
 				
-				assertEqual(objects->size(), 4, "Object set contains 4 objects");
-				assertEqual(oid3.identity(), oid5.identity(), "Object was placed into previous slot");	
+				check(objects->size() == 4) << "Object set contains 4 objects";
+				check(oid3.identity() == oid5.identity()) << "Object was placed into previous slot";	
 			}
 		}
 #endif

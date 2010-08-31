@@ -287,34 +287,34 @@ namespace Dream
 		{
 			testing("HTTP URI");
 			URI a("http://user12:abc@www.google.com:80/blah?bob=2");
-			assertEqual(a.scheme(), "http", "Scheme is correct");
-			assertEqual(a.location(), "user12:abc@www.google.com:80", "Location is correct");
-			assertEqual(a.username(), "user12", "User is correct");
-			assertEqual(a.password(), "abc", "Password is correct");
-			assertEqual(a.hostname(), "www.google.com", "Hostname is correct");
-			assertEqual(a.port(), 80, "Port is correct");
-			assertEqual(a.path(), "/blah", "Path is correct");
-			assertEqual(a.query(), "?bob=2", "Query is correct");
+			check(a.scheme() == "http") << "Scheme is correct";
+			check(a.location() == "user12:abc@www.google.com:80") << "Location is correct";
+			check(a.username() == "user12") << "User is correct";
+			check(a.password() == "abc") << "Password is correct";
+			check(a.hostname() == "www.google.com") << "Hostname is correct";
+			check(a.port() == 80) << "Port is correct";
+			check(a.path() == "/blah") << "Path is correct";
+			check(a.query() == "?bob=2") << "Query is correct";
 
 			testing("Mailto URI");
 			URI b("mailto:blah@blah.com");
-			assertEqual(b.scheme(), "mailto", "Scheme is correct");
-			assertEqual(b.path(), "blah@blah.com", "Path is correct");
+			check(b.scheme() == "mailto") << "Scheme is correct";
+			check(b.path() == "blah@blah.com") << "Path is correct";
 
 			testing("File URI");
 			URI c("file:/etc/fstab");
-			assertEqual(c.scheme(), "file", "Scheme is correct");
-			assertEqual(c.path(), "/etc/fstab", "Path is correct");
+			check(c.scheme() == "file") << "Scheme is correct";
+			check(c.path() == "/etc/fstab") << "Path is correct";
 
 			testing("Simple File URI");
 			URI d("/etc/fstab");
-			assertEqual(d.scheme(), "", "Scheme is correct");
-			assertEqual(d.path(), "/etc/fstab", "Path is correct");
+			check(d.scheme() == "") << "Scheme is correct";
+			check(d.path() == "/etc/fstab") << "Path is correct";
 
 			testing("Path Constructed URI");
 			URI e("file", "/Apples/and/oranges");
-			assertEqual(e.scheme(), "file", "Scheme is correct");
-			assertEqual(e.path(), "/Apples/and/oranges", "Path is correct");
+			check(e.scheme() == "file") << "Scheme is correct";
+			check(e.path() == "/Apples/and/oranges") << "Path is correct";
 		}
 #endif
 	}

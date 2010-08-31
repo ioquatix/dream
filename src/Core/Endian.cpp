@@ -41,28 +41,28 @@ namespace Dream
 			a = 0x10203040;
 
 			orderCopy(a, b, hostEndian(), otherEndian);
-			assertTrue(b == 0x40302010, "32-bit endian conversion is correct");
+			check(b == 0x40302010) << "32-bit endian conversion is correct";
 
 			a = 100;
 			orderCopy(a, b, hostEndian(), otherEndian);
 			orderCopy(b, c, otherEndian, hostEndian());
-			assertTrue(a == c, "Converted values are the same");
+			check(a == c) << "Converted values are the same";
 
 			endianDecode(b, otherEndian, hostEndian());
-			assertTrue(a == b, "Correctly converted in-place");
+			check(a == b) << "Correctly converted in-place";
 
 			orderCopy(a, b, LITTLE, LITTLE);
-			assertTrue(a == b, "Values are not converted when endian is the same");
+			check(a == b) << "Values are not converted when endian is the same";
 
 			orderCopy(a, b, BIG, BIG);
-			assertTrue(a == b, "Values are not converted when endian is the same");
+			check(a == b) << "Values are not converted when endian is the same";
 
 			orderCopy(a, b, LITTLE, BIG);
-			assertTrue(a != b, "Values are not converted when endian is the same");
+			check(a != b) << "Values are not converted when endian is the same";
 
 			d = 0x1020304050607080ull;
 			orderCopy(d, e, hostEndian(), otherEndian);
-			assertTrue(e == 0x8070605040302010ull, "64-bit endian conversion is correct");
+			check(e == 0x8070605040302010ull) << "64-bit endian conversion is correct";
 
 			testing("Ordered Structs");
 
@@ -74,20 +74,20 @@ namespace Dream
 
 			if (hostEndian() == LITTLE)
 			{
-				assertTrue(ls.value.base == 0x10203040, "Value is stored in native order");
-				assertTrue(bs.value.base == 0x40302010, "Value is stored in converted order");
+				check(ls.value.base == 0x10203040) << "Value is stored in native order";
+				check(bs.value.base == 0x40302010) << "Value is stored in converted order";
 			} else
 			{
-				assertTrue(bs.value.base == 0x10203040, "Value is stored in native order");
-				assertTrue(ls.value.base == 0x40302010, "Value is stored in converted order");
+				check(bs.value.base == 0x10203040) << "Value is stored in native order";
+				check(ls.value.base == 0x40302010) << "Value is stored in converted order";
 			}
 
 			a = ls.value;
 			b = bs.value;
 
-			assertTrue(a == b, "Converted values are same");
-			assertTrue(ls.value == b, "Equality operator works");
-			assertTrue(bs.value == a, "Equality operator works");
+			check(a == b) << "Converted values are same";
+			check(ls.value == b) << "Equality operator works";
+			check(bs.value == a) << "Equality operator works";
 		}
 #endif
 	}

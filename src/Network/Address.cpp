@@ -443,7 +443,7 @@ namespace Dream {
 			testing("Construction");
 			
 			AddressesT addrs1 = Address::interfaceAddressesForPort(1024, SOCK_STREAM);
-			assertTrue(addrs1.size() > 0, "Interface addresses available");
+			check(addrs1.size() > 0) << "Interface addresses available";
 			debugAddresses("interfaceAddressesForPort(1024, SOCK_STREAM)", addrs1);
 			
 			bool foundIPv4AddressFamily;
@@ -453,7 +453,7 @@ namespace Dream {
 					foundIPv4AddressFamily = true;
 			}
 			
-			assertTrue(foundIPv4AddressFamily, "IPv4 address was present");
+			check(foundIPv4AddressFamily) << "IPv4 address was present";
 			
 			bool exceptionThrown = false;
 			try
@@ -465,14 +465,14 @@ namespace Dream {
 				exceptionThrown = true;
 			}
 			
-			assertTrue(exceptionThrown, "Address resolution failed");
+			check(exceptionThrown) << "Address resolution failed";
 			
 			AddressesT addrs2 = Address::addressesForName("localhost", "http", SOCK_STREAM);
-			assertTrue(addrs2.size() > 0, "Host addresses available");
+			check(addrs2.size() > 0) << "Host addresses available";
 			debugAddresses("addressesForName(localhost, IMAP, SOCK_STREAM)", addrs2);
 			
 			AddressesT addrs3 = Address::addressesForURI(Core::URI("http://localhost"));
-			assertTrue(addrs3.size() > 0, "Host addresses available");
+			check(addrs3.size() > 0) << "Host addresses available";
 			debugAddresses("addressesForURI(http://localhost)", addrs3);
 		}
 		

@@ -30,7 +30,7 @@ namespace Dream
 			s[2] = vec<int>(5, 5);
 			s[3] = vec<int>(-5, 5);			
 			
-			assertTrue(s.center() == vec<int>(0, 0), "Center is located correctly");
+			check(s.center() == vec<int>(0) << 0), "Center is located correctly";
 		}
 #endif
 	}

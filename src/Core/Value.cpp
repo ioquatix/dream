@@ -192,24 +192,22 @@ namespace Dream
 #ifdef ENABLE_TESTING
 		UNIT_TEST(Value)
 		{
-			BEGIN_TEST
-			
 			testing("Typed Value");
 			TypedValue<int> intValue (10);
 
-			assertEqual(intValue.typeinfo(), typeid(5), "Typeinfo is same");
-			assertEqual(intValue.size(), sizeof(5), "Size is same");
+			check(intValue.typeinfo() == typeid(5)) << "Typeinfo is same";
+			check(intValue.size() == sizeof(5)) << "Size is same";
 
 			TypedValue<unsigned> unsignedValue (10);
 			ITypedValue * q1 = &intValue;
 			ITypedValue * q2 = &unsignedValue;
 
-			assertEqual(q1->extract<int>(), q2->extract<unsigned>(), "Values are equal");
+			check(q1->extract<int>() == q2->extract<unsigned>()) << "Values are equal";
 
 			q1->set<int>(5);
 			q2->set<unsigned>(5);
 
-			assertEqual(q1->extract<int>(), q2->extract<unsigned>(), "Values are equal");
+			check(q1->extract<int>() == q2->extract<unsigned>()) << "Values are equal";
 
 			bool exceptionThrown;
 
@@ -222,7 +220,7 @@ namespace Dream
 				exceptionThrown = true;
 			}
 
-			assertTrue(exceptionThrown, "Exception thrown when type is not correct");
+			check(exceptionThrown) << "Exception thrown when type is not correct";
 
 			testing("Generic Values");
 
@@ -230,20 +228,20 @@ namespace Dream
 			Value v2(10);
 			Value v3;
 
-			assertEqual(v1.extract<int>(), 5, "Value is set correctly");
-			assertEqual(v2.extract<int>(), 10, "Value is set correctly");
+			check(v1.extract<int>() == 5) << "Value is set correctly";
+			check(v2.extract<int>() == 10) << "Value is set correctly";
 
-			assertTrue(v1.defined(), "Value is defined");
-			assertTrue(v2.defined(), "Value is defined");
+			check(v1.defined()) << "Value is defined";
+			check(v2.defined()) << "Value is defined";
 
-			assertFalse(v3.defined(), "Value is undefined");
-			assertTrue(v3.undefined(), "Value is undefined");
+			check(!v3.defined()) << "Value is undefined";
+			check(v3.undefined()) << "Value is undefined";
 
 			v1.set(5);
 			v2.set(5);
 
-			assertEqual(v1, v2, "Values are equal");
-			assertFalse(equal(v1, v3, "Values are not equal"));
+			check(v1 == v2) << "Values are equal";
+			check(!(v1 == v3)) << "Values are not equal";
 
 			testing("Input and Output");
 
@@ -252,12 +250,12 @@ namespace Dream
 			b1 << 15;
 			b1 >> v1;
 			
-			assertEqual(v1.extract<int>(), 15, "Value was parsed correctly");
+			check(v1.extract<int>() == 15) << "Value was parsed correctly";
 
 			b2 << v1;
 			b2 >> v2;
 
-			assertEqual(v1, v2, "Values are equal");
+			check(v1 == v2) << "Values are equal";
 			
 			testing("Pointers");
 			
@@ -267,8 +265,8 @@ namespace Dream
 			v2.set(&i);
 			v3.set(&f);
 			
-			assertEqual(v1, v2, "Values are equal");
-			assertFalse(v2 == v3, "Values are not equal");
+			check(v1 == v2) << "Values are equal";
+			check(!(v2 == v3)) << "Values are not equal";
 		}
 #endif
 	}

@@ -14,6 +14,11 @@
 namespace Dream {
 	namespace Geometry {
 		
+#pragma mark -
+#pragma mark Unit Tests
+
+#ifdef ENABLE_TESTING
+		
 		UNIT_TEST(Sphere) {
 			testing("Sphere-Sphere Intersection");
 			
@@ -22,17 +27,17 @@ namespace Dream {
 			Sphere<2> c(Vec2( 20, 0), 10);
 			
 			Vec2 d;
-			assertTrue(a.intersectsWith(b, d) == SHAPES_INTERSECT, "Spheres overlap");
-			assertEqual(d.length(), 10.0, "Spheres displaced by the distance between their centers");
+			check(a.intersectsWith(b, d) == SHAPES_INTERSECT) << "Spheres overlap";
+			check(d.length() == 10.0) << "Spheres displaced by the distance between their centers"; 
 			
-			assertTrue(b.intersectsWith(c, d) == EDGES_INTERSECT, "Sphere's edges overlap");
-			assertEqual(d.length(), 20.0, "Spheres displaced by the distance between their centers");
+			check(b.intersectsWith(c, d) == EDGES_INTERSECT) << "Sphere's edges overlap";
+			check(d.length() == 20.0) << "Spheres displaced by the distance between their centers";
 			
 			testing("Sphere-Point Intersection");
 			
 			Vec2 p(5.0, 0.0);
-			assertTrue(b.intersectsWith(p, d) == SHAPES_INTERSECT, "Point lies within sphere");
-			assertTrue(a.intersectsWith(p, d) == NO_INTERSECTION, "Point lies outside of sphere");
+			check(b.intersectsWith(p, d) == SHAPES_INTERSECT) << "Point lies within sphere";
+			check(a.intersectsWith(p, d) == NO_INTERSECTION) << "Point lies outside of sphere";
 			
 			testing("Sphere-Line Intersection");
 			
@@ -40,12 +45,15 @@ namespace Dream {
 			LineSegment<2> segmentA(Vec2(-50, 0), Vec2(50, 0));
 			LineSegment<2> segmentB(Vec2(-50, -10), Vec2(50, -10));
 			
-			assertTrue(b.intersectsWith(segmentA, t1, t2) == SHAPES_INTERSECT, "Line and sphere overlap at two points");
-			assertEquivalent(segmentA.pointAtTime(t1), Vec2(-10.0, 0), "Line intersects surface of sphere");
-			assertEquivalent(segmentA.pointAtTime(t2), Vec2(10.0, 0), "Line intersects surface of sphere");
+			check(b.intersectsWith(segmentA, t1, t2) == SHAPES_INTERSECT) << "Line and sphere overlap at two points";
+			check(segmentA.pointAtTime(t1).equivalent(Vec2(-10.0, 0))) << "Line intersects surface of sphere";
+			check(segmentA.pointAtTime(t2).equivalent(Vec2(10.0, 0))) << "Line intersects surface of sphere";
 			
-			assertTrue(b.intersectsWith(segmentB, t1, t2) == EDGES_INTERSECT, "Line and sphere touch at one point");
-			assertEquivalent(segmentB.pointAtTime(t1), Vec2(0, -10.0), "Line intersects surface of sphere");
+			check(b.intersectsWith(segmentB, t1, t2) == EDGES_INTERSECT) << "Line and sphere touch at one point";
+			check(segmentB.pointAtTime(t1).equivalent(Vec2(0, -10.0))) << "Line intersects surface of sphere";
 		}
+
+#endif
+
 	}
 }

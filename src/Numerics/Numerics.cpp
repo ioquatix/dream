@@ -204,15 +204,15 @@ namespace Dream
 			b = v / 7.500001;
 			c = v / 7.5001;
 
-			assertTrue(equalWithinTolerance(a, b), "Float values are equal");
-			assertFalse(equalWithinTolerance(a, c), "Float values are not equal");
+			check(equalWithinTolerance(a, b)) << "Float values are equal";
+			check(!equalWithinTolerance(a, c)) << "Float values are not equal";
 
 			d = v / 7.5;
 			e = v / 7.50000000001;
 			f = v / 7.50000000000001;
 
-			assertFalse(equalWithinTolerance(d, e), "Double values are not equal");
-			assertTrue(equalWithinTolerance(d, f), "Double values are equal");
+			check(!equalWithinTolerance(d, e)) << "Double values are not equal";
+			check(equalWithinTolerance(d, f)) << "Double values are equal";
 		}
 
 		UNIT_TEST(FloatingPointTraits)
@@ -220,15 +220,15 @@ namespace Dream
 			typedef FloatingPointTraits<float> F;
 			F::FIntT i = F::convertToInteger(1.0056f);
 			F::FloatT f = F::convertToFloat(i);
-			assertEqual(1.0056f, f, "Integer - float conversion correct for 1.0056");
+			check(1.0056f == f) << "Integer - float conversion correct for 1.0056";
 
 			i = F::convertToInteger(-0.52f);
 			f = F::convertToFloat(i);
-			assertEqual(-0.52f, f, "Integer - float conversion correct for -0.52");
+			check(-0.52f == f) << "Integer - float conversion correct for -0.52";
 
 			double t = 0.0000001;
 			std::cout << "acosf: " << cos(R90) << std::endl;
-			assertTrue(FloatingPointTraits<double>::isZero(cos(R90), FloatingPointTraits<double>::convertToInteger(t)), "cosf is zero");
+			check(FloatingPointTraits<double>::isZero(cos(R90)) << FloatingPointTraits<double>::convertToInteger(t)), "cosf is zero";
 
 			std::cout << "Accuracy of float: " << FloatingPointTraits<double>::convertToInteger(t) << std::endl;
 		}
@@ -236,10 +236,10 @@ namespace Dream
 		UNIT_TEST(PowerOfTwo)
 		{
 			int k = nextHighestPowerOf2(16);
-			assertEqual(k, 16, "Next power of two calculated correctly");
+			check(k == 16) << "Next power of two calculated correctly";
 			
 			k = nextHighestPowerOf2(17);
-			assertEqual(k, 32, "Next power of two calculated correctly");
+			check(k == 32) << "Next power of two calculated correctly";
 		}
 
 		/// Calculate the accuracy of cos function. Interesting results..
@@ -282,6 +282,15 @@ namespace Dream
 
 			std::cout << "   Float ACCURACY: " << FloatingPointTraits<float>::convertToInteger(0.000001) << std::endl;
 			std::cout << "  Double ACCURACY: " << FloatingPointTraits<double>::convertToInteger(0.000000000001) << std::endl;
+		}
+		
+		UNIT_TEST(CheckRotationAccuracy)
+		{
+			testing("Rotations");
+			
+			check(equivalent(R45 * 2, R90)) << "R45 is correct";
+			check(equivalent(R90 * 2, R180)) << "R90 is correct";
+			check(equivalent(R180 * 2, R360)) << "R360 is correct";
 		}
 #endif
 	}
