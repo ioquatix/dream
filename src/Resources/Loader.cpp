@@ -64,14 +64,14 @@ namespace Dream {
 		}
 		
 		Loader::Loader () {
-			m_currentPath = workingPath();
+			m_currentPath = applicationWorkingPath();
 		}
 		
 		Loader::Loader (Path in) {
 			if (in.has_root_directory())
 				m_currentPath = in;
 			else
-				m_currentPath = workingPath() / in;
+				m_currentPath = applicationWorkingPath() / in;
 			
 			ensure(is_directory(m_currentPath));
 		}

@@ -11,16 +11,15 @@
 #define __INCLUDE_QD__
 
 #import <UIKit/UIKit.h>
-
-#include "Loader.h"
 #include <boost/pool/detail/singleton.hpp>
+#include <Loadable.h>
 
 namespace Dream {
 	namespace Resources {
 		using boost::details::pool::singleton_default;
 		typedef singleton_default<Path> WorkingPath;
 		
-		Path Loader::workingPath () {
+		Path applicationWorkingPath () {
 			// Cache the path result
 			if (WorkingPath::instance().empty()) {
 				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];

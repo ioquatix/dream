@@ -7,14 +7,13 @@
  *
  */
 
-#include "Loader.h"
-
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <Loadable.h>
 
 namespace Dream {
 	namespace Resources {
-		Path Loader::workingPath () {
+		Path applicationWorkingPath () {
 			// Boost API
 			return boost::filesystem::initial_path();
 		}

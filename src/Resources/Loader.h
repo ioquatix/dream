@@ -47,6 +47,9 @@ namespace Dream {
 	namespace Resources {
 		using namespace Dream::Core;
 		
+		/// Default application resources path.
+		Path applicationWorkingPath();
+		
 		void setNativePathFormat(); // Ugly as hell
 		String extension(const Path &s, bool dot);
 		
@@ -58,19 +61,18 @@ namespace Dream {
 			
 			class Class : IMPLEMENTS(Object::Class)
 			{
-				
 			};
 			
 			virtual REF(Object) loadPath (const Path &res) const abstract;
 			// This resource loader's current base path
 			virtual Path resourcePath () const abstract;
 			
-			// Normalize a resource request
+			/// Normalize a resource request
 			virtual Path pathForResource(Path) const abstract;
 			virtual Path pathForResource(String name, String ext, Path dir) const abstract;
 			virtual void resourcesForType(String ext, Path subdir, std::vector<Path> & paths) const abstract;
 
-			// Primary interface for loading resources
+			/// Primary interface for loading resources
 			template <typename InterfaceT>
 			REF(InterfaceT) load (const Path &res) const {
 				REF(Object) ptr = loadPath(pathForResource(res));
@@ -114,8 +116,6 @@ namespace Dream {
 			};
 			
 			EXPOSE_CLASS(Loader)
-			
-			static Path workingPath ();
 			
 			Loader ();
 			Loader (Path);
