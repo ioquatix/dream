@@ -77,7 +77,7 @@ namespace Dream
 				virtual ISceneManager * manager () abstract;
 				
 				/// The loader for resources required by this scene
-				virtual ILoader * loader () abstract;
+				virtual ILoader * resourceLoader () abstract;
 				
 				/// Returns the time from the first frame til this frame.
 				virtual TimeT currentTime () const abstract;
@@ -217,7 +217,7 @@ namespace Dream
 				
 				virtual RendererT * renderer ();
 				virtual ISceneManager * manager ();
-				virtual ILoader * loader ();
+				virtual ILoader * resourceLoader ();
 				virtual TimeT currentTime () const;
 				
 				virtual void renderFrameForTime (TimeT time);

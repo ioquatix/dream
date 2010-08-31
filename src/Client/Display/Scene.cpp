@@ -178,7 +178,7 @@ namespace Dream
 				return m_sceneManager;
 			}
 			
-			ILoader * Scene::loader ()
+			ILoader * Scene::resourceLoader ()
 			{
 				return m_sceneManager->resourceLoader().get();
 			}
