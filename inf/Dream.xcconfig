@@ -1,0 +1,34 @@
+//
+//  Dream.xcconfig
+//  Dream
+//
+//  Created by Samuel Williams on 29/08/10.
+//  Copyright 2010 Orion Transfer Ltd. All rights reserved.
+//
+
+BUILD_VARIANT[sdk=macosx*]=darwin_macosx
+BUILD_VARIANT[sdk=iphoneos*]=darwin_iphoneos
+BUILD_VARIANT[sdk=iphonesimulator*]=darwin_iphonesimulator
+
+DREAM_ROOT=$(SRCROOT)
+DREAM_EXT=$(DREAM_ROOT)/ext/$(BUILD_VARIANT)/
+
+VALID_ARCHS[sdk=macosx*]=i386 ppc x86_64
+VALID_ARCHS[sdk=iphoneos*]=armv6 armv7
+VALID_ARCHS[sdk=iphonesimulator*]=i386
+
+//ARCHS=$(VALID_ARCHS)
+
+OTHER_CFLAGS[sdk=macosx*]=-DDREAM_USE_OPENGL20 -DDREAM_VARIANT=$(BUILD_VARIANT)
+OTHER_CFLAGS[sdk=iphone*]=-DDREAM_USE_OPENGLES11 -DDREAM_VARIANT=$(BUILD_VARIANT)
+
+OTHER_LDFLAGS[sdk=macosx*]=-lpng -ljpeg -framework Carbon -framework QuickTime -framework OpenGL -framework OpenAL -framework Foundation -framework Cocoa -framework AppKit -framework CoreVideo -framework CoreServices
+OTHER_LDFLAGS[sdk=iphone*]=-lpng -ljpeg -lfreetype -framework QuartzCore -framework OpenGLES -framework OpenAL -framework Foundation -framework CoreGraphics -framework Foundation -framework UIKit
+
+HEADER_SEARCH_PATHS="$(DREAM_EXT)/include" "$(DREAM_EXT)/include/freetype2"
+LIBRARY_SEARCH_PATHS="$(DREAM_EXT)/lib"
+
+// Avoid probems with C++ visibility
+GCC_INLINES_ARE_PRIVATE_EXTERN=NO
+GCC_SYMBOLS_PRIVATE_EXTERN=NO
+

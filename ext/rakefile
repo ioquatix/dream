@@ -109,7 +109,7 @@ class Platform
 	attr :config
 end
 
-GLOBAL_CFLAGS = "-O2 -Wall -Wmissing-prototypes -std=c99 -ffast-math -fno-strict-aliasing -mdynamic-no-pic -fvisibility=hidden -pipe"
+GLOBAL_CFLAGS = "-O2 -Wall -Wmissing-prototypes -std=c99 -ffast-math -fno-strict-aliasing -mdynamic-no-pic -pipe"
 MACOSX_SDK_VERSION = "10.5"
 IPHONE_SDK_VERSION = "3.2"
 
@@ -176,6 +176,17 @@ task :default do
 		Package.all.each do |package|
 			# next unless package.name == "boost_1_43_0"
 			package.build(platform)
+		end
+	end
+end
+
+task :link_headers do
+	Platform.all.each do |platform|
+		include_dir = platform.prefix + "include"
+		
+		Dir.chdir(include_dir) do
+			puts "Linking dream headers for #{platform.name}..."
+			sh('ln', '-sf', '../../../include/Dream')
 		end
 	end
 end
