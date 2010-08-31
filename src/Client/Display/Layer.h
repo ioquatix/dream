@@ -34,7 +34,6 @@ namespace Dream {
 					virtual void didBecomeCurrent (ISceneManager * manager, IScene * scene) abstract;
 					virtual void willRevokeCurrent (ISceneManager * manager, IScene * scene) abstract;
 			};
-			
 		}
 	}
 }
