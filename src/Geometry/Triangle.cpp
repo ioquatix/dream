@@ -26,7 +26,7 @@ namespace Dream {
 			
 			Triangle3 t(Vec3(ZERO), Vec3(5.0, 5.0, 5.0), Vec3(5.0, 5.0, 0.0));
 			
-			assertTrue(t.normal().dot(Vec3(-1, 1, 1)), "Normal is correct");
+			check(t.normal().dot(Vec3(-1, 1, 1))) << "Normal is correct";
 		}
 		
 #endif
