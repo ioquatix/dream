@@ -16,6 +16,7 @@
 #include "OpenGL20/Shader.h"
 #include "OpenGL20/Texture.h"
 #include "OpenGL20/RenderState.h"
+#include "OpenGL20/ObjectHandle.h"
 #elif DREAM_USE_OPENGL31
 #include "OpenGL31/OpenGL31.h"
 #include "OpenGL31/Renderer.h"
@@ -23,6 +24,7 @@
 #include "OpenGLES11/OpenGLES11.h"
 #include "OpenGLES11/Renderer.h"
 #include "OpenGLES11/RenderState.h"
+#include "OpenGLES11/ObjectHandle.h"
 #endif
 
 #endif
