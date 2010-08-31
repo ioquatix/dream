@@ -26,8 +26,9 @@
 namespace Dream {
 	namespace Client {
 		namespace Graphics {			
-			using namespace Dream::Client::Display;
 			
+			/** Implements the basic structure of user interface layout and display.
+			*/
 			class View : public Object, IMPLEMENTS(Layer) {	
 				EXPOSE_CLASS(View)
 			
@@ -37,6 +38,8 @@ namespace Dream {
 				};
 			
 			public:
+				/** The top level user interface controller.
+				*/
 				class Controller : public Object, IMPLEMENTS(Layer) {
 					EXPOSE_CLASS(Controller)
 					
@@ -62,16 +65,23 @@ namespace Dream {
 					virtual bool resize (const ResizeInput &);
 					virtual bool button (const ButtonInput &);
 					virtual bool motion (const MotionInput &);
-								
+						
+					/// Returns the top level view.
 					REF(View) principalView () { return m_principal; }
 					const REF(View) principalView () const { return m_principal; }
 					
-					// Mouse focus
+					/// Set the current dynamically focused view.
+					/// This is normally determined by the location of the mouse or pointer device.
 					void setDynamicFocusedView(View* view);
+					
+					/// Get the currently dynamically focused view.
 					View* dynamicFocusedView() const { return m_dynamicFocusedView; }
 					
-					// Text focus
+					// Set the current statically focused view.
+					/// This is normally determined by a click of the mouse or keyboard.
 					void setStaticFocusedView(View* view);
+					
+					/// Get the current statically focused view.
 					View* staticFocusedView() const { return m_staticFocusedView; }
 					
 					virtual void renderFrameForTime (IScene * scene, TimeT time);
@@ -81,7 +91,12 @@ namespace Dream {
 					
 					virtual void dumpStructure (std::ostream & outp);
 					
+					/// Enable debugging of user interface layout.
+					/// Borders are drawn around all user interface elements.
 					void setDebugMode (bool enabled);
+					
+					/// Get the current debug mode.
+					/// @returns true if debug mode enabled.
 					bool debugMode ();
 				};
 				
@@ -92,8 +107,8 @@ namespace Dream {
 				
 			protected:
 				bool m_enabled;
-				Controller *m_controller;
-				View *m_parent;
+				PTR(Controller) m_controller;
+				PTR(View) m_parent;
 				
 				std::vector<REF(View)> m_subviews;
 				
@@ -103,8 +118,7 @@ namespace Dream {
 				AlignedBox<2> m_bounds;
 				RealT m_rotation;
 				
-				  //, m_frame;
-				//real_t m_boundsRotation, m_frameRotation;
+				//RealT m_boundsRotation, m_frameRotation;
 				
 				virtual bool intersectsWith (const Vec2 &point);
 			
@@ -114,23 +128,40 @@ namespace Dream {
 				void init ();
 				
 			public:
-				View (View *parent);
-				View (Controller *controller);
-				View (Controller *controller, const AlignedBox<2> &bounds);
+				/// Initialize the view inside a parent view.
+				View (PTR(View) parent);
+				
+				/// Initialize the view as the top level view in a controller.
+				View (PTR(Controller) controller);
+				
+				/// Initialize the view as a top level view and set its bounding box.
+				View (PTR(Controller) controller, const AlignedBox<2> &bounds);
 				
 				virtual ~View();
 				
-				virtual Controller* controller () { return m_controller; }
-				virtual const Controller* controller () const { return m_controller; }
+				/// Return the top level controller.
+				virtual PTR(Controller) controller () { return m_controller; }
+				virtual const PTR(Controller) controller () const { return m_controller; }
 				
+				/// @returns true if the view is the top level view in the heirarchy.
 				bool isPrincipalView () const;
 				
+				/// Set the size and scale of the view.
+				/// The size is measured in units (typically pixels), while scale is specified using
+				/// a percentage of the containing view.
 				void setSizeAndScale (const Vec2 &size, const Vec2 &scale);
+				
+				/// Set the offset and orientation of the view.
+				/// The offset is measured in units (typically pixels), while the orientation is
+				/// specified as a percentage location in the containing view.
+				/// @sa AlignedBox::alignWithinSuperBox
 				void setOffsetAndOrientation (const Vec2 &offset, const Vec2 &orientation);
+				
+				/// Set the rotation of the view box relative to the containing view.
 				void setRotation (const RealT rotation);
 				
-				virtual const View* parentView () const { return m_parent; }
-				virtual View* parentView () { return m_parent; }
+				virtual const PTR(View) parentView () const { return m_parent; }
+				virtual PTR(View) parentView () { return m_parent; }
 				
 				const std::vector<REF(View)> & childrenViews () const { return m_subviews; }
 				std::vector<REF(View)> & childrenViews () { return m_subviews; }
@@ -141,7 +172,7 @@ namespace Dream {
 				
 				// Location with reference to superframe in normalized coordinates
 				//virtual const AlignedBox<2> & frame () const { return m_frame; }
-				//virtual real_t frameRotation () const { return m_frameRotation; }
+				//virtual RealT frameRotation () const { return m_frameRotation; }
 				
 				// Input Processing
 				virtual bool resize (const ResizeInput &);
@@ -182,7 +213,7 @@ namespace Dream {
 				virtual void renderView (IScene * scene, TimeT time);
 				
 			public:
-				ImageView (View *parent);
+				ImageView (PTR(View) parent);
 				virtual ~ImageView ();
 				
 				void setDefaultImage (REF(IPixelBuffer) image);
@@ -212,7 +243,7 @@ namespace Dream {
 				unsigned int m_offset;
 				
 			public:
-				TextView (View * parent, REF(Font) font);
+				TextView (PTR(View) parent, PTR(Font) font);
 				virtual ~TextView ();
 				
 				REF(TextBuffer) textBuffer ();

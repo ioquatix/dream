@@ -158,7 +158,7 @@ namespace Dream {
 				}
 			}
 
-			View::View (View *parent) : m_parent(parent) {
+			View::View (PTR(View) parent) : m_parent(parent) {
 				// This is a subview of m_parent
 				m_parent->registerChildView(this);
 				m_controller = m_parent->controller();
@@ -169,14 +169,14 @@ namespace Dream {
 				init();
 			}
 
-			View::View (Controller *controller) 
-			: m_enabled(true), m_controller(controller), m_parent(NULL) {
+			View::View (PTR(Controller) controller) 
+			: m_enabled(true), m_controller(controller) {
 				m_controller->setPrincipalView(this);
 				init();
 			}
 
-			View::View (Controller *controller, const AlignedBox<2> &bounds)
-			: m_enabled(true), m_controller(controller), m_parent(NULL), m_bounds(bounds) {
+			View::View (PTR(Controller) controller, const AlignedBox<2> &bounds)
+			: m_enabled(true), m_controller(controller), m_bounds(bounds) {
 				m_controller->setPrincipalView(this);
 				init();
 			}
@@ -348,7 +348,7 @@ namespace Dream {
 
 			IMPLEMENT_CLASS(ImageView)
 
-			ImageView::ImageView (View * parent) : View(parent) {
+			ImageView::ImageView (PTR(View) parent) : View(parent) {
 			
 			}
 			
@@ -401,7 +401,7 @@ namespace Dream {
 
 			IMPLEMENT_CLASS(TextView)
 			
-			TextView::TextView (View * parent, REF(Font) font) : View(parent), m_offset(0) {
+			TextView::TextView (PTR(View) parent, PTR(Font) font) : View(parent), m_offset(0) {
 				m_textBuffer = new Text::TextBuffer(font);
 			}
 			
