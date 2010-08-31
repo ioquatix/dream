@@ -170,7 +170,7 @@ namespace Dream
 
 			Matrix<4, 4, NumericT> result;
 
-			invert4x4Matrix(t->values(), result.values());
+			invert4x4Matrix(t->value(), result.value());
 
 			return result;
 		}

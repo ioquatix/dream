@@ -74,7 +74,7 @@ namespace Dream
 			Quaternion multiplyWith (const Quaternion & other) const;
 
 			/// Convenience operator for rotate function.
-			Vec3T operator* (const Vec3T & other);
+			Vec3T operator* (const Vec3T & other) const;
 
 			/// Multiply a quaternion in-place.
 			Quaternion & operator*= (const Quaternion & q1);
@@ -102,6 +102,9 @@ namespace Dream
 
 			/// Return the conjugated quaternion.
 			Quaternion conjugatedQuaternion () const;
+			
+			/// Extract axis information
+			Vec3T extractAxis (IndexT a) const;
 
 			Vector<4, NumericT> & vector ();
 			const Vector<4, NumericT> & vector () const;

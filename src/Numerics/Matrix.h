@@ -163,9 +163,6 @@ namespace Dream
 		
 		Standard mathematical notation is column order, therefore regardless of row-major or column-major memory layout,
 		the interface will assume access is done via rows and columns according to this standard notation.
-		
-		For more information see:
-		http://wiki.oriontransfer.org/blog:2009:05:09:the_matrix
 		 */
 		template <unsigned _R = 4, unsigned _C = 4, typename _NumericT = RealT>
 		class Matrix : public MatrixSquareTraits<_R, _C, _NumericT>, public MatrixMultiplicationTraits<_R, _C, _NumericT>,
@@ -197,6 +194,15 @@ namespace Dream
 				memcpy(m_matrix, data, sizeof(m_matrix));
 			}
 			
+			template <typename AnyT>
+			void set (const AnyT * data)
+			{
+				for (unsigned i = 0; i < R*C; i++)
+				{
+					m_matrix[i] = data[i];
+				}
+			}
+			
 			void zero ();
 			void loadIdentity (const NumericT & n = 1);
 
@@ -212,13 +218,25 @@ namespace Dream
 				ensure(rowMajorOffset(r, c, C) < R*C);
 				return m_matrix[rowMajorOffset(r, c, C)];
 			}
+			
+			const NumericT & at (unsigned i) const
+			{
+				ensure(i < R*C);
+				return m_matrix[i];
+			}
+			
+			NumericT & at (unsigned i)
+			{
+				ensure(i < R*C);
+				return m_matrix[i];
+			}
 
-			NumericT * values ()
+			NumericT * value ()
 			{
 				return (NumericT*)m_matrix;
 			}
 
-			const NumericT * values () const
+			const NumericT * value () const
 			{
 				return (const NumericT*)m_matrix;
 			}
@@ -242,14 +260,14 @@ namespace Dream
 				IndexT offset = &at(r, c) - (NumericT*)m_matrix;
 								
 				for (IndexT i = 0; i < D; i += 1) {
-					values()[offset + elementOffset * i] = v[i];
+					value()[offset + elementOffset * i] = v[i];
 				}
 			}
 			
 			/// @todo Write get equivalent of set functions for retriving Vector data
 			
 			/// Return a copy of this matrix, transposed.
-			Matrix<C, R, NumericT> transposedMatrix ()
+			Matrix<C, R, NumericT> transposedMatrix () const
 			{
 				Matrix<C, R, NumericT> result;
 

@@ -122,7 +122,7 @@ namespace Dream
 		}
 
 		template <typename _NumericT>
-		inline typename Quaternion<_NumericT>::Vec3T Quaternion<_NumericT>::operator* (const Vec3T & other)
+		inline typename Quaternion<_NumericT>::Vec3T Quaternion<_NumericT>::operator* (const Vec3T & other) const
 		{
 			return rotate(other);
 		}
@@ -192,8 +192,24 @@ namespace Dream
 			matrix.at(0, 2) =     2 * (x*z - w*y);
 			matrix.at(1, 2) =     2 * (y*z + w*x);
 			matrix.at(2, 2) = 1 - 2 * (x*x + y*y);
-
+			
 			return matrix;
+		}
+		
+		template <typename _NumericT>
+		typename Quaternion<_NumericT>::Vec3T Quaternion<_NumericT>::extractAxis (IndexT a) const
+		{
+			Vec3T result;
+			
+			if (a == X) {
+				result = Vec3(1, 0, 0);
+			} else if (a == Y) {
+				result = Vec3(0, 1, 0);
+			} else if (a == Z) {
+				result = Vec3(0, 0, 1);
+			}
+			
+			return rotatingMatrix() * result;
 		}
 
 #ifdef OPENGL_SUPPORT
@@ -241,8 +257,7 @@ namespace Dream
 		template <typename _NumericT>
 		Quaternion<_NumericT> Quaternion<_NumericT>::rotationTo (const Quaternion & other) const
 		{
-			// Total = Local * Total
-			return other * this->conjugatedQuaternion();
+			return this->conjugatedQuaternion() * other;
 		}
 
 		template <typename _NumericT>
