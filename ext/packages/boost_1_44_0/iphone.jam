@@ -1,5 +1,5 @@
 using darwin : 4.2.1~iphone 
-: /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/g++ -arch armv6
+: /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/g++ -arch armv6 -arch armv7
 : <striper> 
 : <architecture>arm <target-os>iphone 
 ; 

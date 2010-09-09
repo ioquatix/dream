@@ -1,9 +1,9 @@
 
 BOOST_PACKAGE = Pathname.new(__FILE__).dirname
 BOOST_IPHONE_CONFIG = BOOST_PACKAGE + "iphone.jam"
-BOOST_MODULES = ["--with-filesystem", "--with-thread", "--with-system"]
+BOOST_MODULES = ["--with-thread", "--with-system"]
 
-Package.define("boost_1_43_0") do |package|
+Package.define("boost_1_44_0") do |package|
 	bootstrap_bjam = lambda do
 		Dir.chdir(package.src) do
 			sh("./bootstrap.sh") unless File.exist? "bjam"
