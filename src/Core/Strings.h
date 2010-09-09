@@ -20,7 +20,8 @@ namespace Dream
 {
 	namespace Core
 	{
-		typedef std::string String;
+		typedef std::string StringT;
+		typedef std::string String; // Legacy
 		typedef std::stringstream StringStreamT;
 
 		// It is important to consider file encoding when using these functions
@@ -35,19 +36,21 @@ namespace Dream
 
 		std::string center (const std::string & str, unsigned width, char space);
 		
-		/// This function is typically used for parsing OpenGL extension strings.
-		template <typename Out>
-		Out split(const char * input, const char divider, Out res)
-		{
-			const char * start = input;
-			const char * next;
+		/// This function is typically used for parsing OpenGL extension strings.		
+		template <typename OutT>
+		OutT split(const StringT & input, const char divider, OutT result) {
+			std::size_t pos = 0, next = 0;
 			
-			while ((next = strchr(start, divider)) && next != NULL) {
-				*res++ = String(start, next);
-				start = next + 1;
-			}
+			do {
+				next = input.find(divider, pos);
+				
+				StringT bit(&input[pos], (next == StringT::npos) ? (input.size() - pos) : (next - pos));
+				*result++ = bit;					
+				
+				pos = next + 1;
+			} while (next != StringT::npos);
 			
-			return res;
+			return result;
 		}
 		
 	}

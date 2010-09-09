@@ -11,7 +11,6 @@
 
 #include <sys/mman.h>
 #include <sys/fcntl.h>
-#include <boost/filesystem.hpp>
 
 // For testing
 #include <string>
@@ -195,12 +194,12 @@ namespace Dream
 			FileDescriptorT fd;
 			int result;
 			
-			std::cout << __func__ << " : " << p.file_string().c_str() << std::endl;
+			std::cout << __func__ << " : " << p << std::endl;
 			
 			// Open and create the output file
 			mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 			
-			fd = open(p.file_string().c_str(), O_RDWR | O_CREAT | O_TRUNC, mode);
+			fd = open(p.toLocalPath().c_str(), O_RDWR | O_CREAT | O_TRUNC, mode);
 			ensure(fd >= 0);
 			
 			// Seek to the end
@@ -329,7 +328,7 @@ namespace Dream
 		
 		FileBuffer::FileBuffer (const Path & filePath)
 		{
-			FileDescriptorT input = open(filePath.file_string().c_str(), O_RDONLY);
+			FileDescriptorT input = open(filePath.toLocalPath().c_str(), O_RDONLY);
 
 			if (input == -1)
 				perror(__PRETTY_FUNCTION__);
@@ -601,24 +600,11 @@ namespace Dream
 		
 		UNIT_TEST(ReadingAndWritingBuffers)
 		{
-			using namespace boost::filesystem;
-			
-			const char * tmpPath = "dream-buffer-test";
+			Path tmpPath = Path::temporaryFilePath();
 			const char * data = "When the only tool you have is a hammer, you tend to treat everything as if it were a nail.";
 			unsigned dataLength = strlen(data);
 			
 			testing("Writing");
-			
-			ByteT cwd[256];
-			getcwd((char *)cwd, 255);
-			cwd[255] = '\0';
-			
-			std::cout << "Writing files in directory: " << cwd << std::endl;
-			
-			if (exists(tmpPath)) {
-				std::cout << "Removing " << tmpPath << std::endl;
-				remove(tmpPath);
-			}
 			
 			PackedBuffer * writeBuffer;
 			writeBuffer = PackedBuffer::newBuffer(dataLength);
@@ -640,6 +626,9 @@ namespace Dream
 			
 			writeBuffer->hexdump(std::cout);
 			readBuffer.hexdump(std::cout);
+			
+			// Remove the temporary file
+			tmpPath.remove();
 		}
 #endif
 	}

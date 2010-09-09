@@ -11,16 +11,14 @@
 #define _DREAM_CORE_URI_H
 
 #include "Strings.h"
+#include "Path.h"
 
 #include <vector>
-#include <boost/filesystem/path.hpp>
 
 namespace Dream
 {
 	namespace Core
 	{
-		typedef boost::filesystem::path Path;
-
 		/**
 		 A simple URI parser. Provides access to the components of RFC2396 formatted URIs.
 

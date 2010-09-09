@@ -8,13 +8,6 @@
  */
 
 #include "Loader.h"
-
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/fstream.hpp>
-#include <boost/pool/detail/singleton.hpp>
-
-#include <boost/filesystem/convenience.hpp>
-
 #include "../Core/Singleton.h"
 
 #include <iostream>
@@ -26,26 +19,6 @@ namespace Dream {
 		IMPLEMENT_INTERFACE(Loader)
 		
 #pragma mark -
-		
-		using namespace std;
-		using namespace boost::filesystem;
-		
-		void setNativePathFormat () {
-			static bool setNative = false;
-			if (!setNative) {
-				Path::default_name_check(native);
-				setNative = true;
-			}
-		}
-		
-		String extension(const Path &s, bool dot) {
-			String ext = boost::filesystem::extension(s);
-			
-			if (!dot && !ext.empty())
-				return ext.substr(1);
-			else
-				return ext;
-		}
 		
 		IMPLEMENT_CLASS(Loader)
 		
@@ -68,12 +41,13 @@ namespace Dream {
 		}
 		
 		Loader::Loader (Path in) {
-			if (in.has_root_directory())
+			if (in.isAbsolute())
 				m_currentPath = in;
 			else
-				m_currentPath = applicationWorkingPath() / in;
+				m_currentPath = applicationWorkingPath() + in;
 			
-			ensure(is_directory(m_currentPath));
+			// Check that the path is actually a directory that exists.
+			ensure(m_currentPath.fileStatus() == Path::DIRECTORY);
 		}
 		
 		Loader::~Loader ()
@@ -98,6 +72,9 @@ namespace Dream {
 				return c->second;
 			
  			REF(Data) data = Data::klass.initWithPath(path);
+			
+			std::cerr << "Adding " << path << " to cache" << std::endl;
+			
 			m_dataCache[path] = data;
 			
 			return data;
@@ -118,84 +95,82 @@ namespace Dream {
 		}
 		
 		Path Loader::pathForResource (Path p) const {
-			return pathForResource(basename(p), extension(p, false), p.parent_path());
+			Path::NameInfo nameInfo = p.splitFileName();
+			
+			return pathForResource(nameInfo.basename, nameInfo.extension, p.dirname());
 		}
 		
 		void Loader::resourcesForType(String ext, Path subdir, std::vector<Path> &paths) const {
-			Path subp = m_currentPath / subdir;
+			Path fullPath = m_currentPath + subdir;
 			
-			if (exists(subp)) {
-				directory_iterator end_itr;
+			if (fullPath.exists()) {
+				Path::DirectoryListingT entries = fullPath.list(Path::STORAGE);
 				
-				for (directory_iterator itr(subp); itr != end_itr; ++itr) {
-					if (extension(itr->leaf(), false) == ext)
-						paths.push_back(*itr);
+				for (std::size_t i = 0; i < entries.size(); i++) {
+					if (Path(entries[i]).splitFileName().extension == ext)
+						paths.push_back(entries[i]);
 				}
 			}
 		}
 		
 		Path Loader::pathForResource(String name, String ext, Path dir) const {
-			Path subp = m_currentPath / dir;
+			Path fullPath = m_currentPath + dir;
 			
-			//cerr << "Looking for: " << name << " ext: " << ext << " in: " << dir.string() << endl;
+			std::cerr << "Looking for: " << name << " ext: " << ext << " in: " << fullPath << std::endl;
 			
-			if (!exists(subp)) {
+			if (!fullPath.exists())
 				return Path();
-			}
 			
 			if (ext.empty()) {
 				// Find all named resources
-				std::vector<Path> paths;
+				Path::DirectoryListingT resourcePaths;
+				Path::DirectoryListingT entries = fullPath.list(Path::STORAGE);
 				
-				directory_iterator end_itr; // default construction yields past-the-end
-				
-				for (directory_iterator itr(subp); itr != end_itr; ++itr) {
-					if (itr->leaf()[0] == '.') continue;
+				for (std::size_t i = 0; i < entries.size(); i++) {
+					std::cerr << "Looking at: " << entries[i] << std::endl;
 					
-					//cerr << "Looking at: " << itr->leaf() << endl;
-					
-					if (is_directory(*itr)) {
-						continue; // We don't care about directory
-					} else if (basename(itr->leaf()) == name) {
-						//cerr << "Found: " << itr->leaf() << endl;
-						paths.push_back(*itr);
+					if (Path(entries[i]).splitFileName().basename == name) {
+						std::cerr << "\tFound: " << entries[i] << std::endl;
+						resourcePaths.push_back(entries[i]);
 					}
 				}
 				
-				if (paths.size() > 1) {
-					cerr << "Multiple paths found for resource: " << name << " in " << subp.string() << endl;
-					foreach(Path p, paths)
-						cerr << "-- " << p.string() << endl;
+				if (resourcePaths.size() > 1) {
+					std::cerr << "Multiple paths found for resource: " << name << " in " << fullPath << std::endl;
+					foreach(Path p, resourcePaths)
+						std::cerr << "\t" << p << std::endl;
 				}
 				
-				if (paths.size() >= 1) {
-					subp = paths[0];
+				if (resourcePaths.size() >= 1) {
+					fullPath = fullPath + resourcePaths[0];
 				} else {
-					subp = Path();
+					fullPath = Path();
 				}
 			} else {
-				subp /= name + "." + ext;
+				fullPath = fullPath + (name + "." + ext);
 			}
 			
+			std::cerr << "Full Path = " << fullPath << std::endl;
+			
 			// Does a file exist?
-			if (exists(subp) && !is_directory(subp))
-				return subp;
+			if (fullPath.fileStatus() == Path::STORAGE)
+				return fullPath;
 			
 			return Path();
 		}
 		
 		REF(Object) Loader::loadPath (const Path &p) const {
-			if (!exists(p)) {
-				cerr << "File does not exist at path '" << p.string() << "'" << endl;
+			if (!p.exists()) {
+				std::cerr << "File does not exist at path '" << p << "'" << std::endl;
 				return REF(Object)();
 			}
 			
-			String ext = extension(p, false);
+			String ext = p.splitFileName().extension;
 			ILoadable::Class *loader = loaderForExtension(ext);
 			
 			if (!loader) {
 				// No loader for this type
-				cerr << "No loader found for type '" << ext << "' (" << p.string() << ")." << endl;
+				std::cerr << "No loader found for type '" << ext << "' (" << p << ")." << std::endl;
 				return REF(Object)();
 			}
 			
@@ -211,7 +186,7 @@ namespace Dream {
 			}
 			
 			if (!resource) {
-				cerr << "Resource " << p.string() << " failed to load!" << endl;
+				std::cerr << "Resource " << p << " failed to load!" << std::endl;
 			}
 			
 			return resource;

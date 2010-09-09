@@ -153,7 +153,7 @@ namespace Dream
 		URI::URI (const String & scheme, const Path & path)
 		{
 			std::stringstream s;
-			s << scheme << ":" << path.string();
+			s << scheme << ":" << path;
 
 			m_url = s.str();
 			m_parser = Parser(m_url.c_str());

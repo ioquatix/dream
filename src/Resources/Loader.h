@@ -50,7 +50,6 @@ namespace Dream {
 		/// Default application resources path.
 		Path applicationWorkingPath();
 		
-		void setNativePathFormat(); // Ugly as hell
 		String extension(const Path &s, bool dot);
 		
 		typedef std::map<String, ILoadable::Class*> LoadersT;
@@ -77,11 +76,11 @@ namespace Dream {
 			REF(InterfaceT) load (const Path &res) const {
 				REF(Object) ptr = loadPath(pathForResource(res));
 				
-				if (!ptr) std::cerr << "Resource failed to load: '" << res.string() << "'" << std::endl;
+				if (!ptr) std::cerr << "Resource failed to load: '" << res << "'" << std::endl;
 				
 				REF(InterfaceT) result = ptr;
 				
-				if (!result) std::cerr << "Resource was not correct type: '" << res.string() << "' -> " << InterfaceT::staticType()->name() << std::endl;
+				if (!result) std::cerr << "Resource was not correct type: '" << res << "' -> " << InterfaceT::staticType()->name() << std::endl;
 				
 				return result;
 			}

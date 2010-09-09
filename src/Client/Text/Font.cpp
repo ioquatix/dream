@@ -63,10 +63,10 @@ namespace Dream
 			Font::Font (const Path & p) : m_face(NULL)
 			{
 				FT_Face face;
-				FT_Error err = FT_New_Face(freetypeLibrary(), p.string().c_str(), 0, &face);
+				FT_Error err = FT_New_Face(freetypeLibrary(), p.toLocalPath().c_str(), 0, &face);
 				
 				if (err) {
-					throw LoadError(String("Error loading freetype font (") + p.string() + "): " + ft2_error_message(err));
+					throw LoadError(String("Error loading freetype font (") + p.toLocalPath() + "): " + ft2_error_message(err));
 				} else {
 					m_face = new Detail::FontFace(face, ALPHA);
 				}
