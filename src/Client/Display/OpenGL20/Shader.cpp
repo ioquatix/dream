@@ -12,7 +12,7 @@
 #include "../../../Resources/Loader.h"
 #include "../../../Core/Strings.h"
 #include "../../../Core/Buffer.h"
-#include <exception>
+#include <stdexcept>
 
 
 namespace Dream {
