@@ -137,9 +137,12 @@ Platform.new(:darwin_iphoneos) do |config|
 	config.cflags = "#{config.arch} -isysroot #{config.sdk} -miphoneos-version-min=#{config.sdk_version}"
 	config.configure = ["--host=arm-apple-darwin"]
 	
+	# SDK Version 3.2 ?, version 3.1 used darwin9
+	cc = "Developer/usr/bin/arm-apple-darwin10-gcc-4.0.1"
+	
 	config.build_flags = {
 		# This line must be a compiler that will produce ARM code.
-		"CC" => config.platform + "Developer/usr/bin/arm-apple-darwin9-gcc-4.0.1",
+		"CC" => config.platform + "Developer/usr/bin/gcc",
 		"CPP" => config.platform + "Developer/usr/bin/cpp",
 		"LD" => config.platform + "Developer/usr/bin/ld",
 		"CFLAGS" => "#{GLOBAL_CFLAGS} #{config.cflags}",
@@ -169,7 +172,9 @@ Dir[PACKAGES_PATH + "*"].each do |path|
 	Package.require(File.basename(path))
 end
 
-task :default do
+task :default => [:build_all, :link_headers]
+
+task :build_all do
 	Platform.all.each do |platform|
 		# For testing...
 		# next unless platform.name == :darwin_iphonesimulator
