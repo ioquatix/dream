@@ -10,6 +10,8 @@
 #include "PixelBufferSaver.h"
 #include "Image.h"
 
+#include <stdexcept>
+
 extern "C" {
 #include <png.h>
 #include <jpeglib.h>
