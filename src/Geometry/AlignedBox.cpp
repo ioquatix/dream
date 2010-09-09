@@ -64,6 +64,12 @@ namespace Dream {
 			box1a.alignWithinSuperBox(box2, vec(0.0, 0.0, 0.0));
 			check(box1 == box1a) << "Box was aligned correctly";
 			
+			// Is this desirable behaviour?
+			AlignedBox<2> o1(ZERO, 10), o2(ZERO, 5), o3(20, 30);
+			
+			check(o1.orientationOf(o2) == Vec2(0, 0)) << o2 << " orientation in " << o1 << " is correct";
+			check(o1.orientationOf(o3) == Vec3(1, 1)) << o3 << " orientation in " << o1 << " is correct";
+						
 			testing ("Subtraction");
 			
 			AlignedBox<3> box2a(box2);
