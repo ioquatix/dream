@@ -114,6 +114,7 @@ namespace Dream {
 				
 				Vec2 m_size, m_scale;
 				Vec2 m_offset, m_orientation;
+				StringT m_tag;
 				
 				AlignedBox<2> m_bounds;
 				RealT m_rotation;
@@ -190,6 +191,9 @@ namespace Dream {
 				bool isEnabled () const;
 				virtual void enable ();
 				virtual void disable ();
+				
+				void setTag (const StringT & tag) { m_tag = tag; }
+				StringT tag () const { return m_tag; }
 				
 				virtual void dumpStructure (std::ostream & outp, unsigned indent = 0);
 			};

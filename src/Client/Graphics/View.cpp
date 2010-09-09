@@ -158,25 +158,27 @@ namespace Dream {
 				}
 			}
 
-			View::View (PTR(View) parent) : m_parent(parent) {
+			View::View (PTR(View) parent) 
+				: m_enabled(true), m_parent(parent)
+			{
 				// This is a subview of m_parent
 				m_parent->registerChildView(this);
 				m_controller = m_parent->controller();
 				m_enabled = m_parent->isEnabled();
 				
-				//m_parent->bounds().orientationOf(m_bounds);
-				//m_bounds.size() / m_parent->bounds().size();
 				init();
 			}
 
 			View::View (PTR(Controller) controller) 
-			: m_enabled(true), m_controller(controller) {
+				: m_enabled(true), m_controller(controller) 
+			{
 				m_controller->setPrincipalView(this);
 				init();
 			}
 
 			View::View (PTR(Controller) controller, const AlignedBox<2> &bounds)
-			: m_enabled(true), m_controller(controller), m_bounds(bounds) {
+				: m_enabled(true), m_controller(controller), m_bounds(bounds)
+			{
 				m_controller->setPrincipalView(this);
 				init();
 			}
