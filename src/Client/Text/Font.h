@@ -41,7 +41,7 @@ namespace Dream
 			class Font : public Object {
 			protected:
 				Detail::FontFace *m_face;
-				REF(Data) m_fontData;
+				REF(IData) m_fontData;
 				
 				Vector<2, unsigned> computeBoundingBox (const std::wstring & text) const;
 				
@@ -55,11 +55,11 @@ namespace Dream
 					virtual void registerLoaderTypes (REF(ILoader) loader);
 					
 					virtual REF(Object) initWithPath(const Path & p);
-					virtual REF(Object) initFromData(const REF(Data) data, const ILoader * loader);
+					virtual REF(Object) initFromData(const PTR(IData) data, const ILoader * loader);
 				};
 				
 				Font (const Path &);
-				Font (const REF(Data) data);
+				Font (const PTR(IData) data);
 				
 				virtual ~Font ();
 				

@@ -56,7 +56,7 @@ namespace Dream
 				return new Font(p);
 			}
 			
-			REF(Object) Font::Class::initFromData(const REF(Data) data, const ILoader * loader) {
+			REF(Object) Font::Class::initFromData(const PTR(IData) data, const ILoader * loader) {
 				return new Font(data);
 			}
 			
@@ -74,10 +74,12 @@ namespace Dream
 				setPixelSize(12);
 			}
 			
-			Font::Font (const REF(Data) data) : m_face(NULL)
+			Font::Font (const PTR(IData) data) : m_face(NULL)
 			{
+				Shared<Buffer> buffer = data->buffer();
+				
 				FT_Face face;
-				FT_Error err = FT_New_Memory_Face(freetypeLibrary(), data->start(), data->size(), 0, &face);
+				FT_Error err = FT_New_Memory_Face(freetypeLibrary(), buffer->begin(), buffer->size(), 0, &face);
 				m_fontData = data;
 				
 				if (err) {
