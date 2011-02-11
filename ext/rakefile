@@ -111,7 +111,7 @@ end
 
 GLOBAL_CFLAGS = "-O2 -Wall -Wmissing-prototypes -std=c99 -ffast-math -fno-strict-aliasing -mdynamic-no-pic -pipe"
 MACOSX_SDK_VERSION = "10.5"
-IPHONE_SDK_VERSION = "3.2"
+IPHONE_SDK_VERSION = "4.2"
 
 Platform.new(:darwin_macosx) do |config|
 	config.platform = Pathname.new("/")
@@ -133,12 +133,13 @@ Platform.new(:darwin_iphoneos) do |config|
 	config.sdk_version = IPHONE_SDK_VERSION
 	config.sdk = config.platform + "Developer/SDKs/iPhoneOS#{config.sdk_version}.sdk"
 	
-	config.arch = "-arch armv6"
+	# Add -mthumb to config.arch if desired
+	config.arch = "-arch armv6 -arch armv7"
 	config.cflags = "#{config.arch} -isysroot #{config.sdk} -miphoneos-version-min=#{config.sdk_version}"
 	config.configure = ["--host=arm-apple-darwin"]
 	
 	# SDK Version 3.2 ?, version 3.1 used darwin9
-	cc = "Developer/usr/bin/arm-apple-darwin10-gcc-4.0.1"
+	# cc = "Developer/usr/bin/arm-apple-darwin10-gcc-4.0.1"
 	
 	config.build_flags = {
 		# This line must be a compiler that will produce ARM code.
