@@ -58,7 +58,7 @@ namespace Dream {
 			public:
 				virtual void registerLoaderTypes (REF(ILoader) loader) abstract;
 				
-				virtual REF(Object) initFromData (const REF(Data) data, const ILoader * loader) abstract;
+				virtual REF(Object) initFromData (const PTR(IData) data, const ILoader * loader) abstract;
 			};
 		};
 		
@@ -69,7 +69,7 @@ namespace Dream {
 			class Class : IMPLEMENTS(Loadable::Class) 
 			{
 			public:
-				virtual REF(Object) initFromData (const REF(Data) data, const ILoader * loader);
+				virtual REF(Object) initFromData (const PTR(IData) data, const ILoader * loader);
 				virtual REF(Object) initFromStream (std::istream& input, const ILoader * loader) abstract;
 			};
 		};

@@ -28,7 +28,7 @@ namespace Dream {
 			class Class : public Object::Class, IMPLEMENTS(Loadable::Class) {
 				EXPOSE_CLASSTYPE
 				
-				virtual REF(Object) initFromData(const REF(Data) data, const ILoader * loader) {
+				virtual REF(Object) initFromData(const PTR(IData) data, const ILoader * loader) {
 					return CompressedImage::loadFromData (data);
 				}
 			};

@@ -47,7 +47,7 @@ namespace Dream {
 			return new Image(size, format, dataType);
 		}
 		
-		REF(Object) Image::Class::initFromData(const REF(Data) data, const ILoader * loader)
+		REF(Object) Image::Class::initFromData(const PTR(IData) data, const ILoader * loader)
 		{
 			return Image::loadFromData (data);
 		}

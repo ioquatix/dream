@@ -61,19 +61,19 @@ namespace Dream {
 			
 			ensure(totalSize != 0);
 			totalSize /= (1024 * 1024);
-			std::cerr << "Freeing " << totalSize << " Mbytes" << std::endl;
+			std::cerr << "Freeing " << totalSize << " Mbytes." << std::endl;
 		}
 		
-		REF(Data) Loader::fetchDataForPath (const Path & path) const
+		REF(IData) Loader::fetchDataForPath (const Path & path) const
 		{
 			CacheT::iterator c = m_dataCache.find(path);
 			
 			if (c != m_dataCache.end())
 				return c->second;
 			
- 			REF(Data) data = Data::klass.initWithPath(path);
+ 			REF(IData) data = new LocalFileData(path);
 			
-			std::cerr << "Adding " << path << " to cache" << std::endl;
+			std::cerr << "Adding " << path << " to cache." << std::endl;
 			
 			m_dataCache[path] = data;
 			
@@ -116,7 +116,7 @@ namespace Dream {
 		Path Loader::pathForResource(String name, String ext, Path dir) const {
 			Path fullPath = m_currentPath + dir;
 			
-			std::cerr << "Looking for: " << name << " ext: " << ext << " in: " << fullPath << std::endl;
+			//std::cerr << "Looking for: " << name << " ext: " << ext << " in: " << fullPath << std::endl;
 			
 			if (!fullPath.exists())
 				return Path();
@@ -127,10 +127,10 @@ namespace Dream {
 				Path::DirectoryListingT entries = fullPath.list(Path::STORAGE);
 				
 				for (std::size_t i = 0; i < entries.size(); i++) {
-					std::cerr << "Looking at: " << entries[i] << std::endl;
+					//std::cerr << "Looking at: " << entries[i] << std::endl;
 					
 					if (Path(entries[i]).splitFileName().basename == name) {
-						std::cerr << "\tFound: " << entries[i] << std::endl;
+						//std::cerr << "\tFound: " << entries[i] << std::endl;
 						resourcePaths.push_back(entries[i]);
 					}
 				}
@@ -150,7 +150,7 @@ namespace Dream {
 				fullPath = fullPath + (name + "." + ext);
 			}
 			
-			std::cerr << "Full Path = " << fullPath << std::endl;
+			//std::cerr << "Full Path = " << fullPath << std::endl;
 			
 			// Does a file exist?
 			if (fullPath.fileStatus() == Path::STORAGE)
@@ -174,8 +174,7 @@ namespace Dream {
 				return REF(Object)();
 			}
 			
-			REF(Data) data = fetchDataForPath(p);
-			
+			REF(IData) data = fetchDataForPath(p);
 			REF(Object) resource = NULL;
 			
 			try {

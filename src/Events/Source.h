@@ -101,13 +101,14 @@ namespace Dream
 			};
 						
 		protected:
-			bool m_cancelled;
-			bool m_repeats;
-			TimeT m_duration;
+			bool m_cancelled, m_repeats, m_strict;
+ 			TimeT m_duration;
 			CallbackT m_callback;
 			
 		public:
-			TimerSource (CallbackT callback, TimeT duration, bool repeats = false);
+			/// A strict timer attempts to fire callbacks even if they are in the past.
+			/// A non-strict timer might drop events.
+			TimerSource (CallbackT callback, TimeT duration, bool repeats = false, bool strict = false);
 			~TimerSource ();
 			
 			virtual void processEvents (Loop *, Event);
@@ -117,7 +118,7 @@ namespace Dream
 			
 			void cancel ();
 		};
-				
+		
 		class IFileDescriptorSource : IMPLEMENTS(Source)
 		{
 			EXPOSE_INTERFACE(FileDescriptorSource)

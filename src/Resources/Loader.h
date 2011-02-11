@@ -101,10 +101,10 @@ namespace Dream {
 			
 			Path m_currentPath;
 			
-			typedef std::map<Path, REF(Data)> CacheT;
+			typedef std::map<Path, REF(IData)> CacheT;
 			mutable CacheT m_dataCache;
 			
-			REF(Data) fetchDataForPath (const Path & path) const;
+			REF(IData) fetchDataForPath (const Path & path) const;
 		public:
 			void setLoaderForExtension (ILoadable::Class* cls, String ext);
 			ILoadable::Class* loaderForExtension (String ext) const;

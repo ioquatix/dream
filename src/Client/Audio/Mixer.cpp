@@ -16,21 +16,76 @@ namespace Dream
 	{
 		namespace Audio
 		{
+		
+#pragma mark -
+#pragma mark AudioError
+
+			AudioError::AudioError (ErrorNumberT errorNumber, StringT errorDescription, StringT errorTarget)
+			{
+				StringStreamT buffer;
+				buffer << "Audio Error #" << errorNumber << ": " << errorDescription << "(" << errorTarget << ")";
+				m_message = buffer.str();
+			}
+			
+			StringT AudioError::what () const
+			{
+				return m_message;
+			}
+			
+			void AudioError::check (StringT what)
+			{
+				ALint error = alGetError();
+				
+				if (error != AL_NO_ERROR)
+				{
+					throw AudioError(error, alGetString(error), what);
+				}
+			}
+			
+			void AudioError::reset ()
+			{
+				ALint error = AL_NO_ERROR;
+				
+				while ((error = alGetError()) != AL_NO_ERROR)
+				{
+					std::cerr << "Unhandled audio error #" << error << ": " << alGetString(error) << std::endl;
+				}
+			}
+
+#pragma mark -
+#pragma mark Source
+
+			IMPLEMENT_INTERFACE(Streamable)
+			
 			IMPLEMENT_CLASS(Source)
 			
 			Source::Source ()
 			{
+				AudioError::reset();
+				
 				alGenSources(1, &m_sourceID);
-				setPitch(1.0);
-				setGain(1.0);
-				setPosition(Vec3(ZERO));
-				setVelocity(Vec3(ZERO));
-				setReferenceDistance(100);
+				//setPitch(1.0);
+				//setGain(1.0);
+				//setPosition(Vec3(ZERO));
+				//setVelocity(Vec3(ZERO));
+				//setReferenceDistance(100);
+				
+				AudioError::check("Allocating Source");
 			}
 			
 			Source::~Source ()
 			{
+				AudioError::reset();
+				
+				std::cerr << "Deleting audio source: " << m_sourceID << std::endl;
 				alDeleteSources(1, &m_sourceID);
+				
+				AudioError::check("Deallocating Source");
+			}
+			
+			void Source::setParameter(ALenum parameter, float value)
+			{
+				alSourcef(m_sourceID, parameter, value);
 			}
 			
 			void Source::setPitch (float pitch)
@@ -53,9 +108,59 @@ namespace Dream
 				alSourcefv(m_sourceID, AL_VELOCITY, velocity.value());
 			}
 			
+			float Source::pitch ()
+			{
+				float value;
+				
+				alGetSourcef(m_sourceID, AL_PITCH, &value);
+				
+				return value;
+			}
+			
+			float Source::gain ()
+			{
+				float value;
+				
+				alGetSourcef(m_sourceID, AL_GAIN, &value);
+				
+				return value;
+			}
+			
+			Vec3 Source::position ()
+			{
+				Vec3 value;
+				
+				alGetSourcefv(m_sourceID, AL_POSITION, (ALfloat *)value.value());
+				
+				return value;
+			}
+			
+			Vec3 Source::velocity ()
+			{
+				Vec3 value;
+				
+				alGetSourcefv(m_sourceID, AL_VELOCITY, (ALfloat *)value.value());
+				
+				return value;
+			}
+			
+			void Source::setLocal ()
+			{
+			    alSource3f(m_sourceID, AL_POSITION, 0.0, 0.0, 0.0);
+				alSource3f(m_sourceID, AL_VELOCITY, 0.0, 0.0, 0.0);
+				alSource3f(m_sourceID, AL_DIRECTION, 0.0, 0.0, 0.0);
+				alSourcef(m_sourceID, AL_ROLLOFF_FACTOR, 0.0);
+				alSourcei(m_sourceID, AL_SOURCE_RELATIVE, AL_TRUE);
+			}
+			
 			void Source::setReferenceDistance (float dist)
 			{
 				alSourcef(m_sourceID, AL_REFERENCE_DISTANCE, dist);
+			}
+
+			void Source::setSound (ALuint bufferID)
+			{
+				alSourcei(m_sourceID, AL_BUFFER, bufferID);
 			}
 			
 			void Source::setSound (PTR(Sound) sound)
@@ -65,12 +170,74 @@ namespace Dream
 				alSourcei(m_sourceID, AL_BUFFER, sound->m_bufferID);
 			}
 			
+			void Source::queueBuffers (ALuint * buffers, std::size_t count)
+			{
+				AudioError::reset();
+				alSourceQueueBuffers(m_sourceID, count, buffers);
+				AudioError::check("Source Queue Buffers");
+			}
+			
+			void Source::unqueueBuffers (ALuint * buffers, std::size_t count)
+			{
+				AudioError::reset();
+				alSourceUnqueueBuffers(m_sourceID, count, buffers);
+				AudioError::check("Source Unqueue Buffers");
+			}
+			
+			ALint Source::processedBufferCount ()
+			{
+				ALint value = 0;
+				
+				alGetSourcei(m_sourceID, AL_BUFFERS_PROCESSED, &value);
+				
+				AudioError::reset();
+				
+				return value;
+			}
+			
+			ALint Source::queuedBufferCount ()
+			{
+				ALint value = 0;
+				
+				alGetSourcei(m_sourceID, AL_BUFFERS_QUEUED, &value);
+				
+				AudioError::reset();
+				
+				return value;
+			}
+			
+			bool Source::streamBuffers (IStreamable * stream) {
+				ALint processed = processedBufferCount();
+				bool complete = true;
+				
+				std::cerr << "Processed buffers = " << processed << std::endl;
+				
+				AudioError::reset();
+				
+				while (processed--) {
+					ALuint buffer;
+					unqueueBuffers(&buffer, 1);
+					
+					bool result = stream->loadNextBuffer(this, buffer);
+					
+					if (result) {
+						queueBuffers(&buffer, 1);
+					} else {
+						complete = false;
+					}
+				}
+				
+				AudioError::check("Streaming Buffers");
+				
+				return complete;
+			}
+			
 			void Source::setLooping (bool mode)
 			{
 				alSourcei(m_sourceID, AL_LOOPING, mode);
 			}
 			
-			void Source::play () const
+			void Source::play ()
 			{
 				/*
 				float pitch, gain, minGain, maxGain, maxDistance, rolloffFactor, coneOuterGain, coneInnerAngle, coneOuterAngle, referenceDistance;
@@ -115,7 +282,32 @@ namespace Dream
 				std::cout << "Listener State: " << gain << " " << position << " " << velocity << " " << orientation << std::endl;
 				*/
 				
+				AudioError::reset();
 				alSourcePlay(m_sourceID);
+				AudioError::check("Source Playback");
+			}
+			
+			void Source::pause ()
+			{
+				AudioError::reset();
+				alSourcePause(m_sourceID);
+				AudioError::check("Source Pause");
+			}
+			
+			void Source::stop ()
+			{
+				AudioError::reset();
+				alSourceStop(m_sourceID);
+				AudioError::check("Source Stop");
+			}
+			
+			bool Source::isPlaying () const
+			{
+				ALenum state;
+    
+				alGetSourcei(m_sourceID, AL_SOURCE_STATE, &state);
+    
+				return state == AL_PLAYING;
 			}
 			
 			IMPLEMENT_CLASS(Mixer)
@@ -123,6 +315,17 @@ namespace Dream
 			REF(Mixer) Mixer::Class::init ()
 			{
 				return new Mixer;
+			}
+			
+			REF(Mixer) Mixer::Class::sharedMixer ()
+			{
+				static REF(Mixer) g_mixer;
+				
+				if (!g_mixer) {
+					g_mixer = init();
+				}
+				
+				return g_mixer;
 			}
 			
 			ALCdevice * _defaultAudioDevice () {

@@ -223,7 +223,7 @@ namespace Dream
 				loader->setLoaderForExtension(this, "materials");
 			}
 
-			REF(Object) MaterialLibrary::Class::initFromData (const REF(Data) data, const ILoader * loader) {
+			REF(Object) MaterialLibrary::Class::initFromData (const PTR(IData) data, const ILoader * loader) {
 				return new MaterialLibrary(data, loader);
 			}
 												

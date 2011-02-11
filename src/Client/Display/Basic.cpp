@@ -13,6 +13,7 @@
 #include "../../Client/Text/Font.h"
 #include "../Audio/Sound.h"
 #include "../Graphics/MaterialLibraryParser.h"
+#include "../Audio/OggResource.h"
 
 namespace Dream {
 	namespace Client {
@@ -71,6 +72,7 @@ namespace Dream {
 				Dream::Client::Audio::Sound::staticClass()->registerLoaderTypes(resourceLoader);
 				Dream::Client::Text::Font::staticClass()->registerLoaderTypes(resourceLoader);
 				Dream::Client::Graphics::MaterialLibrary::staticClass()->registerLoaderTypes(resourceLoader);
+				Dream::Client::Audio::OggResource::staticClass()->registerLoaderTypes(resourceLoader);
 				
 				m_resourceLoader = resourceLoader;
 			}
@@ -81,7 +83,7 @@ namespace Dream {
 			}
 
 			void BasicApplication::frameCallback (TimeT at)
-			{			
+			{
 				m_stats.beginTimer(m_eventLoop->stopwatch().time());
 	
 				m_sceneManager->processPendingEvents();
@@ -156,7 +158,9 @@ namespace Dream {
 			{
 				for(unsigned i = 0; i < m_layers.size(); i += 1)
 					m_layers[i]->willRevokeCurrent(sceneManager, this);
-					
+				
+				m_layers.clear();
+				
 				Scene::willRevokeCurrent(sceneManager);
 			}
 			

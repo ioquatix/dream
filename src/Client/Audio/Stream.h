@@ -11,7 +11,8 @@
 #define _DREAM_CLIENT_AUDIO_STREAM_H
 
 #include "Sound.h"
-#include "../../Events/Source.h"
+#include "../../Events/Loop.h"
+#include <set>
 
 namespace Dream
 {
@@ -20,32 +21,48 @@ namespace Dream
 		namespace Audio
 		{
 			using namespace Dream::Resources;
+			using namespace Dream::Events;
 			
-			class Stream : IMPLEMENTS(Events::ITimerSource)
+			const std::size_t ChunkSize = 1024 * 4 * 32;
+			const unsigned BufferCount = 3;
+			
+			class Stream : public Object, IMPLEMENTS(Streamable)
 			{
-				EXPOSE_CLASS(Sound)
+				EXPOSE_CLASS(Stream)
 				
-				class Class : public Object::Class, IMPLEMENTS(Loadable::Class)
+				class Class : public Object::Class, IMPLEMENTS(TimerSource::Class), IMPLEMENTS(Streamable::Class)
 				{
 					EXPOSE_CLASSTYPE
-					
-					virtual void registerLoaderTypes (REF(ILoader) loader);
-					virtual REF(Object) initFromData (const REF(Data) data, const ILoader * loader);
 				};
 				
 			protected:
-				ALuint m_buffers[2];
-				unsigned m_frontBuffer;
+				REF(Source) m_source;
+				ALenum m_format;
+				ALsizei m_frequency;
 				
+				std::vector<ALuint> m_buffers;
+								
+				REF(TimerSource) m_timer;
+				REF(Fader) m_fader;
 				
+				void bufferCallback ();
+				void startBufferCallbacks (PTR(Events::Loop) loop);
+				void stopBufferCallbacks ();
 				
 			public:
-				Stream (ALenum format, ALsizei frequency, const Buffer *);
+				Stream (PTR(Source) source, ALenum format, ALsizei frequency);
 				virtual ~Stream ();
 				
-				/* For scheduling in the run-loop */
-				virtual bool repeats () const;
-				virtual TimeT nextTimeout (const TimeT & lastTimeout, const TimeT & currentTime) const;
+				REF(Source) source () { return m_source; }
+				
+				virtual void play (PTR(Events::Loop) loop);
+				virtual void pause ();
+				virtual void stop ();
+				
+				void fadeOut (PTR(Events::Loop) loop, TimeT duration = 0.1);
+				void fadeIn (PTR(Events::Loop) loop, TimeT duration = 0.1);
+				
+				TimeT secondsPerBuffer () const;
 			};
 		}
 	}

@@ -77,17 +77,17 @@ namespace Dream
 				}
 			}
 						
-			REF(Sound) loadWaveData (const REF(Data) data)
+			REF(Sound) loadWaveData (const PTR(IData) data)
 			{				
 				DecoderT decoder = NULL;
+				Shared<Buffer> buffer = data->buffer();
 				
-				StaticBuffer buf(data->start(), data->size());
 				IndexT i = 4;
 				
 				uint32_t chunkLength;
 				int32_t magic;
-				i += buf.read(i, chunkLength, LITTLE);
-				i += buf.read(i, magic, BIG);
+				i += buffer->read(i, chunkLength, LITTLE);
+				i += buffer->read(i, magic, BIG);
 				
 				if (magic != 'WAVE')
 					throw LoadError("Could not load WAV data");
@@ -96,23 +96,23 @@ namespace Dream
 				uint16_t audioFormat, channelCount, blockAlign, bitsPerSample;
 				uint32_t sampleFrequency, byteRate;
 				
-				while (i < buf.size())
+				while (i < buffer->size())
 				{
-					i += buf.read(i, magic, BIG);
-					i += buf.read(i, chunkLength, LITTLE);
+					i += buffer->read(i, magic, BIG);
+					i += buffer->read(i, chunkLength, LITTLE);
 					
 					if (magic == 'fmt ')
 					{
 						// Decode header
 						foundHeader = true;
 						
-						i += buf.read(i, audioFormat, LITTLE);
-						i += buf.read(i, channelCount, LITTLE);
-						i += buf.read(i, sampleFrequency, LITTLE);
-						i += buf.read(i, byteRate, LITTLE);
-						i += buf.read(i, blockAlign, LITTLE);
-						i += buf.read(i, bitsPerSample, LITTLE);
-						
+						i += buffer->read(i, audioFormat, LITTLE);
+						i += buffer->read(i, channelCount, LITTLE);
+						i += buffer->read(i, sampleFrequency, LITTLE);
+						i += buffer->read(i, byteRate, LITTLE);
+						i += buffer->read(i, blockAlign, LITTLE);
+						i += buffer->read(i, bitsPerSample, LITTLE);
+												
 						i += chunkLength - 16;
 						
 						if (audioFormat == 1) {
@@ -131,9 +131,9 @@ namespace Dream
 						}
 					} else if (magic == 'data') {						
 						if (!foundHeader)
-							throw LoadError ("Corrupt or truncated data");
+							throw LoadError("Corrupt or truncated data");
 						
-						StaticBuffer sampleData(&buf[i], chunkLength);
+						StaticBuffer sampleData(&(*buffer)[i], chunkLength);
 						
 						ensure(decoder != NULL);
 						return decoder(&sampleData, channelCount, bitsPerSample, sampleFrequency);
@@ -146,11 +146,11 @@ namespace Dream
 				throw LoadError("Corrupt or truncated data");
 			}
 						
-			REF(Object) Sound::Class::initFromData (const REF(Data) data, const ILoader * loader)
+			REF(Object) Sound::Class::initFromData (const PTR(IData) data, const ILoader * loader)
 			{
-				StaticBuffer buf(data->start(), data->size());
+				Shared<Buffer> buffer = data->buffer();
 				
-				Mimetype mt = buf.mimetype();
+				Mimetype mt = buffer->mimetype();
 				
 				if (mt == AUDIO_XWAV) {
 					return loadWaveData(data);

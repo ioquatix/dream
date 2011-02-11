@@ -10,6 +10,8 @@
 #ifndef _DREAM_REFERENCE_H
 #define _DREAM_REFERENCE_H
 
+#include "Assertion.h"
+
 #include <cstddef>
 #include <algorithm>
 #include <stdint.h>
@@ -55,12 +57,15 @@ namespace Dream {
 			SharedObject (const SharedObject & other);
 			
 			/// Copy operator. Doesn't modify reference count.
-			void operator= (const SharedObject & other);
+			SharedObject & operator= (const SharedObject & other);
 			
 			virtual ~SharedObject ();
 			
 			void retain () const;
-			void release () const;
+			
+			/// Decrement the reference count - delete the object if zero.
+			/// @returns true if the object was deleted.
+			bool release () const;
 			
 			// delete this object
 			void deallocate () const;
@@ -77,12 +82,15 @@ namespace Dream {
 			Pointer () : m_object(NULL) {
 			}
 			
+			Pointer (ObjectT * object) : m_object(object) {
+			}
+			
 			template <typename OtherObjectT>
 			Pointer (OtherObjectT* object) : m_object(dynamic_cast<ObjectT*>(object)) {
 			}
 			
 			template <typename OtherObjectT>
-			Pointer (Pointer<OtherObjectT> other) : m_object(other.get()) {
+			Pointer (Pointer<OtherObjectT> other) : m_object(dynamic_cast<ObjectT*>(other.get())) {
 			}
 			
 			ObjectT* operator-> () const {
@@ -243,6 +251,109 @@ namespace Dream {
 	Reference<ValueT> ref (ValueT* value) {
 		return Reference<ValueT>(value);
 	}
+	
+	template <typename ValueT>
+	class Shared
+	{
+		protected:
+			REF(SharedObject) m_controller;
+			ValueT * m_value;
+		
+		public:
+			Shared ()
+				: m_controller(NULL), m_value(NULL)
+			{
+			
+			}
+			
+			~Shared ()
+			{
+				// If this is the last Shared<...> we delete the value.
+				if (m_value && m_controller->referenceCount() == 1) {
+					delete m_value;
+				}
+			}
+			
+			Shared (ValueT * value)
+				: m_controller(new SharedObject), m_value(value)
+			{
+				
+			}
+			
+			Shared (const Shared & other)
+				: m_controller(other.m_controller), m_value(other.m_value)
+			{
+				
+			}
+			
+			template <typename OtherValueT>
+			Shared (OtherValueT * object)
+				: m_controller(new SharedObject), m_value(dynamic_cast<ValueT*>(object))
+			{
+			
+			}
+			
+			template <typename OtherValueT>
+			Shared (Shared<OtherValueT> other)
+				: m_controller(new SharedObject), m_value(dynamic_cast<ValueT*>(other.get()))
+			{
+			
+			}
+			
+			ValueT * get () const
+			{
+				return m_value;
+			}
+			
+			/// Copy operator. Doesn't modify reference count.
+			Shared & operator= (const Shared & other)
+			{
+				m_controller = other.m_controller;
+				m_value = other.m_value;
+				
+				return *this;
+			}
+			
+			/// Copy operator. Doesn't modify reference count.
+			template <typename OtherValueT>
+			Shared & operator= (const Shared<OtherValueT> & other)
+			{
+				m_value = dynamic_cast<ValueT*>(other.m_value);
+				
+				if (m_value)
+					m_controller = other.m_controller;
+				
+				return *this;
+			}
+			
+			template <typename OtherValueT>
+			Shared & operator= (OtherValueT * other)
+			{
+				m_value = dynamic_cast<ValueT*>(other);
+				
+				if (m_value)
+					m_controller = new SharedObject;
+				
+				return *this;
+			}
+			
+			ValueT* operator-> () const {
+				ensure(m_value != NULL);
+				return m_value;
+			}
+						
+			ValueT& operator* () const {
+				ensure(m_value != NULL);
+				return *m_value;
+			}
+			
+			typedef ValueT* Shared::* safe_bool;
+			
+			operator safe_bool() const
+			{
+				return m_value ? &Shared::m_value : 0;
+			}
+	};
 }
 
 #endif

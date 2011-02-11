@@ -69,8 +69,8 @@ namespace Dream
 			return new TimerSource(callback, duration, repeats);
 		}
 		
-		TimerSource::TimerSource (CallbackT callback, TimeT duration, bool repeats) : m_repeats(repeats), m_duration(duration), m_callback(callback), 
-		m_cancelled(false)
+		TimerSource::TimerSource (CallbackT callback, TimeT duration, bool repeats, bool strict) 
+			: m_repeats(repeats), m_strict(strict), m_duration(duration), m_callback(callback), m_cancelled(false)
 		{
 			
 		}
@@ -101,7 +101,7 @@ namespace Dream
 			
 			// This means that TimerSource will process updates as is possible, and might drop
 			// updates if they are in the past
-			if (lastTimeout + m_duration < currentTime)
+			if (!m_strict && lastTimeout + m_duration < currentTime)
 				return currentTime;
 			else
 				return lastTimeout + m_duration;

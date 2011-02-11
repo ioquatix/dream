@@ -75,7 +75,7 @@ namespace Dream {
 				
 				virtual void registerLoaderTypes (REF(ILoader) loader);
 				virtual REF(Object) initWithSize(const Vector<3, unsigned> &size, ImagePixelFormat format, ImageDataType dataType);
-				virtual REF(Object) initFromData(const REF(Data) data, const ILoader * loader);
+				virtual REF(Object) initFromData(const PTR(IData) data, const ILoader * loader);
 			};
 			
 		protected:
@@ -100,7 +100,7 @@ namespace Dream {
 			void allocate (const Vec3u & size, ImagePixelFormat format, ImageDataType dataType);
 
 		protected:
-			static REF(Image) loadFromData (const REF(Data) data);
+			static REF(Image) loadFromData (const PTR(IData) data);
 
 		};
 	}

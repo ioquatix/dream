@@ -126,7 +126,7 @@ namespace Dream {
 			uint32_t dwReserved2;
 		} PACKED;
 
-		REF(CompressedImage) loadDDSImage (const REF(Data) data) {
+		REF(CompressedImage) loadDDSImage (const PTR(IData) data) {
 			const ByteT * start = data->start();
 			DDSSurfaceDesc * desc = (DDSSurfaceDesc*)start;
 			

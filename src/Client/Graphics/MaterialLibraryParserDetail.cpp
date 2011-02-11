@@ -215,7 +215,7 @@ namespace Dream
 				};
 			}
 			
-			MaterialLibrary::MaterialLibrary(const REF(Data) data, const ILoader * loader) : m_loader(loader)
+			MaterialLibrary::MaterialLibrary(const PTR(IData) data, const ILoader * loader) : m_loader(loader)
 			{
 				Detail::CommentsParser commentsParser;
 				Detail::MaterialsParserState s(this, loader);
@@ -225,7 +225,9 @@ namespace Dream
 				using namespace boost::spirit::classic;
 				
 				std::cout << "Parsing materials data..." << std::endl;
-				parse_info<const ByteT *> info = parse(data->start(), data->start() + data->size(), p, commentsParser);
+				Shared<Buffer> buffer = data->buffer();
+				
+				parse_info<const ByteT *> info = parse(buffer->begin(), buffer->end(), p, commentsParser);
 				
 				if (!info.full) {
 					cout << "Error found at location: " << info.stop << endl;

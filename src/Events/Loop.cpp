@@ -159,7 +159,7 @@ namespace Dream
 					
 			m_removedFileDescriptors.insert(fd);
 			m_fileDescriptorHandles.erase(source);
-		}		
+		}
 		
 		int KQueueFileDescriptorMonitor::waitForEvents (TimeT timeout, Loop * loop)
 		{
@@ -554,8 +554,8 @@ namespace Dream
 			while(nextTimeout(timeout) && timeout <= 0.0 && (rate-- || m_rateLimit == 0))
 			{
 				// Check if the timeout is late.
-				if (timeout < -0.1)
-					std::cerr << "Timeout was late: " << timeout << std::endl;
+				//if (timeout < -0.1)
+				//	std::cerr << "Timeout was late: " << timeout << std::endl;
 				
 				TimerHandle th = m_timerHandles.top();
 				m_timerHandles.pop();
@@ -571,6 +571,10 @@ namespace Dream
 			
 			if (rate == 0 && m_rateLimit != 0)
 				std::cerr << "Warning: Timers were rate limited" << std::endl;
+			
+			// There are timeouts that should have run, but didn't.
+			if (timeout < 0)
+				timeout = 0;
 			
 			return timeout;
 		}
@@ -625,10 +629,12 @@ namespace Dream
 		void Loop::runForever ()
 		{
 			using namespace boost;
-				
+			
+			std::cerr << "Entering runloop " << std::flush;
 			m_running = true;
 			m_currentThread = this_thread::get_id();
-				
+			std::cerr << "..." << std::endl;
+			
 			while(m_running)
 			{
 				runOneIteration(true);

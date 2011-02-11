@@ -61,6 +61,9 @@ namespace Dream
 
 			/// Point constructor.
 			Quaternion (const Vec3T & point);
+			
+			/// Get the rotation from a matrix
+			static Quaternion fromMatrix (const Mat44 & m);
 
 			/// Proxy function for convenience
 			const NumericT & operator[] (unsigned i) const;

@@ -86,6 +86,12 @@ namespace Dream
 				return false;
 			}
 			
+			// Overwrites values present in the other dictionary.
+			void update (const PTR(Dictionary) other);
+			
+			// Only inserts key-values that don't already exist.
+			void insert (const PTR(Dictionary) other);
+			
 			REF(IData) serialize () const;
 			void deserialize (REF(IData) data);
 			

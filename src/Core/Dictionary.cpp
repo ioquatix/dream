@@ -41,33 +41,45 @@ namespace Dream
 				return Value();
 		}
 		
+		void Dictionary::update (const PTR(Dictionary) other)
+		{
+			ValuesT values = other->m_values;
+			values.insert(m_values.begin(), m_values.end());
+			m_values.swap(values);
+		}
+		
+		void Dictionary::insert (const PTR(Dictionary) other)
+		{
+			m_values.insert(other->m_values.begin(), other->m_values.end());
+		}
+		
 		REF(IData) Dictionary::serialize () const
 		{
-			DynamicBuffer buf;
+			Shared<DynamicBuffer> buffer(new DynamicBuffer);
 			
 			for (ValuesT::const_iterator i = m_values.begin(); i != m_values.end(); i++)
 			{
 				const KeyT & key = i->first;
 				const Value & value = i->second;
 				
-				TypeSerialization<TI_STRING>::appendToBuffer(buf, key);
-				value.appendToBuffer(buf);
+				TypeSerialization<TI_STRING>::appendToBuffer(*buffer, key);
+				value.appendToBuffer(*buffer);
 			}
 			
-			buf.hexdump(std::cout);
+			buffer->hexdump(std::cout);
 			
-			return Data::klass.initWithBuffer(buf);
+			return new BufferedData(buffer);
 		}
 		
 		void Dictionary::deserialize (REF(IData) data)
 		{
-			StaticBuffer buf(data->start(), data->size());
+			Shared<Buffer> buffer = data->buffer();
 			IndexT offset = 0;
 			
-			while (offset < buf.size())
+			while (offset < buffer->size())
 			{
-				KeyT key = TypeSerialization<TI_STRING>::readFromBuffer(buf, offset);
-				m_values[key] = Value::readFromBuffer(buf, offset);
+				KeyT key = TypeSerialization<TI_STRING>::readFromBuffer(*buffer, offset);
+				m_values[key] = Value::readFromBuffer(*buffer, offset);
 			}
 		}
 		

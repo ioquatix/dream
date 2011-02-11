@@ -10,83 +10,83 @@
 #ifndef _DREAM_CORE_DATA_H
 #define _DREAM_CORE_DATA_H
 
+#include "../Class.h"
 #include "Buffer.h"
 #include "URI.h"
+#include <fstream>
 
 namespace Dream
 {
 	namespace Core
-	{
+	{		
 		/**
-		 A abstract class representing a sequence of read-only bytes.
-
-		 This class provides a very simple interface to a block of data. This is because this class is not designed for manipulating data, but rather loading,
-		 saving and passing it around. As it is a fully fledged object, it is reference counted.
+		 An abstract class representing a data store, such as an on-disk local file.
 		 */
-		class IData : IMPLEMENTS (Object)
+		class IData : IMPLEMENTS(Object)
 		{
-			EXPOSE_INTERFACE (Data)
+			EXPOSE_INTERFACE(Data)
 
-			class Class : IMPLEMENTS (Object::Class)
+			class Class : IMPLEMENTS(Object::Class)
 			{
-			};
-
-		public:			
-			/// Returns the start of the data area.
-			virtual const ByteT * start () const abstract;
-			
-			/// Returns the length of the data area.
-			virtual IndexT size () const abstract;
-			
-			/// Returns a buffer interface for reading the internal data
-			virtual Buffer * buffer () abstract;
-		};
-
-		/**
-		 A class that provides a set of methods for loading data from local file paths and in-memory data buffers.
-
-		 Fetching from URIs is not handled here, because URIs may take some time to retrieve, or may fail, depending on the resource. Therefore, additional
-		 structure must be available to handle these cases.
-
-		 @sa Data::Class::initWithPath
-		 @sa Data::Class::initWithBuffer
-		 */
-		class Data : public Object, IMPLEMENTS (Data)
-		{
-			Path m_path;
-			Buffer * m_buffer;
-
-			Data (const Path & p);
-			Data (const Buffer & buf);
-
-			EXPOSE_CLASS (Data)
-
-			class Class : public Object::Class, IMPLEMENTS (Data::Class)
-			{
-			public:
-				EXPOSE_CLASSTYPE
-
-				/// Load data from a local file path.
-				virtual REF(Data) initWithPath (const Path & p);
-
-				/// Load data from an in-memory buffer.
-				virtual REF(Data) initWithBuffer (const Buffer & buf);
 			};
 
 		public:
-			virtual ~Data ();
+			/// Access the data as a buffer. This buffer is shared (same buffer returned every time).
+			virtual Shared<Buffer> buffer () const abstract;
 			
-			virtual const ByteT* start () const;
-			virtual IndexT size () const;
-			
-			virtual Buffer * buffer ();
-			
-			/// If the data was loaded from a file system path, this path is non-empty.
-			/// This is a hack for APIs which don't provide memory based loaders - it
-			/// should be avoided if at all possible.
-			const Path & path () const;
-		};
+			/// Access the data as an input stream. The stream is unique (new stream returned each time).
+			virtual Shared<std::istream> inputStream () const abstract;
 
+			/// Return the size of the input data if it is known.
+			virtual std::size_t size () const abstract;
+		};
+		
+		class LocalFileData : public Object, IMPLEMENTS(Data) {
+			EXPOSE_CLASS(LocalFileData)
+
+			class Class : public Object::Class, IMPLEMENTS (Data::Class)
+			{
+				EXPOSE_CLASSTYPE
+			};
+			
+			protected:
+				Path m_path;
+				mutable Shared<Buffer> m_buffer;
+			
+			public:
+				LocalFileData (const Path & path);
+				virtual ~LocalFileData ();
+				
+				virtual Shared<Buffer> buffer () const;
+				virtual Shared<std::istream> inputStream () const;
+				
+				virtual std::size_t size () const;
+		};
+		
+		class BufferedData : public Object, IMPLEMENTS(Data) {
+			EXPOSE_CLASS(BufferedData)
+
+			class Class : public Object::Class, IMPLEMENTS (Data::Class)
+			{
+				EXPOSE_CLASSTYPE
+			};
+			
+			protected:
+				Shared<Buffer> m_buffer;
+			
+			public:
+				BufferedData (Shared<Buffer> buffer);
+				
+				/// Create a buffer from a given input stream
+				BufferedData (std::istream & stream);
+				
+				virtual ~BufferedData ();
+				
+				virtual Shared<Buffer> buffer () const;
+				virtual Shared<std::istream> inputStream () const;	
+				
+				virtual std::size_t size () const;
+		};
 	}
 }
 

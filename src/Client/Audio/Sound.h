@@ -32,7 +32,7 @@ namespace Dream
 					EXPOSE_CLASSTYPE
 					
 					virtual void registerLoaderTypes (REF(ILoader) loader);
-					virtual REF(Object) initFromData (const REF(Data) data, const ILoader * loader);
+					virtual REF(Object) initFromData (const PTR(IData) data, const ILoader * loader);
 				};
 				
 			protected:

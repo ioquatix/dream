@@ -11,6 +11,7 @@
 #define _DREAM_GEOMETRY_ALIGNEDBOX_H
 
 #include "Geometry.h"
+#include "../Numerics/Matrix.h"
 
 namespace Dream {
 
@@ -359,6 +360,13 @@ namespace Dream {
 		typedef AlignedBox<3, int> AlignedBox3i;
 		typedef AlignedBox<2, unsigned> AlignedBox2u;
 		typedef AlignedBox<3, unsigned> AlignedBox3u;
+		
+		/// Return an ortographic projection as described by the given AlignedBox.
+		template <typename NumericT>
+		Matrix<4, 4, NumericT> orthographicMatrix (const AlignedBox<3, NumericT> & box) {
+			Vector<3, NumericT> translation = (box.max() + box.min()) / (box.max() - box.min());
+			return orthographicMatrix(translation, box.size());
+		}
 	}
 }
 

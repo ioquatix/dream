@@ -23,19 +23,10 @@ namespace Dream {
 		const char * LoadError::what () throw () {
 			return m_what.c_str();
 		}
-
-		REF(Object) ILoadableFromStream::Class::initFromData(const REF(Data) data, const ILoader * loader) {
-			StaticBuffer buffer(data->start(), data->size());
-
-			BufferStream ds(buffer);
-			
-			return initFromStream (ds, loader);
-		}
 		
 #pragma mark -
 		
 		IMPLEMENT_INTERFACE(Loadable)
-		IMPLEMENT_INTERFACE(LoadableFromStream)
 		
 	}
 }

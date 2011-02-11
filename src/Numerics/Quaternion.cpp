@@ -95,6 +95,19 @@ namespace Dream
 
 			setToAngleAxisRotation(angle, axis);
 		}
+		
+		template <typename _NumericT>
+		Quaternion<_NumericT> Quaternion<_NumericT>::fromMatrix (const Mat44 & m) {
+			RealT w = Math::sqrt(1 + m.at(0) + m.at(5) + m.at(10)) / 2.0;
+
+			Vec4 e;						
+			e[X] = (m.at(6) - m.at(9)) / (4 * w);
+			e[Y] = (m.at(8) - m.at(2)) / (4 * w);
+			e[Z] = (m.at(1) - m.at(4)) / (4 * w);
+			e[W] = w;
+
+			return Quaternion(e.normalizedVector(1));
+		}
 
 		template <typename _NumericT>
 		const _NumericT & Quaternion<_NumericT>::operator[] (unsigned i) const

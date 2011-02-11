@@ -95,7 +95,7 @@ namespace Dream
 					EXPOSE_CLASSTYPE
 					
 					void registerLoaderTypes (REF(ILoader) loader);
-					REF(Object) initFromData (const REF(Data) data, const ILoader * loader);
+					REF(Object) initFromData (const PTR(IData) data, const ILoader * loader);
 				};
 				
 			protected:
@@ -103,7 +103,7 @@ namespace Dream
 				REF(const ILoader) m_loader;
 				
 			public:		
-				MaterialLibrary(const REF(Data) data, const ILoader * loader);
+				MaterialLibrary(const PTR(IData) data, const ILoader * loader);
 				virtual ~MaterialLibrary();
 				
 				void addMaterialFactory (REF(MaterialFactory) materialFactory);

@@ -8,6 +8,7 @@
  */
 
 #include "Path.h"
+#include "System.h"
 
 #include <cstddef>
 
@@ -28,6 +29,8 @@ namespace Dream
 	namespace Core
 	{
 		Path::FileType Path::fileStatus() const {
+			SystemError::reset();
+			
 			StringT path = toLocalPath();
 			struct stat fileInfo;
 			
@@ -37,25 +40,39 @@ namespace Dream
 			if (stat(path.c_str(), &fileInfo) != 0) {
 				// If there was an error other than not found...
 				if (errno != ENOENT) {
-					std::cerr << path << ":";
-					perror(__PRETTY_FUNCTION__);
+					SystemError::check(path);
 				}
 				
-				std::cerr << path << " is unknown" << std::endl;
+				//std::cerr << path << " is unknown" << std::endl;
 				return UNKNOWN;
 			}
 			
-			mode_t mode = fileInfo.st_mode & S_IFMT;
+			//mode_t mode = fileInfo.st_mode & S_IFMT;
 			
 			if (S_ISDIR(fileInfo.st_mode)) {
-				std::cerr << path << " is directory" << std::endl;
+				//std::cerr << path << " is directory" << std::endl;
 				return DIRECTORY;
 			}
 			
-			std::cerr << path << " is storage : " << S_ISREG(fileInfo.st_mode) << std::endl;
+			//std::cerr << path << " is storage : " << S_ISREG(fileInfo.st_mode) << std::endl;
 			
 			// It isn't a directory so it must be some kind of storage.
 			return STORAGE;
+		}
+		
+		Path::FileSizeT Path::fileSize() const {
+			SystemError::reset();
+			
+			StringT path = toLocalPath();
+			struct stat fileInfo;
+			
+			memset(&fileInfo, 0, sizeof(fileInfo));
+			
+			if (stat(path.c_str(), &fileInfo) != 0) {
+				SystemError::check(path);
+			}
+			
+			return FileSizeT(fileInfo.st_blocks) * FileSizeT(fileInfo.st_blksize);
 		}
 		
 		Path::DirectoryListingT Path::list (FileType filter) const {

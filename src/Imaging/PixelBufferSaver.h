@@ -18,7 +18,7 @@ namespace Dream
 	namespace Imaging
 	{
 		
-		REF(Core::Data) savePixelBufferAsPNG (IPixelBuffer * pixelBuffer);
+		REF(Core::IData) savePixelBufferAsPNG (IPixelBuffer * pixelBuffer);
 		
 	}
 }

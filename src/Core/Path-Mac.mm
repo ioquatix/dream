@@ -18,9 +18,6 @@
 // For directory access
 #include <dirent.h>
 
-// For errno
-#include <sys/errno.h>
-
 // MAXPATHLEN
 #include <sys/param.h>
 
@@ -31,11 +28,10 @@ namespace Dream
 		Path::FileType Path::fileStatus() const {
 			NSAutoreleasePool * pool = [NSAutoreleasePool new];			
 
-			NSString * path = [[NSString alloc] initWithUTF8String:toLocalPath().c_str()];
+			NSString * path = [[[NSString alloc] initWithUTF8String:toLocalPath().c_str()] autorelease];
 			BOOL isDir = NO;
 			BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir];
 			
-			[path release];
 			[pool release];
 			
 			if (exists) {
@@ -47,6 +43,30 @@ namespace Dream
 			} else {
 				return UNKNOWN;
 			}
+		}
+		
+		Path::FileSizeT Path::fileSize() {
+			FileSizeT fileSize = 0;
+						
+			NSAutoreleasePool * pool = [NSAutoreleasePool new];			
+
+			NSString * path = [[[NSString alloc] initWithUTF8String:toLocalPath().c_str()] autorelease];
+			NSError * error = NULL;
+			NSDictionary * attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error];
+			
+			if (error) {
+				SystemError systemError([[error domain] UTF8String], [error code], [[error description] UTF8String], toLocalPath());
+				
+				[pool release];
+				
+				throw systemError;
+			} else {
+				fileSize = [attributes fileSize];
+				
+				[pool release];
+			}
+			
+			return fileSize;
 		}
 		
 		Path::DirectoryListingT Path::list (FileType filter) const {

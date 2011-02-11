@@ -57,14 +57,14 @@ namespace Dream
 			return -1;
 		}
 		
-		REF(Core::Data) savePixelBufferAsPNG (IPixelBuffer * pixelBuffer)
+		REF(Core::IData) savePixelBufferAsPNG (IPixelBuffer * pixelBuffer)
 		{
 			Vec3u size = pixelBuffer->size();
 		
 			ensure(!pixelBuffer->isPackedFormat());
 			ensure(size[Z] == 1);
 			
-			DynamicBuffer resultData;
+			Shared<DynamicBuffer> resultData(new DynamicBuffer);
 			
 			png_structp pngWriter = NULL;
 			png_infop pngInfo = NULL;
@@ -81,7 +81,7 @@ namespace Dream
 				pngInfo = png_create_info_struct(pngWriter);
 				ensure(pngInfo != NULL && "png_create_info_struct returned NULL!");
 				
-				png_set_write_fn(pngWriter, (void *)&resultData, pngWriteToBuffer, pngFlushBuffer);
+				png_set_write_fn(pngWriter, (void *)(resultData.get()), pngWriteToBuffer, pngFlushBuffer);
 				
 				int bitDepth = (pixelBuffer->bytesPerPixel() * 8) / pixelBuffer->channelCount();
 				int colorType = pngColorType(pixelBuffer->pixelFormat());
@@ -105,8 +105,7 @@ namespace Dream
 			
 			png_destroy_write_struct(&pngWriter, &pngInfo);
 			
-			/// @todo Optimize this constructor - maybe add a new one which moves data rather than copies?
-			return Data::klass.initWithBuffer(resultData);
+			return new BufferedData(resultData);
 		}
 		
 		
@@ -119,7 +118,7 @@ namespace Dream
 			REF(IPixelBuffer) pixelBuffer = new Image(vec(100.0, 100.0, 1.0), RGB, UBYTE);
 			testing("PNG");
 			
-			REF(Data) pngData = savePixelBufferAsPNG(pixelBuffer.get());
+			REF(IData) pngData = savePixelBufferAsPNG(pixelBuffer.get());
 			
 			pngData->buffer()->writeToFile("UnitTest.png");
 		}

@@ -23,24 +23,24 @@ extern "C" {
 namespace Dream {
 	namespace Imaging {
 		
-		struct DataFILE {
-			const Data *data;
+		struct DataFile {
+			Shared<Buffer> buffer;
 			unsigned offset;
 			
-			DataFILE (const REF(Data) d) {
-				data = d.get();
+			DataFile (const REF(IData) data) {
+				buffer = data->buffer();
 				offset = 0;
 			}
 			
 			const char * readBytes (unsigned length) {
 				unsigned prevOffset = offset;
 				offset += length;
-				return (const char*)&data->start()[prevOffset];
+				return (const char*)(buffer->begin() + prevOffset);
 			}
 			
 			static void pngReadData (png_structp pngReader, png_bytep data, png_size_t length) {
-				DataFILE *buffer = (DataFILE *) png_get_io_ptr (pngReader);
-				memcpy(data, buffer->readBytes(length), length);
+				DataFile *dataFile = (DataFile *) png_get_io_ptr (pngReader);
+				memcpy(data, dataFile->readBytes(length), length);
 			}
 		};
 
@@ -93,7 +93,7 @@ namespace Dream {
 			cinfo->src->bytes_in_buffer = bufsize;
 		}
 
-		REF(Image) loadJPEGImage (const REF(Data) data) {
+		REF(Image) loadJPEGImage (const PTR(IData) data) {
 			jpeg_decompress_struct cinfo;
 			jpeg_error_mgr jerr;
 			
@@ -101,6 +101,7 @@ namespace Dream {
 			ImageDataType dataType = UBYTE;
 
 			REF(Image) resultImage;
+			Shared<Buffer> buffer = data->buffer();
 			
 			unsigned width, height;
 			
@@ -111,7 +112,7 @@ namespace Dream {
 				cinfo.err = jpeg_std_error(&jerr);
 			
 				jpeg_create_decompress(&cinfo);
-				jpeg_memory_src(&cinfo, data->start(), data->size());
+				jpeg_memory_src(&cinfo, buffer->begin(), buffer->size());
 
 				jpeg_read_header(&cinfo, TRUE); 
 
@@ -153,13 +154,14 @@ namespace Dream {
 			throw std::runtime_error(msg);
 		}
 		
-		REF(Image) loadPNGImage (const REF(Data) data) {
+		REF(Image) loadPNGImage (const PTR(IData) data) {
 			// Image formatting details
 			ImagePixelFormat format = ImagePixelFormat(0);
 			ImageDataType dataType = ImageDataType(0);
 			
-			DataFILE df(data);
+			DataFile df(data);
 			REF(Image) resultImage;
+			Shared<Buffer> buffer = data->buffer();
 			
 			// internally used by libpng
 			png_structp pngReader = NULL;
@@ -168,7 +170,7 @@ namespace Dream {
 			
 			png_byte **ppbRowPointers = NULL;
 			
-			if (!png_check_sig((png_byte*)data->start(), 8)) {
+			if (!png_check_sig((png_byte*)buffer->begin(), 8)) {
 				std::cerr << "Could not verify PNG image!" << std::endl;
 				return REF(Image)();
 			}
@@ -181,7 +183,7 @@ namespace Dream {
 				ensure(pngInfo != NULL && "png_create_info_struct returned NULL!");
 				
 				// We will use this function to read data from Data class
-				png_set_read_fn (pngReader, (void *)&df, DataFILE::pngReadData);
+				png_set_read_fn (pngReader, (void *)&df, DataFile::pngReadData);
 				
 				// Read PNG header
 				png_read_info (pngReader, pngInfo);
@@ -263,17 +265,18 @@ namespace Dream {
 #pragma mark -
 #pragma mark Loader Multiplexer
 		
-		REF(Image) Image::loadFromData (const REF(Data) data) {
+		REF(Image) Image::loadFromData (const PTR(IData) data) {
 			static Stopwatch t;
 			static unsigned count = 0; ++count;
 			
 			REF(Image) loadedImage;
+			Shared<Buffer> buffer;
 
 			t.start();
 			
-			StaticBuffer buffer(data->start(), data->size());
+			buffer = data->buffer();
 			
-			switch (buffer.mimetype()) {
+			switch (buffer->mimetype()) {
 				case IMAGE_JPEG:
 					loadedImage = loadJPEGImage(data);
 					break;

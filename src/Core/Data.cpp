@@ -11,70 +11,89 @@
 
 #include <streambuf>
 #include <sstream>
+#include <stdexcept>
 
 namespace Dream
 {
 	namespace Core
 	{
-		
-#pragma mark -
-#pragma mark class IData
+	
+#pragma mark IData
 
 		IMPLEMENT_INTERFACE(Data)
 		
 #pragma mark -
-#pragma mark class Data
+#pragma mark LocalFileData
 
-		IMPLEMENT_CLASS (Data)
+		IMPLEMENT_CLASS(LocalFileData)
 
-		REF(Data) Data::Class::initWithPath (const Path & path)
+		LocalFileData::LocalFileData (const Path & path)
+			: m_path(path)
 		{
-			return new Data(path);
-		}
-		
-		REF(Data) Data::Class::initWithBuffer (const Buffer & buf)
-		{
-			return new Data(buf);
-		}
-		
-		Data::Data (const Path & p)
-		{
-			m_path = p;
-			m_buffer = new FileBuffer(p);
-		}
-
-		Data::Data (const Buffer & buf)
-		{
-			PackedBuffer * packedBuffer = PackedBuffer::newBuffer(buf.size());
 			
-			packedBuffer->assign(buf);
+		}
+		
+		LocalFileData::~LocalFileData ()
+		{
+		
+		}
+		
+		Shared<Buffer> LocalFileData::buffer () const
+		{
+			if (!m_buffer) {
+				m_buffer = new FileBuffer(m_path);
+			}
 			
-			m_buffer = packedBuffer;
+			return m_buffer;
 		}
 		
-		Data::~Data ()
+		Shared<std::istream> LocalFileData::inputStream () const
 		{
-			delete m_buffer;
+			std::ifstream * fileInputStream = new std::ifstream(m_path.toLocalPath().c_str(), std::ios::binary);
+			
+			return Shared<std::istream>(fileInputStream);
 		}
 		
-		const ByteT* Data::start () const
+		std::size_t LocalFileData::size () const
 		{
-			return m_buffer->begin();
+			return m_path.fileSize();
 		}
+
+
+#pragma mark -
+#pragma mark BufferedData
+
+		IMPLEMENT_CLASS(BufferedData)
 		
-		IndexT Data::size () const
+		BufferedData::BufferedData (Shared<Buffer> buffer)
 		{
-			return m_buffer->size();
+		
 		}
 		
-		Buffer * Data::buffer ()
+		/// Create a buffer from a given input stream
+		BufferedData::BufferedData (std::istream & stream)
+		{
+		
+		}
+		
+		BufferedData::~BufferedData ()
+		{
+		
+		}
+		
+		Shared<Buffer> BufferedData::buffer () const
 		{
 			return m_buffer;
 		}
 		
-		const Path & Data::path () const
+		Shared<std::istream> BufferedData::inputStream () const
 		{
-			return m_path;
+			return new BufferStream(*m_buffer);
+		}
+		
+		std::size_t BufferedData::size () const
+		{
+			return m_buffer->size();
 		}
 		
 #pragma mark -
@@ -87,11 +106,10 @@ namespace Dream
 
 			testing("Construction");
 
-			StaticBuffer sb = StaticBuffer::forCString(data, false);
+			Shared<StaticBuffer> sb = new StaticBuffer(StaticBuffer::forCString(data, false));
+			REF(IData) a = new BufferedData(sb);
 
-			REF(IData) a = Data::klass.initWithBuffer(sb);
-
-			check(a->size() == strlen(data)) << "Data length is correct";
+			check(a->buffer()->size() == strlen(data)) << "Data length is correct";
 		}
 #endif
 	}

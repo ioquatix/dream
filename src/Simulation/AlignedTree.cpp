@@ -42,6 +42,8 @@ namespace Dream {
 			}
 			
 			ensure(false && "Invalid partition index!");
+
+			return ZERO;
 		}
 		
 		Vec2 Quadrants::offsetOriginForPartitionIndex(const IndexT &i) {
@@ -60,7 +62,9 @@ namespace Dream {
 				return TopRight;
 			}
 			
-			ensure(false && "Invalid partition direction!");			
+			ensure(false && "Invalid partition direction!");
+			
+			return BottomLeft;			
 		}
 		
 		unsigned Octants::indexForPartition(const Vec3 &point, const Vec3 &center) {
@@ -100,6 +104,8 @@ namespace Dream {
 			}
 			
 			ensure(false && "Invalid partition index!");
+			
+			return ZERO;
 		}
 		
 		Vec3 Octants::offsetOriginForPartitionIndex(const IndexT &i) {
@@ -128,6 +134,8 @@ namespace Dream {
 			}
 			
 			ensure(false && "Invalid partition direction!");
+			
+			return BottomLeftNear;
 		}
 		
 	}

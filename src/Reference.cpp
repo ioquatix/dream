@@ -45,8 +45,10 @@ namespace Dream {
 		
 	}
 			
-	void SharedObject::operator= (const SharedObject & other) {
+	SharedObject & SharedObject::operator= (const SharedObject & other) {
 		// Don't touch reference count.
+		
+		return *this;
 	}
 	
 	SharedObject::~SharedObject () {
@@ -63,7 +65,7 @@ namespace Dream {
 		OSAtomicIncrement32(&m_count);
 	}
 	
-	void SharedObject::release () const {
+	bool SharedObject::release () const {
 		// std::cout << "Reference Decrement @ " << this << " -> " << (m_count-1) << std::endl;
 		
 		#ifdef TRACK_ALLOCATIONS
@@ -72,8 +74,12 @@ namespace Dream {
 		
 		int32_t count = OSAtomicDecrement32(&m_count);
 
-		if (count == 0)
+		if (count == 0) {
 			deallocate();
+			return true;
+		}
+		
+		return false;
 	}
 	
 	void SharedObject::deallocate () const {
@@ -135,6 +141,19 @@ namespace Dream {
 		objects.insert(s3);
 		
 		check(objects.size() == 3) << "Set contains correct number of objects";
+	}
+	
+	UNIT_TEST(Shared)
+	{
+		testing("Shared Integers");
+		
+		Shared<int> s1(new int), s2, s3;
+		
+		s2 = s1;
+		
+		*s1 = 10;
+		
+		check(*s2 == 10) << "Value was not the same!";
 	}
 #endif
 	

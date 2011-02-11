@@ -17,11 +17,14 @@ namespace Dream
 {
 	namespace Core
 	{
-		/**A simple class for accessing the local filesystem.
+		/**
+			A simple class for accessing the local filesystem.
 		 */
 		class Path
 		{
 		public:
+			typedef uint64_t FileSizeT;
+			
 			typedef std::vector<StringT> DirectoryListingT;
 			typedef std::vector<StringT> ComponentsT;
 			struct NameInfo {
@@ -83,6 +86,8 @@ namespace Dream
 			
 			// Does this exist?
 			bool exists() const { return fileStatus() != UNKNOWN; }
+			
+			FileSizeT fileSize() const;
 			
 			/// Removes a single file / directory
 			void remove () const;

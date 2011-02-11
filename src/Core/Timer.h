@@ -144,14 +144,23 @@ namespace Dream {
 				
 			}
 			
+			void increment (TimeT dt)
+			{
+				if (m_lastTime == -1) m_lastTime = 0;
+				update(m_lastTime + dt);
+			}
+			
 			void update (TimeT time)
 			{
 				if (m_lastTime == -1) m_lastTime = time;
 				TimeT dt = time - m_lastTime;
-				
-				static_cast<DerivedT*>(this)->updateForDuration(m_lastTime, time, dt);
-				
 				m_lastTime = time;
+
+				static_cast<DerivedT*>(this)->updateForDuration(m_lastTime, time, dt);				
+			}
+			
+			const TimeT & currentTime () {
+				return m_lastTime;
 			}
 		};
 		
