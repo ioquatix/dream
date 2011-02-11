@@ -89,36 +89,57 @@ namespace Dream
 			{
 			}
 			
-			void PixelBufferRenderer::change (Renderer * renderer, REF(IPixelBuffer) pixels, const Geometry::AlignedBox<2> & box, Vector<2, bool> flip)
+			void PixelBufferRenderer::change (Renderer * renderer, REF(IPixelBuffer) pixels, const Geometry::AlignedBox<2> & box, Vector<2, bool> flip, int rotate)
 			{
 				m_size = pixels->size().reduce();
-				if (m_texture) {
-					if (!m_texture->size().greaterThanOrEqual(m_size))
-						m_texture->resize(m_size << 1);
+				//if (m_texture) {
+					// updatePixelData will resize the texture as required.
+					//if (!m_texture->size().greaterThanOrEqual(m_size))
+					//	m_texture->resize(m_size << 1);
 					
-					m_texture->updatePixelData(pixels, Vector<3, unsigned>(ZERO));
-				} else {
+				//	m_texture->updatePixelData(pixels, ZERO);
+				//} else {
 					m_texture = renderer->textureController()->createTexture(pixels, m_textureParameters);
+				//}
+				
+				m_texCoords.resize(4);
+				m_vertices.resize(4);
+				
+				const Vec2b CORNERS[] = {
+					Vec2b(false, false),
+					Vec2b(false, true),
+					Vec2b(true, true),
+					Vec2b(true, false)
+				};
+				
+				/*
+				// Possible optimisation
+				if (flip[X] && flip[Y]) {
+					rotation += 2;
+					flip[X] = false;
+					flip[Y] = false;
+				}
+				*/
+
+				AlignedBox<2> texCoordBox(ZERO, m_size / m_texture->size().reduce());
+				
+				for (unsigned i = 0; i < 4; i++) {
+					m_texCoords[i] = texCoordBox.corner(CORNERS[(i+rotate) % 4]);
+					m_vertices[i] = box.corner(CORNERS[i]);
+				}
+
+				if (flip[X]) {
+					std::swap(m_texCoords[0], m_texCoords[3]);
+					std::swap(m_texCoords[1], m_texCoords[2]);
 				}
 				
-				m_texCoords.clear();
-				m_vertices.clear();
+				if (flip[Y]) {
+					std::swap(m_texCoords[0], m_texCoords[1]);
+					std::swap(m_texCoords[2], m_texCoords[3]);				
+				}
 				
-				Vec2 texCoordMax = m_size / m_texture->size().reduce();
-				AlignedBox<2> texCoordBox(Vec2(ZERO), texCoordMax);
-				
-				// N shape triangle strip
-				const bool CORNERS[] = {false, false, true, false, false, true, true, true};
-				
-				for (unsigned i = 0; i < 8; i += 2) {
-					Vector<2, bool> c = vec(CORNERS[i], CORNERS[i+1]);
-					m_vertices.push_back(box.corner(c));
-										
-					c[X] = flip[X] ? !c[X] : c[X];
-					c[Y] = flip[Y] ? !c[Y] : c[Y];
-					
-					m_texCoords.push_back(texCoordBox.corner(c));
-				}				
+				std::swap(m_vertices[0], m_vertices[1]);
+				std::swap(m_texCoords[0], m_texCoords[1]);
 			}
 			
 			void PixelBufferRenderer::render (Renderer * renderer)

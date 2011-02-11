@@ -46,6 +46,11 @@ namespace Dream
 				return (RealT)rand() / (RealT)RAND_MAX;
 			}
 			
+			inline RealT realRandom(RealT min, RealT max)
+			{
+				return min + (realRandom() * (max - min));
+			}
+			
 			inline unsigned integralRandom (unsigned max)
 			{
 				return unsigned(realRandom() * max) % max;
@@ -103,10 +108,6 @@ namespace Dream
 							}
 						}
 						
-						void applyForce (RealT dt, const Vec3 & force) {
-
-						}
-						
 						void updateTime (RealT dt, const Vec3 & force) {
 							life -= dt;
 							colorModulator += dt;
@@ -149,7 +150,7 @@ namespace Dream
 					};
 					
 				public:
-					void draw () {
+					void render () {
 						drawQuads(m_physics.size(), m_indices, m_vertexArray, m_texCoordArray, m_colorArray);
 					}
 					

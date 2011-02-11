@@ -37,14 +37,14 @@ namespace Dream {
 					EXPOSE_CLASSTYPE
 				};
 			
-			public:
+			public:				
 				/** The top level user interface controller.
 				*/
 				class Controller : public Object, IMPLEMENTS(Layer) {
 					EXPOSE_CLASS(Controller)
 					
-					class Class : public Object::Class, IMPLEMENTS(Layer::Class) {
-					public:
+					class Class : public Object::Class, IMPLEMENTS(Layer::Class)
+					{
 						EXPOSE_CLASSTYPE
 					};
 					
@@ -197,6 +197,32 @@ namespace Dream {
 				
 				virtual void dumpStructure (std::ostream & outp, unsigned indent = 0);
 			};
+			
+			/*
+			class ManagedView : public View {
+				EXPOSE_CLASS(ButtonView)
+			
+				class Class : public View::Class {
+					EXPOSE_CLASSTYPE
+				};
+				
+				public:
+					ButtonView (PTR(View) parent);
+					virtual ~ButtonView ();
+					
+					virtual bool motion (const MotionInput &);
+					
+					typedef boost::function<bool (const MotionInput &)> MotionEventT;
+					MotionEventT onMotionOver;
+					MotionEventT onMotionOut;
+					MotionEventT onMotionActivate;
+					MotionEventT onMotionDeactivate;
+					
+					typedef boost::function<bool (const ButtonInput &)> ButtonEventT;
+					ButtonEventT onButtonDown;
+					ButtonEventT onButtonUp;
+			};
+			*/
 			
 			class ImageView : public View {
 				EXPOSE_CLASS(ImageView)

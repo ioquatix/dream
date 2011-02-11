@@ -345,7 +345,33 @@ namespace Dream {
 					(*sv)->disable();
 				}
 			}
+
+#pragma mark -
+
+			/*
+			IMPLEMENT_CLASS(ButtonView)
 			
+			ButtonView::ButtonView (PTR(View) parent)
+				: View(parent)
+			{
+				
+			}
+			
+			ButtonView::~ButtonView ()
+			{
+				
+			}
+			
+			bool ButtonView::motion (const MotionInput & input)
+			{
+				if (onActivate && hasStaticFocus()) {
+					return onActivate(input);
+				}
+				
+				return false;
+			}
+			*/
+
 #pragma mark -
 
 			IMPLEMENT_CLASS(ImageView)

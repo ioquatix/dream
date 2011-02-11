@@ -34,13 +34,13 @@ namespace Dream
 				
 				glDepthMask(GL_FALSE);
 				glDisable(GL_LIGHTING);
-				glDisable(GL_DEPTH_TEST);
+				//glDisable(GL_DEPTH_TEST);
 				glEnable(GL_COLOR_MATERIAL);	
 				
 				glDrawElements(GL_TRIANGLES, count * 6, GL_UNSIGNED_SHORT, &indices[0]);
 				
 				glDisable(GL_COLOR_MATERIAL);
-				glEnable(GL_DEPTH_TEST);
+				//glEnable(GL_DEPTH_TEST);
 				glEnable(GL_LIGHTING);
 				glDepthMask(GL_TRUE);
 				

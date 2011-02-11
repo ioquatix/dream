@@ -50,10 +50,10 @@ namespace Dream
 				TextureParameters & textureParameters() { return m_textureParameters; }
 				const TextureParameters & textureParameters() const { return m_textureParameters; }
 				
-				void change (Renderer * renderer, REF(IPixelBuffer) pixels, const Geometry::AlignedBox<2> & box, Vector<2, bool> flip);
+				void change (Renderer * renderer, REF(IPixelBuffer) pixels, const Geometry::AlignedBox<2> & box, Vector<2, bool> flip, int rotate = 0);
 				
 				inline void change (Renderer * renderer, REF(IPixelBuffer) pixels, const Geometry::AlignedBox<2> & box) {
-					change(renderer, pixels, box, vec(false, false));
+					change(renderer, pixels, box, vec(false, false), 0);
 				}
 								
 				void render (Renderer * renderer);

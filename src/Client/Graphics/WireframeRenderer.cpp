@@ -39,29 +39,29 @@ namespace Dream {
 			void WireframeRenderer::renderAxis (Display::RendererT *)
 			{
 				std::vector<Vec3> vertices;
-				std::vector<Vec3> colors;
+				std::vector<Vec4> colors;
 				
 				vertices.push_back(Vec3(ZERO));
-				colors.push_back(Vec3(1.0, 0.0, 0.0));
+				colors.push_back(Vec4(1.0, 0.0, 0.0, 1.0));
 				 
 				vertices.push_back(Vec3(10.0, 0.0, 0.0));
-				colors.push_back(Vec3(1.0, 0.0, 0.0));
+				colors.push_back(Vec4(1.0, 0.0, 0.0, 1.0));
 				
 				vertices.push_back(Vec3(ZERO));
-				colors.push_back(Vec3(0.0, 1.0, 0.0));
+				colors.push_back(Vec4(0.0, 1.0, 0.0, 1.0));
 				
 				vertices.push_back(Vec3(0.0, 10.0, 0.0));
-				colors.push_back(Vec3(0.0, 1.0, 0.0));
+				colors.push_back(Vec4(0.0, 1.0, 0.0, 1.0));
 
 				vertices.push_back(Vec3(ZERO));
-				colors.push_back(Vec3(0.0, 0.0, 1.0));
+				colors.push_back(Vec4(0.0, 0.0, 1.0, 1.0));
 				
 				vertices.push_back(Vec3(0.0, 0.0, 10.0));
-				colors.push_back(Vec3(0.0, 0.0, 1.0));
+				colors.push_back(Vec4(0.0, 0.0, 1.0, 1.0));
 				
 				glLineWidth(5.0);
 				
-				glColorPointer(3, GLTypeTraits<RealT>::TYPE, 0, &colors[0]);
+				glColorPointer(4, GLTypeTraits<RealT>::TYPE, 0, &colors[0]);
 				glEnableClientState(GL_COLOR_ARRAY);
 				
 				glVertexPointer(3, GLTypeTraits<RealT>::TYPE, 0, &vertices[0]);
