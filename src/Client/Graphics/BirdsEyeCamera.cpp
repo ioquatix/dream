@@ -15,9 +15,9 @@ namespace Dream {
 			
 			IMPLEMENT_CLASS(BirdsEyeCamera)
 			
-			BirdsEyeCamera::BirdsEyeCamera () : m_up(0.0, 0.0, 1.0), m_left(-1.0, 0.0, 0.0), m_center(ZERO), m_multiplier(IDENTITY, 1) {
+			BirdsEyeCamera::BirdsEyeCamera () : m_up(0.0, 0.0, 1.0), m_right(1.0, 0.0, 0.0), m_center(ZERO), m_multiplier(IDENTITY, 1) {
 				
-				m_distance = -100;
+				m_distance = 100;
 				m_azimuth = R45;
 				m_incidence = R45;
 				m_twist = 0;
@@ -30,25 +30,21 @@ namespace Dream {
 			}
 			
 			void BirdsEyeCamera::regenerate () {
-				m_back = m_up.cross(m_left);
-				m_left = - m_up.cross(m_back);
+				m_back = m_up.cross(m_right);
+				m_right = - m_up.cross(m_back);
 			}
 			
 			Mat44 BirdsEyeCamera::viewMatrix () const
 			{
-				Vec3 glUp(0.0, 1.0, 0.0), glLeft(-1.0, 0.0, 0.0), glIn(0.0, 0.0, -1.0);
-				Vec3 far = m_back * -m_distance;
+				Vec3 glUp(0.0, 1.0, 0.0), glRight(1.0, 0.0, 0.0), glIn(0.0, 0.0, -1.0);
+				Vec3 far = m_back * m_distance;
 				
-				Vec3 p = m_up.cross(glUp);
-				RealT angle = m_up.angleBetween(glUp);
-				
-				Mat44 m(IDENTITY);
-
-				m = m.rotatedMatrix(angle, p);
+				Mat44 m = Mat44::rotatingMatrix(glUp, m_up, m_back);
 				m = m.translatedMatrix(far);
-				m = m.rotatedMatrix(-m_incidence, m_left);
+				m = m.rotatedMatrix(-m_incidence, m_right);
 				m = m.rotatedMatrix(-m_azimuth, m_up);
-				m = m.translatedMatrix(-m_center);
+				m = m.translatedMatrix(-m_center);				
+				m = m.rotatedMatrix(m_twist, m_up);
 				
 				return m;
 			}
@@ -59,17 +55,24 @@ namespace Dream {
 			
 			bool BirdsEyeCamera::motion(const MotionInput & input) {
 				const Vec3 & d = input.motion();
-				
-				if (input.key().button() == MouseScroll) {
-					m_distance += (d[Y] * m_multiplier[Z]);					
-				} else {					
-					m_azimuth -= (d[X] * m_multiplier[X] * (R90 / 90));
+
+				if (input.buttonPressedOrDragged(MouseLeftButton)) {
+					RealT k = -1.0, i = Math::mod(m_incidence, R360);
+					
+					if (i > R90 && i < R270)
+						k = 1.0;
+						
+					m_azimuth += (k * d[X] * m_multiplier[X] * (R90 / 90));
 					m_incidence += (d[Y] * m_multiplier[Y] * (R90 / 90));
+					
+					return true;
+				} else if (input.key().button() == MouseScroll) {
+					m_distance += (d[Y] * m_multiplier[Z]);
+					
+					return true;
+				} else {
+					return false;
 				}
-				
-				// std::cout << "azi: " << m_azimuth << " inc: " << m_incidence << " dist: " << m_distance << std::endl;
-			
-				return true;
 			}
 			
 			void BirdsEyeCamera::setMultiplier (const Vec3 &m) {
@@ -92,9 +95,9 @@ namespace Dream {
 				}
 			}
 			
-			void BirdsEyeCamera::setLeftDirection(const Vec3 &left) {
-				if (m_left != left) {
-					m_left = left;
+			void BirdsEyeCamera::setRightDirection(const Vec3 &right) {
+				if (m_right != right) {
+					m_right = right;
 					/* Regenerate Cache */
 					regenerate();
 				}

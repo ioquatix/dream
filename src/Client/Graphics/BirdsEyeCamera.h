@@ -31,7 +31,7 @@ namespace Dream {
 				
 			protected:
 				Vec3 m_up;
-				Vec3 m_left;
+				Vec3 m_right;
 				
 				/* Cached m_up.cross(m_left) */
 				Vec3 m_back;
@@ -74,7 +74,7 @@ namespace Dream {
 				const RealT& incidence () const { return m_incidence; }
 				
 				void setUpDirection(const Vec3 &up);
-				void setLeftDirection(const Vec3 &left);
+				void setRightDirection(const Vec3 &right);
 			};	
 		}
 	}
