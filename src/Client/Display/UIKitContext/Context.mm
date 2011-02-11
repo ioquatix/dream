@@ -86,8 +86,19 @@ namespace Dream
 						// Create window
 						m_impl->window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
 						
+						EAGLViewOpenGLVersion version = OPENGLES_11;
+						
+						bool enableShaders = false;
+						m_config->get("OpenGL.EnableShaders", enableShaders);
+						
+						if (enableShaders) {
+							std::cerr << "Requesting OpenGL Shaders..." << std::endl;
+							version = OPENGLES_20;
+						}
+						
 						// Set up content view
-						m_impl->view = [[[DreamView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]] autorelease];
+						CGRect frame = [[UIScreen mainScreen] applicationFrame];
+						m_impl->view = [[[DreamView alloc] initWithFrame:frame version:version] autorelease];
 						[m_impl->window addSubview:m_impl->view];
 						
 						m_impl->renderer = new TouchRenderer();
@@ -114,8 +125,8 @@ namespace Dream
 					//[[[m_impl->window contentView] openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval];
 				}
 				
-				Context::Context (PTR(Dictionary) config) : m_impl(NULL) {
-				
+				Context::Context (PTR(Dictionary) config) : m_impl(NULL), m_config(config) {
+					
 				}
 				
 				Context::~Context () {
@@ -131,12 +142,33 @@ namespace Dream
 					return ResolutionT(size.width, size.height);
 				}
 				
+				const char * getSymbolicError (GLenum error) {
+					switch (error) {
+						case GL_NO_ERROR:
+							return "No error has occurred.";
+						case GL_INVALID_ENUM:
+							return "An invalid value has been specified (GL_INVALID_ENUM)!";
+						case GL_INVALID_VALUE:
+							return "A numeric argument is out of range (GL_INVALID_VALUE)!";
+						case GL_INVALID_OPERATION:
+							return "The specified operation is not allowed (GL_INVALID_OPERATION)!";
+						case GL_STACK_OVERFLOW:
+							return "The specified command would cause a stack overflow (GL_STACK_OVERFLOW)!";
+						case GL_STACK_UNDERFLOW:
+							return "The specified command would cause a stack underflow (GL_STACK_UNDERFLOW)!";
+						case GL_OUT_OF_MEMORY:
+							return "There is not enough free memory left to run the command (GL_OUT_OF_MEMORY)!";
+						default:
+							return "An unknown error has occurred!";
+					}
+				}
+				
 				void Context::flipBuffers ()
 				{
 					GLenum error;
 					
 					while ((error = glGetError()) != GL_NO_ERROR)
-						std::cerr << "OpenGL Error " << "#" << error << ": " << glGetString(error) << std::endl;
+						std::cerr << "OpenGL Error " << "#" << error << ": " << getSymbolicError(error) << std::endl;
 					
 					[m_impl->view flipBuffers];
 				}
@@ -162,7 +194,7 @@ namespace Dream
 					}
 					
 					if (callback) {
-						m_timerSource = new FrameTimerSource(callback, 1.0/60.0);
+						m_timerSource = new FrameTimerSource(callback, 1.0/30.0);
 						loop->scheduleTimer(m_timerSource);
 					}
 				}

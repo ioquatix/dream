@@ -14,6 +14,11 @@
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
 
+enum EAGLViewOpenGLVersion {
+	OPENGLES_11 = 1,
+	OPENGLES_20 = 2
+};
+
 /*
 This class wraps the CAEAGLLayer from CoreAnimation into a convenient UIView subclass.
 The view content is basically an EAGL surface you render your OpenGL scene into.
@@ -32,6 +37,8 @@ Note that setting the view non-opaque will only work if the EAGL surface has an 
     /* OpenGL name for the depth buffer that is attached to viewFramebuffer, if it exists (0 if it does not exist) */
     GLuint depthRenderbuffer;
 }
+
+- (id)initWithFrame:(CGRect)frame version:(EAGLViewOpenGLVersion)version;
 
 @property (nonatomic, retain) EAGLContext *context;
 

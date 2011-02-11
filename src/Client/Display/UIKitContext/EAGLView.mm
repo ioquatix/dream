@@ -22,9 +22,21 @@
 }
 
 //The GL view is stored in the nib file. When it's unarchived it's sent -initWithCoder:
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)frame version:(EAGLViewOpenGLVersion)version
 {    
     if ((self = [super initWithFrame:frame])) {
+		if (version == OPENGLES_20)
+			context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+		else
+			context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
+        
+        if (!context || ![EAGLContext setCurrentContext:context]) {
+			NSLog(@"Invalid OpenGL Context Requested!");
+			
+            [self release];
+            return nil;
+        }
+	
         CAEAGLLayer * layer = (CAEAGLLayer *)self.layer;
         
         layer.opaque = YES;
@@ -32,13 +44,6 @@
 			[NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking,
 			kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat,
 			nil];
-        
-        context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
-        
-        if (!context || ![EAGLContext setCurrentContext:context]) {
-            [self release];
-            return nil;
-        }        
     }
 	
 	// Create default framebuffer object. The backing will be allocated for the current layer in -resizeFromLayer

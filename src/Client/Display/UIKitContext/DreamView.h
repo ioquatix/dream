@@ -20,6 +20,8 @@
 	BOOL m_keyboardVisible;
 }
 
+- (id)initWithFrame:(CGRect)frame version:(EAGLViewOpenGLVersion)version;
+
 - (BOOL) isKeyboardVisible;
 - (void) showKeyboard;
 - (void) hideKeyboard;

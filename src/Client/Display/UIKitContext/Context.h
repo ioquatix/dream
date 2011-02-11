@@ -48,6 +48,7 @@ namespace Dream
 					struct ContextImpl;
 					ContextImpl * m_impl;
 					
+					REF(Dictionary) m_config;
 					REF(FrameTimerSource) m_timerSource;
 					
 				public:

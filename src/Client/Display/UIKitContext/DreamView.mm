@@ -28,9 +28,9 @@ static Vec3 positionInView (UIView * view, UITouch * touch)
 
 @implementation DreamView
 
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)frame version:(EAGLViewOpenGLVersion)version
 {
-	if (self = [super initWithFrame:frame]) {
+	if (self = [super initWithFrame:frame version:version]) {
 		m_multiFingerInput = new MultiFingerInput;
 		
 		[self initializeKeyboard];		
@@ -47,6 +47,9 @@ static Vec3 positionInView (UIView * view, UITouch * touch)
 
 - (void)touchesBegan: (NSSet *)touches withEvent: (UIEvent *)event
 {
+	if (UIKitContext::globalInputHandler() == NULL)
+		return;
+	
 	for (UITouch * touch in touches) {
 		const FingerTracking & ft = m_multiFingerInput->beginMotion((FingerID)touch, positionInView(self, touch));
 		
@@ -58,6 +61,9 @@ static Vec3 positionInView (UIView * view, UITouch * touch)
 
 - (void)touchesMoved: (NSSet *)touches withEvent: (UIEvent *)event
 {
+	if (UIKitContext::globalInputHandler() == NULL)
+		return;
+
 	for (UITouch * touch in touches) {
 		const FingerTracking & ft = m_multiFingerInput->updateMotion((FingerID)touch, positionInView(self, touch));
 		
@@ -69,6 +75,9 @@ static Vec3 positionInView (UIView * view, UITouch * touch)
 
 - (void)touchesEnded: (NSSet *)touches withEvent: (UIEvent *)event
 {
+	if (UIKitContext::globalInputHandler() == NULL)
+		return;
+
 	for (UITouch * touch in touches) {
 		FingerTracking ft = m_multiFingerInput->finishMotion((FingerID)touch, positionInView(self, touch));
 		
