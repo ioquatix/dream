@@ -19,7 +19,7 @@ namespace Dream
 	namespace Core
 	{
 	
-		/// Provides an efficient way to erase elements from a std::vector
+		/// Provides an efficient way to erase elements from an unsorted std::vector
 		template <typename t>
 		bool eraseElementAtIndex (IndexT index, std::vector<t> & array)
 		{
