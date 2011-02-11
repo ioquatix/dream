@@ -23,11 +23,6 @@ namespace Dream
 		typedef std::string StringT;
 		typedef std::string String; // Legacy
 		typedef std::stringstream StringStreamT;
-
-		// It is important to consider file encoding when using these functions
-		// and wchar_t/wstring. Deprecated
-		// std::string convertString (const std::wstring source, locale_t l);
-		// std::wstring convertString (const std::string source, locale_t l);
 		
 		/// Converts UTF8 to UTF16
 		std::wstring convertStringToUTF16 (const std::string source);
@@ -52,6 +47,9 @@ namespace Dream
 			
 			return result;
 		}
+		
+		StringT unescapeString (const StringT &);
+		StringT escapeString (const StringT &);
 		
 	}
 }

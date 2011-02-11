@@ -20,36 +20,6 @@ namespace Dream
 {
 	namespace Core
 	{
-		/* Deprecated
-		std::string convertString (const std::wstring source, locale_t l)
-		{
-			std::string s;
-			int required_chars = wcstombs_l(NULL, source.c_str(), 0, l);
-			char *temp_chars = new char[required_chars + 1];
-
-			temp_chars[0] = 0;
-			wcstombs_l(temp_chars, source.c_str(), required_chars + 1, l);
-			s = temp_chars;
-
-			delete [] temp_chars;
-			return s;
-		}
-
-		std::wstring convertString (const std::string source, locale_t l)
-		{
-			std::wstring s;
-			int required_chars = mbstowcs_l(NULL, source.c_str(), 0, l);
-			wchar_t *temp_chars = new wchar_t[required_chars + 1];
-
-			temp_chars[0] = 0;
-			mbstowcs_l(temp_chars, source.c_str(), required_chars + 1, l);
-			s = temp_chars;
-
-			delete [] temp_chars;
-			return s;
-		}
-		*/
-		
 		std::wstring convertStringToUTF16 (const std::string source)
 		{
 			std::wstring result;
@@ -88,6 +58,105 @@ namespace Dream
 			s << lhs << str << rhs;
 
 			return s.str();
+		}
+		
+#pragma mark -
+
+		StringT::value_type convertToDigit(char c) {
+			StringT::value_type d = c - '0';
+			if (d < 10) {
+				return d;
+			} else {
+				d = c - 'A';
+				
+				if (d < 26) {
+					return d + 10;
+				}
+			}
+			
+			throw std::range_error("Could not convert character to digit - out of range!");
+		}
+		
+		char convertToChar(StringT::value_type d) {
+			if (d < 10) {
+				return '0' + d;
+			} else if (d < 36) {
+				return 'A' + (d - 10);
+			}
+			
+			throw std::range_error("Could not convert digit to character - out of range!"); 
+		}
+	
+		StringT unescapeString (const StringT & value) {
+			StringStreamT buffer;
+			
+			StringT::const_iterator i = value.begin(), end = value.end();
+			
+			// Skip enclosing quotes
+			++i;
+			--end;
+			
+			for (; i != end; ++i) {
+				if (*i == '\\') {
+					++i;
+					
+					switch (*i) {
+						case 't':
+							buffer << '\t';
+							continue;
+						case 'r':
+							buffer << '\r';
+							continue;
+						case 'n':
+							buffer << '\n';
+							continue;
+						case '\\':
+							buffer << '\\';
+							continue;
+						case '"':
+							buffer << '"';
+							continue;
+						case '\'':
+							buffer << '\'';
+							continue;
+						case 'x':
+							if ((end - i) >= 2) {
+								StringT::value_type value = convertToDigit(*(++i)) << 4;
+								value |= convertToDigit(*(++i));
+								buffer << (StringT::value_type)value;
+								continue;
+							} else {
+								break;
+							}
+						case '.':
+							continue;
+					}
+					
+					throw std::runtime_error("Could not parse string escape!");
+				} else {
+					buffer << *i;
+				}
+			}
+		
+			return buffer.str();
+		}
+		
+		StringT escapeString (const StringT & value) {
+			StringStreamT buffer;
+			
+			StringT::const_iterator i = value.begin(), end = value.end();
+			buffer << '"';
+			
+			for (; i != end; ++i) {
+				if (*i == '"') {
+					buffer << "\\\"";
+				} else {
+					buffer << *i;
+				}
+			}
+			
+			buffer << '"';
+			return buffer.str();
 		}
 
 #pragma mark -
