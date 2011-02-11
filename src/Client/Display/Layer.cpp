@@ -13,6 +13,57 @@ namespace Dream {
 	namespace Client {
 		namespace Display {
 			IMPLEMENT_INTERFACE(Layer)
+			
+			void ILayer::renderFrameForTime (IScene * scene, TimeT time) {
+			
+			}
+			
+			void ILayer::didBecomeCurrent (ISceneManager * manager, IScene * scene) {
+			
+			}
+			
+			void ILayer::willRevokeCurrent (ISceneManager * manager, IScene * scene) {
+			
+			}
+
+#pragma mark -
+
+			IMPLEMENT_CLASS(Group)
+
+			void Group::renderFrameForTime (IScene * scene, TimeT time)
+			{
+				for (ChildrenT::iterator i = m_children.begin(); i != m_children.end(); i++)
+				{
+					(*i)->renderFrameForTime(scene, time);
+				}
+			}
+			
+			void Group::didBecomeCurrent (ISceneManager * manager, IScene * scene)
+			{
+				for (ChildrenT::iterator i = m_children.begin(); i != m_children.end(); i++)
+				{
+					(*i)->didBecomeCurrent(manager, scene);
+				}
+			}
+			
+			void Group::willRevokeCurrent (ISceneManager * manager, IScene * scene)
+			{
+				for (ChildrenT::iterator i = m_children.begin(); i != m_children.end(); i++)
+				{
+					(*i)->willRevokeCurrent(manager, scene);
+				}			
+			}
+			
+			void Group::add(PTR(ILayer) child)
+			{
+				m_children.insert(child);
+			}
+			
+			void Group::remove(PTR(ILayer) child)
+			{
+				m_children.erase(child);
+			}
+			
 		}
 	}
 }

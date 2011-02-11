@@ -11,7 +11,10 @@
 #define _DREAM_CLIENT_DISPLAY_LAYER_H
 
 #include "../../Core/Timer.h"
+#include "../../Numerics/Matrix.h"
 #include "Input.h"
+
+#include <set>
 
 namespace Dream {
 	namespace Client {
@@ -29,11 +32,41 @@ namespace Dream {
 				};
 				
 				public:
-					virtual void renderFrameForTime (IScene * scene, TimeT time) abstract;
+					virtual void renderFrameForTime (IScene * scene, TimeT time);
 					
-					virtual void didBecomeCurrent (ISceneManager * manager, IScene * scene) abstract;
-					virtual void willRevokeCurrent (ISceneManager * manager, IScene * scene) abstract;
+					virtual void didBecomeCurrent (ISceneManager * manager, IScene * scene);
+					virtual void willRevokeCurrent (ISceneManager * manager, IScene * scene);
 			};
+			
+#pragma mark -
+						
+			class Group : public Object, IMPLEMENTS(Layer)
+			{
+				EXPOSE_CLASS(Group)
+				
+				class Class : public Object::Class, IMPLEMENTS(Layer::Class)
+				{
+					EXPOSE_CLASSTYPE
+				};
+				
+				typedef std::set<REF(ILayer)> ChildrenT;
+			
+				protected:
+					ChildrenT m_children;
+				
+				public:
+					virtual void renderFrameForTime (IScene * scene, TimeT time);
+					
+					virtual void didBecomeCurrent (ISceneManager * manager, IScene * scene);
+					virtual void willRevokeCurrent (ISceneManager * manager, IScene * scene);
+					
+					void add(PTR(ILayer) child);
+					void remove(PTR(ILayer) child);
+					
+					ChildrenT & children() { return m_children; }
+					const ChildrenT & children() const { return m_children; }
+			};
+			
 		}
 	}
 }
