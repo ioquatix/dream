@@ -55,10 +55,14 @@ namespace Dream
 		const double R30 = M_PI_2 / (double) 3.0;
 		/// 45 degree rotation
 		const double R45 = M_PI_4;
+		/// 60 degree rotation
+		const double R60 = R30*2;
 		/// 90 degree rotation
 		const double R90 = M_PI_2;
 		/// 180 degree rotation
 		const double R180 = M_PI;
+		/// 270 degree rotation
+		const double R270 = R90*3;
 		/// 360 degree rotation
 		const double R360 = R180*2;
 

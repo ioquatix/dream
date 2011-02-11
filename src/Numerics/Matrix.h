@@ -317,6 +317,37 @@ namespace Dream
 		/// Convenience constructor for matrix class
 		Mat44 rotation (const Vec3 & fromUnitVector, const Vec3 & toUnitVector, const Vec3 & aroundNormal);
 
+		template <typename NumericT>
+		Matrix<4, 4, NumericT> perspectiveMatrix (const NumericT & fieldOfView, const NumericT & aspectRatio, const NumericT & near, const NumericT & far) {
+			NumericT f = 1.0 / Number<NumericT>::tan(fieldOfView / 2.0);
+			
+			Matrix<4, 4, NumericT> result(ZERO);
+			
+			result.at(0) = f / aspectRatio;
+			result.at(5) = f;
+			result.at(10) = (far + near) / (near - far);
+			result.at(11) = -1.0;
+			result.at(14) = (2 * far * near) / (near - far);
+			
+			return result;
+		}
+		
+		template <typename NumericT>
+		Matrix<4, 4, NumericT> orthographicMatrix (const Vec3 & translation, const Vec3 & size) {
+			Matrix<4, 4, NumericT> result(ZERO);
+			
+			result.at(0) = 2.0 / size[X];
+			result.at(5) = 2.0 / size[Y];
+			result.at(10) = -2.0 / size[Z];
+			
+			result.at(12) = -translation[X];
+			result.at(13) = -translation[Y];
+			result.at(14) = -translation[Z];
+			result.at(15) = 1.0;
+			
+			return result;
+		}		
+
 	}
 }
 

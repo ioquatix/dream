@@ -287,7 +287,7 @@ namespace Dream
 			NumericT ca = Number<NumericT>::cos(radians);
 			NumericT sa = Number<NumericT>::sin(radians);
 
-			Matrix<N, N, NumericT> result(1);
+			Matrix<N, N, NumericT> result(IDENTITY);
 
 			if (equalWithinTolerance(radians, 0.0f)) return result;
 
@@ -307,7 +307,7 @@ namespace Dream
 			NumericT ca = Number<NumericT>::cos(radians);
 			NumericT sa = Number<NumericT>::sin(radians);
 
-			Matrix<N, N, NumericT> result(1);
+			Matrix<N, N, NumericT> result(IDENTITY);
 
 			if (equalWithinTolerance(radians, 0.0f)) return result;
 
