@@ -90,11 +90,15 @@ namespace Dream {
 					xmin = ymin * aspect;
 					xmax = ymax * aspect;
 					
+					//std::cerr << xmin << " " << xmax << " " << ymin << " " << ymax << std::endl;
 					glFrustumf(xmin, xmax, ymin, ymax, zNear, zFar);
 				}
 
 				void Renderer::setPerspectiveView (RealT ratio, RealT fov, RealT near, RealT far)
 				{
+					// fov is in radians, but internally we are using degrees
+					fov = fov * R2D;
+					
 					// std::cerr << "*** Setting perspective view: ratio=" << ratio << " fov=" << fov << " near=" << near << " far=" << far << std::endl;
 					
 					glMatrixMode(GL_PROJECTION);
@@ -102,6 +106,8 @@ namespace Dream {
 					gluPerspectiveMESA(fov, ratio, near, far);
 					
 					glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+					
+					glMatrixMode(GL_MODELVIEW);
 				}
 
 				void Renderer::setOrthographicView (const AlignedBox<2> & box, RealT near, RealT far)
@@ -119,6 +125,8 @@ namespace Dream {
 					glLoadIdentity();
 					
 					glOrthof(left, right, bottom, top, near, far);
+					
+					glMatrixMode(GL_MODELVIEW);
 				}
 
 				void Renderer::setBackgroundColor (const Vec4 & color)
@@ -166,9 +174,9 @@ namespace Dream {
 				}
 
 				void Renderer::finishOrthographicDisplay () {
-					glMatrixMode(GL_MODELVIEW);
-					glPopMatrix();
 					glMatrixMode (GL_PROJECTION);
+					glPopMatrix();
+					glMatrixMode(GL_MODELVIEW);
 					glPopMatrix();
 					
 					glEnable(GL_DEPTH_TEST);

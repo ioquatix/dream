@@ -47,7 +47,7 @@ namespace Dream
 					REF(RenderState) m_currentRenderState;
 					TextureController * m_textureController;
 					
-					std::set<StringT> m_extensions;
+					std::set<String> m_extensions;
 					
 				public:					
 					Renderer ();		

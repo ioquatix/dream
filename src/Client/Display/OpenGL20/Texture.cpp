@@ -51,12 +51,12 @@ namespace Dream {
 				
 				Texture::Texture (TextureController * textureController) : m_target(0), m_textureController(textureController)
 				{
-					glGenTextures (1, &this->m_id);
+					glGenTextures(1, &this->m_id);
 				}
 				
 				Texture::~Texture ()
 				{
-					
+					glDeleteTextures(1, &this->m_id);
 				}
 				
 				GLuint getCurrentTextureBinding (GLenum target)

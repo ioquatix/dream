@@ -38,14 +38,14 @@ namespace Dream {
 						EXPOSE_CLASSTYPE
 						
 						virtual void registerLoaderTypes (REF(ILoader) loader);
-						virtual REF(Object) initFromData (const REF(Data) data, const ILoader * loader);
+						virtual REF(Object) initFromData (const PTR(IData) data, const ILoader * loader);
 					};
 				protected:
-					const REF(Data) m_data;
+					const REF(IData) m_data;
 					REF(const ILoader) m_loader;
 					
 				public:
-					ShaderFactory (const REF(Data) data, const ILoader * loader);
+					ShaderFactory (const PTR(IData) data, const ILoader * loader);
 					virtual ~ShaderFactory ();
 					
 					virtual REF(Shader) createShader (const std::map<String, String> & definitions);
@@ -57,21 +57,20 @@ namespace Dream {
 					loader->setLoaderForExtension(this, "shader");
 				}
 				
-				REF(Object) ShaderFactory::Class::initFromData (const REF(Data) data, const ILoader * loader) {
+				REF(Object) ShaderFactory::Class::initFromData (const PTR(IData) data, const ILoader * loader) {
 					return new ShaderFactory(data, loader);
 				}
 				
-				ShaderFactory::ShaderFactory (const REF(Data) data, const ILoader * loader) : m_data(data), m_loader(loader) {
+				ShaderFactory::ShaderFactory (const PTR(IData) data, const ILoader * loader) : m_data(data), m_loader(loader) {
 				}
 				
 				ShaderFactory::~ShaderFactory () {
 				}
 				
 				REF(Shader) ShaderFactory::createShader (const std::map<String, String> & definitions) {
-					StaticBuffer buf(m_data->start(), m_data->size());
-					BufferStream ds(buf);
+					Shared<std::istream> inputStream = m_data->inputStream();
 					
-					REF(Shader) shader = new Shader(ds, definitions);
+					REF(Shader) shader = new Shader(*inputStream, definitions);
 					
 					return shader;
 				}

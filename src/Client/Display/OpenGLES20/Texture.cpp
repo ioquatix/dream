@@ -9,10 +9,6 @@
 
 #include "Texture.h"
 
-// OpenGL ES2.0 hack support
-#include <OpenGLES/ES2/gl.h>
-#include <OpenGLES/ES2/glext.h>
-
 namespace Dream {
 	namespace Client {
 		namespace Display {
@@ -41,13 +37,6 @@ namespace Dream {
 						return defaultTarget;
 				}
 				
-				GLenum TextureParameters::getInternalFormat (GLenum defaultInternalFormat) const {
-					if (internalFormat)
-						return internalFormat;
-					else
-						return defaultInternalFormat;
-				}
-				
 #pragma mark -
 #pragma mark class Texture
 				
@@ -55,12 +44,12 @@ namespace Dream {
 				
 				Texture::Texture (TextureController * textureController) : m_target(0), m_textureController(textureController)
 				{
-					glGenTextures(1, &this->m_id);
+					glGenTextures (1, &this->m_id);
 				}
 				
 				Texture::~Texture ()
 				{
-					glDeleteTextures(1, &this->m_id);
+					
 				}
 				
 				void Texture::loadPixelData(const Vector<3, unsigned> & size, const ByteT * pixels, GLenum format, GLenum dataType, 
@@ -70,40 +59,51 @@ namespace Dream {
 					m_params = params;
 					
 					// OpenGL ES 1.1 requires internal format and format to be the same
-					// Not for specific Apple extensions! Commented out check below.
-					// ensure(params.internalFormat == 0 || params.internalFormat == format);
-					
 					m_format = format;
-					GLenum internalFormat = params.getInternalFormat(format);
 					
 					m_target = params.target;
-					ensure(m_target == GL_TEXTURE_2D);
-
-					glBindTexture(m_target, m_id);
 					
 					if (params.generateMipMaps && pixels)
 						glTexParameteri(m_target, GL_GENERATE_MIPMAP, GL_TRUE);
 					else
 						glTexParameteri(m_target, GL_GENERATE_MIPMAP, GL_FALSE);
 					
-					if (isPowerOf2(size[WIDTH]) && isPowerOf2(size[HEIGHT])) {						
-						glTexImage2D(m_target, 0, internalFormat, size[WIDTH], size[HEIGHT], 0, m_format, dataType, pixels);
+					if (isPowerOf2(size[X]) && isPowerOf2(size[Y])) {
+						glBindTexture(m_target, m_id);
+						
+						ensure(m_target == GL_TEXTURE_2D);
+						glTexImage2D(m_target, 0, format, size[WIDTH], size[HEIGHT], 0, format, dataType, pixels);
 						
 						m_size = size;
 					} else {
-						Vec2u potSize(nextHighestPowerOf2(size[WIDTH]), nextHighestPowerOf2(size[HEIGHT]));
-						glTexImage2D(m_target, 0, internalFormat, potSize[WIDTH], potSize[HEIGHT], 0, m_format, dataType, NULL);
-						glTexSubImage2D(m_target, 0, 0, 0, size[WIDTH], size[HEIGHT], m_format, dataType, pixels);
+						resize(size);
 						
-						m_size = potSize << 1;
+						glBindTexture(m_target, m_id);
+						glTexSubImage2D(m_target, 0, 0, 0, size[X], size[Y], m_format, dataType, pixels);
+						glBindTexture(m_target, 0);
 					}
-					
-					glBindTexture(m_target, 0);
 				}
 				
 				Vec3u Texture::size () const
 				{
 					return m_size;
+				}
+				
+				void Texture::resize (Vec3u newSize)
+				{
+					// OpenGL ES 1.1 requires POT texture dimensions
+					Vec2u potSize(nextHighestPowerOf2(newSize[X]), nextHighestPowerOf2(newSize[Y]));
+					
+					std::cout << "newSize = " << newSize << " potSize = " << potSize << std::endl;
+					
+					glBindTexture(m_target, m_id);
+
+					// Resize the internal data buffer - pixel data will be invalidated
+					glTexImage2D(m_target, 0, m_format, potSize[X], potSize[Y], 0, m_format, GL_UNSIGNED_BYTE, NULL);
+										
+					glBindTexture(m_target, 0);
+					
+					m_size = potSize << 1;
 				}
 				
 				void Texture::updatePixelData (PTR(IPixelBuffer) pixelBuffer, const Vec3u & offset)
@@ -124,19 +124,14 @@ namespace Dream {
 				{
 					GLint textureUnitCount = 0;
 					glGetIntegerv(GL_MAX_TEXTURE_UNITS, &textureUnitCount);
-					
-					GLint imageUnitCount = 0;
-					glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &imageUnitCount);
-					
-					IndexT totalUnits = imageUnitCount > textureUnitCount ? imageUnitCount : textureUnitCount;
 
-					m_textureUnits.reserve(totalUnits);
+					m_textureUnits.reserve(textureUnitCount);
 					
-					for (unsigned i = 0; i < totalUnits; i += 1) {
+					for (unsigned i = 0; i < textureUnitCount; i += 1) {
 						m_textureUnits.push_back(TextureUnit(GL_TEXTURE0 + i, this));
 					}
-										
-					m_basicUnitCount = totalUnits;
+					
+					m_basicUnitCount = textureUnitCount;
 					
 					std::cerr << "OpenGL Texture Units: " << m_basicUnitCount << std::endl;
 				}

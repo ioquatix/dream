@@ -20,7 +20,9 @@
 namespace Dream {
 	namespace Client {
 		namespace Display {
-			namespace OpenGLES11 {				
+			namespace OpenGLES11 {
+				
+				using namespace Dream::Core;
 				using Dream::Imaging::IPixelBuffer;
 				
 				/**
@@ -41,13 +43,8 @@ namespace Dream {
 					/// The texture target.
 					GLenum target;
 					
-					/// The internal format for the texture. Optional (set to 0)
-					GLenum internalFormat;
-					
 					/// Construct a TextureParameters object to use default values unless specified.
-					TextureParameters ()
-						: generateMipMaps(false), minFilter(0), magFilter(0), target(0), internalFormat(0)
-					{
+					TextureParameters () : generateMipMaps(true), minFilter(0), magFilter(0), target(0) {
 					}
 					
 					/// Returns the specified minification filter or the default if none was specified.
@@ -56,9 +53,7 @@ namespace Dream {
 					GLenum getMagFilter () const;
 					
 					/// Returns the target if specified or defaultTarget if none was given.
-					GLenum getTarget (GLenum defaultTarget) const;
-					
-					GLenum getInternalFormat (GLenum defaultInternalFormat) const;
+					GLenum getTarget(GLenum defaultTarget) const;
 				};
 				
 				class TextureController;
@@ -94,6 +89,9 @@ namespace Dream {
 					
 					/// Return the size of the internal texture buffer. For this particular implementation, this will always be a power of 2.
 					Vec3u size () const;
+					
+					/// Resize the texture. This will invalidate any image data, which will need to be resupplied by calling updatePixelData.
+					void resize (Vec3u);
 					
 					/// Composite the supplied pixelBuffer into the texture at the given offset
 					/// The supplied pixelBuffer must be of the same format as that of the texture.
