@@ -208,7 +208,9 @@ namespace Dream
 				using namespace Geometry;
 				
 				renderer()->setViewport(Vec2(ZERO), ipt.newSize());
-				renderer()->setOrthographicView(AlignedBox<2>::fromCenterAndSize(Vec2(ZERO), ipt.newSize()), 0, 1024);
+				//renderer()->setOrthographicView(AlignedBox<2>::fromCenterAndSize(Vec2(ZERO), ipt.newSize()), 0, 1024);
+				
+				std::cout << "Resizing to " << ipt.newSize() << std::endl;
 				
 				return true;
 			}
