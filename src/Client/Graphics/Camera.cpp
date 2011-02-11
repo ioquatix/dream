@@ -81,6 +81,46 @@ namespace Dream {
 				
 				return (inverseModelView * (inverseProjection * (n << 1.0)));
 			}
+			
+#pragma mark -
+			
+			IMPLEMENT_CLASS(CameraNode)
+			
+			CameraNode::CameraNode(PTR(Camera) camera) : m_camera(camera)
+			{
+			}
+			
+			CameraNode::~CameraNode()
+			{
+			}
+			
+			void CameraNode::setCamera(PTR(Camera) camera)
+			{
+				m_camera = camera;
+			}
+			
+			PTR(Camera) CameraNode::camera()
+			{
+				return m_camera;
+			}
+			
+			bool CameraNode::process(const Input & input)
+			{
+				return m_camera->process(input);
+			}
+			
+			void CameraNode::renderFrameForTime (IScene * scene, TimeT time)
+			{
+				if (m_camera) {
+					glPushMatrix();
+					glMultMatrixf(m_camera->viewMatrix().value());
+				}
+				
+				Group::renderFrameForTime(scene, time);
+				
+				if (m_camera)
+					glPopMatrix();
+			}
 		}
 	}
 }

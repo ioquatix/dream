@@ -61,6 +61,29 @@ namespace Dream {
 				/// inverse matrices per call.
 				static Vec4 convertFromProjectionSpaceToObjectSpace (const Mat44 & projectionMatrix, const Mat44 & modelViewMatrix, const Vec3 & n);
 			};
+			
+			class CameraNode : public Group {
+				EXPOSE_CLASS(CameraNode)
+				
+				class Class : public Group::Class
+				{
+					EXPOSE_CLASSTYPE
+				};
+				
+				protected:
+					REF(Camera) m_camera;
+				
+				public:
+					CameraNode(PTR(Camera) camera);
+					virtual ~CameraNode();
+					
+					virtual void setCamera(PTR(Camera) camera);
+					virtual PTR(Camera) camera();
+					
+					virtual bool process(const Input & input);
+					
+					virtual void renderFrameForTime (IScene * scene, TimeT time);
+			};
 		}
 	}
 }
