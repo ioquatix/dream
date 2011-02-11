@@ -106,45 +106,93 @@ namespace Dream
 				return new CocoaContext(config);
 			}
 			
-			void setupApplicationMenu () {
-				// Weak reference, retained by the main menu
-				NSMenu *applicationMenu = [[NSMenu alloc] initWithTitle:@"Dream"];
+			NSString * getApplicationName ()
+			{
+				NSDictionary * dict;
+				NSString * appName = 0;
+
+				/* Determine the application name */
+				dict = (NSDictionary *)CFBundleGetInfoDictionary(CFBundleGetMainBundle());
+				if (dict)
+					appName = [dict objectForKey:@"CFBundleName"];
 				
-				[applicationMenu addItemWithTitle: @"Hide Application" action: @selector(hide:) keyEquivalent: @"h"];
-				[applicationMenu addItemWithTitle: @"Hide Others" action: @selector(hideOtherApplications:) keyEquivalent: @""];
-				[applicationMenu addItemWithTitle: @"Show All" action: @selector(unhideAllApplications:) keyEquivalent: @""];
-				[applicationMenu addItem:[NSMenuItem separatorItem]];
-				[applicationMenu addItemWithTitle: @"Quit" action: @selector(terminate:) keyEquivalent: @"q"];
+				if (![appName length])
+					appName = [[NSProcessInfo processInfo] processName];
+
+				return appName;
+			}
+
+			void createApplicationMenus ()
+			{
+				NSString *appName;
+				NSString *title;
+				NSMenu *appleMenu;
+				NSMenu *windowMenu;
+				NSMenuItem *menuItem;
+				
+				/* Create the main menu bar */
+				[NSApp setMainMenu:[[NSMenu alloc] init]];
+
+				/* Create the application menu */
+				appName = getApplicationName();
+				appleMenu = [[NSMenu alloc] initWithTitle:@""];
+				
+				/* Add menu items */
+				title = [@"About " stringByAppendingString:appName];
+				[appleMenu addItemWithTitle:title action:@selector(orderFrontStandardAboutPanel:) keyEquivalent:@""];
+
+				[appleMenu addItem:[NSMenuItem separatorItem]];
+
+				title = [@"Hide " stringByAppendingString:appName];
+				[appleMenu addItemWithTitle:title action:@selector(hide:) keyEquivalent:@/*"h"*/""];
+
+				menuItem = (NSMenuItem *)[appleMenu addItemWithTitle:@"Hide Others" action:@selector(hideOtherApplications:) keyEquivalent:@/*"h"*/""];
+				[menuItem setKeyEquivalentModifierMask:(NSAlternateKeyMask|NSCommandKeyMask)];
+
+				[appleMenu addItemWithTitle:@"Show All" action:@selector(unhideAllApplications:) keyEquivalent:@""];
+
+				[appleMenu addItem:[NSMenuItem separatorItem]];
+
+				title = [@"Quit " stringByAppendingString:appName];
+				[appleMenu addItemWithTitle:title action:@selector(terminate:) keyEquivalent:@/*"q"*/""];
 				
 				/* Put menu into the menubar */
-				NSMenuItem *applicationMenuItem = [[NSMenuItem alloc] initWithTitle:@"Dream" action:nil keyEquivalent:@""];
-				[applicationMenuItem setSubmenu:applicationMenu];
-				[[NSApp mainMenu] addItem:applicationMenuItem];
-			}
-			
-			void setupWindowMenu() {
-				NSMenu * windowMenu;
-				NSMenuItem * windowMenuItem;
-				NSMenuItem * menuItem;
-				
+				menuItem = [[NSMenuItem alloc] initWithTitle:@"" action:nil keyEquivalent:@""];
+				[menuItem setSubmenu:appleMenu];
+				[[NSApp mainMenu] addItem:menuItem];
+				[menuItem release];
+
+				/* Tell the application object that this is now the application menu */
+				[NSApp setAppleMenu:appleMenu];
+				[appleMenu release];
+
+				/* Create the window menu */
 				windowMenu = [[NSMenu alloc] initWithTitle:@"Window"];
 				
 				/* "Minimize" item */
-				menuItem = [[NSMenuItem alloc] initWithTitle:@"Minimize" action:@selector(performMiniaturize:) keyEquivalent:@"m"];
+				menuItem = [[NSMenuItem alloc] initWithTitle:@"Minimize" action:@selector(performMiniaturize:) keyEquivalent:@/*"m"*/""];
 				[windowMenu addItem:menuItem];
 				[menuItem release];
 				
 				/* Put menu into the menubar */
-				windowMenuItem = [[NSMenuItem alloc] initWithTitle:@"Window" action:nil keyEquivalent:@""];
-				[windowMenuItem setSubmenu:windowMenu];
-				[[NSApp mainMenu] addItem:windowMenuItem];
+				menuItem = [[NSMenuItem alloc] initWithTitle:@"Window" action:nil keyEquivalent:@""];
+				[menuItem setSubmenu:windowMenu];
+				[[NSApp mainMenu] addItem:menuItem];
+				[menuItem release];
 				
 				/* Tell the application object that this is now the window menu */
 				[NSApp setWindowsMenu:windowMenu];
-				
-				/* Finally give up our references to the objects */
 				[windowMenu release];
-				[windowMenuItem release];
+			}
+
+			void transformToForegroundApplication ()
+			{
+				ProcessSerialNumber psn;
+				
+				if (!GetCurrentProcess(&psn)) {
+					TransformProcessType(&psn, kProcessTransformToForegroundApplication);
+					SetFrontProcess(&psn);
+				}
 			}
 			
 			void CocoaContext::setTitle (String title) {
@@ -181,17 +229,22 @@ namespace Dream
 				if (config->get("CocoaContext.Window", configWindow)) {
 					m_impl->window = configWindow;
 				} else {
-					[NSApp setMainMenu:[[NSMenu alloc] init]];
+					transformToForegroundApplication();
+					
+					if ([NSApp mainMenu] == nil)
+						createApplicationMenus();
 				
 					NSRect windowSize = NSMakeRect(50, 50, 1024, 768);
 					unsigned windowStyle = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask;
 
 					m_impl->window = [[NSWindow alloc] initWithContentRect:windowSize styleMask:windowStyle backing:NSBackingStoreBuffered defer:YES];
-					
-					setupApplicationMenu();
-					setupWindowMenu();
-					
 					[m_impl->window setAcceptsMouseMovedEvents:YES];
+					
+					//if ([NSApp delegate] == nil) {
+					//	[NSApp setDelegate:(...)];
+					//}
+					
+					[NSApp finishLaunching];
 				}
 				
 				NSOpenGLView * graphicsView = NULL;
