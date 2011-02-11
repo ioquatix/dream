@@ -17,7 +17,7 @@ namespace Dream
 	/** Core functionality required by most other elements of the Dream framework.
 	 */
 	namespace Core
-	{		
+	{
 	}
 }
 
