@@ -66,6 +66,7 @@ namespace Dream
 		IMPLEMENT_CLASS(BufferedData)
 		
 		BufferedData::BufferedData (Shared<Buffer> buffer)
+			: m_buffer(buffer)
 		{
 		
 		}
@@ -73,7 +74,11 @@ namespace Dream
 		/// Create a buffer from a given input stream
 		BufferedData::BufferedData (std::istream & stream)
 		{
-		
+			Shared<DynamicBuffer> buffer = new DynamicBuffer;
+			
+			buffer->append(std::istreambuf_iterator<char>(stream), std::istreambuf_iterator<char>());
+			
+			m_buffer = buffer;
 		}
 		
 		BufferedData::~BufferedData ()

@@ -260,6 +260,11 @@ namespace Dream {
 			ValueT * m_value;
 		
 		public:
+			REF(SharedObject) controller () const
+			{
+				return m_controller;
+			}
+			
 			Shared ()
 				: m_controller(NULL), m_value(NULL)
 			{
@@ -295,9 +300,13 @@ namespace Dream {
 			
 			template <typename OtherValueT>
 			Shared (Shared<OtherValueT> other)
-				: m_controller(new SharedObject), m_value(dynamic_cast<ValueT*>(other.get()))
 			{
-			
+				m_value = dynamic_cast<ValueT*>(other.get());
+				
+				if (m_value)
+					m_controller = other.controller();
+				else
+					m_controller = NULL;
 			}
 			
 			ValueT * get () const
@@ -318,10 +327,10 @@ namespace Dream {
 			template <typename OtherValueT>
 			Shared & operator= (const Shared<OtherValueT> & other)
 			{
-				m_value = dynamic_cast<ValueT*>(other.m_value);
+				m_value = dynamic_cast<ValueT*>(other.get());
 				
 				if (m_value)
-					m_controller = other.m_controller;
+					m_controller = other.controller();
 				
 				return *this;
 			}

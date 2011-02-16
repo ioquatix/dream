@@ -175,6 +175,16 @@ namespace Dream
 			{
 				append(sizeof(t), (const ByteT *)&value);
 			}
+			
+			/// Append data from an incremental iterator
+			template <typename AnyT>
+			void append (AnyT begin, AnyT end)
+			{
+				while (begin != end) {
+					append(*begin);
+					++begin;
+				}
+			}
 		};
 
 		/**
