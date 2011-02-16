@@ -127,11 +127,11 @@ namespace Dream {
 					
 					ifs >> t;
 					
-					assert(t == "@shader");
+					ensure(t == "@shader");
 					
 					ifs >> t;
 					
-					assert(t == "version=120" || t == "version=1.0");
+					ensure(t == "version=120" || t == "version=1.0");
 					
 					stringstream vertexSource(""), fragmentSource("");
 					

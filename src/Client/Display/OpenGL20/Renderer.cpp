@@ -28,7 +28,7 @@ namespace Dream
 
 				Renderer::Renderer () : m_textureController(new TextureController)
 				{
-					assert(softwareVersion() >= 2.0 && "OpenGL 2.0 support required");
+					ensure(softwareVersion() >= 2.0 && "OpenGL 2.0 support required");
 					
 					const char * exts = (const char *)glGetString(GL_EXTENSIONS);
 					split(exts, ' ', std::inserter(m_extensions, m_extensions.begin()));
