@@ -98,7 +98,7 @@ namespace Dream
 			
 			CocoaContext::Class::Class() : IContext::Class(25)
 			{
-				
+			
 			}
 			
 			REF(IContext) CocoaContext::Class::init (PTR(Dictionary) config)

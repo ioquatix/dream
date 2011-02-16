@@ -51,7 +51,6 @@ namespace Dream {
 				
 			protected:
 				static void registerContextClass (IContext::Class *rwc);
-				static std::vector<IContext::Class*> s_registeredWindowClasses;
 			
 			public:				
 				/// Return the best context class for the given operating system and library compilation.

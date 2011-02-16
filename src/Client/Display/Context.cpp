@@ -22,32 +22,32 @@ namespace Dream {
 			}
 			
 			//List of available window classes
-			std::vector<IContext::Class*> IContext::s_registeredWindowClasses;
-			
+			static std::vector<IContext::Class*> * s_registeredWindowClasses = NULL;
+							
 			void IContext::registerContextClass (IContext::Class *rwc) {
-				s_registeredWindowClasses.push_back(rwc);
+				if (s_registeredWindowClasses == NULL) {
+					s_registeredWindowClasses = new std::vector<IContext::Class*>;
+				}
+				
+				s_registeredWindowClasses->push_back(rwc);
 			}
 			
-			IContext::Class::Class (int priority) : m_priority(priority) {
+			IContext::Class::Class (int priority) : m_priority(priority) {				
 				IContext::registerContextClass(this);
 			}
 			
 			IContext::Class* IContext::bestContextClass () {
-				unsigned priority = 0;
-				unsigned best = 0;
+				Class * bestContextClass = NULL;
 				
-				for (unsigned i = 0; i < s_registeredWindowClasses.size(); i++) {
-					if (s_registeredWindowClasses[i]->priority() > priority) {
-						best = i;
-						priority = s_registeredWindowClasses[i]->priority();
+				for (unsigned i = 0; i < s_registeredWindowClasses->size(); i++) {
+					Class * contextClass = s_registeredWindowClasses->at(i);
+					
+					if (bestContextClass == NULL || contextClass->priority() > bestContextClass->priority()) {
+						bestContextClass = contextClass;
 					}
 				}
 				
-				if (s_registeredWindowClasses.size() > 0) {
-					return s_registeredWindowClasses[best];
-				} else {
-					return NULL;
-				}
+				return bestContextClass;
 			}
 			
 		}
