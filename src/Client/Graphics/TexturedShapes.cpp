@@ -248,7 +248,7 @@ namespace Dream {
 						if (image)
 							m_sides[i] = scene->renderer()->textureController()->createTexture(image, params);
 						
-						if (m_sides[i] == NULL && i != 0)
+						if (!m_sides[i] && i != 0)
 							m_sides[i] = m_sides[i-1];
 					}
 				}				
