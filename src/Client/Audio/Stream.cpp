@@ -129,19 +129,19 @@ namespace Dream
 				
 				Shared<IKnob> decreaseGain = new LinearKnob<float>(m_source, AL_GAIN, m_source->gain(), 0.0);
 				m_fader = new Fader(decreaseGain, 100, duration / 100);
+				
 				m_fader->setFinishCallback(boost::bind(&Stream::pause, this));
+				
 				loop->scheduleTimer(m_fader);
 			}
 			
 			void Stream::fadeIn (PTR(Events::Loop) loop, TimeT duration)
 			{
-				if (m_fader)
-					m_fader->cancel();
+				// This will cancel any existing fader
+				play(loop);
 				
 				Shared<IKnob> increaseGain = new LinearKnob<float>(m_source, AL_GAIN, m_source->gain(), 1.0);
 				m_fader = new Fader(increaseGain, 100, duration / 100);
-				
-				play(loop);
 				
 				loop->scheduleTimer(m_fader);
 			}
