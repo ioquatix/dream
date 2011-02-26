@@ -34,7 +34,7 @@ namespace Dream
 				else if (channelCount == 2 && bitsPerSample == 16)
 					return AL_FORMAT_STEREO16;
 				else
-					return 0;					
+					return 0;
 			}
 			
 			typedef REF(Sound)(*DecoderT)(const Buffer *, ALint, ALint, ALfloat);

@@ -210,7 +210,7 @@ namespace Dream
 				ALint processed = processedBufferCount();
 				bool complete = true;
 				
-				std::cerr << "Processed buffers = " << processed << std::endl;
+				// std::cerr << "Processed buffers = " << processed << std::endl;
 				
 				AudioError::reset();
 				

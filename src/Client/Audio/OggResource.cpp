@@ -76,7 +76,10 @@ namespace Dream
 				callbacks.tell_func = tellCallback;
 				callbacks.close_func = NULL;
 				
-				ov_open_callbacks(this, &m_file, NULL, 0, callbacks);
+				int result = ov_open_callbacks(this, &m_file, NULL, 0, callbacks);
+				
+				if (result != 0)
+					throw std::runtime_error(OggResource::errorString(result));
 			}
 			
 			OggReader::~OggReader ()
@@ -129,7 +132,10 @@ namespace Dream
 				Stream::stop();
 				
 				// Reset playhead.
-				ov_pcm_seek(m_reader.file(), 0);
+				int result = ov_pcm_seek(m_reader.file(), 0);
+				
+				if (result != 0)
+					throw std::runtime_error(OggResource::errorString(result));
 			}
 			
 			// Load a chunk of ogg data into the given buffer
