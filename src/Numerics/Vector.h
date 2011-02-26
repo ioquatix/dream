@@ -87,6 +87,13 @@ namespace Dream
 		public:
 			/// Returns an orthogonal 2D vector.
 			Vector<2, NumericT> normal () const;
+			
+			NumericT aspectRatio () const;
+			Vector<2, NumericT> shrinkToFitAspectRatio(NumericT n) const;
+			Vector<2, NumericT> shrinkToFitAspectRatio(const Vector<2, NumericT> & other) const;
+			
+			Vector<2, NumericT> expandToFitAspectRatio(NumericT n) const;
+			Vector<2, NumericT> expandToFitAspectRatio(const Vector<2, NumericT> & other) const;
 		};
 
 		/// Calculates the surface normal of a triangle given by three points.

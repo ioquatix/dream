@@ -99,6 +99,70 @@ namespace Dream
 		
 			return (v << 0.0).cross(up).reduce();
 		}
+		
+		template <typename NumericT>
+		NumericT VectorTraits<2, NumericT>::aspectRatio () const
+		{
+			const VectorT &v = *static_cast<const VectorT*>(this);
+			
+			return v[WIDTH] / v[HEIGHT];
+		}
+		
+		template <typename NumericT>
+		Vector<2, NumericT> VectorTraits<2, NumericT>::shrinkToFitAspectRatio(NumericT n) const
+		{
+			const VectorT &v = *static_cast<const VectorT*>(this);
+
+			Vector<2, NumericT> result;
+			
+			result = v;
+			result[WIDTH] = n * result[HEIGHT];
+			
+			if (result[WIDTH] <= v[WIDTH]) {
+				return result;
+			}
+			
+			result = v;
+			result[HEIGHT] = (1.0 / n) * result[WIDTH];
+			
+			return result;
+		}
+		
+		template <typename NumericT>
+		Vector<2, NumericT> VectorTraits<2, NumericT>::shrinkToFitAspectRatio(const Vector<2, NumericT> & other) const
+		{
+			const VectorT &v = *static_cast<const VectorT*>(this);
+			
+			return this->shrinkToFitAspectRatio(other.aspectRatio());
+		}
+		
+		template <typename NumericT>
+		Vector<2, NumericT> VectorTraits<2, NumericT>::expandToFitAspectRatio(NumericT n) const
+		{
+			const VectorT &v = *static_cast<const VectorT*>(this);
+
+			Vector<2, NumericT> result;
+			
+			result = v;
+			result[WIDTH] = n * result[HEIGHT];
+			
+			if (result[WIDTH] >= v[WIDTH]) {
+				return result;
+			}
+			
+			result = v;
+			result[HEIGHT] = (1.0 / n) * result[WIDTH];
+			
+			return result;
+		}
+		
+		template <typename NumericT>
+		Vector<2, NumericT> VectorTraits<2, NumericT>::expandToFitAspectRatio(const Vector<2, NumericT> & other) const
+		{
+			const VectorT &v = *static_cast<const VectorT*>(this);
+			
+			return this->expandToFitAspectRatio(other.aspectRatio());
+		}
 
 		template <typename NumericT>
 		Vector<3, NumericT> VectorTraits<3, NumericT>::cross (const Vector<3, NumericT> & other) const
