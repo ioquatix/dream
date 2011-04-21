@@ -10,7 +10,6 @@
 #ifndef _DREAM_CLIENT_DISPLAY_APPLICATION_H
 #define _DREAM_CLIENT_DISPLAY_APPLICATION_H
 
-#include "Input.h"
 #include "Context.h"
 
 namespace Dream
@@ -30,11 +29,11 @@ namespace Dream
 			 you'd do most of this in your Scenes, so that it can be easily reused.
 				
 			 */
-			class IApplication : IMPLEMENTS(Object), IMPLEMENTS(InputHandler)
+			class IApplication : IMPLEMENTS(Object)
 			{
 				EXPOSE_INTERFACE(Application)
 				
-				class Class : IMPLEMENTS(Object::Class), IMPLEMENTS(InputHandler::Class)
+				class Class : IMPLEMENTS(Object::Class)
 				{
 				public:
 					virtual REF(IApplication) init (PTR(Dictionary) config) abstract;

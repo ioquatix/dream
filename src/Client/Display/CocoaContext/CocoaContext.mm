@@ -7,19 +7,21 @@
  *
  */
 
-// Include quickdraw for Cocoa
+// Exclude quickdraw.
 #define __INCLUDE_QD__
 
 #include "Application.h"
 #include "Context.h"
 
 #include "CocoaContext.h"
-#include <Cocoa/Cocoa.h>
+#import <Cocoa/Cocoa.h>
 
 #include "Renderer.h"
 
-#include <CoreVideo/CoreVideo.h>
-#include <CoreVideo/CVDisplayLink.h>
+#import <CoreVideo/CoreVideo.h>
+#import <CoreVideo/CVDisplayLink.h>
+
+#import "CocoaContextDelegate.h"
 
 @interface NSAppleMenuController : NSObject
 - (void)controlMenu:(NSMenu *)aMenu;
@@ -56,6 +58,7 @@ namespace Dream
 				NSWindow * window;
 				NSOpenGLView * view;
 				NSAutoreleasePool * pool;
+				CocoaContextDelegate * delegate;
 				
 				//display link for managing rendering thread
 				CVDisplayLinkRef displayLink;
@@ -240,9 +243,13 @@ namespace Dream
 					m_impl->window = [[NSWindow alloc] initWithContentRect:windowSize styleMask:windowStyle backing:NSBackingStoreBuffered defer:YES];
 					[m_impl->window setAcceptsMouseMovedEvents:YES];
 					
-					//if ([NSApp delegate] == nil) {
-					//	[NSApp setDelegate:(...)];
-					//}
+					m_impl->delegate = [CocoaContextDelegate new];
+					
+					if ([NSApp delegate] == nil) {
+						[NSApp setDelegate:m_impl->delegate];
+					}
+					
+					[m_impl->window setDelegate:m_impl->delegate];
 					
 					[NSApp finishLaunching];
 				}
@@ -387,6 +394,9 @@ namespace Dream
 			
 			void CocoaContext::processPendingEvents (IInputHandler * handler)
 			{
+				CocoaContextDelegate * delegate = m_impl->delegate;
+				[delegate setInputHandler:handler];
+			
 				while (true) {
 					NSEvent * e = [[NSApplication sharedApplication] nextEventMatchingMask:NSAnyEventMask untilDate:nil inMode:NSDefaultRunLoopMode dequeue:YES];					
 					if (e == NULL) return;
@@ -452,6 +462,8 @@ namespace Dream
 					
 					[NSApp sendEvent:e];
 				}
+				
+				[delegate setInputHandler:nil];
 			}
 		
 			void CocoaContext::scheduleFrameNotificationCallback (REF(Events::Loop) loop, FrameCallbackT callback)

@@ -214,6 +214,7 @@ namespace Dream
 				virtual void willRevokeCurrent (ISceneManager *);
 				
 				virtual bool resize (const Display::ResizeInput & ipt);
+				virtual bool event (const Display::EventInput & ipt);
 				
 				virtual RendererT * renderer ();
 				virtual ISceneManager * manager ();

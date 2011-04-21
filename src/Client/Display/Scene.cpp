@@ -150,9 +150,8 @@ namespace Dream
 			{
 				m_finishedCallback = callback;
 			}
-
 			
-	#pragma mark -
+#pragma mark -
 			
 			IMPLEMENT_CLASS(Scene)
 			
@@ -213,6 +212,17 @@ namespace Dream
 				std::cout << "Resizing to " << ipt.newSize() << std::endl;
 				
 				return true;
+			}
+			
+			bool Scene::event (const Display::EventInput & ipt)
+			{
+				if (ipt.event() == EventInput::EXIT && m_sceneManager)
+				{
+					m_sceneManager->eventLoop()->stop();
+					return true;
+				}
+				
+				return false;
 			}
 			
 			void Scene::renderFrameForTime (TimeT time)

@@ -26,12 +26,35 @@ namespace Dream
 				return input.act(*this);
 			}
 			
-			ButtonInput::ButtonInput(const Key &e, const StateT &s) 
-			: m_key(e), m_state(s) {
+			EventInput::EventInput(EventName event)
+				: m_event(event)
+			{
 			
 			}
 			
-			bool ButtonInput::act(IInputHandler &h) const {
+			EventInput::~EventInput()
+			{
+			
+			}
+			
+			bool EventInput::act(IInputHandler &h) const
+			{
+				return h.event(*this);
+			}
+			
+			EventInput::EventName EventInput::event () const
+			{
+				return m_event;
+			}
+			
+			ButtonInput::ButtonInput(const Key &e, const StateT &s) 
+				: m_key(e), m_state(s) 
+			{
+			
+			}
+			
+			bool ButtonInput::act(IInputHandler &h) const
+			{
 				return h.button(*this);
 			}
 			
@@ -52,7 +75,7 @@ namespace Dream
 			
 			}
 			
-			ResizeInput::ResizeInput (const Vector<2, uint32_t> & oldSize, const Vector<2, uint32_t> & newSize)
+			ResizeInput::ResizeInput (const Vec2u & oldSize, const Vec2u & newSize)
 			: m_oldSize(oldSize), m_newSize(newSize) {
 				
 			}

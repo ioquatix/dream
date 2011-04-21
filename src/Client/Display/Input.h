@@ -100,6 +100,7 @@ namespace Dream {
 			class ResizeInput;
 			class ButtonInput;
 			class MotionInput;
+			class EventInput;
 			class IInputHandler;
 			
 			class Input
@@ -125,8 +126,28 @@ namespace Dream {
 				virtual bool resize(const ResizeInput &) { return true; }
 				virtual bool button(const ButtonInput &) { return false; }
 				virtual bool motion(const MotionInput &) { return false; }
-			
+				virtual bool event(const EventInput &) { return false; }
+				
 				virtual bool process (const Input & input);
+			};
+			
+			class EventInput : public Input {
+			public:
+				enum EventName {
+					EXIT = 1,
+					PAUSE = 2,
+					RESUME = 3,
+				};
+				
+				EventInput(EventName event);
+				virtual ~EventInput ();
+				
+				EventName event() const;
+			
+			protected:
+				EventName m_event;
+				
+				virtual bool act(IInputHandler &h) const;
 			};
 			
 			class ButtonInput : public Input {
@@ -186,17 +207,17 @@ namespace Dream {
 			
 			class ResizeInput : public Input {
 			private:
-				Vector<2, uint32_t> m_oldSize;
-				Vector<2, uint32_t> m_newSize;
+				Vec2u m_oldSize;
+				Vec2u m_newSize;
 				
 			public:
-				ResizeInput(const Vector<2, uint32_t> & oldSize, const Vector<2, uint32_t> & newSize);
+				ResizeInput(const Vec2u & oldSize, const Vec2u & newSize);
 				virtual ~ResizeInput ();
 				
 				virtual bool act(IInputHandler &h) const;
 				
-				Vector<2, uint32_t> oldSize () const { return m_oldSize; }
-				Vector<2, uint32_t> newSize () const { return m_newSize; }
+				Vec2u oldSize () const { return m_oldSize; }
+				Vec2u newSize () const { return m_newSize; }
 			};
 			
 			template <typename action_t>
