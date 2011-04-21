@@ -54,12 +54,11 @@ namespace Dream {
 		{
 			std::cerr << "Loader being deallocated: " << this << std::endl;
 			
-			double totalSize = 0;
+			double totalSize = 0.0;
 			for (iterateEach(m_dataCache, cache)) {
 				totalSize += cache->second->size();
 			}
 			
-			ensure(totalSize != 0);
 			totalSize /= (1024 * 1024);
 			std::cerr << "Freeing " << totalSize << " Mbytes." << std::endl;
 		}
