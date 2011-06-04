@@ -29,13 +29,7 @@ namespace Dream {
 			void buildPlane (Model & model, Vec2u, Vec2 size, Vec2 offset, RealT z);
 			void drawModel (Model & model);
 			
-			class ModelRenderer : public Object, IMPLEMENTS(Layer) {
-				EXPOSE_CLASS(ModelRenderer)
-				
-				class Class : public Object::Class, IMPLEMENTS(Layer::Class) {
-					EXPOSE_CLASSTYPE
-				};
-				
+			class ModelRenderer : public Object, implements ILayer {
 				protected:
 					Model m_model;
 					REF(RenderState) m_renderState;
@@ -46,13 +40,7 @@ namespace Dream {
 					virtual void renderFrameForTime (IScene * scene, TimeT time);
 			};
 						
-			class TexturedBox : public Object, IMPLEMENTS(Layer) {
-				EXPOSE_CLASS(TexturedBox)
-				
-				class Class : public Object::Class, IMPLEMENTS(Layer::Class) {
-					EXPOSE_CLASSTYPE
-				};
-				
+			class TexturedBox : public Object, implements ILayer {
 				static const int SIDES = 6;
 				
 			protected:

@@ -20,13 +20,6 @@ namespace Dream {
 			
 			class TransformedGroup : public Group
 			{
-				EXPOSE_CLASS(TransformedGroup)
-				
-				class Class : public Group::Class
-				{
-					EXPOSE_CLASSTYPE
-				};
-				
 				protected:
 					Mat44 m_transform;
 					
@@ -41,14 +34,8 @@ namespace Dream {
 					virtual void renderFrameForTime (IScene * scene, TimeT time);
 			};
 			
-			class DelegateLayer : public Object, IMPLEMENTS(Layer) {
-				EXPOSE_CLASS(DelegateLayer)
-				
-				class Class : public Group::Class
-				{
-					EXPOSE_CLASSTYPE
-				};
-				
+			class DelegateLayer : public Object, implements ILayer 
+			{
 				public:
 					typedef boost::function<void (IScene * scene, TimeT time)> RenderFrameT;
 					typedef boost::function<void (ISceneManager * manager, IScene * scene)> BecomeCurrentT;
@@ -64,33 +51,21 @@ namespace Dream {
 					virtual void willRevokeCurrent (ISceneManager * manager, IScene * scene);
 			};
 			
-			class BackgroundLayer : public Object, IMPLEMENTS(Layer) {
-				EXPOSE_CLASS(BackgroundLayer)
-				
-				class Class : public Object::Class, IMPLEMENTS(Layer::Class) {
+			class BackgroundLayer : public Object, implements ILayer
+			{
+				protected:
+					Vec4 m_color;
+					
 				public:
-					EXPOSE_CLASSTYPE
-				};
-				
-			protected:
-				Vec4 m_color;
-				
-			public:
-				BackgroundLayer(const Vec4 & color);
-				
-				virtual void renderFrameForTime (IScene * scene, TimeT time);
+					BackgroundLayer(const Vec4 & color);
+					
+					virtual void renderFrameForTime (IScene * scene, TimeT time);
 			};
 			
-			class AxisLayer : public Object, IMPLEMENTS(Layer) {
-				EXPOSE_CLASS(AxisLayer)
-				
-				class Class : public Object::Class, IMPLEMENTS(Layer::Class) {
+			class AxisLayer : public Object, implements ILayer 
+			{
 				public:
-					EXPOSE_CLASSTYPE
-				};
-				
-			public:
-				virtual void renderFrameForTime (IScene * scene, TimeT time);
+					virtual void renderFrameForTime (IScene * scene, TimeT time);
 			};
 		}
 	}

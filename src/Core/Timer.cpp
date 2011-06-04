@@ -27,9 +27,7 @@ namespace Dream {
 		
 #pragma mark -
 #pragma mark Timer Implementation
-		
-		IMPLEMENT_CLASS(Timer)
-		
+				
 		Timer::Timer () {
 			this->reset();
 		}
@@ -52,9 +50,7 @@ namespace Dream {
 		
 #pragma mark -
 #pragma mark Stopwatch Implementation
-		
-		IMPLEMENT_CLASS(Stopwatch)
-		
+				
 		Stopwatch::Stopwatch () : m_total(0), m_running(false) {
 			
 		}
@@ -97,9 +93,7 @@ namespace Dream {
 		
 #pragma mark -
 #pragma mark EggTimer Implementation
-		
-		IMPLEMENT_CLASS(EggTimer)
-		
+
 		EggTimer::EggTimer (TimeT duration) : m_duration(duration)
 		{
 			

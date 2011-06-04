@@ -23,14 +23,8 @@ namespace Dream {
 			class IScene;
 			class ISceneManager;
 			
-			class ILayer : IMPLEMENTS(Object), IMPLEMENTS(InputHandler)
+			class ILayer : implements IObject, implements IInputHandler
 			{
-				EXPOSE_INTERFACE(Layer)
-				
-				class Class : IMPLEMENTS(Object::Class), IMPLEMENTS(InputHandler::Class)
-				{	
-				};
-				
 				public:
 					virtual void renderFrameForTime (IScene * scene, TimeT time);
 					
@@ -40,15 +34,9 @@ namespace Dream {
 			
 #pragma mark -
 						
-			class Group : public Object, IMPLEMENTS(Layer)
+			class Group : public Object, implements ILayer
 			{
-				EXPOSE_CLASS(Group)
-				
-				class Class : public Object::Class, IMPLEMENTS(Layer::Class)
-				{
-					EXPOSE_CLASSTYPE
-				};
-				
+			public:
 				typedef std::set<REF(ILayer)> ChildrenT;
 			
 				protected:

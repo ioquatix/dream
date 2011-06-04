@@ -17,15 +17,9 @@ namespace Dream
 {
 	namespace Core
 	{
-	
-#pragma mark IData
-
-		IMPLEMENT_INTERFACE(Data)
 		
 #pragma mark -
 #pragma mark LocalFileData
-
-		IMPLEMENT_CLASS(LocalFileData)
 
 		LocalFileData::LocalFileData (const Path & path)
 			: m_path(path)
@@ -62,8 +56,6 @@ namespace Dream
 
 #pragma mark -
 #pragma mark BufferedData
-
-		IMPLEMENT_CLASS(BufferedData)
 		
 		BufferedData::BufferedData (Shared<Buffer> buffer)
 			: m_buffer(buffer)

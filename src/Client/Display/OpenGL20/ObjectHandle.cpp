@@ -14,7 +14,7 @@ namespace Dream {
 		namespace Display {
 			namespace OpenGL20 {
 			
-				IMPLEMENT_CLASS(ObjectHandle)
+				
 				
 				ObjectHandle::~ObjectHandle ()
 				{

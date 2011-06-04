@@ -16,14 +16,8 @@ namespace Dream {
 	namespace Client {
 		namespace Graphics {
 			
-			class SkyBox : public Object, IMPLEMENTS(Layer) {
-				EXPOSE_CLASS(SkyBox)
-				
-				class Class : public Object::Class, IMPLEMENTS(Layer::Class) {
-				public:
-					EXPOSE_CLASSTYPE
-				};
-				
+			class SkyBox : public Object, implements ILayer 
+			{
 				static const int SIDES = 6;
 				
 			protected:

@@ -26,15 +26,8 @@ namespace Dream
 			const std::size_t ChunkSize = 1024 * 4 * 32;
 			const unsigned BufferCount = 3;
 			
-			class Stream : public Object, IMPLEMENTS(Streamable)
+			class Stream : public Object, implements IStreamable
 			{
-				EXPOSE_CLASS(Stream)
-				
-				class Class : public Object::Class, IMPLEMENTS(TimerSource::Class), IMPLEMENTS(Streamable::Class)
-				{
-					EXPOSE_CLASSTYPE
-				};
-				
 			protected:
 				REF(Source) m_source;
 				ALenum m_format;

@@ -33,7 +33,7 @@ namespace Dream
 				return 1;
 			}
 			
-			IMPLEMENT_CLASS(Stream)
+			
 
 			Stream::Stream (PTR(Source) source, ALenum format, ALsizei frequency) 
 				: m_source(source), m_format(format), m_frequency(frequency)

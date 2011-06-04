@@ -22,17 +22,7 @@ namespace Dream {
 			COMPRESSED_RGBA_S3TC_DXT5 = 0x83F3
 		};
 		
-		class CompressedImage : public Object, IMPLEMENTS(TextureFactory) {
-			EXPOSE_CLASS(CompressedImage)
-			
-			class Class : public Object::Class, IMPLEMENTS(Loadable::Class) {
-				EXPOSE_CLASSTYPE
-				
-				virtual REF(Object) initFromData(const PTR(IData) data, const ILoader * loader) {
-					return CompressedImage::loadFromData (data);
-				}
-			};
-		
+		class CompressedImage : public Object, implements ITextureFactory {
 		protected:
 			ByteT * m_data;
 			

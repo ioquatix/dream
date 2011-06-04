@@ -29,25 +29,11 @@ namespace Dream {
 			
 			/** Implements the basic structure of user interface layout and display.
 			*/
-			class View : public Object, IMPLEMENTS(Layer) {	
-				EXPOSE_CLASS(View)
-			
-				class Class : public Object::Class, IMPLEMENTS(Layer::Class) {
-				public:
-					EXPOSE_CLASSTYPE
-				};
-			
+			class View : public Object, implements ILayer {	
 			public:				
 				/** The top level user interface controller.
 				*/
-				class Controller : public Object, IMPLEMENTS(Layer) {
-					EXPOSE_CLASS(Controller)
-					
-					class Class : public Object::Class, IMPLEMENTS(Layer::Class)
-					{
-						EXPOSE_CLASSTYPE
-					};
-					
+				class Controller : public Object, implements ILayer {					
 				protected:
 					bool m_debug;
 					
@@ -200,12 +186,6 @@ namespace Dream {
 			
 			/*
 			class ManagedView : public View {
-				EXPOSE_CLASS(ButtonView)
-			
-				class Class : public View::Class {
-					EXPOSE_CLASSTYPE
-				};
-				
 				public:
 					ButtonView (PTR(View) parent);
 					virtual ~ButtonView ();
@@ -225,12 +205,6 @@ namespace Dream {
 			*/
 			
 			class ImageView : public View {
-				EXPOSE_CLASS(ImageView)
-			
-				class Class : public View::Class {
-					EXPOSE_CLASSTYPE
-				};
-			
 			protected:
 				REF(IPixelBuffer) m_defaultImage;
 				REF(IPixelBuffer) m_dynamicFocusImage;
@@ -260,12 +234,6 @@ namespace Dream {
 			using Text::TextBuffer;
 			
 			class TextView : public View {
-				EXPOSE_CLASS(TextView)
-				
-				class Class : public View::Class {
-					EXPOSE_CLASSTYPE
-				};
-			
 			protected:
 				REF(Text::TextBuffer) m_textBuffer;
 				

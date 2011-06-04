@@ -14,7 +14,7 @@ namespace Dream {
 	namespace Client {
 		namespace Graphics {
 			
-			IMPLEMENT_CLASS(SkyBox)
+			
 			
 			SkyBox::SkyBox (const String & name, const RealT & size) : m_name(name), m_size(size) {
 

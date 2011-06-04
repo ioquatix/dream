@@ -14,40 +14,42 @@ namespace Dream {
 	namespace Client {
 		namespace Display {
 			
-			IMPLEMENT_INTERFACE(Context)
-			
-			unsigned IContext::Class::priority () const
-			{
-				return m_priority;
+#pragma mark -
+#pragma mark IContextManager
+
+			IContextMode::~IContextMode() {
+				
 			}
 			
-			//List of available window classes
-			static std::vector<IContext::Class*> * s_registeredWindowClasses = NULL;
-							
-			void IContext::registerContextClass (IContext::Class *rwc) {
-				if (s_registeredWindowClasses == NULL) {
-					s_registeredWindowClasses = new std::vector<IContext::Class*>;
+			ContextManager::ContextManager() {
+			
+			}
+			
+			ContextManager::~ContextManager() {
+			
+			}
+			
+			ContextManager * ContextManager::sharedManager() {
+				static ContextManager * contextManager = NULL;
+				
+				if (!contextManager) {
+					contextManager = new ContextManager;
 				}
 				
-				s_registeredWindowClasses->push_back(rwc);
+				return contextManager;
 			}
 			
-			IContext::Class::Class (int priority) : m_priority(priority) {				
-				IContext::registerContextClass(this);
+			void ContextManager::registerContextMode (PTR(IContextMode) mode) {
+				m_modes.push_back(mode);
 			}
 			
-			IContext::Class* IContext::bestContextClass () {
-				Class * bestContextClass = NULL;
-				
-				for (unsigned i = 0; i < s_registeredWindowClasses->size(); i++) {
-					Class * contextClass = s_registeredWindowClasses->at(i);
-					
-					if (bestContextClass == NULL || contextClass->priority() > bestContextClass->priority()) {
-						bestContextClass = contextClass;
-					}
+			/// Return the best context class for the given operating system and library compilation.
+			REF(IContextMode) ContextManager::bestContextMode() const {
+				if (m_modes.size() > 0) {
+					return m_modes.front();
+				} else {
+					return NULL;
 				}
-				
-				return bestContextClass;
 			}
 			
 		}

@@ -17,7 +17,7 @@ namespace Dream {
 	
 #pragma mark -
 
-#ifdef DREAM_USE_OPENGLES11 || DREAM_USE_OPENGLES20
+#if defined(DREAM_USE_OPENGLES11) || defined(DREAM_USE_OPENGLES20)
 #define glGenFramebuffersEXT glGenFramebuffersOES
 #define glBindFramebufferEXT glBindFramebufferOES
 #define glDeleteFramebuffersEXT glDeleteFramebuffersOES
@@ -39,7 +39,7 @@ namespace Dream {
 #define GL_FRAMEBUFFER_UNSUPPORTED_EXT GL_FRAMEBUFFER_UNSUPPORTED_OES
 #endif
 
-			IMPLEMENT_CLASS(FrameBuffer)
+			
 
 			FrameBuffer::FrameBuffer () {
 				glGenFramebuffersEXT(1, &m_handle);
@@ -75,7 +75,7 @@ namespace Dream {
 							throw std::runtime_error("Framebuffer Error: Missing dimensions");
 						case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
 							throw std::runtime_error("Framebuffer Error: Missing formats");
-#ifndef DREAM_USE_OPENGLES11 || DREAM_USE_OPENGLES20
+#if !(defined(DREAM_USE_OPENGLES11) || (DREAM_USE_OPENGLES20))
 // These are not available in OpenGL ES
 						case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
 							throw std::runtime_error("Framebuffer Error: Missing draw buffer");
@@ -96,7 +96,7 @@ namespace Dream {
 			
 #pragma mark -
 			
-			IMPLEMENT_CLASS(RenderBuffer)
+			
 				
 			RenderBuffer::RenderBuffer () {
 				glGenRenderbuffersEXT(1, &m_handle);

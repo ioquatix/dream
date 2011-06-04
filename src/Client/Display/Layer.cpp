@@ -12,8 +12,7 @@
 namespace Dream {
 	namespace Client {
 		namespace Display {
-			IMPLEMENT_INTERFACE(Layer)
-			
+
 			void ILayer::renderFrameForTime (IScene * scene, TimeT time) {
 			
 			}
@@ -28,7 +27,7 @@ namespace Dream {
 
 #pragma mark -
 
-			IMPLEMENT_CLASS(Group)
+			
 
 			void Group::renderFrameForTime (IScene * scene, TimeT time)
 			{

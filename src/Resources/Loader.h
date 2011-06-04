@@ -52,16 +52,10 @@ namespace Dream {
 		
 		String extension(const Path &s, bool dot);
 		
-		typedef std::map<String, ILoadable::Class*> LoadersT;
+		typedef std::map<String, REF(ILoadable)> LoadersT;
 		
-		class ILoader : IMPLEMENTS(Object)
-		{
-			EXPOSE_INTERFACE(Loader)
-			
-			class Class : IMPLEMENTS(Object::Class)
-			{
-			};
-			
+		class ILoader : implements IObject {
+		public:
 			virtual REF(Object) loadPath (const Path &res) const abstract;
 			// This resource loader's current base path
 			virtual Path resourcePath () const abstract;
@@ -80,7 +74,7 @@ namespace Dream {
 				
 				REF(InterfaceT) result = ptr;
 				
-				if (!result) std::cerr << "Resource was not correct type: '" << res << "' -> " << InterfaceT::staticType()->name() << std::endl;
+				if (!result) std::cerr << "Resource was not correct type: '" << res << std::endl;
 				
 				return result;
 			}
@@ -88,11 +82,12 @@ namespace Dream {
 			virtual void preloadResource (const Path & path) abstract;
 			virtual void preloadResources (std::vector<Path> & paths) abstract;
 
-			virtual void setLoaderForExtension (ILoadable::Class* cls, String ext) abstract; 
-			virtual ILoadable::Class* loaderForExtension (String ext) const abstract;
+			virtual void setLoaderForExtension (PTR(ILoadable) loadable, String ext) abstract;
+			virtual PTR(ILoadable) loaderForExtension (String ext) const abstract;
+			virtual void addLoader(PTR(ILoadable) loader) abstract;
 		};
 		
-		class Loader : public Object, IMPLEMENTS(Loader) {
+		class Loader : public Object, implements ILoader {
 		protected:
 			// Mapping can be simple file extensions
 			// Such as "png" or "tga" or "shader"
@@ -106,15 +101,9 @@ namespace Dream {
 			
 			REF(IData) fetchDataForPath (const Path & path) const;
 		public:
-			void setLoaderForExtension (ILoadable::Class* cls, String ext);
-			ILoadable::Class* loaderForExtension (String ext) const;
-		
-			class Class : public Object::Class, IMPLEMENTS(Loader::Class) {
-			public:
-				EXPOSE_CLASSTYPE
-			};
-			
-			EXPOSE_CLASS(Loader)
+			virtual void setLoaderForExtension (PTR(ILoadable) loadable, String ext);
+			virtual PTR(ILoadable) loaderForExtension (String ext) const;
+			virtual void addLoader(PTR(ILoadable) loader);
 			
 			Loader ();
 			Loader (Path);

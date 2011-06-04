@@ -29,20 +29,15 @@ namespace Dream
 			 you'd do most of this in your Scenes, so that it can be easily reused.
 				
 			 */
-			class IApplication : IMPLEMENTS(Object)
+			class IApplication : implements IObject
 			{
-				EXPOSE_INTERFACE(Application)
-				
-				class Class : IMPLEMENTS(Object::Class)
-				{
-				public:
-					virtual REF(IApplication) init (PTR(Dictionary) config) abstract;
-				};
-			
 			public:
-				/// Creates an instance of the supplied application class and 
-				static void start (IApplication::Class * appKlass, PTR(Dictionary) config);
-								
+				/// Start the application by initialising the appropriate context and calling setup() then run().
+				virtual void start (PTR(Dictionary) config);
+				
+				/// Called once the application has started and can start loading resources
+				virtual void setup () abstract;
+				
 				/// Start the event loop and begin processing events
 				virtual void run () abstract;
 			};

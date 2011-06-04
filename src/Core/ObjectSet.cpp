@@ -13,9 +13,7 @@ namespace Dream
 {
 	namespace Core
 	{
-		
-		IMPLEMENT_CLASS(ObjectSet)
-		
+				
 		ObjectSet::ObjectID::ObjectID (ValueT & value, IdentT ID, ObjectSet * ctx) : m_value (value), m_ID (ID)
 		{
 			
@@ -217,19 +215,10 @@ namespace Dream
 		
 #ifdef ENABLE_TESTING
 		namespace {
-			class TestResource : public Object
-			{
-				EXPOSE_CLASS(TestResource)
-				
-				class Class : public Object::Class
-				{
-					EXPOSE_CLASSTYPE
-				};
-				
+			class TestResource : public Object {
 			public:
-			};
 			
-			IMPLEMENT_CLASS(TestResource)
+			};
 			
 			UNIT_TEST(ObjectSet)
 			{

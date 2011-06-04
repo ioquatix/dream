@@ -14,6 +14,8 @@
 
 // For testing
 #include <string>
+#include <iomanip>
+#include <algorithm>
 
 namespace Dream
 {
@@ -111,61 +113,59 @@ namespace Dream
 			return UNKNOWN;
 		}
 		
+		
+		// >04000000 4B657931 84050000 00040000< ....Key1........ 00000000
+		// >004B6579 32200600 00004170 706C6573< .Key2 ....Apples 00000010
 		void Buffer::hexdump (std::ostream & out)
 		{
 			// http://stahlforce.com/dev/index.php?tool=csc01
-			const void * pAddressIn = (void*)begin();
-			long lSize = size();
+			const ByteT * current = begin();
+			std::size_t remaining = size();
 			
-			char szBuf[256];
-			long lIndent = 1;
-			long lOutLen, lIndex, lIndex2, lOutLen2;
-			long lRelPos;
-			struct { char *pData; unsigned long lSize; } buf;
-			unsigned char *pTmp,ucTmp;
-			unsigned char *pAddress = (unsigned char *)pAddressIn;
-			
-			buf.pData   = (char *)pAddress;
-			buf.lSize   = lSize;
-			
-			while (buf.lSize > 0)
+			while (true)
 			{
-				pTmp     = (unsigned char *)buf.pData;
-				lOutLen  = (int)buf.lSize;
-				if (lOutLen > 16)
-					lOutLen = 16;
+				StringStreamT buffer;
 				
-				// create a 64-character formatted output line:
-				sprintf(szBuf, " >                            "
-						"                      "
-						"    %08lX", pTmp-pAddress);
-				lOutLen2 = lOutLen;
+				buffer << "0x";
 				
-				for(lIndex = 1+lIndent, lIndex2 = 53-15+lIndent, lRelPos = 0;
-					lOutLen2;
-					lOutLen2--, lIndex += 2, lIndex2++
-					)
-				{
-					ucTmp = *pTmp++;
+				buffer.fill('0');
+				buffer.width(sizeof(long) * 2);
+				buffer.setf(std::ios::hex, std::ios::basefield);
+				
+				buffer << (current - begin()) << " >";
+				
+				std::size_t count = std::min(remaining, (std::size_t)4*4);
+								
+				for (std::size_t i = 0; i < (4*4); i += 1) {
+					if (i > 0 && i % 4 == 0)
+						buffer << ' ';
 					
-					sprintf(szBuf + lIndex, "%02X ", (unsigned short)ucTmp);
-					if(!isprint(ucTmp))  ucTmp = '.'; // nonprintable char
-					szBuf[lIndex2] = ucTmp;
-					
-					if (!(++lRelPos & 3))     // extra blank after 4 bytes
-					{  lIndex++; szBuf[lIndex+2] = ' '; }
+					if (i < count) {
+						buffer.width(2);
+						buffer << (int)(*(current + i));
+					} else
+						buffer << "  ";
 				}
 				
-				if (!(lRelPos & 3)) lIndex--;
+				buffer << "< ";
 				
-				szBuf[lIndex  ]   = '<';
-				szBuf[lIndex+1]   = ' ';
+				out << buffer.str();
 				
-				//printf("%s\n", szBuf);
-				out << szBuf << std::endl;
+				for (std::size_t i = 0; i < count; i += 1) {
+					ByteT character = *(current + i);
+					if (character >= 32 && character <= 128)
+						out << character;
+					else
+						out << ".";
+				}
 				
-				buf.pData   += lOutLen;
-				buf.lSize   -= lOutLen;
+				out << std::endl;
+				
+				remaining -= count;
+				if (remaining == 0)
+					break;
+				
+				current += count;
 			}	
 		}
 		

@@ -66,13 +66,8 @@ namespace Dream {
 		// This is useful when you want a generic representation of a pixel
 		typedef unsigned long long PixelT;
 		
-		class IPixelBuffer : IMPLEMENTS(Object) {
-			EXPOSE_INTERFACE(PixelBuffer)
-
-			class Class : IMPLEMENTS(Object::Class)
-			{
-			};
-			
+		class IPixelBuffer : implements IObject
+		{
 		public:					
 			enum Component {
 				RED = 0,
@@ -150,13 +145,8 @@ namespace Dream {
 		
 		// Some pixel buffers (for example the screen buffer), can never have mutable operations without
 		// high cost, so there is a sub-interface for 'typically' mutable pixbufs.
-		class IMutablePixelBuffer : IMPLEMENTS(PixelBuffer) {
-			EXPOSE_INTERFACE(MutablePixelBuffer)
-			
-			class Class : IMPLEMENTS(PixelBuffer::Class)
-			{
-			};
-			
+		class IMutablePixelBuffer : implements IPixelBuffer
+		{
 		public:			
 			virtual ByteT * pixelData () abstract;
 			

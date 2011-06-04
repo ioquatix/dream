@@ -51,7 +51,7 @@ namespace Dream {
 #pragma mark -
 #pragma mark class Texture
 				
-				IMPLEMENT_CLASS(Texture)
+				
 				
 				Texture::Texture (TextureController * textureController) : m_target(0), m_textureController(textureController)
 				{

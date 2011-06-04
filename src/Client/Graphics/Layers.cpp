@@ -16,7 +16,7 @@ namespace Dream {
 			
 #pragma mark -
 			
-			IMPLEMENT_CLASS(TransformedGroup)
+			
 			
 			TransformedGroup::TransformedGroup(const Mat44 & transform) : m_transform(transform)
 			{
@@ -39,7 +39,7 @@ namespace Dream {
 			
 #pragma mark -
 
-			IMPLEMENT_CLASS(DelegateLayer)
+			
 
 			void DelegateLayer::renderFrameForTime (IScene * scene, TimeT time)
 			{
@@ -61,7 +61,7 @@ namespace Dream {
 
 #pragma mark -
 			
-			IMPLEMENT_CLASS(BackgroundLayer)
+			
 			
 			BackgroundLayer::BackgroundLayer(const Vec4 & color) : m_color(color) {
 			
@@ -74,7 +74,7 @@ namespace Dream {
 
 #pragma mark -
 
-			IMPLEMENT_CLASS(AxisLayer)
+			
 			
 			void AxisLayer::renderFrameForTime (IScene * scene, TimeT time) {
 				WireframeRenderer axisRenderer;

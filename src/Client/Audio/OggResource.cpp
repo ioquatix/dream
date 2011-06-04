@@ -90,31 +90,23 @@ namespace Dream
 #pragma mark -
 #pragma mark OggStream
 			
-			class OggStream : public Stream
-			{
-				EXPOSE_CLASS(OggStream)
+			class OggStream : public Stream {
+			protected:
+				virtual bool loadNextBuffer (PTR(Source) source, ALuint buffer);
 				
-				class Class : public Stream::Class
-				{
-					EXPOSE_CLASSTYPE
-				};
+				OggReader m_reader;
+				const REF(IData) m_data;
 				
-				protected:
-					virtual bool loadNextBuffer (PTR(Source) source, ALuint buffer);
-					
-					OggReader m_reader;
-					const REF(IData) m_data;
-					
-					bool m_loop;
-					
-				public:
-					OggStream (PTR(Source) source, ALenum format, ALsizei frequency, const PTR(IData) data);
-					virtual ~OggStream ();
-					
-					virtual void stop ();
+				bool m_loop;
+				
+			public:
+				OggStream (PTR(Source) source, ALenum format, ALsizei frequency, const PTR(IData) data);
+				virtual ~OggStream ();
+				
+				virtual void stop ();
 			};
 			
-			IMPLEMENT_CLASS(OggStream)
+			
 			
 			OggStream::OggStream (PTR(Source) source, ALenum format, ALsizei frequency, const PTR(IData) data)
 				: Stream(source, format, frequency), m_reader(data->inputStream()), m_data(data), m_loop(true)
@@ -174,15 +166,13 @@ namespace Dream
 #pragma mark -
 #pragma mark OggResource
 
-			IMPLEMENT_CLASS(OggResource)
-
-			void OggResource::Class::registerLoaderTypes (REF(ILoader) loader)
+			void OggResource::Loader::registerLoaderTypes (ILoader * loader)
 			{
 				loader->setLoaderForExtension(this, "ogg");
 				loader->setLoaderForExtension(this, "oga");
 			}
 			
-			REF(Object) OggResource::Class::initFromData (const PTR(IData) data, const ILoader * loader)
+			REF(Object) OggResource::Loader::loadFromData (const PTR(IData) data, const ILoader * loader)
 			{
 				return new OggResource(data);
 			}

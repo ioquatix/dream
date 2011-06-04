@@ -15,14 +15,6 @@ namespace Dream
 	{
 		namespace Display
 		{
-
-			IMPLEMENT_CLASS(FrameNotificationSource)
-
-			REF(FrameNotificationSource) FrameNotificationSource::Class::init (FrameCallbackT callback) const
-			{
-				return new FrameNotificationSource(callback);
-			}
-
 			FrameNotificationSource::FrameNotificationSource (FrameCallbackT callback) : m_callback(callback), m_processed(true)
 			{
 				

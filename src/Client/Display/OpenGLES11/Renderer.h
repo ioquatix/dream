@@ -36,13 +36,6 @@ namespace Dream
 				
 				class Renderer : public Object
 				{
-					EXPOSE_CLASS(Renderer)
-					
-					class Class : public Object::Class
-					{
-						EXPOSE_CLASSTYPE
-					};
-					
 				protected:				
 					REF(RenderState) m_currentRenderState;
 					TextureController * m_textureController;

@@ -18,17 +18,6 @@ namespace Dream {
 		namespace Graphics {
 			
 			class BirdsEyeCamera : public Camera {
-				EXPOSE_CLASS(BirdsEyeCamera)
-				
-				class Class : public Camera::Class {
-				public:
-					EXPOSE_CLASSTYPE
-					
-					virtual REF(Object) init () {
-						return new BirdsEyeCamera();
-					}
-				};
-				
 			protected:
 				Vec3 m_up;
 				Vec3 m_right;

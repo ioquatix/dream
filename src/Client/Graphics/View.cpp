@@ -15,7 +15,7 @@ namespace Dream {
 	namespace Client {
 		namespace Graphics {
 		
-			IMPLEMENT_CLASS(View::Controller)
+			
 	
 			View::Controller::Controller () : m_debug(false) {
 				m_staticFocusedView = NULL;
@@ -133,7 +133,7 @@ namespace Dream {
 				return m_debug;
 			}
 
-			IMPLEMENT_CLASS(View)
+			
 
 			void View::init () {
 				m_bounds = AlignedBox<2>(ZERO);
@@ -149,7 +149,7 @@ namespace Dream {
 				
 				string space(indent, '\t');
 				
-				outp << space << "View: " << className() << endl;
+				outp << space << "View" << endl;
 				outp << space << "Enabled = " << m_enabled << " Bounds = " << m_bounds << " Rotation = " << m_rotation << " Subviews = " << m_subviews.size() << endl;
 				outp << space << "Size = " << m_size << " Scale = " << m_scale << " Offset = " << m_offset << " Orientation = " << m_orientation << endl;
 				
@@ -349,7 +349,7 @@ namespace Dream {
 #pragma mark -
 
 			/*
-			IMPLEMENT_CLASS(ButtonView)
+			
 			
 			ButtonView::ButtonView (PTR(View) parent)
 				: View(parent)
@@ -374,7 +374,7 @@ namespace Dream {
 
 #pragma mark -
 
-			IMPLEMENT_CLASS(ImageView)
+			
 
 			ImageView::ImageView (PTR(View) parent) : View(parent) {
 			
@@ -427,7 +427,7 @@ namespace Dream {
 		
 #pragma mark -
 
-			IMPLEMENT_CLASS(TextView)
+			
 			
 			TextView::TextView (PTR(View) parent, PTR(Font) font) : View(parent), m_offset(0) {
 				m_textBuffer = new Text::TextBuffer(font);

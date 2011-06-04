@@ -24,13 +24,6 @@ namespace Dream
 				
 				/* Renderable interface for GLU Quadrics */	
 				class GLUQuadric : public Object {
-					EXPOSE_CLASS(GLUQuadric)
-					
-					class Class : public Object::Class
-					{
-						EXPOSE_CLASSTYPE
-					};
-					
 				protected:
 					GLUquadricObj *m_quadric;
 					
@@ -57,13 +50,6 @@ namespace Dream
 				};
 				
 				class GLUSphere : public GLUQuadric {
-					EXPOSE_CLASS(GLUSphere)
-					
-					class Class : public GLUQuadric::Class
-					{
-						EXPOSE_CLASSTYPE
-					};
-					
 				protected:
 					RealT m_radius;
 					IndexT m_slices, m_stacks;
@@ -76,13 +62,6 @@ namespace Dream
 				};
 				
 				class GLUCylinder : public GLUQuadric {
-					EXPOSE_CLASS(GLUCylinder)
-					
-					class Class : public GLUQuadric::Class
-					{
-						EXPOSE_CLASSTYPE
-					};
-					
 				protected:
 					RealT m_baseRadius, m_topRadius, m_height;
 					IndexT m_slices, m_stacks;
@@ -94,13 +73,6 @@ namespace Dream
 				};
 				
 				class GLUDisk : public GLUQuadric {
-					EXPOSE_CLASS(GLUDisk)
-					
-					class Class : public GLUQuadric::Class
-					{
-						EXPOSE_CLASSTYPE
-					};
-					
 				protected:
 					RealT m_innerRadius, m_outerRadius, m_startAngle, m_sweepAngle;
 					IndexT m_slices, m_loops;

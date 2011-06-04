@@ -9,7 +9,7 @@
 
 #include "Context.h"
 #include "DreamView.h"
-#include "DreamAppDelegate.h"
+#include "DreamApplicationDelegate.h"
 
 namespace Dream
 {
@@ -17,11 +17,11 @@ namespace Dream
 	{
 		namespace Display
 		{
-			void IApplication::start (IApplication::Class * appKlass, PTR(Dictionary) config)
+			void IApplication::start (PTR(IApplication) application, PTR(Dictionary) config)
 			{
-				UIKitContext::setApplicationInstance(appKlass->init(config));
+				UIKitContext::setApplicationInstance(application);
 				
-				[DreamAppDelegate start];
+				[DreamApplicationDelegate start];
 			}
 			
 			namespace UIKitContext
@@ -52,7 +52,7 @@ namespace Dream
 				
 #pragma mark -
 				
-				IMPLEMENT_CLASS(Context)
+				
 				
 				struct Context::ContextImpl {
 					ContextImpl () {}
@@ -64,17 +64,7 @@ namespace Dream
 										
 					FrameCallbackT frameCallback;
 				};
-				
-				Context::Class::Class() : IContext::Class(30)
-				{
-					std::cout << "Registering Context..." << std::endl;
-				}
-				
-				REF(IContext) Context::Class::init (PTR(Dictionary) config)
-				{
-					return new Context(config);
-				}
-				
+								
 				void Context::setTitle (String title) {
 					
 				}

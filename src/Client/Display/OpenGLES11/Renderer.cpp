@@ -17,7 +17,7 @@ namespace Dream {
 		namespace Display {
 			namespace OpenGLES11 {
 			
-				IMPLEMENT_CLASS(Renderer)
+				
 
 				Renderer::Renderer () : m_textureController(new TextureController)
 				{

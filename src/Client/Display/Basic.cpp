@@ -9,6 +9,7 @@
 
 #include "Basic.h"
 
+#include "Context.h"
 #include "../../Imaging/Image.h"
 #include "../../Client/Text/Font.h"
 #include "../Audio/Sound.h"
@@ -39,22 +40,14 @@ namespace Dream {
 #pragma mark -
 #pragma mark class BasicApplication
 
-			IMPLEMENT_CLASS(BasicApplication)
-
-			REF(IApplication) BasicApplication::Class::init (PTR(Dictionary) config)
-			{
-				return new BasicApplication(config);
-			}
-
 			BasicApplication::BasicApplication (PTR(Dictionary) config)
 			{
-				m_eventLoop = Loop::klass.init();
+				m_eventLoop = new Events::Loop;
 				setupResourceLoader();
 
-				IContext::Class * contextClass = IContext::bestContextClass();
-				ensure(contextClass != NULL);
-
-				m_displayContext = contextClass->init(config);
+				REF(IContextMode) mode = ContextManager::sharedManager()->bestContextMode();
+				
+				m_displayContext = mode->setup(config);
 				m_displayContext->setTitle(String("Dream Framework (") + String(buildRevision()) + ")");
 
 				// Setup the display context notification
@@ -64,16 +57,30 @@ namespace Dream {
 				m_sceneManager->setFinishedCallback(boost::bind(&BasicApplication::finishedCallback, this));
 			}
 			
+			void BasicApplication::setup () {
+			
+			}
+			
+			void BasicApplication::runScene (PTR(IScene) scene, PTR(Dictionary) config) {
+				REF(BasicApplication) application;
+				
+				application = new BasicApplication(config);
+				
+				application->push(scene);
+				
+				application->run();
+			}
+			
 			void BasicApplication::setupResourceLoader ()
 			{
 				REF(Resources::Loader) resourceLoader = Resources::applicationLoader();
 				
-				Dream::Imaging::Image::staticClass()->registerLoaderTypes(resourceLoader);
-				Dream::Client::Audio::Sound::staticClass()->registerLoaderTypes(resourceLoader);
-				Dream::Client::Text::Font::staticClass()->registerLoaderTypes(resourceLoader);
-				Dream::Client::Graphics::MaterialLibrary::staticClass()->registerLoaderTypes(resourceLoader);
-				Dream::Client::Audio::OggResource::staticClass()->registerLoaderTypes(resourceLoader);
-				
+				resourceLoader->addLoader(new Imaging::Image::Loader);
+				resourceLoader->addLoader(new Client::Audio::Sound::Loader);
+				resourceLoader->addLoader(new Client::Audio::OggResource::Loader);
+				resourceLoader->addLoader(new Client::Text::Font::Loader);
+				resourceLoader->addLoader(new Client::Graphics::MaterialLibrary::Loader);
+
 				m_resourceLoader = resourceLoader;
 			}
 			
@@ -129,7 +136,7 @@ namespace Dream {
 #pragma mark -
 #pragma mark class BasicScene
 			
-			IMPLEMENT_CLASS(BasicScene)
+			
 			
 			BasicScene::BasicScene ()
 			{

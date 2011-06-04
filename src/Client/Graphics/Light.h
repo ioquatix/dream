@@ -16,13 +16,8 @@ namespace Dream {
 	namespace Client {
 		namespace Graphics {
 		
-			class Light : public Object {
-				EXPOSE_CLASS(Light)
-				
-				class Class : public Object::Class {
-					EXPOSE_CLASSTYPE
-				};
-				
+			class Light : public Object
+			{
 			protected:
 				Vec4 m_position;
 				Vec4 m_diffuse, m_specular, m_ambient, m_emission;
@@ -56,13 +51,6 @@ namespace Dream {
 			
 			class LightingGroup : public Group
 			{
-				EXPOSE_CLASS(LightingGroup)
-				
-				class Class : public Group::Class
-				{
-					EXPOSE_CLASSTYPE
-				};
-				
 				typedef std::vector<REF(Light)> LightsT;
 				
 				protected:

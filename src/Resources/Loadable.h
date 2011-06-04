@@ -49,29 +49,18 @@ namespace Dream {
 			virtual const char * what() throw ();
 		};
 
-		class ILoadable : IMPLEMENTS(Object) 
+		class ILoadable : implements IObject 
 		{
-			EXPOSE_INTERFACE(Loadable)
-			
-			class Class : IMPLEMENTS(Object::Class) 
-			{
-			public:
-				virtual void registerLoaderTypes (REF(ILoader) loader) abstract;
-				
-				virtual REF(Object) initFromData (const PTR(IData) data, const ILoader * loader) abstract;
-			};
+		public:
+			virtual void registerLoaderTypes (ILoader * loader) abstract;
+			virtual REF(Object) loadFromData (const PTR(IData) data, const ILoader * loader) abstract;
 		};
 		
-		class ILoadableFromStream : IMPLEMENTS(Loadable) 
+		class ILoadableFromStream : implements ILoadable 
 		{
-			EXPOSE_INTERFACE(LoadableFromStream)
-			
-			class Class : IMPLEMENTS(Loadable::Class) 
-			{
-			public:
-				virtual REF(Object) initFromData (const PTR(IData) data, const ILoader * loader);
-				virtual REF(Object) initFromStream (std::istream& input, const ILoader * loader) abstract;
-			};
+		public:
+			virtual REF(Object) loadFromData (const PTR(IData) data, const ILoader * loader);
+			virtual REF(Object) loadFromStream (std::istream& input, const ILoader * loader) abstract;
 		};
 
 	}

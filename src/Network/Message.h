@@ -33,13 +33,8 @@ namespace Dream {
 		 reliably.
 		 
 		 */
-		class Message : public Object {
-			EXPOSE_CLASS(Message)
-			
-			class Class : public Object::Class {
-				EXPOSE_CLASSTYPE
-			};
-			
+		class Message : public Object
+		{
 		protected:
 			Core::BufferT m_packet;
 			
@@ -80,7 +75,7 @@ namespace Dream {
 					return false;
 				}
 				
-				memcpy(&s, &m_packet[offset], sz);
+				memcpy(&s, m_packet.begin() + offset, sz);
 				return true;
 			}
 			
@@ -165,12 +160,6 @@ namespace Dream {
 		 
 		 */
 		class MessageClientSocket : public ClientSocket {
-			EXPOSE_CLASS(MessageClientSocket)
-			
-			class Class : public ClientSocket::Class {
-				EXPOSE_CLASSTYPE
-			};
-			
 		protected:
 			MessageSender m_sender;
 			MessageReceiver m_receiver;

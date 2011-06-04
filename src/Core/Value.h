@@ -57,7 +57,7 @@ namespace Dream
 
 		/** Abstract typed value base. Provides a basic set of functionality for dealing with values of unknown type.
 		 */
-		class ITypedValue : IMPLEMENTS (Type), public SharedObject
+		class ITypedValue : public SharedObject
 		{
 		public:
 			/// @sa equal
@@ -65,6 +65,8 @@ namespace Dream
 			{
 				return equal(&other);
 			}
+			
+			virtual const std::type_info & typeinfo () const abstract;
 			
 			/// Compares two values
 			/// @returns True if the TypedValue objects are of the same type and contained value.			
@@ -142,7 +144,7 @@ namespace Dream
 		 @endcode
 		 */
 		template <typename ValueT>
-		class TypedValue : IMPLEMENTS (TypedValue), protected TypedValueSerializer<TypeIdentifierTypeTraits<ValueT>::TypeIdentifierValue>
+		class TypedValue : implements ITypedValue, protected TypedValueSerializer<TypeIdentifierTypeTraits<ValueT>::TypeIdentifierValue>
 		{
 		protected:
 			ValueT m_value;
@@ -243,7 +245,8 @@ namespace Dream
 			if (v != NULL)
 			{
 				return v->value();
-			} else
+			}
+			else 
 			{
 				throw ConversionError(typeinfo(), typeid(ValueT));
 			}

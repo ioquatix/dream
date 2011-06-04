@@ -34,16 +34,10 @@ namespace Dream
 			It is used for providing time based animation/interpolation, and by reference counting can be used in a set
 			and forget fashion.
 		*/
-		class Fader : public Object, IMPLEMENTS(TimerSource)
+		class Fader : public Object, implements ITimerSource
 		{
-			EXPOSE_CLASS(Fader)
-			
-			class Class : public Object::Class, IMPLEMENTS(TimerSource::Class)
-			{
-				EXPOSE_CLASSTYPE
-			};
-			
-			typedef boost::function<void (PTR(Fader) fader)> FinishCallbackT;
+			public:
+				typedef boost::function<void (PTR(Fader) fader)> FinishCallbackT;
 			
 			protected:
 				Shared<IKnob> m_knob;

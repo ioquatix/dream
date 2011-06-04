@@ -60,6 +60,8 @@ namespace Dream {
 				return TopLeft;
 			case (TOP | RIGHT):
 				return TopRight;
+			default:
+				break;
 			}
 			
 			ensure(false && "Invalid partition direction!");
@@ -131,6 +133,9 @@ namespace Dream {
 				return TopLeftFar;
 			case (TOP | RIGHT | FAR):
 				return TopRightFar;
+			
+			default:
+				break;
 			}
 			
 			ensure(false && "Invalid partition direction!");

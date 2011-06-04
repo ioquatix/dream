@@ -16,7 +16,7 @@ namespace Dream {
 	namespace Client {
 		namespace Graphics {
 		
-#ifdef DREAM_USE_OPENGLES11 || DREAM_USE_OPENGLES20
+#if defined(DREAM_USE_OPENGLES11) || defined(DREAM_USE_OPENGLES20)
 			enum {
 				FRAMEBUFFER = GL_FRAMEBUFFER_OES,
 				RENDERBUFFER = GL_RENDERBUFFER_OES
@@ -31,11 +31,6 @@ namespace Dream {
 			class RenderBuffer;
 			
 			class FrameBuffer : public ObjectHandle {
-				EXPOSE_CLASS(FrameBuffer)
-				
-				class Class : public ObjectHandle::Class {
-					EXPOSE_CLASSTYPE
-				};
 			protected:
 				inline GLenum target () const {
 					return FRAMEBUFFER;
@@ -58,11 +53,6 @@ namespace Dream {
 			};
 			
 			class RenderBuffer : public ObjectHandle {
-				EXPOSE_CLASS(RenderBuffer)
-				
-				class Class : public ObjectHandle::Class {
-					EXPOSE_CLASSTYPE
-				};
 			protected:
 				friend class FrameBuffer;
 				

@@ -27,13 +27,6 @@ namespace Dream
 			
 			class PixelBufferRenderer : public Object
 			{
-				EXPOSE_CLASS(PixelBufferRenderer)
-				
-				class Class : public Object::Class
-				{
-					EXPOSE_CLASSTYPE
-				};
-			
 			protected:
 				REF(Texture) m_texture;
 				Vec2 m_size;

@@ -21,11 +21,11 @@ namespace Dream {
 #pragma mark -
 #pragma mark ServerContainer
 		
-		IMPLEMENT_CLASS(ServerContainer)
+		
 		
 		ServerContainer::ServerContainer () : m_run(false)
 		{
-			m_eventLoop = Loop::klass.init();
+			m_eventLoop = new Loop;
 		}
 		
 		ServerContainer::~ServerContainer ()
@@ -76,7 +76,7 @@ namespace Dream {
 #pragma mark -
 #pragma mark class Server
 
-		IMPLEMENT_CLASS(Server)
+		
 				
 		Server::Server (REF(Loop) eventLoop) : m_eventLoop(eventLoop)
 		{
@@ -115,46 +115,31 @@ namespace Dream {
 		int g_messageReceivedCount;
 		class TestServerClientSocket : public ClientSocket
 		{
-			EXPOSE_CLASS(TestServerClientSocket)
-			
-			class Class : public ClientSocket::Class
-			{
-				EXPOSE_CLASSTYPE
-			};
-			
-			TestServerClientSocket (const SocketHandleT & h, const Address & address) : ClientSocket(h, address)
-			{
-			}
-			
-			virtual void processEvents(Loop * eventLoop, Event events)
-			{
-				if (events & Events::READ_READY) {
-					DynamicBuffer buf(1024, true);
-					
-					recv(buf);
-					
-					std::string incomingMessage(buf.begin(), buf.end());
-					
-					g_messageReceivedCount += 1;
-					
-					std::cerr << "Message received by " << this << " fd " << this->fileDescriptor() << " : " << incomingMessage << std::endl;
-					
-					eventLoop->stopMonitoringFileDescriptor(this);
+			public:
+				TestServerClientSocket (const SocketHandleT & h, const Address & address) : ClientSocket(h, address)
+				{
 				}
-			}
+				
+				virtual void processEvents(Loop * eventLoop, Event events)
+				{
+					if (events & Events::READ_READY) {
+						DynamicBuffer buf(1024, true);
+						
+						recv(buf);
+						
+						std::string incomingMessage(buf.begin(), buf.end());
+						
+						g_messageReceivedCount += 1;
+						
+						std::cerr << "Message received by " << this << " fd " << this->fileDescriptor() << " : " << incomingMessage << std::endl;
+						
+						eventLoop->stopMonitoringFileDescriptor(this);
+					}
+				}
 		};
-		
-		IMPLEMENT_CLASS(TestServerClientSocket)
 		
 		class TestServer : public Server
 		{
-			EXPOSE_CLASS(TestServer)
-			
-			class Class : public Server::Class
-			{
-				EXPOSE_CLASSTYPE
-			};
-			
 		protected:
 			// (const SocketHandleT & h, const Address & address) : ClientSocket(h, address)
 			virtual void connectionCallbackHandler (Loop * eventLoop, ServerSocket * serverSocket, const SocketHandleT & h, const Address & a)
@@ -179,7 +164,7 @@ namespace Dream {
 			}
 		};
 		
-		IMPLEMENT_CLASS(TestServer)
+		
 		
 		REF(TimerSource) g_timer1, g_timer2, g_timer3;
 		
@@ -218,7 +203,7 @@ namespace Dream {
 		UNIT_TEST(Server) {
 			testing("Connecting and Message Sending");
 			
-			REF(Loop) eventLoop = Loop::klass.init();
+			REF(Loop) eventLoop = new Loop;
 			REF(TestServer) server = new TestServer(eventLoop, "7979", SOCK_STREAM);
 						
 			g_addressIndex = 0;
@@ -227,12 +212,17 @@ namespace Dream {
 			
 			g_connectAddresses = Address::addressesForName("localhost", "7979", SOCK_STREAM);
 
-			eventLoop->scheduleTimer(TimerSource::klass.init(stopTimersCallback, 0.4));
-			eventLoop->scheduleTimer(TimerSource::klass.init(stopCallback, 0.5));
+			eventLoop->scheduleTimer(new TimerSource(stopTimersCallback, 0.4));
+			eventLoop->scheduleTimer(new TimerSource(stopCallback, 0.5));
 			
-			eventLoop->scheduleTimer(g_timer1 = TimerSource::klass.init(connectCallback, 0.05, true));
-			eventLoop->scheduleTimer(g_timer2 = TimerSource::klass.init(connectCallback, 0.1, true));
-			eventLoop->scheduleTimer(g_timer3 = TimerSource::klass.init(connectCallback, 0.11, true));
+			g_timer1 = new TimerSource(connectCallback, 0.05, true);
+			eventLoop->scheduleTimer(g_timer1);
+			
+			g_timer2 = new TimerSource(connectCallback, 0.1, true);
+			eventLoop->scheduleTimer(g_timer2);
+			
+			g_timer3 = new TimerSource(connectCallback, 0.11, true);
+			eventLoop->scheduleTimer(g_timer3);
 
 			eventLoop->runForever();
 			

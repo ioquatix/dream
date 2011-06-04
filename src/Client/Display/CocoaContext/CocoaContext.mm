@@ -34,11 +34,10 @@ namespace Dream
 		namespace Display
 		{
 			
-			void IApplication::start (IApplication::Class * appKlass, PTR(Dictionary) config)
+			void IApplication::start (PTR(Dictionary) config)
 			{
-				REF(IApplication) app = appKlass->init(config);
-				
-				app->run();
+				setup();
+				run();
 			}
 			
 #pragma mark -
@@ -47,8 +46,6 @@ namespace Dream
 			typedef OpenGL20::Renderer MacOSXOpenGLRenderer;
 			
 #pragma mark -
-			
-			IMPLEMENT_CLASS(CocoaContext)
 			
 			struct CocoaContext::CocoaContextImpl {
 				CocoaContextImpl () : displayWillRefresh(false), displayRefreshStallCount(0) {}
@@ -97,16 +94,6 @@ namespace Dream
 				ctx->notificationSource->frameCallback(ctx->loop.get(), time);
 				
 				return 0;
-			}
-			
-			CocoaContext::Class::Class() : IContext::Class(25)
-			{
-			
-			}
-			
-			REF(IContext) CocoaContext::Class::init (PTR(Dictionary) config)
-			{
-				return new CocoaContext(config);
 			}
 			
 			NSString * getApplicationName ()
@@ -166,7 +153,8 @@ namespace Dream
 				[menuItem release];
 
 				/* Tell the application object that this is now the application menu */
-				[NSApp setAppleMenu:appleMenu];
+				[NSApp performSelector:@selector(setAppleMenu:) withObject:appleMenu];
+				// [NSApp setAppleMenu:appleMenu];
 				[appleMenu release];
 
 				/* Create the window menu */

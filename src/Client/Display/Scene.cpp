@@ -21,12 +21,6 @@ namespace Dream
 	{
 		namespace Display
 		{
-			
-	#pragma mark -
-			
-			IMPLEMENT_INTERFACE(Scene)
-			IMPLEMENT_INTERFACE(SceneManager)
-			
 			void ISceneManager::renderFrameForTime (TimeT time)
 			{
 				REF(IScene) s = currentScene();
@@ -36,8 +30,6 @@ namespace Dream
 			}
 			
 	#pragma mark -
-			
-			IMPLEMENT_CLASS(SceneManager)
 			
 			SceneManager::SceneManager (REF(IContext) displayContext, REF(Loop) eventLoop, REF(ILoader) resourceLoader) : m_displayContext(displayContext),
 			m_eventLoop(eventLoop), m_currentSceneIsFinished(true), m_resourceLoader(resourceLoader)
@@ -153,7 +145,7 @@ namespace Dream
 			
 #pragma mark -
 			
-			IMPLEMENT_CLASS(Scene)
+			
 			
 			Scene::Scene () : m_sceneManager(NULL), m_firstFrame(true), m_startTime(0), m_currentTime(0)
 			{
@@ -184,8 +176,6 @@ namespace Dream
 			
 			void Scene::willBecomeCurrent (ISceneManager * sceneManager)
 			{
-				std::cerr << "Scene will become current: " << className() << std::endl;
-				
 				m_sceneManager = sceneManager;
 				m_firstFrame = true;
 			}
@@ -197,8 +187,6 @@ namespace Dream
 			
 			void Scene::willRevokeCurrent (ISceneManager * sceneManager)
 			{
-				std::cerr << "Scene will revoke current: " << className() << std::endl;
-				
 				m_sceneManager = NULL;
 			}
 			
@@ -242,7 +230,7 @@ namespace Dream
 			
 	#pragma mark -
 			
-			IMPLEMENT_CLASS(VoidScene)
+			
 			
 			VoidScene::VoidScene ()
 			{

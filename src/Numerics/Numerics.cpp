@@ -228,7 +228,7 @@ namespace Dream
 
 			double t = 0.0000001;
 			std::cout << "acosf: " << cos(R90) << std::endl;
-			check(FloatingPointTraits<double>::isZero(cos(R90)) << FloatingPointTraits<double>::convertToInteger(t)), "cosf is zero";
+			check(FloatingPointTraits<double>::isZero(cos(R90)) << FloatingPointTraits<double>::convertToInteger(t)) << "cosf is zero";
 
 			std::cout << "Accuracy of float: " << FloatingPointTraits<double>::convertToInteger(t) << std::endl;
 		}

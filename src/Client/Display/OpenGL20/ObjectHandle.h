@@ -18,13 +18,6 @@ namespace Dream {
 			namespace OpenGL20 {
 				
 				class ObjectHandle : public Object {
-					EXPOSE_CLASS(ObjectHandle)
-					
-					class Class : public Object::Class {
-					public:
-						EXPOSE_CLASSTYPE
-					};
-					
 				protected:
 #ifdef GL_VERSION_2_0
 					typedef GLuint HandleT;

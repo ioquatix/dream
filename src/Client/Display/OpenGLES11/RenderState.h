@@ -24,12 +24,7 @@ namespace Dream
 				
 				class RenderState : public Object
 				{
-					EXPOSE_CLASS(RenderState)
-					
-					class Class : public Object::Class {
-						EXPOSE_CLASSTYPE
-					};
-					
+				public:
 					bool m_blending;
 					GLenum m_blendFuncSrc;
 					GLenum m_blendFuncDst;

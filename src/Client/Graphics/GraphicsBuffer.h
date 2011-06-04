@@ -25,13 +25,6 @@ namespace Dream {
 				GLenum m_target;
 				
 			public:
-				class Class : public ObjectHandle::Class {
-				public:
-					EXPOSE_CLASSTYPE
-				};
-				
-				EXPOSE_CLASS(GraphicsBuffer)
-				
 				enum Target {
 					Array = GL_ARRAY_BUFFER,
 					ElementArray = GL_ELEMENT_ARRAY_BUFFER
@@ -40,7 +33,7 @@ namespace Dream {
 					//PixelUnpackBuffer = GL_PIXEL_UNPACK_BUFFER_ARB,
 				};
 				
-#ifndef DREAM_USE_OPENGLES11 || DREAM_USE_OPENGLES20
+#if !(defined(DREAM_USE_OPENGLES11) || defined(DREAM_USE_OPENGLES20))
 				enum Access {
 					Read = GL_READ_ONLY,
 					Write = GL_WRITE_ONLY,
@@ -49,7 +42,7 @@ namespace Dream {
 #endif
 				
 				enum Mode {
-#ifndef DREAM_USE_OPENGLES11 || DREAM_USE_OPENGLES20
+#if !(defined(DREAM_USE_OPENGLES11) || (DREAM_USE_OPENGLES20))
 					StreamDraw = GL_STREAM_DRAW,
 #endif
 					//StreamRead = GL_STREAM_READ,
@@ -73,7 +66,7 @@ namespace Dream {
 				
 				//ByteT* getData (IndexT offset, IndexT length
 
-#ifndef DREAM_USE_OPENGLES11 || DREAM_USE_OPENGLES20
+#if !(defined(DREAM_USE_OPENGLES11) || (DREAM_USE_OPENGLES20))
 				ByteT* mapBuffer (const Access &access);
 				void unmapBuffer ();
 #endif

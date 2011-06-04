@@ -36,18 +36,19 @@ namespace Dream
 
 		void CodeTestRegistry::addTest (CodeTest * test)
 		{
-			//if (test->m_name == "PixelBufferSaver Test")
 			m_codeTests.push_back(test);
 		}
 
 		void CodeTestRegistry::_performAllTests ()
 		{
 			using namespace std;
-
+			
 			REF(CodeTest::Statistics) overall = new CodeTest::Statistics("Code Test Registry");
-
+			
 			foreach (CodeTest * test, m_codeTests)
 			{
+				//if (test->m_name != "Cascade Test") continue;
+				
 				test->performTests ();
 
 				REF(CodeTest::Statistics) stats = test->overallStatistics();

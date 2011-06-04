@@ -22,15 +22,8 @@ namespace Dream
 		namespace Display
 		{
 
-			class FrameTimerSource : public Object, IMPLEMENTS_NS(Events, TimerSource)
+			class FrameTimerSource : public Object, implements Events::ITimerSource
 			{
-				EXPOSE_CLASS(FrameTimerSource)
-				
-				class Class : public Object::Class, IMPLEMENTS_NS(Events, TimerSource::Class)
-				{
-					EXPOSE_CLASSTYPE
-				};
-				
 			protected:
 				bool m_cancelled;
 				TimeT m_period;

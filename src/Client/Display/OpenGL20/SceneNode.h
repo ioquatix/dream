@@ -27,14 +27,8 @@ namespace Dream {
 			using namespace Core;
 			using namespace Display;
 			
-			class ISceneNode : IMPLEMENTS(Object)
+			class ISceneNode : implements IObject
 			{
-				EXPOSE_INTERFACE(SceneNode)
-				
-				class Class : IMPLEMENTS(Object::Class)
-				{
-				};
-				
 			public:
 				virtual ~ISceneNode ();
 				
@@ -43,13 +37,7 @@ namespace Dream {
 				//virtual AlignedBox<3> boundingBox () abstract;
 			};
 			
-			class SceneNode : public Object, IMPLEMENTS(SceneNode) {
-				EXPOSE_CLASS(SceneNode)
-				
-				class Class : public Object::Class, IMPLEMENTS(SceneNode::Class) {
-					EXPOSE_CLASSTYPE
-				};
-				
+			class SceneNode : public Object, implements ISceneNode {
 			protected:
 				REF(IRenderState) m_renderState;
 				

@@ -115,7 +115,7 @@ namespace Dream {
 			
 #pragma mark -
 
-			IMPLEMENT_CLASS(ModelRenderer)
+			
 
 				ModelRenderer::ModelRenderer(Model & model, PTR(RenderState) renderState)
 					: m_model(model), m_renderState(renderState)
@@ -132,7 +132,7 @@ namespace Dream {
 			
 #pragma mark -
 			
-			IMPLEMENT_CLASS(TexturedBox)
+			
 			
 			TexturedBox::TexturedBox (const String & name, const RealT & size, const RealT & inset)
 				: m_name(name), m_size(size), m_inset(inset)

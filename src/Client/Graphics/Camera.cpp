@@ -11,9 +11,7 @@
 
 namespace Dream {
 	namespace Client {
-		namespace Graphics {
-			IMPLEMENT_CLASS(Camera)
-			
+		namespace Graphics {			
 			Camera::~Camera ()
 			{
 				
@@ -84,7 +82,7 @@ namespace Dream {
 			
 #pragma mark -
 			
-			IMPLEMENT_CLASS(CameraNode)
+			
 			
 			CameraNode::CameraNode(PTR(Camera) camera) : m_camera(camera)
 			{

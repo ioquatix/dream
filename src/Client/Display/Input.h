@@ -115,14 +115,9 @@ namespace Dream {
 				virtual bool act(IInputHandler &h) const abstract;
 			};
 			
-			class IInputHandler : IMPLEMENTS(Object)
+			class IInputHandler : implements IObject
 			{
-				EXPOSE_INTERFACE(InputHandler)
-				
-				class Class : IMPLEMENTS(Object::Class)
-				{
-				};
-				
+			public:
 				virtual bool resize(const ResizeInput &) { return true; }
 				virtual bool button(const ButtonInput &) { return false; }
 				virtual bool motion(const MotionInput &) { return false; }

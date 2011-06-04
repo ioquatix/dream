@@ -252,9 +252,7 @@ namespace Dream
 		/**
 		 A flexible read/write buffer class that can be resized.
 
-		 This buffer provides maximum flexibility when dealing with data which may change its size, and is almost API compatible with
-		 <tt>std::vector<unsigned char></tt>, but has optimizations for data buffering. This can provide up to 30% increase in performance when dealing with a
-		 lot of data.
+		 This buffer provides maximum flexibility when dealing with data which may change its size, and is almost API compatible with <tt>std::vector<unsigned char></tt>, but has optimizations for data buffering. This can provide up to 30% increase in performance when dealing with a lot of data.
 		 */
 		class DynamicBuffer : private boost::noncopyable, public ResizableBuffer
 		{

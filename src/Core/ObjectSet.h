@@ -24,7 +24,7 @@ namespace Dream
 	{
 		typedef uint32_t IdentT;
 /*		
-		class IStateful : IMPLEMENTS(Object)
+		class IStateful : implements IObject
 		{
 		public:
 			// Returns an identical shallow copy of this stateful object.
@@ -37,13 +37,6 @@ namespace Dream
 		// Most operations on this set are O(1) at the expense of memory
 		class ObjectSet : public Object
 		{
-			EXPOSE_CLASS (ObjectSet)
-			
-			class Class : public Object::Class
-			{
-				EXPOSE_CLASSTYPE
-			};
-			
 		public:
 			typedef REF(Object) ValueT;
 			

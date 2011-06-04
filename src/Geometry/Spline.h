@@ -85,7 +85,7 @@ namespace Dream {
 			A point-based spline can inherit from this class to gain a point-based interface.
 		*/
 		template <unsigned D>
-		class Spline : IMPLEMENTS(Spline<D>) {		
+		class Spline : implements ISpline<D> {		
 		protected:
 			typedef Vector<D> PointT;
 			typedef std::vector<PointT> PointsT;
@@ -124,7 +124,7 @@ namespace Dream {
 			while the difference of pointAtTime(t) is used to provide normalAtTime(t)
 		*/
 		template <unsigned D>
-		class SplineWithNormal : IMPLEMENTS(Spline<D>) {
+		class SplineWithNormal : implements ISpline<D> {
 		protected:
 			typedef SplineWithNormal<D> this_t;
 			typedef ISpline<D> SplineT;

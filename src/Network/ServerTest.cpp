@@ -31,12 +31,6 @@ namespace Dream
 		typedef boost::mutex::scoped_lock scoped_lock;
 
 		class Pinger : public MessageClientSocket {
-			EXPOSE_CLASS(Pinger)
-			
-			class Class : public MessageClientSocket::Class {
-				EXPOSE_CLASSTYPE
-			};
-			
 		protected:
 			int m_ttl;
 			Timer m_timer;
@@ -104,13 +98,13 @@ namespace Dream
 			}
 		};
 
-		IMPLEMENT_CLASS(Pinger)
+		
 
 		void runEfficientClientProcess (int k) {
 			AddressesT serverAddresses = Address::addressesForName("localhost", "1404", SOCK_STREAM);
 			
 			{
-				REF(Loop) clients = Loop::klass.init();
+				REF(Loop) clients = new Loop;
 				
 				// Connect k times.
 				for (unsigned i = 0; i < k; i += 1) {
@@ -128,13 +122,6 @@ namespace Dream
 				
 		class PingPongServer : public Server
 		{
-			EXPOSE_CLASS(PingPongServer)
-			
-			class Class : public Server::Class
-			{
-				EXPOSE_CLASSTYPE
-			};
-			
 		protected:
 			virtual void connectionCallbackHandler (Loop * eventLoop, ServerSocket * serverSocket, const SocketHandleT & h, const Address & a)
 			{
@@ -173,7 +160,7 @@ namespace Dream
 			}
 		};
 	
-		IMPLEMENT_CLASS(PingPongServer)		
+				
 		
 		UNIT_TEST(CompleteServer) {
 			using namespace boost;

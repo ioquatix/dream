@@ -14,7 +14,7 @@ namespace Dream {
 		namespace Display {
 			namespace OpenGLES11 {
 			
-				IMPLEMENT_CLASS(ObjectHandle)
+				
 				
 				ObjectHandle::~ObjectHandle ()
 				{

@@ -18,10 +18,10 @@ namespace Dream
 			namespace OpenGL20
 			{
 					
-				IMPLEMENT_CLASS(GLUQuadric)
-				IMPLEMENT_CLASS(GLUSphere)
-				IMPLEMENT_CLASS(GLUCylinder)
-				IMPLEMENT_CLASS(GLUDisk)
+				
+				
+				
+				
 				
 				GLUQuadric::GLUQuadric () {
 					m_quadric = gluNewQuadric();

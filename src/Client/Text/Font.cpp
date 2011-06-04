@@ -45,18 +45,16 @@ namespace Dream
 			
 			using namespace std;
 			
-			IMPLEMENT_CLASS(Font)
-			
-			void Font::Class::registerLoaderTypes (REF(ILoader) loader) {
+			void Font::Loader::registerLoaderTypes (ILoader * loader) {
 				loader->setLoaderForExtension(this, "ttf");
 				loader->setLoaderForExtension(this, "dfont");
 			}
 			
-			REF(Object) Font::Class::initWithPath(const Path & p) {
+			REF(Object) Font::Loader::initWithPath(const Path & p) {
 				return new Font(p);
 			}
 			
-			REF(Object) Font::Class::initFromData(const PTR(IData) data, const ILoader * loader) {
+			REF(Object) Font::Loader::loadFromData(const PTR(IData) data, const ILoader * loader) {
 				return new Font(data);
 			}
 			

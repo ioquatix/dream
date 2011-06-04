@@ -20,17 +20,15 @@ namespace Dream
 		{
 			class OggReader;
 			
-			class OggResource : public Object, IMPLEMENTS(Loadable)
+			class OggResource : public Object
 			{
-				EXPOSE_CLASS(OggResource)
-				
-				class Class : public Object::Class, IMPLEMENTS(Loadable::Class)
-				{
-					EXPOSE_CLASSTYPE
-					
-					virtual void registerLoaderTypes (REF(ILoader) loader);
-					virtual REF(Object) initFromData (const PTR(IData) data, const ILoader * loader);
-				};
+				public:
+					class Loader : public Object, implements ILoadable
+					{
+						public:
+							virtual void registerLoaderTypes (ILoader * loader);
+							virtual REF(Object) loadFromData (const PTR(IData) data, const ILoader * loader);
+					};
 				
 				protected:
 					REF(IData) m_data;

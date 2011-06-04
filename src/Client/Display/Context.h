@@ -27,35 +27,42 @@ namespace Dream {
 			using namespace Dream::Numerics;
 			
 			typedef Vector<2, uint32_t> ResolutionT;
-			
 			typedef boost::function<void (TimeT at)> FrameCallbackT;
+			class IContext;
+			
+			class IContextMode : public Object {
+			public:
+				virtual ~IContextMode();
+				
+				virtual StringT descriptiveName ();
+				virtual ResolutionT resolution ();
+				
+				virtual REF(IContext) setup (PTR(Dictionary) config);
+			};
+			
+			class ContextManager {
+			protected:
+				std::vector<REF(IContextMode)> m_modes;
+				
+				ContextManager();
+				~ContextManager();
+				
+			public:
+				static ContextManager * sharedManager();
+				
+				/// Register a mode with the manager
+				void registerContextMode (PTR(IContextMode) mode);
+				
+				/// Return the best context class for the given operating system and library compilation.
+				REF(IContextMode) bestContextMode() const;
+			};
 			
 			/** Simple generic method of showing a window for use with 3D graphics.
 			 
 			 It turns out that creating a cross-platform API is fairly difficult
 			 */
-			class IContext : IMPLEMENTS(Object)
-			{		
-				EXPOSE_INTERFACE(Context)
-				
-				class Class : IMPLEMENTS(Object::Class) {
-				protected:
-					unsigned m_priority;			
-					Class (int priority);
-					
-				public:
-					unsigned priority () const;
-					
-					virtual REF(IContext) init (PTR(Dictionary) config) abstract;					
-				};
-				
-			protected:
-				static void registerContextClass (IContext::Class *rwc);
-			
-			public:				
-				/// Return the best context class for the given operating system and library compilation.
-				static IContext::Class* bestContextClass ();
-				
+			class IContext : implements IObject {				
+			public:
 				/// Synchronize the frame updates to screen updates. This is on by default, and should generally not be adjusted.
 				virtual void setFrameSync (bool vsync) abstract;
 				
@@ -85,7 +92,6 @@ namespace Dream {
 				/// The renderer for this display context.
 				virtual REF(RendererT) renderer () abstract;
 			};
-			
 		}
 	}
 }

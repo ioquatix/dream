@@ -42,7 +42,7 @@ namespace Dream {
 #pragma mark -
 #pragma mark class Socket
 		
-		IMPLEMENT_CLASS(Socket)
+		
 		
 		Socket::Socket (int s) : m_socket(s) {
 		}
@@ -210,7 +210,7 @@ namespace Dream {
 #pragma mark -
 #pragma mark class ServerSocket
 		
-		IMPLEMENT_CLASS(ServerSocket)
+		
 		
 		ServerSocket::ServerSocket (const Address &serverAddress, unsigned listenCount) {
 			bind(serverAddress);
@@ -304,7 +304,7 @@ namespace Dream {
 #pragma mark -
 #pragma mark class ClientSocket
 		
-		IMPLEMENT_CLASS(ClientSocket)
+		
 		
 		ClientSocket::ClientSocket(const SocketHandleT & h, const Address & address) {
 			m_socket = h;
@@ -376,63 +376,49 @@ namespace Dream {
 		
 		class TestClientSocket : public ClientSocket
 		{
-			EXPOSE_CLASS(TestClientSocket)
-			
-			class Class : public ClientSocket::Class
-			{
-				EXPOSE_CLASSTYPE
-			};
-			
-			TestClientSocket (const SocketHandleT & h, const Address & address) : ClientSocket(h, address)
-			{				
-				Core::StaticBuffer buf = Core::StaticBuffer::forCString(g_message.c_str(), false);
-				
-				std::cerr << "Sending message from " << this << "..." << std::endl;
-				
-				g_messageLengthSent = send(buf);
-				
-				std::cerr << g_messageLengthSent << " bytes sent" << std::endl;
-				g_messageSent = true;
-			}
-			
-			TestClientSocket ()
-			{	
-			}
-			
-			virtual void processEvents(Events::Loop * eventLoop, Events::Event events)
-			{
-				if (events & Events::READ_READY) {
-					Core::DynamicBuffer buf(1024, true);
+			public:
+				TestClientSocket (const SocketHandleT & h, const Address & address) : ClientSocket(h, address)
+				{				
+					Core::StaticBuffer buf = Core::StaticBuffer::forCString(g_message.c_str(), false);
 					
-					recv(buf);
+					std::cerr << "Sending message from " << this << "..." << std::endl;
 					
-					g_messageReceived = true;
-					g_messageLengthReceived = buf.size();
+					g_messageLengthSent = send(buf);
 					
-					std::string incomingMessage(buf.begin(), buf.end());
-					
-					std::cerr << "Message received by " << this << " fd " << this->fileDescriptor() << " : " << incomingMessage << std::endl;
-					
-					g_messageReceived = (g_message == incomingMessage);
-					
-					eventLoop->stopMonitoringFileDescriptor(this);
+					std::cerr << g_messageLengthSent << " bytes sent" << std::endl;
+					g_messageSent = true;
 				}
-			}
+				
+				TestClientSocket ()
+				{	
+				}
+				
+				virtual void processEvents(Events::Loop * eventLoop, Events::Event events)
+				{
+					if (events & Events::READ_READY) {
+						Core::DynamicBuffer buf(1024, true);
+						
+						recv(buf);
+						
+						g_messageReceived = true;
+						g_messageLengthReceived = buf.size();
+						
+						std::string incomingMessage(buf.begin(), buf.end());
+						
+						std::cerr << "Message received by " << this << " fd " << this->fileDescriptor() << " : " << incomingMessage << std::endl;
+						
+						g_messageReceived = (g_message == incomingMessage);
+						
+						eventLoop->stopMonitoringFileDescriptor(this);
+					}
+				}
 		};
-		
-		IMPLEMENT_CLASS(TestClientSocket)
 		
 		class TestServerSocket : public ServerSocket
 		{
-			EXPOSE_CLASS(TestServerSocket)
-			
-			class Class : public ServerSocket::Class
-			{
-				EXPOSE_CLASSTYPE
-			};
-			
 			REF(TestClientSocket) m_testSocket;
-			
+		
+		public:	
 			virtual void processEvents(Events::Loop * eventLoop, Events::Event events)
 			{
 				if (events & Events::READ_READY & !m_testSocket) {
@@ -462,7 +448,7 @@ namespace Dream {
 			}
 		};
 		
-		IMPLEMENT_CLASS(TestServerSocket)
+		
 		
 		static void stopCallback (Events::Loop * eventLoop, Events::TimerSource *, Events::Event event)
 		{
@@ -475,7 +461,7 @@ namespace Dream {
 			g_clientConnected = g_messageSent = g_messageReceived = false;
 			g_messageLengthSent = g_messageLengthReceived = 0;
 			
-			REF(Events::Loop) eventLoop = Events::Loop::klass.init();
+			REF(Events::Loop) eventLoop = new Events::Loop;
 			
 			// This is a very simple example of a network server listening on a single port.
 			// This server can only accept one connection 
@@ -492,7 +478,7 @@ namespace Dream {
 			
 				eventLoop->monitorFileDescriptor(serverSocket);
 				eventLoop->monitorFileDescriptor(clientSocket);
-				eventLoop->scheduleTimer(Events::TimerSource::klass.init(stopCallback, 1));
+				eventLoop->scheduleTimer(new Events::TimerSource(stopCallback, 1));
 			}
 			
 			eventLoop->runForever ();

@@ -12,9 +12,7 @@
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
-			
-			IMPLEMENT_CLASS(BirdsEyeCamera)
-			
+						
 			BirdsEyeCamera::BirdsEyeCamera () : m_up(0.0, 0.0, 1.0), m_right(1.0, 0.0, 0.0), m_center(ZERO), m_multiplier(IDENTITY, 1) {
 				
 				m_distance = 100;

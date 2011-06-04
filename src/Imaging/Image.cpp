@@ -12,9 +12,7 @@
 
 namespace Dream {
 	namespace Imaging {
-		
-		IMPLEMENT_CLASS(UnbufferedImage)
-		
+
 		UnbufferedImage::UnbufferedImage(ImagePixelFormat format, ImageDataType dataType) : m_data(NULL) {
 			setFormat(format, dataType);
 		}
@@ -33,25 +31,18 @@ namespace Dream {
 			m_data = data;
 			m_size = size;		
 		}
-		
-		IMPLEMENT_CLASS(Image)
-		
-		void Image::Class::registerLoaderTypes (REF(ILoader) loader)
+
+		void Image::Loader::registerLoaderTypes (ILoader * loader)
 		{
 			loader->setLoaderForExtension(this, "jpg");
 			loader->setLoaderForExtension(this, "png");
 		}
 		
-		REF(Object) Image::Class::initWithSize(const Vector<3, unsigned> &size, ImagePixelFormat format, ImageDataType dataType)
+		REF(Object) Image::Loader::loadFromData(const PTR(IData) data, const ILoader * loader)
 		{
-			return new Image(size, format, dataType);
+			return Image::loadFromData(data);
 		}
-		
-		REF(Object) Image::Class::initFromData(const PTR(IData) data, const ILoader * loader)
-		{
-			return Image::loadFromData (data);
-		}
-		
+		 
 		Image::Image ()
 		{
 		

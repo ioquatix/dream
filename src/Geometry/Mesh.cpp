@@ -14,8 +14,10 @@
 
 namespace Dream {
 	namespace Geometry {
+	/*
 		void BasicMeshTraits::VertexProperties::apply (const Mat44 & transform) {
 			vertex = transform * vertex;
 		}
+	*/
 	}
 }

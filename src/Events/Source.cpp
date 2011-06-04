@@ -19,18 +19,8 @@ namespace Dream
 	namespace Events
 	{
 		
-		IMPLEMENT_INTERFACE(Source)
-		
 #pragma mark -
 #pragma mark class NotificationSource
-		
-		IMPLEMENT_INTERFACE(NotificationSource)
-		IMPLEMENT_CLASS(NotificationSource)
-
-		REF(NotificationSource) NotificationSource::Class::init (CallbackT callback) const
-		{
-			return new NotificationSource(callback);
-		}
 		
 		NotificationSource::NotificationSource (CallbackT callback) : m_callback(callback)
 		{
@@ -60,15 +50,7 @@ namespace Dream
 		
 #pragma mark -
 #pragma mark class TimerSource
-		
-		IMPLEMENT_INTERFACE(TimerSource)
-		IMPLEMENT_CLASS(TimerSource)
-		
-		REF(TimerSource) TimerSource::Class::init (CallbackT callback, TimeT duration, bool repeats) const
-		{
-			return new TimerSource(callback, duration, repeats);
-		}
-		
+				
 		TimerSource::TimerSource (CallbackT callback, TimeT duration, bool repeats, bool strict) 
 			: m_repeats(repeats), m_strict(strict), m_duration(duration), m_callback(callback), m_cancelled(false)
 		{
@@ -114,8 +96,6 @@ namespace Dream
 		
 #pragma mark -
 #pragma mark class IFileDescriptorSource
-		
-		IMPLEMENT_INTERFACE(FileDescriptorSource)
 		
 		void IFileDescriptorSource::debugFileDescriptorFlags (int fd)
 		{
@@ -168,8 +148,6 @@ namespace Dream
 #pragma mark -
 #pragma mark class FileDescriptorSource
 		
-		IMPLEMENT_CLASS(FileDescriptorSource)
-		
 		FileDescriptorSource::FileDescriptorSource (CallbackT callback, int fd) : m_callback(callback), m_fd(fd) 
 		{
 			
@@ -207,8 +185,6 @@ namespace Dream
 		
 #pragma mark -
 #pragma mark class NotificationPipeSource
-		
-		IMPLEMENT_CLASS(NotificationPipeSource)
 		
 		NotificationPipeSource::NotificationPipeSource ()
 		{

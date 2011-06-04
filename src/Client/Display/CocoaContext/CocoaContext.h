@@ -22,19 +22,7 @@ namespace Dream
 		namespace Display
 		{
 			
-			class CocoaContext : public Object, IMPLEMENTS(Context) {
-				EXPOSE_CLASS(CocoaContext)
-				
-				class Class : public Object::Class, IMPLEMENTS(Context::Class) {
-					EXPOSE_CLASSTYPE
-					
-					Class ();
-					
-					virtual REF(IContext) init (PTR(Dictionary) config);
-					
-					//virtual WindowModeList availableModes ();
-				};
-				
+			class CocoaContext : public Object, implements IContext {
 			protected:
 				//bool m_allowResize;
 				//String m_windowTitle;

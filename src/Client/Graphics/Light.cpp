@@ -13,7 +13,7 @@ namespace Dream {
 	namespace Client {
 		namespace Graphics {
 	
-			IMPLEMENT_CLASS(Light)
+			
 			
 			Light::Light ()
 				: m_ambient(0, 0, 0, 1), m_diffuse(1, 1, 1, 1), m_specular(1, 1, 1, 1), m_emission(0, 0, 0, 1),
@@ -53,7 +53,7 @@ namespace Dream {
 
 #pragma mark -
 
-			IMPLEMENT_CLASS(LightingGroup)
+			
 			
 			void LightingGroup::renderFrameForTime (IScene * scene, TimeT time)
 			{

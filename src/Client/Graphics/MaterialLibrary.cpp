@@ -13,13 +13,6 @@
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
-			using namespace Resources;
-			
-#pragma mark -
-#pragma mark Public Interfaces
-			
-			IMPLEMENT_INTERFACE(MaterialFactory)
-			IMPLEMENT_INTERFACE(MaterialLibrary)
 			
 		}
 	}

@@ -23,13 +23,7 @@ namespace Dream
 		
 		class Dictionary : public Object
 		{
-			EXPOSE_CLASS(Dictionary)
-			
-			class Class : public Object::Class
-			{
-				EXPOSE_CLASSTYPE
-			};
-			
+		public:
 			typedef std::string KeyT;
 			
 		protected:

@@ -87,8 +87,6 @@ namespace Dream {
 #pragma mark -
 #pragma mark class IPixelBuffer
 		
-		IMPLEMENT_INTERFACE(PixelBuffer)
-		
 		PixelT IPixelBuffer::readPixel (const Vector<3, unsigned> &at) {
 			const ByteT * src = this->pixelDataAt(at);
 			PixelT px = 0;
@@ -188,8 +186,6 @@ namespace Dream {
 		
 #pragma mark -
 #pragma mark class IMutablePixelBuffer
-		
-		IMPLEMENT_INTERFACE(MutablePixelBuffer)
 		
 		void IMutablePixelBuffer::clear ()
 		{

@@ -21,10 +21,10 @@ namespace Dream {
 			testing("Construction and Assignment");
 			
 			AlignedBox<2> a(ZERO), b(IDENTITY), c(ZERO);
-			check(a.min() == Vec2(0.0) << 0.0), "Zero box";
-			check(a.max() == Vec2(0.0) << 0.0), "Zero box";
+			check(a.min() == Vec2(0.0) << 0.0) << "Zero box";
+			check(a.max() == Vec2(0.0) << 0.0) << "Zero box";
 
-			check(b.min() == Vec2(0.0) << 0.0), "Identity box";
+			check(b.min() == Vec2(0.0) << 0.0) << "Identity box";
 			
 			check(a.isDegenerate()) << "Zero box is degenerate";
 			check(b.isNormal()) << "Identity box is normal";

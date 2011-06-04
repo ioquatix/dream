@@ -18,7 +18,7 @@ namespace Dream {
 	namespace Imaging {
 		using namespace Resources;
 		
-		class ImageBase : IMPLEMENTS(PixelBuffer) {
+		class ImageBase : implements IPixelBuffer {
 		protected:
 			ImagePixelFormat m_format;
 			ImageDataType m_dataType;
@@ -44,13 +44,7 @@ namespace Dream {
 			}
 		};
 		
-		class UnbufferedImage : public Object, public ImageBase, IMPLEMENTS(PixelBuffer) {
-			EXPOSE_CLASS(UnbufferedImage)
-
-			class Class : public Object::Class, IMPLEMENTS(PixelBuffer::Class) {
-				EXPOSE_CLASSTYPE
-			};			
-			
+		class UnbufferedImage : public Object, public ImageBase, implements IPixelBuffer {
 		protected:
 			const ByteT *m_data;
 		
@@ -67,15 +61,12 @@ namespace Dream {
 			}
 		};
 		
-		class Image : public Object, public ImageBase, IMPLEMENTS(MutablePixelBuffer) {
-			EXPOSE_CLASS(Image)
-			
-			class Class : public Object::Class, IMPLEMENTS(MutablePixelBuffer::Class), IMPLEMENTS(Loadable::Class) {
-				EXPOSE_CLASSTYPE
-				
-				virtual void registerLoaderTypes (REF(ILoader) loader);
-				virtual REF(Object) initWithSize(const Vector<3, unsigned> &size, ImagePixelFormat format, ImageDataType dataType);
-				virtual REF(Object) initFromData(const PTR(IData) data, const ILoader * loader);
+		class Image : public Object, public ImageBase, implements IMutablePixelBuffer {
+		public:
+			class Loader : public Object, implements ILoadable {
+			public:
+				virtual void registerLoaderTypes (ILoader * loader);
+				virtual REF(Object) loadFromData (const PTR(IData) data, const ILoader * loader);
 			};
 			
 		protected:

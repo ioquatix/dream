@@ -16,7 +16,7 @@ namespace Dream
 		namespace Display
 		{
 			
-			IMPLEMENT_CLASS(FrameTimerSource)
+			
 			
 			FrameTimerSource::FrameTimerSource (FrameCallbackT callback, TimeT period) : m_cancelled(false), m_period(period), m_callback(callback)
 			{

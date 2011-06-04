@@ -49,12 +49,6 @@ namespace Dream
 			
 			class Source : public Object
 			{
-				EXPOSE_CLASS(Source)
-				
-				class Class : public Object::Class
-				{
-					EXPOSE_CLASSTYPE
-				};
 			protected:
 				ALuint m_sourceID;
 				REF(Sound) m_sound;
@@ -101,7 +95,7 @@ namespace Dream
 			};
 			
 			template <typename ValueT>
-			class LinearKnob : IMPLEMENTS(Knob)
+			class LinearKnob : implements IKnob
 			{
 				protected:
 					REF(Source) m_source;
@@ -127,37 +121,23 @@ namespace Dream
 					}
 			};
 			
-			class IStreamable : IMPLEMENTS(Object)
+			class IStreamable : implements IObject
 			{
-				EXPOSE_INTERFACE(Streamable)
-				
-				class Class : IMPLEMENTS(Object::Class)
-				{
-				};
-				
+			public:
 				// Return false if there are no more buffers.
 				virtual bool loadNextBuffer (PTR(Source) source, ALuint buffer) abstract;
 			};
 			
 			class Mixer : public Object
 			{
-				EXPOSE_CLASS(Mixer)
-				
-				class Class : public Object::Class
-				{
-					EXPOSE_CLASSTYPE
-					
-					virtual REF(Mixer) init ();
-					virtual REF(Mixer) sharedMixer ();
-				};
-				
 			protected:
 				ALCdevice * m_audioDevice;
 				ALCcontext * m_audioContext;
 				
-				Mixer ();
-				
 			public:
+				static REF(Mixer) sharedMixer ();
+				
+				Mixer ();
 				virtual ~Mixer ();
 				
 				void suspendProcessing ();

@@ -22,14 +22,8 @@ namespace Dream
 		/**
 		 An abstract class representing a data store, such as an on-disk local file.
 		 */
-		class IData : IMPLEMENTS(Object)
-		{
-			EXPOSE_INTERFACE(Data)
-
-			class Class : IMPLEMENTS(Object::Class)
-			{
-			};
-
+		class IData : implements IObject
+		{			
 		public:
 			/// Access the data as a buffer. This buffer is shared (same buffer returned every time).
 			virtual Shared<Buffer> buffer () const abstract;
@@ -41,14 +35,8 @@ namespace Dream
 			virtual std::size_t size () const abstract;
 		};
 		
-		class LocalFileData : public Object, IMPLEMENTS(Data) {
-			EXPOSE_CLASS(LocalFileData)
-
-			class Class : public Object::Class, IMPLEMENTS (Data::Class)
-			{
-				EXPOSE_CLASSTYPE
-			};
-			
+		class LocalFileData : public Object, implements IData
+		{
 			protected:
 				Path m_path;
 				mutable Shared<Buffer> m_buffer;
@@ -63,14 +51,7 @@ namespace Dream
 				virtual std::size_t size () const;
 		};
 		
-		class BufferedData : public Object, IMPLEMENTS(Data) {
-			EXPOSE_CLASS(BufferedData)
-
-			class Class : public Object::Class, IMPLEMENTS (Data::Class)
-			{
-				EXPOSE_CLASSTYPE
-			};
-			
+		class BufferedData : public Object, implements IData {
 			protected:
 				Shared<Buffer> m_buffer;
 			

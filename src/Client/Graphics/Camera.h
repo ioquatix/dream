@@ -35,13 +35,7 @@ namespace Dream {
 			/**
 			 
 			 */
-			class Camera : public Object, IMPLEMENTS(InputHandler) {
-				EXPOSE_CLASS(Camera)
-				
-				class Class : public Object::Class, IMPLEMENTS(InputHandler::Class) {
-					EXPOSE_CLASSTYPE
-				};
-				
+			class Camera : public Object, implements IInputHandler {
 			public:				
 				virtual ~Camera ();
 								
@@ -63,13 +57,6 @@ namespace Dream {
 			};
 			
 			class CameraNode : public Group {
-				EXPOSE_CLASS(CameraNode)
-				
-				class Class : public Group::Class
-				{
-					EXPOSE_CLASSTYPE
-				};
-				
 				protected:
 					REF(Camera) m_camera;
 				

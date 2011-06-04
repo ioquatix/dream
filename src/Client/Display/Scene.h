@@ -48,14 +48,8 @@ namespace Dream
 				- Local user input
 				- Remote user input (network, ai, etc)
 			 */
-			class IScene : IMPLEMENTS(Object), IMPLEMENTS(InputHandler)
+			class IScene : implements IObject, implements IInputHandler
 			{
-				EXPOSE_INTERFACE(Scene)
-				
-				class Class : IMPLEMENTS(Object::Class), IMPLEMENTS(InputHandler::Class)
-				{
-				};
-				
 			public:
 				/// Callback from the ISceneManager to indicate that the scene will begin rendering frames.
 				virtual void willBecomeCurrent (ISceneManager *) abstract;
@@ -93,14 +87,8 @@ namespace Dream
 				- QuitScene
 			 
 			 */
-			class ISceneManager : IMPLEMENTS(Object)
+			class ISceneManager : implements IObject
 			{
-				EXPOSE_INTERFACE(SceneManager)
-				
-				class Class : IMPLEMENTS(Object::Class)
-				{
-				};
-
 			protected:
 				/// Provide the next scene - this is called when the currentSceneIsFinished() method is called.
 				virtual REF(IScene) provideNextScene () abstract;
@@ -129,15 +117,9 @@ namespace Dream
 			
 	#pragma mark -
 			
-			class SceneManager : public Object, IMPLEMENTS(SceneManager)
+			class SceneManager : public Object, implements ISceneManager
 			{
-				EXPOSE_CLASS(SceneManager)
-				
-				class Class : public Object::Class, IMPLEMENTS(SceneManager::Class)
-				{
-					EXPOSE_CLASSTYPE
-				};
-			
+			public:
 				typedef std::list<REF(IScene)> ScenesT;
 				typedef boost::function<void (ISceneManager *)> FinishedCallbackT;
 				
@@ -187,15 +169,8 @@ namespace Dream
 				virtual void setFinishedCallback (FinishedCallbackT callback);
 			};
 						
-			class Scene : public Object, IMPLEMENTS(Scene)
+			class Scene : public Object, implements IScene
 			{
-				EXPOSE_CLASS(Scene)
-				
-				class Class : public Object::Class, IMPLEMENTS(Scene::Class)
-				{
-					EXPOSE_CLASSTYPE
-				};
-				
 			protected:
 				ISceneManager * m_sceneManager;
 				
@@ -224,15 +199,8 @@ namespace Dream
 				virtual void renderFrameForTime (TimeT time);
 			};
 			
-			class VoidScene : public Scene
+			class VoidScene : public Scene 
 			{
-				EXPOSE_CLASS(VoidScene)
-				
-				class Class : public Scene::Class
-				{
-					EXPOSE_CLASSTYPE
-				};
-				
 			public:
 				VoidScene ();
 				virtual ~VoidScene ();

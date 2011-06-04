@@ -55,10 +55,6 @@ namespace Dream
 #pragma mark -
 #pragma mark Source
 
-			IMPLEMENT_INTERFACE(Streamable)
-			
-			IMPLEMENT_CLASS(Source)
-			
 			Source::Source ()
 			{
 				AudioError::reset();
@@ -310,19 +306,12 @@ namespace Dream
 				return state == AL_PLAYING;
 			}
 			
-			IMPLEMENT_CLASS(Mixer)
-			
-			REF(Mixer) Mixer::Class::init ()
-			{
-				return new Mixer;
-			}
-			
-			REF(Mixer) Mixer::Class::sharedMixer ()
+			REF(Mixer) Mixer::sharedMixer ()
 			{
 				static REF(Mixer) g_mixer;
 				
 				if (!g_mixer) {
-					g_mixer = init();
+					g_mixer = new Mixer();
 				}
 				
 				return g_mixer;

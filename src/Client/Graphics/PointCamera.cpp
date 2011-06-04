@@ -12,9 +12,7 @@
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
-			
-			IMPLEMENT_CLASS(PointCamera)
-			
+						
 			PointCamera::PointCamera () : m_origin(0, 0, 0), m_direction(0, 0, 1), m_up(0, 1, 0) {
 				
 			}

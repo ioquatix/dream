@@ -13,6 +13,7 @@
 #include <boost/utility.hpp>
 
 #define abstract = 0
+#define implements virtual public
 
 #ifdef __GNUC__
 #define PACKED __attribute__((__packed__))

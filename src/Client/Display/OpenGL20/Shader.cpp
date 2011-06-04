@@ -19,27 +19,19 @@ namespace Dream {
 	namespace Client {
 		namespace Display {
 			namespace OpenGL20 {
-			
-				IMPLEMENT_INTERFACE(Shader)
-				IMPLEMENT_INTERFACE(ShaderFactory)
-				
-#pragma mark -
-				
+
 				using namespace Dream::Resources;
 				using namespace Dream::Core;
 				
 #pragma mark -
 #pragma mark class ShaderFactory
 				
-				class ShaderFactory : public Object, IMPLEMENTS(ShaderFactory) {
-					EXPOSE_CLASS(ShaderFactory)
-					
-					class Class : public Object::Class, IMPLEMENTS(ShaderFactory::Class), IMPLEMENTS(Loadable::Class) {
-						EXPOSE_CLASSTYPE
-						
-						virtual void registerLoaderTypes (REF(ILoader) loader);
-						virtual REF(Object) initFromData (const PTR(IData) data, const ILoader * loader);
+				class ShaderFactory : public Object, implements IShaderFactory {
+					class Loader : implements ILoadable {
+						virtual void registerLoaderTypes (ILoader * loader);
+						virtual REF(Object) loadFromData (const PTR(IData) data, const ILoader * loader);
 					};
+					
 				protected:
 					const REF(IData) m_data;
 					REF(const ILoader) m_loader;
@@ -51,13 +43,11 @@ namespace Dream {
 					virtual REF(Shader) createShader (const std::map<String, String> & definitions);
 				};
 				
-				IMPLEMENT_CLASS(ShaderFactory)
-				
-				void ShaderFactory::Class::registerLoaderTypes (REF(ILoader) loader) {
+				void ShaderFactory::Loader::registerLoaderTypes (ILoader * loader) {
 					loader->setLoaderForExtension(this, "shader");
 				}
 				
-				REF(Object) ShaderFactory::Class::initFromData (const PTR(IData) data, const ILoader * loader) {
+				REF(Object) ShaderFactory::Loader::loadFromData (const PTR(IData) data, const ILoader * loader) {
 					return new ShaderFactory(data, loader);
 				}
 				
@@ -77,10 +67,10 @@ namespace Dream {
 				
 #pragma mark -
 				
-				IMPLEMENT_CLASS(ShaderHandle)
-				IMPLEMENT_CLASS(ShaderProgramHandle)
 				
-				IMPLEMENT_CLASS(Shader)
+				
+				
+				
 								
 				bool ShaderProgramHandle::link () {
 #ifdef GL_VERSION_2_0

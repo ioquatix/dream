@@ -25,22 +25,16 @@ namespace Dream {
 				using namespace Dream::Core;
 				using namespace Display;				
 				
-				//class IUniformValue : IMPLEMENTS(Object) {
-				//	EXPOSE_INTERFACE(UniformValue)
+				//class IUniformValue : implements IObject {
+				//
 				
 				//public:
 				//	virtual ~IUniformValue ();
 				//};
 				
-				class IShader : IMPLEMENTS(Object)
+				class IShader : implements IObject
 				{
-					EXPOSE_INTERFACE(Shader)
-					
-					class Class : IMPLEMENTS(Object::Class)
-					{
-					};
-					
-				public:					
+				public:
 					//virtual void setUniform(String name, const IUniformValue &value) abstract;
 					
 					virtual void bindTextureUnit(unsigned texUnit, String name) abstract;
@@ -66,13 +60,6 @@ namespace Dream {
 				};
 				
 				class ShaderHandle : public ObjectHandle {
-					EXPOSE_CLASS(ShaderHandle)
-					
-					class Class : public ObjectHandle::Class {
-					public:
-						EXPOSE_CLASSTYPE
-					};
-					
 				public:
 					ShaderHandle (GLenum type) {
 #ifdef GL_VERSION_2_0
@@ -140,14 +127,7 @@ namespace Dream {
 				};
 				
 				class ShaderProgramHandle : public ObjectHandle {
-					EXPOSE_CLASS(ShaderProgramHandle)
-					
-					class Class : public ObjectHandle::Class {
-					public:
-						EXPOSE_CLASSTYPE
-					};		
-					
-				public:		
+				public:
 					ShaderProgramHandle () {
 #ifdef GL_VERSION_2_0
 						m_handle = glCreateProgram();
@@ -229,13 +209,7 @@ namespace Dream {
 					}
 				};
 				
-				class Shader : public Object, IMPLEMENTS(Shader) {
-					EXPOSE_CLASS(Shader)
-					
-					class Class : public Object::Class, IMPLEMENTS(Shader::Class) {
-						EXPOSE_CLASSTYPE
-					};
-					
+				class Shader : public Object, implements IShader {
 				protected:
 					enum {
 						HEADER_CODE = 0,
@@ -276,14 +250,8 @@ namespace Dream {
 					}
 				};
 				
-				class IShaderFactory : IMPLEMENTS(Object)
+				class IShaderFactory : implements IObject
 				{
-					EXPOSE_INTERFACE(ShaderFactory)
-					
-					class Class : IMPLEMENTS(Object::Class)
-					{
-					};
-					
 				public:					
 					virtual REF(Shader) createShader (const std::map<String, String> & definitions) abstract;
 				};

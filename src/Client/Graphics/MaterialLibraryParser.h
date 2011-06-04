@@ -44,13 +44,8 @@ namespace Dream
 			
 #pragma mark -
 			
-			class MaterialFactory : public Object, IMPLEMENTS(MaterialFactory) {
-				EXPOSE_CLASS(MaterialFactory)
-				
-				class Class : public Object::Class, IMPLEMENTS(MaterialFactory::Class) {
-					EXPOSE_CLASSTYPE
-				};
-				
+			class MaterialFactory : public Object, implements IMaterialFactory 
+			{
 			protected:		
 				String m_name;
 				
@@ -88,14 +83,14 @@ namespace Dream
 			
 #pragma mark -
 			
-			class MaterialLibrary : public Object, IMPLEMENTS(MaterialLibrary) {
-				EXPOSE_CLASS(MaterialLibrary)
-				
-				class Class : public Object::Class, IMPLEMENTS(Loadable::Class), IMPLEMENTS(MaterialLibrary::Class) {
-					EXPOSE_CLASSTYPE
-					
-					void registerLoaderTypes (REF(ILoader) loader);
-					REF(Object) initFromData (const PTR(IData) data, const ILoader * loader);
+			class MaterialLibrary : public Object, implements IMaterialLibrary
+			{
+			public:
+				class Loader : public Object, implements ILoadable
+				{
+					public:
+						void registerLoaderTypes (ILoader * loader);
+						REF(Object) loadFromData (const PTR(IData) data, const ILoader * loader);
 				};
 				
 			protected:

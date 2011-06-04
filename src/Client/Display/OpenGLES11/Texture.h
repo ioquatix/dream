@@ -65,13 +65,6 @@ namespace Dream {
 				
 				class Texture : public Object
 				{
-					EXPOSE_CLASS(Texture)
-					
-					class Class : public Object::Class
-					{
-						EXPOSE_CLASSTYPE
-					};
-					
 				protected:
 					friend class TextureController;
 				

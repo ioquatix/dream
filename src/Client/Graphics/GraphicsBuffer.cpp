@@ -13,8 +13,6 @@ namespace Dream {
 	namespace Client {
 		namespace Graphics {
 			
-			IMPLEMENT_CLASS(GraphicsBuffer)
-			
 			GraphicsBuffer::GraphicsBuffer(const Target &t) {
 				m_target = t;
 				glGenBuffers(1, &m_handle);
@@ -40,7 +38,7 @@ namespace Dream {
 				glBufferSubData(m_target, offset, length, data);
 			}
 			
-#ifndef DREAM_USE_OPENGLES11 || DREAM_USE_OPENGLES20
+#if !(defined(DREAM_USE_OPENGLES11) || (DREAM_USE_OPENGLES20))
 			ByteT* GraphicsBuffer::mapBuffer (const Access &access) {
 				return static_cast<ByteT*> (glMapBuffer(m_target, access));
 			}

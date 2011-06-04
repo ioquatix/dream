@@ -15,7 +15,6 @@
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 
-
 namespace Dream
 {
 	namespace Events

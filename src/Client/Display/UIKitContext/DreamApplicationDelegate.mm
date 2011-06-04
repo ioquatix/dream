@@ -1,20 +1,20 @@
 //
-//  DreamAppDelegate.mm
+//  DreamApplicationDelegate.mm
 //  Death Ball Touch
 //
 //  Created by Samuel Williams on 18/04/09.
 //  Copyright Orion Transfer Ltd 2009. All rights reserved.
 //
 
-#import "DreamAppDelegate.h"
+#import "DreamApplicationDelegate.h"
 #import "DreamView.h"
 
 #include "Context.h"
 
-@implementation DreamAppDelegate
+@implementation DreamApplicationDelegate
 
 + (void) start {
-	UIApplicationMain(0, NULL, nil, @"DreamAppDelegate");
+	UIApplicationMain(0, NULL, nil, @"DreamApplicationDelegate");
 }
 
 @synthesize window;

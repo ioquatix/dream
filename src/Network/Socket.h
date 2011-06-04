@@ -25,14 +25,7 @@ namespace Dream {
 		 @sa ServerSocket
 		 @sa ClientSocket
 		 */
-		class Socket : public Object, IMPLEMENTS_NS(Events, FileDescriptorSource) {
-			EXPOSE_CLASS(Socket)
-			
-			class Class : public Object::Class, IMPLEMENTS_NS(Events, FileDescriptorSource::Class)
-			{
-				EXPOSE_CLASSTYPE
-			};
-			
+		class Socket : public Object, implements Events::IFileDescriptorSource {
 		protected:
 			SocketHandleT m_socket;
 			
@@ -90,11 +83,6 @@ namespace Dream {
 		 
 		 */
 		class ServerSocket : public Socket {
-			EXPOSE_CLASS(ServerSocket)
-			
-			class Class : public Socket::Class {
-				EXPOSE_CLASSTYPE
-			};
 		protected:
 			Address m_boundAddress;
 			
@@ -130,12 +118,6 @@ namespace Dream {
 		 A ClientSocket can be constructed from the arguments returned from ServerSocket::accept, or connect() to an existing service.
 		 */
 		class ClientSocket : public Socket {
-			EXPOSE_CLASS(ClientSocket)
-			
-			class Class : public Socket::Class {
-				EXPOSE_CLASSTYPE
-			};
-			
 		protected:
 			Address m_remoteAddress;
 			

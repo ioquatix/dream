@@ -28,15 +28,8 @@ namespace Dream
 			 
 			 @sa IMaterialLibrary
 			 */
-			class IMaterialFactory : IMPLEMENTS(Object) 
+			class IMaterialFactory : implements IObject 
 			{
-				EXPOSE_INTERFACE(MaterialFactory)
-				
-				class Class : IMPLEMENTS(Object::Class)
-				{
-					
-				};
-				
 			public:				
 				virtual const String & resourceName () const abstract;
 				virtual const String & shaderPath () const abstract;
@@ -44,15 +37,8 @@ namespace Dream
 				virtual REF(RenderState) createRenderState (Renderer *) const abstract;
 			};
 			
-			class IMaterialLibrary : IMPLEMENTS(Object)
+			class IMaterialLibrary : implements IObject
 			{
-				EXPOSE_INTERFACE(MaterialLibrary)
-				
-				class Class : IMPLEMENTS(Object::Class)
-				{
-					
-				};
-				
 			public:				
 				virtual REF(IMaterialFactory) resourceNamed (String name) const abstract;
 			};

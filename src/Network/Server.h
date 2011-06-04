@@ -35,13 +35,8 @@ namespace Dream {
 		 circumstances.
 		 
 		 */
-		class Server : public Object {
-			EXPOSE_CLASS(Server)
-			
-			class Class : public Object::Class {
-				EXPOSE_CLASSTYPE
-			};
-
+		class Server : public Object
+		{
 		protected:
 			/// The list of server sockets that are currently accepting connections.
 			std::vector<REF(ServerSocket)> m_serverSockets;
@@ -76,14 +71,8 @@ namespace Dream {
 		 interface to starting and stopping a server thread.
 		 
 		 */
-		class ServerContainer : public Object {
-			EXPOSE_CLASS(ServerContainer)
-			
-			class Class : public Object::Class {
-			public:
-				EXPOSE_CLASSTYPE
-			};
-			
+		class ServerContainer : public Object
+		{
 		protected:
 			bool m_run;
 			REF(Events::Loop) m_eventLoop;

@@ -18,13 +18,6 @@ namespace Dream {
 			namespace OpenGLES11 {
 				
 				class ObjectHandle : public Object {
-					EXPOSE_CLASS(ObjectHandle)
-					
-					class Class : public Object::Class {
-					public:
-						EXPOSE_CLASSTYPE
-					};
-					
 				protected:
 					typedef GLuint HandleT;
 

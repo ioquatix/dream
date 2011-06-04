@@ -24,9 +24,5 @@ namespace Dream {
 			return m_what.c_str();
 		}
 		
-#pragma mark -
-		
-		IMPLEMENT_INTERFACE(Loadable)
-		
 	}
 }

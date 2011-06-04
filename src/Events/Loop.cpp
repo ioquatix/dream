@@ -67,19 +67,10 @@ namespace Dream
 #pragma mark File Descriptor Monitor Implementations		
 #pragma mark -
 		
-		IMPLEMENT_INTERFACE(FileDescriptorMonitor)
-		
 		typedef std::set<REF(IFileDescriptorSource)> FileDescriptorHandlesT;
 		
-		class KQueueFileDescriptorMonitor : public Object, IMPLEMENTS(FileDescriptorMonitor)
+		class KQueueFileDescriptorMonitor : public Object, implements IFileDescriptorMonitor
 		{
-			EXPOSE_CLASS(KQueueFileDescriptorMonitor)
-			
-			class Class : public Object::Class, IMPLEMENTS(FileDescriptorMonitor::Class)
-			{
-				EXPOSE_CLASSTYPE
-			};
-			
 		protected:
 			FileDescriptorT m_kqueue;
 			std::set<FileDescriptorT> m_removedFileDescriptors;
@@ -97,9 +88,7 @@ namespace Dream
 			
 			virtual int waitForEvents (TimeT timeout, Loop * loop);
 		};
-		
-		IMPLEMENT_CLASS(KQueueFileDescriptorMonitor)
-		
+				
 		KQueueFileDescriptorMonitor::KQueueFileDescriptorMonitor ()
 		{
 			m_kqueue = kqueue();
@@ -224,15 +213,8 @@ namespace Dream
 		
 #pragma mark -
 		
-		class PollFileDescriptorMonitor : public Object, IMPLEMENTS(FileDescriptorMonitor)
+		class PollFileDescriptorMonitor : public Object, implements IFileDescriptorMonitor
 		{
-			EXPOSE_CLASS(PollFileDescriptorMonitor)
-			
-			class Class : public Object::Class, IMPLEMENTS(FileDescriptorMonitor::Class)
-			{
-				EXPOSE_CLASSTYPE
-			};
-			
 		protected:
 			// Used to provide O(1) delete time within processEvents handler
 			bool m_deleteCurrentFileDescriptorHandle;
@@ -251,8 +233,6 @@ namespace Dream
 			
 			virtual int waitForEvents (TimeT timeout, Loop * loop);
 		};
-		
-		IMPLEMENT_CLASS(PollFileDescriptorMonitor)
 		
 		PollFileDescriptorMonitor::PollFileDescriptorMonitor ()
 		{
@@ -366,13 +346,6 @@ namespace Dream
 						
 #pragma mark -
 #pragma mark class Loop
-
-		IMPLEMENT_CLASS(Loop)
-		
-		REF(Loop) Loop::Class::init ()
-		{
-			return new Loop;
-		}
 				
 		Loop::Loop () : m_stopWhenIdle(true), m_rateLimit(20)
 		{
@@ -699,12 +672,12 @@ namespace Dream
 		{
 			testing("Timer Sources");
 			
-			REF(Loop) eventLoop = Loop::klass.init();
+			REF(Loop) eventLoop = new Loop;
 			
 			ticks = 0;
 			
-			eventLoop->scheduleTimer(TimerSource::klass.init(stopCallback, 1.1));
-			eventLoop->scheduleTimer(TimerSource::klass.init(tickerCallback, 0.01, true));
+			eventLoop->scheduleTimer(new TimerSource(stopCallback, 1.1));
+			eventLoop->scheduleTimer(new TimerSource(tickerCallback, 0.01, true));
 			
 			eventLoop->monitorFileDescriptor(FileDescriptorSource::forStandardIn(stdinCallback));
 			
@@ -712,11 +685,11 @@ namespace Dream
 			
 			check(ticks == 100) << "Ticker callback called correctly";
 			
-			eventLoop = Loop::klass.init();
+			eventLoop = new Loop;
 			
 			ticks = 0;
 			
-			eventLoop->scheduleTimer(TimerSource::klass.init(tickerCallback, 0.1, true));
+			eventLoop->scheduleTimer(new TimerSource(tickerCallback, 0.1, true));
 			
 			eventLoop->runUntilTimeout(1.01);
 			
@@ -753,11 +726,11 @@ namespace Dream
 			
 			testing("Notification Sources");
 			
-			REF(Loop) eventLoop = Loop::klass.init();
-			REF(NotificationSource) note = NotificationSource::klass.init(notificationReceived);
+			REF(Loop) eventLoop = new Loop;
+			REF(NotificationSource) note = new NotificationSource(notificationReceived);
 			
 			// Fail the test after 5 seconds if we are not notified.
-			eventLoop->scheduleTimer(TimerSource::klass.init(stopCallback, 2));
+			eventLoop->scheduleTimer(new TimerSource(stopCallback, 2));
 			
 			notified = 0;
 			
@@ -789,10 +762,10 @@ namespace Dream
 			
 			timerStopped = false;
 			
-			REF(Loop) eventLoop = Loop::klass.init();
+			REF(Loop) eventLoop = new Loop;
 			eventLoop->setStopWhenIdle(false);
 			
-			eventLoop->scheduleTimer(TimerSource::klass.init(markAndStopCallback, 1.0));
+			eventLoop->scheduleTimer(new TimerSource(markAndStopCallback, 1.0));
 			
 			ThreadGroup children;
 			children.create_thread(boost::bind(sendStopAfterDelay, eventLoop));

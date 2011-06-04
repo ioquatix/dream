@@ -110,7 +110,7 @@ class Platform
 end
 
 GLOBAL_CFLAGS = "-O2 -Wall -Wmissing-prototypes -std=c99 -ffast-math -fno-strict-aliasing -mdynamic-no-pic -pipe"
-MACOSX_SDK_VERSION = "10.5"
+MACOSX_SDK_VERSION = "10.6"
 IPHONE_SDK_VERSION = "4.2"
 
 Platform.new(:darwin_macosx) do |config|
@@ -119,7 +119,7 @@ Platform.new(:darwin_macosx) do |config|
 	config.sdk = config.platform + Pathname.new("Developer/SDKs/MacOSX#{config.sdk_version}.sdk")
 	
 	config.arch = "-arch ppc -arch i386 -arch x86_64"
-	config.cflags = "#{config.arch} #{GLOBAL_CFLAGS} -isysroot #{config.sdk} -mmacosx-version-min=#{config.sdk_version}"
+	config.cflags = "#{config.arch} -isysroot #{config.sdk} -mmacosx-version-min=#{config.sdk_version}"
 	config.configure = []
 	
 	config.build_flags = {

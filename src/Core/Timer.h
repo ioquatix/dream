@@ -22,13 +22,7 @@ namespace Dream {
 		
 		class Stopwatch;
 		
-		class Timer : public Object {
-			EXPOSE_CLASS(Timer)
-			
-			class Class : public Object::Class
-			{
-				EXPOSE_CLASSTYPE
-			};
+		class Timer {
 		protected:
 			mutable TimeT m_last, m_total;
 			
@@ -40,14 +34,7 @@ namespace Dream {
 			virtual TimeT time () const;
 		};
 		
-		class Stopwatch : public Object {
-			EXPOSE_CLASS(Stopwatch)
-
-			class Class : public Object::Class
-			{
-				EXPOSE_CLASSTYPE
-			};
-			
+		class Stopwatch {
 		protected:		
 			mutable TimeT m_total;
 			mutable Timer m_timer;
@@ -71,14 +58,7 @@ namespace Dream {
 		};
 		
 		class EggTimer : public Stopwatch
-		{
-			EXPOSE_CLASS(EggTimer)
-			
-			class Class : public Stopwatch::Class
-			{
-				EXPOSE_CLASSTYPE
-			};
-		
+		{			
 		protected:
 			TimeT m_duration;
 			

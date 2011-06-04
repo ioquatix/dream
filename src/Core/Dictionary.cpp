@@ -18,8 +18,6 @@ namespace Dream
 			return tid & 0x0F;
 		}
 		
-		IMPLEMENT_CLASS(Dictionary)
-		
 		/// Returns whether the key has a value in the dictionary.
 		bool Dictionary::key (const KeyT & key)
 		{
@@ -101,6 +99,8 @@ namespace Dream
 		namespace {
 			UNIT_TEST(Dictionary)
 			{
+				testing("Serialization");
+				
 				REF(Dictionary) dict1(new Dictionary);
 				
 				dict1->set("Key1", 5);

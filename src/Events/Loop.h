@@ -36,14 +36,8 @@ namespace Dream
 		
 		class Loop;
 		
-		class IFileDescriptorMonitor : IMPLEMENTS(Object)
+		class IFileDescriptorMonitor : implements IObject
 		{
-			EXPOSE_INTERFACE(FileDescriptorMonitor)
-			
-			class Class : IMPLEMENTS(Object::Class)
-			{
-			};
-			
 		public:			
 			/// Remove a source to be monitored
 			virtual void addSource (PTR(IFileDescriptorSource) source) abstract;
@@ -80,15 +74,6 @@ namespace Dream
 		 */
 		class Loop : public Object
 		{
-			EXPOSE_CLASS(Loop)
-			
-			class Class : public Object::Class
-			{
-				EXPOSE_CLASSTYPE
-				
-				virtual REF(Loop) init ();
-			};
-			
 		private:
 			REF(IFileDescriptorMonitor) m_fileDescriptorMonitor;
 						
@@ -141,10 +126,12 @@ namespace Dream
 			void processFileDescriptors (TimeT timeout);
 			
 			Stopwatch m_stopwatch;
-			
+		
+		public:
 			Loop ();
 			~Loop ();
-			
+		
+		protected:
 			bool m_stopWhenIdle;
 			unsigned m_rateLimit;
 

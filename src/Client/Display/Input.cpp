@@ -19,9 +19,7 @@ namespace Dream
 			//{
 				
 			//}
-			
-			IMPLEMENT_INTERFACE(InputHandler)
-			
+						
 			bool IInputHandler::process (const Input & input) {
 				return input.act(*this);
 			}

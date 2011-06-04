@@ -14,11 +14,8 @@ namespace Dream
 	namespace Client
 	{
 		namespace Audio
-		{			
-			
-			IMPLEMENT_CLASS(Sound)			
-			
-			void Sound::Class::registerLoaderTypes (REF(ILoader) loader)
+		{
+			void Sound::Loader::registerLoaderTypes (ILoader * loader)
 			{
 				loader->setLoaderForExtension(this, "wav");
 			}
@@ -146,7 +143,7 @@ namespace Dream
 				throw LoadError("Corrupt or truncated data");
 			}
 						
-			REF(Object) Sound::Class::initFromData (const PTR(IData) data, const ILoader * loader)
+			REF(Object) Sound::Loader::loadFromData (const PTR(IData) data, const ILoader * loader)
 			{
 				Shared<Buffer> buffer = data->buffer();
 				
@@ -157,7 +154,6 @@ namespace Dream
 				} else {
 					throw LoadError("Could not load audio data");
 				}
-				
 			}
 			
 			Sound::Sound (ALenum format, ALsizei frequency, const Buffer * samples) : m_format(format), m_frequency(frequency)

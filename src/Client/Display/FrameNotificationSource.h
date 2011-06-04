@@ -19,17 +19,8 @@ namespace Dream {
 	namespace Client {
 		namespace Display {
 			
-			class FrameNotificationSource : public Object, IMPLEMENTS_NS(Events, NotificationSource)
+			class FrameNotificationSource : public Object, implements Events::INotificationSource
 			{
-				EXPOSE_CLASS(FrameNotificationSource)
-				
-				class Class : public Object::Class, IMPLEMENTS_NS(Events, NotificationSource::Class)
-				{
-					EXPOSE_CLASSTYPE
-					
-					virtual REF(FrameNotificationSource) init (FrameCallbackT) const;
-				};
-				
 			protected:
 				TimeT m_frameUpdateAt;
 				FrameCallbackT m_callback;

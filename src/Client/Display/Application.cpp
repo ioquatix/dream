@@ -16,11 +16,6 @@ namespace Dream
 		namespace Display
 		{
 
-#pragma mark -
-#pragma mark class IApplication
-			
-			IMPLEMENT_INTERFACE(Application)
-			
 		}
 	}
 }

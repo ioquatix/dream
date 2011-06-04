@@ -28,22 +28,12 @@ namespace Dream
 				// This functions assist with UIKit event handling
 				IInputHandler * globalInputHandler ();
 				
-				// These functions assist with the DreamAppDelegate starting the application
+				// These functions assist with the DreamApplicationDelegate starting the application
 				void setApplicationInstance (REF(IApplication) application);
 				void runApplicationCallback ();
 				
-				class Context : public Object, IMPLEMENTS(Context)
+				class Context : public Object, implements IContext
 				{
-					EXPOSE_CLASS(Context)
-					
-					class Class : public Object::Class, IMPLEMENTS(Context::Class) {
-						EXPOSE_CLASSTYPE
-						
-						Class ();
-						
-						virtual REF(IContext) init (PTR(Dictionary) config);
-					};
-					
 				protected:
 					struct ContextImpl;
 					ContextImpl * m_impl;

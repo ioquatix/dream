@@ -24,7 +24,7 @@ namespace Dream
 			namespace OpenGL20
 			{
 			
-				IMPLEMENT_CLASS(Renderer)
+				
 
 				Renderer::Renderer () : m_textureController(new TextureController)
 				{

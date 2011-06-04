@@ -1,5 +1,5 @@
 /*
- *  Client/Display/UIKitContext/DreamAppDelegate.h
+ *  Client/Display/UIKitContext/DreamApplicationDelegate.h
  *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
  *
  *  Created by Samuel Williams on 18/04/09.
@@ -14,7 +14,7 @@
 
 @class DreamView;
 
-@interface DreamAppDelegate : NSObject<UIApplicationDelegate> 
+@interface DreamApplicationDelegate : NSObject<UIApplicationDelegate> 
 {
     UIWindow * window;
     DreamView * view;

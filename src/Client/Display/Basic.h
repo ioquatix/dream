@@ -21,17 +21,8 @@ namespace Dream {
 	namespace Client {
 		namespace Display {
 			
-			class BasicApplication : public Object, IMPLEMENTS(Application)
+			class BasicApplication : public Object, implements IApplication
 			{
-				EXPOSE_CLASS(BasicApplication)
-				
-				class Class : public Object::Class, IMPLEMENTS(Application::Class)
-				{
-					EXPOSE_CLASSTYPE
-					
-					virtual REF(IApplication) init (PTR(Dictionary) config);
-				};
-			
 				private:
 					void setupResourceLoader ();
 				
@@ -52,20 +43,17 @@ namespace Dream {
 				public:
 					BasicApplication (PTR(Dictionary) config);
 					
+					void setup ();
+					
 					void append (PTR(IScene) scene);
 					void push (PTR(IScene) scene);
 					void replace (PTR(IScene) scene);
+					
+					static void runScene (PTR(IScene) scene, PTR(Dictionary) config);
 			};
 			
 			class BasicScene : public Scene
 			{
-				EXPOSE_CLASS(BasicScene)
-				
-				class Class : public Scene::Class
-				{
-					EXPOSE_CLASSTYPE
-				};
-			
 				protected:
 					/// Layers should (generally) be allocated in the Scene constructor, so that
 					/// they will be invoked correctly for willBecomeCurrent and willRevokeCurrent.

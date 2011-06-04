@@ -17,7 +17,7 @@ namespace Dream {
 #pragma mark -
 #pragma mark Message
 		
-		IMPLEMENT_CLASS(Message)
+		
 		
 		const MessageHeader * Message::header () const {
 			ensure(headerComplete());
@@ -166,7 +166,7 @@ namespace Dream {
 #pragma mark -
 #pragma mark class MessageClientSocket
 		
-		IMPLEMENT_CLASS(MessageClientSocket)
+		
 		
 		MessageClientSocket::MessageClientSocket (const SocketHandleT & h, const Address & address) : ClientSocket(h, address)
 		{

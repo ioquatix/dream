@@ -19,7 +19,7 @@ namespace Dream
 		
 #pragma mark -
 			
-			IMPLEMENT_CLASS(TextBuffer)
+			
 			
 			TextBuffer::TextBuffer (REF(Font) font) : m_font(font), m_textUpdated(true), m_useStaticSize(false)
 			{

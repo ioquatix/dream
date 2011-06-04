@@ -45,17 +45,13 @@ namespace Dream
 				
 				Vector<2, unsigned> computeBoundingBox (const std::wstring & text) const;
 				
-			public:		
-				EXPOSE_CLASS(Font)
-				
-				class Class : public Object::Class, IMPLEMENTS(Loadable::Class) {
+			public:
+				class Loader : implements ILoadable {
 				public:
-					EXPOSE_CLASSTYPE
-					
-					virtual void registerLoaderTypes (REF(ILoader) loader);
+					virtual void registerLoaderTypes (ILoader * loader);
 					
 					virtual REF(Object) initWithPath(const Path & p);
-					virtual REF(Object) initFromData(const PTR(IData) data, const ILoader * loader);
+					virtual REF(Object) loadFromData(const PTR(IData) data, const ILoader * loader);
 				};
 				
 				Font (const Path &);

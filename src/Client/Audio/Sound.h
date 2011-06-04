@@ -25,26 +25,24 @@ namespace Dream
 			
 			class Sound : public Object
 			{
-				EXPOSE_CLASS(Sound)
-				
-				class Class : public Object::Class, IMPLEMENTS(Loadable::Class)
-				{
-					EXPOSE_CLASSTYPE
+				public:
+					class Loader : implements ILoadable
+					{
+					public:
+						virtual void registerLoaderTypes (ILoader * loader);
+						virtual REF(Object) loadFromData (const PTR(IData) data, const ILoader * loader);
+					};
 					
-					virtual void registerLoaderTypes (REF(ILoader) loader);
-					virtual REF(Object) initFromData (const PTR(IData) data, const ILoader * loader);
-				};
-				
-			protected:
-				ALuint m_bufferID;
-				ALenum m_format;
-				ALfloat m_frequency;
-				
-			public:
-				Sound (ALenum format, ALsizei frequency, const Buffer *);
-				virtual ~Sound ();
-								
-				friend class Source;
+				protected:
+					ALuint m_bufferID;
+					ALenum m_format;
+					ALfloat m_frequency;
+					
+				public:
+					Sound (ALenum format, ALsizei frequency, const Buffer *);
+					virtual ~Sound ();
+									
+					friend class Source;
 			};
 		}
 	}

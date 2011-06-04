@@ -75,8 +75,6 @@ namespace Dream
 			}
 #endif
 
-			IMPLEMENT_CLASS(PixelBufferRenderer)
-
 			PixelBufferRenderer::PixelBufferRenderer () : m_size(ZERO)
 			{
 				m_textureParameters.target = GL_TEXTURE_2D;

@@ -23,9 +23,7 @@ namespace Dream
 			
 #pragma mark -
 #pragma mark class MaterialFactory
-			
-			IMPLEMENT_CLASS(MaterialFactory)
-			
+						
 			MaterialFactory::MaterialFactory (String name, const ILoader * loader) : m_name(name), m_shaderPathSet(false), m_loader(loader),
 			m_blendingEnabled(false)
 			{
@@ -217,13 +215,11 @@ namespace Dream
 #pragma mark -
 #pragma mark class MaterialLibrary
 			
-			IMPLEMENT_CLASS(MaterialLibrary)
-			
-			void MaterialLibrary::Class::registerLoaderTypes (REF(ILoader) loader) {
+			void MaterialLibrary::Loader::registerLoaderTypes (ILoader * loader) {
 				loader->setLoaderForExtension(this, "materials");
 			}
 
-			REF(Object) MaterialLibrary::Class::initFromData (const PTR(IData) data, const ILoader * loader) {
+			REF(Object) MaterialLibrary::Loader::loadFromData (const PTR(IData) data, const ILoader * loader) {
 				return new MaterialLibrary(data, loader);
 			}
 												

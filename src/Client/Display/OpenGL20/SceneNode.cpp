@@ -12,13 +12,9 @@
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
-			
-			IMPLEMENT_INTERFACE(SceneNode)
-			
+		
 #pragma mark -
 #pragma mark class SceneNode
-			
-			IMPLEMENT_CLASS(SceneNode)
 			
 			SceneNode::SceneNode() {
 				m_translate = false;

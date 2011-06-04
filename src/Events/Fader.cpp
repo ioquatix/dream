@@ -19,7 +19,7 @@ namespace Dream
 		
 		}
 		
-		IMPLEMENT_CLASS(Fader)
+		
 		
 		Fader::Fader(Shared<IKnob> knob, int steps, TimeT increment)
 			: m_knob(knob), m_count(0), m_steps(steps), m_increment(increment), m_finished(false)

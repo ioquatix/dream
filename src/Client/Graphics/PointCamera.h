@@ -23,17 +23,6 @@ namespace Dream {
 				Vec3 m_up;
 				
 			public:
-				class Class : public Camera::Class {
-				public:
-					EXPOSE_CLASSTYPE
-					
-					virtual REF(Object) init () {
-						return new PointCamera();
-					}
-				};
-				
-				EXPOSE_CLASS(PointCamera)
-				
 				PointCamera ();
 				
 				void setDirection (const Vec3 &dir) { m_direction = dir; }

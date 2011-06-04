@@ -27,9 +27,6 @@ void test (); \
 } name##CodeTestInstance; \
 void name##CodeTest::test ()
 
-#include <boost/type_traits/is_arithmetic.hpp>
-#include <boost/mpl/if.hpp>
-
 namespace Dream
 {
 	namespace Core

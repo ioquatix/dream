@@ -21,13 +21,6 @@ namespace Dream
 		{
 			
 			class TextBuffer : public Object {
-				EXPOSE_CLASS(TextBuffer)
-				
-				class Class : public Object::Class
-				{
-					EXPOSE_CLASSTYPE
-				};
-				
 			protected:
 				REF(Font) m_font;
 				REF(Image) m_image;

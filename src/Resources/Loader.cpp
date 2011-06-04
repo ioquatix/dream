@@ -16,17 +16,11 @@
 namespace Dream {
 	namespace Resources {
 		
-		IMPLEMENT_INTERFACE(Loader)
-		
-#pragma mark -
-		
-		IMPLEMENT_CLASS(Loader)
-		
-		void Loader::setLoaderForExtension (ILoadable::Class* cls, String ext) {
-			m_loaders[ext] = cls;
+		void Loader::setLoaderForExtension (PTR(ILoadable) loadable, String ext) {
+			m_loaders[ext] = loadable;
 		}
 		
-		ILoadable::Class* Loader::loaderForExtension (String ext) const {
+		PTR(ILoadable) Loader::loaderForExtension (String ext) const {
 			LoadersT::const_iterator loader = m_loaders.find(ext);
 			
 			if (loader != m_loaders.end()) {
@@ -34,6 +28,10 @@ namespace Dream {
 			} else {
 				return NULL;
 			}
+		}
+		
+		void Loader::addLoader(PTR(ILoadable) loader) {
+			loader->registerLoaderTypes(this);
 		}
 		
 		Loader::Loader () {
@@ -165,7 +163,7 @@ namespace Dream {
 			}
 			
 			String ext = p.splitFileName().extension;
-			ILoadable::Class *loader = loaderForExtension(ext);
+			PTR(ILoadable) loader = loaderForExtension(ext);
 			
 			if (!loader) {
 				// No loader for this type
@@ -177,7 +175,7 @@ namespace Dream {
 			REF(Object) resource = NULL;
 			
 			try {
-				resource = loader->initFromData(data, this);
+				resource = loader->loadFromData(data, this);
 			} catch (LoadError & e) {
 				std::cerr << "Could not load resource " << p << ": " << e.what() << std::endl;
 				throw;
