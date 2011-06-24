@@ -1,11 +1,11 @@
 //
-//  Dream.xcconfig
+//  Librar.xcconfig
 //  Dream
 //
 //  Created by Samuel Williams on 4/06/11.
 //  Copyright 2011 Orion Transfer Ltd. All rights reserved.
 //
 
-EXT_LIBS=-lboost_system -lboost_thread -lpng -ljpeg -lfreetype -logg -lvorbis -lvorbisfile -lz
+DREAM_ROOT=$(SRCROOT)
 
 #include "Base.xcconfig"

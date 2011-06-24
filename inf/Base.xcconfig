@@ -1,0 +1,40 @@
+//
+//  Dream.xcconfig
+//  Dream
+//
+//  Created by Samuel Williams on 29/08/10.
+//  Copyright 2010 Orion Transfer Ltd. All rights reserved.
+//
+
+DREAM_EXT=$(DREAM_ROOT)/ext/$(BUILD_VARIANT)/
+
+BUILD_VARIANT[sdk=macosx*]=darwin_macosx
+BUILD_VARIANT[sdk=iphoneos*]=darwin_iphoneos
+BUILD_VARIANT[sdk=iphonesimulator*]=darwin_iphonesimulator
+
+// ppc doesn't seem to be supported any more Xcode 4.
+VALID_ARCHS[sdk=macosx*]=i386 x86_64
+VALID_ARCHS[sdk=iphoneos*]=armv6 armv7
+VALID_ARCHS[sdk=iphonesimulator*]=i386
+
+ARCHS=$(VALID_ARCHS)
+
+DEBUG_CFLAGS[variant=debug]=-DDREAM_DEBUG
+
+OTHER_CFLAGS[sdk=macosx*]=-DDREAM_USE_OPENGL20 -DDREAM_VARIANT=$(BUILD_VARIANT) $(DEBUG_CFLAGS)
+OTHER_CFLAGS[sdk=iphoneos*]=-DDREAM_USE_OPENGLES11 -DDREAM_VARIANT=$(BUILD_VARIANT) $(DEBUG_CFLAGS)
+OTHER_CFLAGS[sdk=iphonesimulator*]=-DDREAM_USE_OPENGLES11 -DDREAM_VARIANT=$(BUILD_VARIANT) $(DEBUG_CFLAGS)
+
+
+OTHER_LDFLAGS[sdk=macosx*]=$(EXT_LIBS) -framework OpenGL -framework OpenAL -framework Foundation -framework Cocoa -framework AppKit -framework CoreVideo -framework CoreServices
+OTHER_LDFLAGS[sdk=iphone*]=$(EXT_LIBS) -framework QuartzCore -framework OpenGLES -framework OpenAL -framework Foundation -framework CoreGraphics -framework Foundation -framework UIKit
+
+HEADER_SEARCH_PATHS="$(DREAM_EXT)/include" "$(DREAM_EXT)/include/freetype2"
+LIBRARY_SEARCH_PATHS="$(DREAM_EXT)/lib"
+
+// Avoid probems with C++ visibility
+GCC_INLINES_ARE_PRIVATE_EXTERN=NO
+GCC_SYMBOLS_PRIVATE_EXTERN=NO
+
+// Faster execution for floating-point heavy code.
+GCC_THUMB_SUPPORT=NO
