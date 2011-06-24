@@ -19,7 +19,7 @@ namespace Dream {
 			}
 			
 #if defined(DREAM_USE_OPENGLES11) || defined(DREAM_USE_OPENGL20)	
-			void WireframeRenderer::renderGrid (Display::RendererT * renderer) {
+			void WireframeRenderer::renderGrid (Display::RendererT * renderer) const {
 				std::vector<Vec3> points;
 				const RealT LOWER = -200;
 				const RealT UPPER = 200;
@@ -36,7 +36,7 @@ namespace Dream {
 				render(renderer, points);
 			}
 			
-			void WireframeRenderer::renderAxis (Display::RendererT *)
+			void WireframeRenderer::renderAxis (Display::RendererT *) const
 			{
 				std::vector<Vec3> vertices;
 				std::vector<Vec4> colors;
@@ -75,7 +75,7 @@ namespace Dream {
 				glLineWidth(1.0);
 			}
 
-			void WireframeRenderer::render (Display::RendererT *, const std::vector<Vec3> & vertices) {
+			void WireframeRenderer::render (Display::RendererT *, const std::vector<Vec3> & vertices) const {
 				glColor(m_color);
 
 				glVertexPointer(3, GLTypeTraits<RealT>::TYPE, 0, &vertices[0]);
@@ -110,15 +110,15 @@ namespace Dream {
 			
 			}
 
-			void WireframeRenderer::render (Display::RendererT *, const Geometry::LineSegment<2> & lineSegment) {
+			void WireframeRenderer::render (Display::RendererT *, const Geometry::LineSegment<2> & lineSegment) const {
 				WireframeRenderer_renderLineSegment(m_color, lineSegment);
 			}
 			
-			void WireframeRenderer::render (Display::RendererT *, const Geometry::LineSegment<3> & lineSegment) {
+			void WireframeRenderer::render (Display::RendererT *, const Geometry::LineSegment<3> & lineSegment) const {
 				WireframeRenderer_renderLineSegment(m_color, lineSegment);				
 			}
 
-			void WireframeRenderer::render (Renderer *, const Geometry::AlignedBox<2> & b)
+			void WireframeRenderer::render (Renderer *, const Geometry::AlignedBox<2> & b) const
 			{
 				const unsigned D = 2;
 				Vector<D, unsigned> k(IDENTITY, 2);
@@ -152,7 +152,7 @@ namespace Dream {
 				glDisableClientState(GL_COLOR_ARRAY);
 			}
 			
-			void WireframeRenderer::render (Renderer *, const Geometry::AlignedBox<3> & b)
+			void WireframeRenderer::render (Renderer *, const Geometry::AlignedBox<3> & b) const
 			{			
 				const unsigned D = 3;
 				Vector<D, unsigned> k(IDENTITY, 2);
@@ -200,7 +200,7 @@ namespace Dream {
 			
 			}
 			
-			void SolidRenderer::render (Display::RendererT *, const Geometry::AlignedBox<2> & box)
+			void SolidRenderer::render (Display::RendererT *, const Geometry::AlignedBox<2> & box) const
 			{				
 				const Vector<2, unsigned> K(IDENTITY, 2);
 				const IndexT CORNERS = 4;
@@ -230,7 +230,7 @@ namespace Dream {
 				glDisableClientState(GL_NORMAL_ARRAY);
 			}
 			
-			void SolidRenderer::render (Display::RendererT *, const Geometry::AlignedBox<3> & box)
+			void SolidRenderer::render (Display::RendererT *, const Geometry::AlignedBox<3> & box) const
 			{
 				const Vector<3, unsigned> K(IDENTITY, 2);
 				const GLushort INDICES[] = {
@@ -275,7 +275,6 @@ namespace Dream {
 				
 				glDisableClientState(GL_VERTEX_ARRAY);
 				glDisableClientState(GL_NORMAL_ARRAY);
-
 			}
 			
 			void SolidRenderer::setPrimaryColor (const Vec4 & color)

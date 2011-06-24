@@ -32,16 +32,16 @@ namespace Dream
 				
 				void setFilled (bool filled);
 				
-				void renderGrid (Display::RendererT *);
-				void renderAxis (Display::RendererT *);
+				void renderGrid (Display::RendererT *) const;
+				void renderAxis (Display::RendererT *) const;
 				
-				void render (Display::RendererT *, const std::vector<Vec3> &);
+				void render (Display::RendererT *, const std::vector<Vec3> &) const;
 				
-				void render (Display::RendererT *, const Geometry::LineSegment<2> &);
-				void render (Display::RendererT *, const Geometry::LineSegment<3> &);
+				void render (Display::RendererT *, const Geometry::LineSegment<2> &) const;
+				void render (Display::RendererT *, const Geometry::LineSegment<3> &) const;
 								
-				void render (Display::RendererT *, const Geometry::AlignedBox<2> &);
-				void render (Display::RendererT *, const Geometry::AlignedBox<3> &);
+				void render (Display::RendererT *, const Geometry::AlignedBox<2> &) const;
+				void render (Display::RendererT *, const Geometry::AlignedBox<3> &) const;
 				
 				void setPrimaryColor (const Vec4 &);
 			};
@@ -54,8 +54,8 @@ namespace Dream
 			public:
 				SolidRenderer ();
 								
-				void render (Display::RendererT *, const Geometry::AlignedBox<2> &);
-				void render (Display::RendererT *, const Geometry::AlignedBox<3> &);
+				void render (Display::RendererT *, const Geometry::AlignedBox<2> &) const;
+				void render (Display::RendererT *, const Geometry::AlignedBox<3> &) const;
 				
 				void setPrimaryColor (const Vec4 &);
 			};
