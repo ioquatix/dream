@@ -193,9 +193,7 @@ namespace Dream
 		{
 			FileDescriptorT fd;
 			int result;
-			
-			std::cout << __func__ << " : " << p << std::endl;
-			
+						
 			// Open and create the output file
 			mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 			

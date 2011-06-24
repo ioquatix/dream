@@ -138,7 +138,7 @@ namespace Dream {
 					openPop();
 				}
 				
-				for (iterateEach (m_closed, closedNode)) {
+				for (iterateEach(m_closed, closedNode)) {
 					delete *closedNode;
 				}
 			}

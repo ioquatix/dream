@@ -15,6 +15,10 @@
 // For testing
 #include "Core/CodeTest.h"
 
+void assertionFailure() {
+	return;
+}
+
 namespace Dream
 {
 	AssertionError::AssertionError (const char * expression, const char * file, unsigned line) throw ()
@@ -47,8 +51,8 @@ namespace Dream
 	{
 		if (!condition)
 		{
-			//Debugger();
-
+			assertionFailure();
+			
 			throw AssertionError(expression, file, line);
 		}
 	}
