@@ -27,17 +27,17 @@ namespace Dream {
 			RandomSequence (unsigned seed, RealT min = -1.0, RealT max = 1.0);
 			
 			template <unsigned D>
-			const Vector<D> getVector () {
+			const Vector<D> nextVector () {
 				Vector<D> result;
 				
 				for (std::size_t i = 0; i < D; i++) {
-					result[i] = getReal();
+					result[i] = nextReal();
 				}
 				
 				return result;
 			}
 			
-			const RealT getReal ();			
+			const RealT nextReal ();			
 		};
 		
 	}

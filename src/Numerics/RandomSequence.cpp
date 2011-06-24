@@ -17,7 +17,7 @@ namespace Dream {
 		
 		}
 
-		const RealT RandomSequence::getReal () {
+		const RealT RandomSequence::nextReal () {
 			return m_sequence();
 		}
 		
