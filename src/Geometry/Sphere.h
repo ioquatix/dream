@@ -14,7 +14,6 @@
 
 namespace Dream {
 	namespace Geometry {
-		
 		/**
 		 A sphere is defined by its center point and its radius.
 		 

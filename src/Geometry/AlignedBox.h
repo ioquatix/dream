@@ -296,6 +296,16 @@ namespace Dream {
 				return o;
 			}
 			
+			/// Find the absolute offset of a point within the box.
+			Vector<D> offsetOf(const Vector<D> & point) const {
+				return point - m_min;
+			}
+			
+			/// Find the relative position of a point inside the box.
+			Vector<D> relativeOffsetOf(const Vector<D> & point) const {
+				return offsetOf(point) / size();
+			}
+			
 			/// Returns a sphere that encloses the entire box.
 			Sphere<D, NumericT> boundingSphere () const;
 			

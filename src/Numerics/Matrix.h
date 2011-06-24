@@ -225,6 +225,16 @@ namespace Dream
 				return m_matrix[i];
 			}
 			
+			const NumericT & operator[] (unsigned i) const
+			{
+				return m_matrix[i];
+			}
+			
+			NumericT & operator[] (unsigned i)
+			{
+				return m_matrix[i];
+			}
+			
 			NumericT & at (unsigned i)
 			{
 				ensure(i < R*C);
@@ -319,15 +329,16 @@ namespace Dream
 
 		template <typename NumericT>
 		Matrix<4, 4, NumericT> perspectiveMatrix (const NumericT & fieldOfView, const NumericT & aspectRatio, const NumericT & near, const NumericT & far) {
-			NumericT f = 1.0 / Number<NumericT>::tan(fieldOfView / 2.0);
+			NumericT f = 1.0 / Number<NumericT>::tan(fieldOfView * 0.5);
+			NumericT n = 1.0 / (near - far);
 			
 			Matrix<4, 4, NumericT> result(ZERO);
 			
 			result.at(0) = f / aspectRatio;
 			result.at(5) = f;
-			result.at(10) = (far + near) / (near - far);
+			result.at(10) = (far + near) * n;
 			result.at(11) = -1.0;
-			result.at(14) = (2 * far * near) / (near - far);
+			result.at(14) = (2 * far * near) * n;
 			
 			return result;
 		}

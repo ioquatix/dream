@@ -67,7 +67,8 @@ namespace Dream
 		const double R360 = R180*2;
 
 		/// Radians to degrees multiplier
-		const RealT R2D = (180.0 / M_PI);
+		const double R2D = (180.0 / M_PI);
+		const double D2R = (M_PI / 180.0);
 	
 		/// If the supplied value is a power of two, it is returned, otherwise the next highest power of 2 is calculated and returned.
 		uint32_t nextHighestPowerOf2 (uint32_t);

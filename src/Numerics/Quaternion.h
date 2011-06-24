@@ -50,6 +50,11 @@ namespace Dream
 
 			/// Assignment constructor.
 			Quaternion & operator= (const Vec4T & other);
+			
+			/// Equality
+			bool operator== (const Quaternion & other) {
+				return vector() == other.vector();
+			}
 
 			/// Angle Axis constructor.
 			Quaternion (const NumericT & angle, const Vec3T & axis);
