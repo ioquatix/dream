@@ -67,6 +67,19 @@ namespace Dream {
 				public:
 					virtual void renderFrameForTime (IScene * scene, TimeT time);
 			};
+			
+			/// This layer draws a simple square grid on the x/y plane.
+			class GridLayer : public Object, implements ILayer
+			{
+				protected:
+					RealT m_size, m_step;
+					WireframeRenderer m_wireframeRenderer;
+					
+				public:
+					GridLayer(RealT size = 200, RealT step = 10);
+					
+					virtual void renderFrameForTime(IScene * scene, TimeT time);
+			};
 		}
 	}
 }

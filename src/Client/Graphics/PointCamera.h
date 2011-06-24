@@ -15,8 +15,8 @@
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
-			
-			class PointCamera : public Camera {
+						
+			class PointCamera : public Object, implements ICamera {
 			protected:
 				Vec3 m_origin;
 				Vec3 m_direction;
@@ -24,6 +24,8 @@ namespace Dream {
 				
 			public:
 				PointCamera ();
+				
+				static Mat44 lookAt(const Vec3 & origin, const Vec3 & direction, const Vec3 & up);
 				
 				void setDirection (const Vec3 &dir) { m_direction = dir; }
 				void setOrigin (const Vec3 &origin) { m_origin = origin; }

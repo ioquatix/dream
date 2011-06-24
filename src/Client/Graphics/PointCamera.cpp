@@ -12,16 +12,33 @@
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
-						
+			
+			Mat44 PointCamera::lookAt(const Vec3 & origin, const Vec3 & direction, const Vec3 & up) {
+				// Basically an implementation of gluLookAt, but slightly simpler due to the following constraints:
+				// m_direction is already normalized and points from m_origin in the direction we are currently looking in
+				// m_up is already normalized
+			
+				Vec3 s = direction.cross(up);
+				Vec3 u = s.cross(direction);
+				
+				Mat44 m(ZERO);
+				m.set(0, 0, s);
+				m.set(1, 0, u);
+				m.set(2, 0, -direction);
+				m.at(3, 3) = 1;
+				
+				Mat44 t = Mat44::translatingMatrix(-origin);
+				
+				return m.transposedMatrix() * t;
+			}
+			
 			PointCamera::PointCamera () : m_origin(0, 0, 0), m_direction(0, 0, 1), m_up(0, 1, 0) {
 				
 			}
 
 			Mat44 PointCamera::viewMatrix () const
 			{
-				// Basically an implementation of gluLookAt, but slightly simpler due to the following constraints:
-				// m_direction is already normalized and points from m_origin in the direction we are currently looking in
-				// m_up is already normalized
+
 				
 				Vec3 s = m_direction.cross(m_up);
 				Vec3 u = s.cross(m_direction);

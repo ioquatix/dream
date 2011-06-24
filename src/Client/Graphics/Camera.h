@@ -24,48 +24,24 @@ namespace Dream {
 			
 			using Geometry::Line;
 			using Geometry::AlignedBox;
-						
-			struct ViewportEyeSpace
-			{
-				Vec3 origin;
-				Line<3> forward;
-				Vec3 up;
-			};
 			
-			/**
-			 
-			 */
-			class Camera : public Object, implements IInputHandler {
+			class ICamera : implements IObject, implements IInputHandler {
 			public:				
-				virtual ~Camera ();
-								
-				virtual bool button(const ButtonInput &);
-				virtual bool motion(const MotionInput &);
+				virtual ~ICamera ();
 				
-				virtual Mat44 viewMatrix () const abstract;
-				
-				/// Calculate the object-space coordinates when given the window's viewport and a point in the viewport.
-				static ViewportEyeSpace convertFromViewportToObjectSpace (const Mat44 & projectionMatrix, const Mat44 & modelViewMatrix, 
-																		  const AlignedBox<2,int> & viewport, const Vec2 & c);
-				
-				/// Calculate the object-space coordinates when given a projection-space coordinate on the near plane.
-				static ViewportEyeSpace convertFromProjectionSpaceToObjectSpace (const Mat44 & projectionMatrix, const Mat44 & modelViewMatrix, const Vec2 & n);
-				
-				/// Calculate the object-space coordinate when given a projection-space coordinate. This function is not fast for many points, as it calculates
-				/// inverse matrices per call.
-				static Vec4 convertFromProjectionSpaceToObjectSpace (const Mat44 & projectionMatrix, const Mat44 & modelViewMatrix, const Vec3 & n);
+				virtual Mat44 viewMatrix() const abstract;
 			};
 			
 			class CameraNode : public Group {
 				protected:
-					REF(Camera) m_camera;
+					REF(ICamera) m_camera;
 				
 				public:
-					CameraNode(PTR(Camera) camera);
+					CameraNode(PTR(ICamera) camera);
 					virtual ~CameraNode();
 					
-					virtual void setCamera(PTR(Camera) camera);
-					virtual PTR(Camera) camera();
+					virtual void setCamera(PTR(ICamera) camera);
+					virtual PTR(ICamera) camera();
 					
 					virtual bool process(const Input & input);
 					

@@ -16,8 +16,6 @@ namespace Dream {
 			
 #pragma mark -
 			
-			
-			
 			TransformedGroup::TransformedGroup(const Mat44 & transform) : m_transform(transform)
 			{
 			}
@@ -39,8 +37,6 @@ namespace Dream {
 			
 #pragma mark -
 
-			
-
 			void DelegateLayer::renderFrameForTime (IScene * scene, TimeT time)
 			{
 				if (renderFrameForTimeCallback)
@@ -61,8 +57,6 @@ namespace Dream {
 
 #pragma mark -
 			
-			
-			
 			BackgroundLayer::BackgroundLayer(const Vec4 & color) : m_color(color) {
 			
 			}
@@ -73,13 +67,36 @@ namespace Dream {
 			}
 
 #pragma mark -
-
-			
 			
 			void AxisLayer::renderFrameForTime (IScene * scene, TimeT time) {
 				WireframeRenderer axisRenderer;
 				
 				axisRenderer.renderAxis(scene->renderer());
+			}
+			
+#pragma mark -
+
+			GridLayer::GridLayer (RealT size, RealT step)
+				: m_size(size), m_step(step)
+			{
+				m_wireframeRenderer.setPrimaryColor(Vec4(1.0, 1.0, 1.0, 0.5));
+			}
+			
+			void GridLayer::renderFrameForTime (IScene * scene, TimeT time)
+			{
+				std::vector<Vec3> points;
+				
+				RealT lower = -m_size, upper = m_size;
+								
+				for (RealT x = lower; x <= upper; x += m_step) {
+					points.push_back(Vec3(x, lower, 0));
+					points.push_back(Vec3(x, upper, 0));
+					
+					points.push_back(Vec3(lower, x, 0));
+					points.push_back(Vec3(upper, x, 0));
+				}
+				
+				m_wireframeRenderer.render(scene->renderer(), points);
 			}
 			
 		}

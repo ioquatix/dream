@@ -13,8 +13,9 @@ namespace Dream {
 	namespace Client {
 		namespace Graphics {
 						
-			BirdsEyeCamera::BirdsEyeCamera () : m_up(0.0, 0.0, 1.0), m_right(1.0, 0.0, 0.0), m_center(ZERO), m_multiplier(IDENTITY, 1) {
-				
+			BirdsEyeCamera::BirdsEyeCamera ()
+				: m_up(0.0, 0.0, 1.0), m_right(1.0, 0.0, 0.0), m_center(ZERO), m_multiplier(IDENTITY, 1)
+			{
 				m_distance = 100;
 				m_azimuth = R45;
 				m_incidence = R45;
@@ -57,8 +58,19 @@ namespace Dream {
 				if (input.buttonPressedOrDragged(MouseLeftButton)) {
 					RealT k = -1.0, i = Math::mod(m_incidence, R360);
 					
-					if (i > R90 && i < R270)
-						k = 1.0;
+					if (i < 0) i += R360;
+					
+					// Reverse motion if we are upside down:
+					if (i > R180 && i < R360)
+						k *= -1.0;
+					
+					// Find the relative position of the mouse, if it is in the lower half,
+					// reverse the rotation.
+					Vec2 relative = input.bounds().relativeOffsetOf(input.currentPosition().reduce());
+					
+					// If mouse button is in lower half of view:
+					if (relative[Y] < 0.5)
+						k *= -1.0;
 						
 					m_azimuth += (k * d[X] * m_multiplier[X] * (R90 / 90));
 					m_incidence += (d[Y] * m_multiplier[Y] * (R90 / 90));
@@ -85,7 +97,7 @@ namespace Dream {
 				m_center = newCenter;
 			}
 			
-			void BirdsEyeCamera::setUpDirection(const Vec3 &up) {
+			void BirdsEyeCamera::setUp (const Vec3 &up) {
 				if (m_up != up) {
 					m_up = up;
 					/* Regenerate Cache */
@@ -93,7 +105,7 @@ namespace Dream {
 				}
 			}
 			
-			void BirdsEyeCamera::setRightDirection(const Vec3 &right) {
+			void BirdsEyeCamera::setRight (const Vec3 &right) {
 				if (m_right != right) {
 					m_right = right;
 					/* Regenerate Cache */

@@ -17,7 +17,7 @@ namespace Dream {
 	namespace Client {
 		namespace Graphics {
 			
-			class BirdsEyeCamera : public Camera {
+			class BirdsEyeCamera : public Object, implements ICamera {
 			protected:
 				Vec3 m_up;
 				Vec3 m_right;
@@ -36,7 +36,7 @@ namespace Dream {
 			public:
 				BirdsEyeCamera ();
 				virtual ~BirdsEyeCamera ();
-								
+				
 				virtual bool button(const ButtonInput &);
 				virtual bool motion(const MotionInput &);
 				
@@ -62,8 +62,11 @@ namespace Dream {
 				void setIncidence (const RealT &amnt, bool relative = false);
 				const RealT& incidence () const { return m_incidence; }
 				
-				void setUpDirection(const Vec3 &up);
-				void setRightDirection(const Vec3 &right);
+				void setUp (const Vec3 &up);
+				const Vec3 & up () const { return m_up; }
+				
+				void setRight (const Vec3 &right);
+				const Vec3 & right () const { return m_right; }
 			};	
 		}
 	}
