@@ -9,17 +9,24 @@
 #import <Cocoa/Cocoa.h>
 #include "../Input.h"
 
+@class CocoaScreenManager;
+
 @interface CocoaContextDelegate : NSObject <NSWindowDelegate> {
 @private
     Dream::Client::Display::IInputHandler * _inputHandler;
+	
+	CocoaScreenManager * screenManager;
 }
 
 @property(assign) Dream::Client::Display::IInputHandler * inputHandler;
+@property(retain,readonly) CocoaScreenManager * screenManager;
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender;
 
 - (BOOL)windowShouldClose:(id)sender;
 - (NSSize)windowWillResize:(NSWindow *)sender toSize:(NSSize)frameSize;
+
+- (void) toggleFullScreen:(id)sender;
 
 //- (BOOL)windowShouldZoom:(NSWindow *)window toFrame:(NSRect)newFrame;
 

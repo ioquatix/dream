@@ -14,14 +14,6 @@
 #include "Context.h"
 
 #include "CocoaContext.h"
-#import <Cocoa/Cocoa.h>
-
-#include "Renderer.h"
-
-#import <CoreVideo/CoreVideo.h>
-#import <CoreVideo/CVDisplayLink.h>
-
-#import "CocoaContextDelegate.h"
 
 @interface NSAppleMenuController : NSObject
 - (void)controlMenu:(NSMenu *)aMenu;
@@ -34,6 +26,47 @@ namespace Dream
 		namespace Display
 		{
 			
+#pragma mark -
+#pragma mark Modes
+			
+			class CocoaContextMode : public Object, implements IContextMode {
+			public:
+				CocoaContextMode();
+				virtual ~CocoaContextMode();
+				
+				virtual StringT descriptiveName () const;
+				
+				virtual REF(IContext) setup (PTR(Dictionary) config) const;
+			};
+			
+			CocoaContextMode::CocoaContextMode() {
+			
+			}
+			
+			CocoaContextMode::~CocoaContextMode() {
+				
+			}
+			
+			StringT CocoaContextMode::descriptiveName () const {
+				return "Cocoa Window";
+			}
+			
+			REF(IContext) CocoaContextMode::setup (PTR(Dictionary) config) const {
+				return new CocoaContext(config);
+			}
+			
+			CocoaContext::Modes CocoaContext::s_modes;
+
+			CocoaContext::Modes::Modes () {
+				ContextManager * manager = ContextManager::sharedManager();
+				
+				// NSArray * screens = [NSScreen screens];
+				manager->registerContextMode(new CocoaContextMode());
+			}
+
+#pragma mark -
+#pragma mark Application
+			
 			void IApplication::start (PTR(Dictionary) config)
 			{
 				setup();
@@ -42,61 +75,42 @@ namespace Dream
 			
 #pragma mark -
 #pragma mark Renderer Subclass
-			
-			typedef OpenGL20::Renderer MacOSXOpenGLRenderer;
-			
+						
 #pragma mark -
-			
-			struct CocoaContext::CocoaContextImpl {
-				CocoaContextImpl () : displayWillRefresh(false), displayRefreshStallCount(0) {}
+						
+			// This is the renderer output callback function
+			CVReturn CocoaContext::displayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* now, const CVTimeStamp* outputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
+			{
+				CocoaContext * ctx = (CocoaContext*)displayLinkContext;
 				
-				REF(MacOSXOpenGLRenderer) renderer;
-				
-				NSWindow * window;
-				NSOpenGLView * view;
-				NSAutoreleasePool * pool;
-				CocoaContextDelegate * delegate;
-				
-				//display link for managing rendering thread
-				CVDisplayLinkRef displayLink;
-				bool displayWillRefresh;
-				unsigned displayRefreshStallCount;
-				
-				REF(FrameNotificationSource) notificationSource;
-				REF(Events::Loop) loop;
-				
-				static CVReturn displayLinkCallback (CVDisplayLinkRef displayLink, const CVTimeStamp* now, const CVTimeStamp* outputTime, CVOptionFlags flagsIn, 
-													 CVOptionFlags* flagsOut, void* displayLinkContext);
-			};
+				return ctx->displayLinkCallback(displayLink, now, outputTime, flagsIn, flagsOut);
+			}
 			
 			// This is the renderer output callback function
-			CVReturn CocoaContext::CocoaContextImpl::displayLinkCallback (CVDisplayLinkRef displayLink, const CVTimeStamp* now, const CVTimeStamp* outputTime, 
-																		  CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
+			CVReturn CocoaContext::displayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* now, const CVTimeStamp* outputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut)
 			{
-				CocoaContext::CocoaContextImpl * ctx = (CocoaContext::CocoaContextImpl*)displayLinkContext;
-				
-				if (ctx->displayWillRefresh == true) {
-					ctx->displayRefreshStallCount += 1;
+				if (m_displayWillRefresh == true) {
+					m_displayRefreshStallCount += 1;
 					
-					if (ctx->displayRefreshStallCount % 500 == 100)
-						std::cerr << __func__ << ": Pipeline stalled (" << ctx->displayRefreshStallCount << ")..." << std::endl;
+					if (m_displayRefreshStallCount % 500 == 100)
+						std::cerr << __func__ << ": Pipeline stalled (" << m_displayRefreshStallCount << ")..." << std::endl;
 				} else {
 					// Only warn when stall is large
-					if (ctx->displayRefreshStallCount > 5)
-						std::cerr << __func__ << ": Display stalled for " << ctx->displayRefreshStallCount << " frame(s)" << std::endl;
+					if (m_displayRefreshStallCount > 5)
+						std::cerr << __func__ << ": Display stalled for " << m_displayRefreshStallCount << " frame(s)" << std::endl;
 					
-					ctx->displayRefreshStallCount = 0;
-					ctx->displayWillRefresh = true;
+					m_displayRefreshStallCount = 0;
+					m_displayWillRefresh = true;
 				}
 				
 				TimeT time = (TimeT)(outputTime->hostTime) / (TimeT)CVGetHostClockFrequency();			
-				ensure(ctx->notificationSource);
-				ctx->notificationSource->frameCallback(ctx->loop.get(), time);
+				ensure(m_notificationSource);
+				m_notificationSource->frameCallback(m_loop.get(), time);
 				
 				return 0;
 			}
 			
-			NSString * getApplicationName ()
+			NSString * CocoaContext::applicationName()
 			{
 				NSDictionary * dict;
 				NSString * appName = 0;
@@ -112,7 +126,7 @@ namespace Dream
 				return appName;
 			}
 
-			void createApplicationMenus ()
+			void CocoaContext::createApplicationMenus()
 			{
 				NSString *appName;
 				NSString *title;
@@ -124,7 +138,7 @@ namespace Dream
 				[NSApp setMainMenu:[[NSMenu alloc] init]];
 
 				/* Create the application menu */
-				appName = getApplicationName();
+				appName = applicationName();
 				appleMenu = [[NSMenu alloc] initWithTitle:@""];
 				
 				/* Add menu items */
@@ -134,9 +148,9 @@ namespace Dream
 				[appleMenu addItem:[NSMenuItem separatorItem]];
 
 				title = [@"Hide " stringByAppendingString:appName];
-				[appleMenu addItemWithTitle:title action:@selector(hide:) keyEquivalent:@/*"h"*/""];
+				[appleMenu addItemWithTitle:title action:@selector(hide:) keyEquivalent:@"h"];
 
-				menuItem = (NSMenuItem *)[appleMenu addItemWithTitle:@"Hide Others" action:@selector(hideOtherApplications:) keyEquivalent:@/*"h"*/""];
+				menuItem = (NSMenuItem *)[appleMenu addItemWithTitle:@"Hide Others" action:@selector(hideOtherApplications:) keyEquivalent:@"h"];
 				[menuItem setKeyEquivalentModifierMask:(NSAlternateKeyMask|NSCommandKeyMask)];
 
 				[appleMenu addItemWithTitle:@"Show All" action:@selector(unhideAllApplications:) keyEquivalent:@""];
@@ -144,7 +158,7 @@ namespace Dream
 				[appleMenu addItem:[NSMenuItem separatorItem]];
 
 				title = [@"Quit " stringByAppendingString:appName];
-				[appleMenu addItemWithTitle:title action:@selector(terminate:) keyEquivalent:@/*"q"*/""];
+				[appleMenu addItemWithTitle:title action:@selector(terminate:) keyEquivalent:@"q"];
 				
 				/* Put menu into the menubar */
 				menuItem = [[NSMenuItem alloc] initWithTitle:@"" action:nil keyEquivalent:@""];
@@ -160,8 +174,13 @@ namespace Dream
 				/* Create the window menu */
 				windowMenu = [[NSMenu alloc] initWithTitle:@"Window"];
 				
+				// FullScreen item
+				menuItem = [[NSMenuItem alloc] initWithTitle:@"Full Screen" action:@selector(toggleFullScreen:) keyEquivalent:@"f"];
+				[windowMenu addItem:menuItem];
+				[menuItem release];
+				
 				/* "Minimize" item */
-				menuItem = [[NSMenuItem alloc] initWithTitle:@"Minimize" action:@selector(performMiniaturize:) keyEquivalent:@/*"m"*/""];
+				menuItem = [[NSMenuItem alloc] initWithTitle:@"Minimize" action:@selector(performMiniaturize:) keyEquivalent:@"m"];
 				[windowMenu addItem:menuItem];
 				[menuItem release];
 				
@@ -176,7 +195,7 @@ namespace Dream
 				[windowMenu release];
 			}
 
-			void transformToForegroundApplication ()
+			void CocoaContext::transformToForegroundApplication()
 			{
 				ProcessSerialNumber psn;
 				
@@ -186,65 +205,66 @@ namespace Dream
 				}
 			}
 			
-			void CocoaContext::setTitle (String title) {
+			void CocoaContext::setTitle(String title) {
 				NSString * windowTitle = [[NSString alloc] initWithBytes:title.data() length:title.length() encoding:NSUTF8StringEncoding];
 				
-				[m_impl->window setTitle:windowTitle];
+				[m_window setTitle:windowTitle];
 
 				[windowTitle release];
 			}
 			
-			void CocoaContext::show () {
-				[m_impl->window makeKeyAndOrderFront:nil];
+			void CocoaContext::show() {
+				[m_window makeKeyAndOrderFront:nil];
 			}
 			
-			void CocoaContext::hide () {
-				
+			void CocoaContext::hide() {
+				//[m_window close];
 			}
 			
-			void CocoaContext::setFrameSync (bool vsync) {
+			void CocoaContext::setFrameSync(bool vsync) {
 				GLint swapInt = vsync ? 1 : 0;
 				
 				std::cerr << "VSync = " << vsync << std::endl;
 				
-				[[m_impl->view openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval];
+				[[m_view openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval];
 			}
 			
-			CocoaContext::CocoaContext (PTR(Dictionary) config) {
-				m_impl = new CocoaContextImpl;
-				m_impl->pool = [[NSAutoreleasePool alloc] init];
+			CocoaContext::CocoaContext(PTR(Dictionary) config) 
+				: m_displayWillRefresh(false), m_displayRefreshStallCount(0) {
+				m_pool = [[NSAutoreleasePool alloc] init];
 
 				[NSApplication sharedApplication];
 				
 				NSWindow * configWindow = NULL;
 				if (config->get("CocoaContext.Window", configWindow)) {
-					m_impl->window = configWindow;
+					m_window = configWindow;
 				} else {
 					transformToForegroundApplication();
-					
+										
 					if ([NSApp mainMenu] == nil)
 						createApplicationMenus();
 				
 					NSRect windowSize = NSMakeRect(50, 50, 1024, 768);
 					unsigned windowStyle = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask;
 
-					m_impl->window = [[NSWindow alloc] initWithContentRect:windowSize styleMask:windowStyle backing:NSBackingStoreBuffered defer:YES];
-					[m_impl->window setAcceptsMouseMovedEvents:YES];
+					m_window = [[NSWindow alloc] initWithContentRect:windowSize styleMask:windowStyle backing:NSBackingStoreBuffered defer:YES];
+					[m_window setAcceptsMouseMovedEvents:YES];
 					
-					m_impl->delegate = [CocoaContextDelegate new];
+					m_delegate = [CocoaContextDelegate new];
+					[[m_delegate screenManager] setPartialScreenWindow:m_window];
 					
 					if ([NSApp delegate] == nil) {
-						[NSApp setDelegate:m_impl->delegate];
+						[NSApp setDelegate:m_delegate];
 					}
 					
-					[m_impl->window setDelegate:m_impl->delegate];
+					[m_window setDelegate:m_delegate];
 					
 					[NSApp finishLaunching];
 				}
 				
 				NSOpenGLView * graphicsView = NULL;
 				if (config->get("CocoaContext.View", graphicsView)) {
-					m_impl->view = graphicsView;
+					m_view = graphicsView;
 				} else {
 					NSOpenGLPixelFormatAttribute attribs[] = {
 						NSOpenGLPFAWindow,
@@ -252,8 +272,8 @@ namespace Dream
 						NSOpenGLPFAAccelerated,
 						NSOpenGLPFANoRecovery,
 						/* Anti-aliasing */
-						//NSOpenGLPFASampleBuffers, (NSOpenGLPixelFormatAttribute)3, /* 3 looks awsome */
-						//NSOpenGLPFASamples, (NSOpenGLPixelFormatAttribute)4,
+						NSOpenGLPFASampleBuffers, (NSOpenGLPixelFormatAttribute)3, /* 3 looks awsome */
+						NSOpenGLPFASamples, (NSOpenGLPixelFormatAttribute)4,
 						/* --- --- --- */
 						NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)24,
 						NSOpenGLPFAColorSize, (NSOpenGLPixelFormatAttribute)32,
@@ -262,13 +282,12 @@ namespace Dream
 
 					NSOpenGLPixelFormat * pf = [[NSOpenGLPixelFormat alloc] initWithAttributes:attribs];
 					
-					graphicsView = [[[NSOpenGLView alloc] initWithFrame:[[m_impl->window contentView] frame] pixelFormat:pf] autorelease];
-					m_impl->view = graphicsView;
+					graphicsView = [[[NSOpenGLView alloc] initWithFrame:[[m_window contentView] frame] pixelFormat:pf] autorelease];
+					m_view = graphicsView;
 					
 					[graphicsView setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];				
-
-					//[[m_impl->window contentView] addSubview:graphicsView];
-					[m_impl->window setContentView:graphicsView];
+					
+					[m_window setContentView:graphicsView];
 				}
 				
 				// ***** SETUP CVDisplayLink *****
@@ -276,15 +295,15 @@ namespace Dream
 				setFrameSync(true);
 				
 				// Create a display link capable of being used with all active displays
-				CVDisplayLinkCreateWithActiveCGDisplays(&m_impl->displayLink);
+				CVDisplayLinkCreateWithActiveCGDisplays(&m_displayLink);
 				
 				// Set the renderer output callback function
-				CVDisplayLinkSetOutputCallback(m_impl->displayLink, &CocoaContextImpl::displayLinkCallback, m_impl);
+				CVDisplayLinkSetOutputCallback(m_displayLink, &CocoaContext::displayLinkCallback, this);
 				
 				// Set the display link for the current renderer
 				CGLContextObj cglContext = (CGLContextObj)[[graphicsView openGLContext] CGLContextObj];
 				CGLPixelFormatObj cglPixelFormat = (CGLPixelFormatObj)[[graphicsView pixelFormat] CGLPixelFormatObj];
-				CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(m_impl->displayLink, cglContext, cglPixelFormat);
+				CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(m_displayLink, cglContext, cglPixelFormat);
 				
 				// OpenGL Defaults:
 				glEnable(GL_DEPTH_TEST);
@@ -295,7 +314,7 @@ namespace Dream
 				
 				//glPolygonOffset (1.0f, 1.0f);
 				
-				m_impl->renderer = new MacOSXOpenGLRenderer();
+				m_renderer = new MacOSXOpenGLRenderer();
 				
 				std::cerr << "OpenGL Context Initialized..." << std::endl;
 				std::cerr << "OpenGL Vendor: " << glGetString(GL_VENDOR) << std::endl;
@@ -303,16 +322,14 @@ namespace Dream
 			}
 			
 			CocoaContext::~CocoaContext () {
-				CVDisplayLinkStop(m_impl->displayLink);
-				CVDisplayLinkRelease(m_impl->displayLink);
+				CVDisplayLinkStop(m_displayLink);
+				CVDisplayLinkRelease(m_displayLink);
 				
-				[m_impl->window release];
-				[m_impl->pool release];
-				
-				delete m_impl;
+				[m_window release];
+				[m_pool release];				
 			}
 			
-			unsigned buttonFromEvent (NSEvent * theEvent)
+			unsigned CocoaContext::buttonFromEvent(NSEvent * theEvent)
 			{
 				NSEventType t = [theEvent type];
 								
@@ -329,20 +346,18 @@ namespace Dream
 				return [theEvent buttonNumber];
 			}
 			
-			bool handleMouseEvent (NSEvent * theEvent, unsigned button, IInputHandler * handler)
+			bool CocoaContext::handleMouseEvent(NSEvent * theEvent, unsigned button, IInputHandler * handler)
 			{
 				Vec3 position, movement;
+				AlignedBox<2> bounds(ZERO, ZERO);
 				
-				if ([theEvent type] != NSScrollWheel)
-				{
-					//NSPoint curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-					NSPoint curPoint = [theEvent locationInWindow];
-					
-					position[X] = curPoint.x;
-					position[Y] = curPoint.y;
-					position[Z] = 0;
-				}
+				NSPoint curPoint = [theEvent locationInWindow];
+				curPoint = [m_view convertPoint:curPoint fromView:nil];
 				
+				position[X] = curPoint.x;
+				position[Y] = curPoint.y;
+				position[Z] = 0;
+								
 				movement[X] = [theEvent deltaX];
 				movement[Y] = [theEvent deltaY];
 				movement[Z] = [theEvent deltaZ];
@@ -356,33 +371,69 @@ namespace Dream
 					state = Dragged;
 				else
 					state = Released;
-							
-				Key key(DefaultMouse, button);
-				MotionInput ipt(key, state, position, movement);
 				
-				return handler->process(ipt);
+				// Determine if curPoint is based in the window coordinates or screen coordinates.
+				// http://www.cocoabuilder.com/archive/cocoa/104529-current-mouse-screen.html
+				NSWindow * sourceWindow = [theEvent window];
+				if (sourceWindow != nil) {
+					// In this case we assume that the point is in the view's coordinate system by now.
+					// It might be useful to augment the event handling system in the future to handle multiple
+					// viewports, but for now lets just assument that events are handled via a single view.
+					bounds.setOrigin(Vec2(m_view.frame.origin.x, m_view.frame.origin.y));
+					bounds.setSizeFromOrigin(Vec2(m_view.frame.size.width, m_view.frame.size.height));
+										
+					// Get the window frame and set the input bounds appropriately.
+					//NSRect windowFrame = [sourceWindow frame];
+					
+					//bounds.setOrigin(Vec2(windowFrame.origin.x, windowFrame.origin.y));
+					//bounds.setSizeFromOrigin(Vec2(windowFrame.size.width, windowFrame.size.height));
+				} else {
+					// Get the screen frame and set the input bounds appropriately.
+					
+					std::cerr << "Mouse motion captured outside window: " << position << " (event ignored)." << std::endl;
+					
+					/*
+					for (NSScreen * screen in [NSScreen screens]) {
+						if (NSMouseInRect(curPoint, [screen frame], NO)) {
+							NSRect screenFrame = [screen frame];
+							
+							bounds.setOrigin(Vec2(screenFrame.origin.x, screenFrame.origin.y));
+							bounds.setSizeFromOrigin(Vec2(screenFrame.size.width, screenFrame.size.height));
+							
+							break;
+						}
+					}
+					*/
+					
+					return false;
+				}
+				
+				Key key(DefaultMouse, button);
+				MotionInput motionInput(key, state, position, movement, bounds);
+				
+				return handler->process(motionInput);
 			}
 			
 			ResolutionT CocoaContext::resolution ()
 			{
-				NSSize size = [m_impl->view frame].size;
+				NSSize size = [m_view frame].size;
 				
 				return ResolutionT(size.width, size.height);
 			}
 			
 			void CocoaContext::flipBuffers ()
 			{
-				//if (m_impl->displayWillRefresh != true)
+				//if (m_displayWillRefresh != true)
 				//	std::cerr << __func__ << ": Frame will not be displayed!" << std::endl;
 				
-				m_impl->displayWillRefresh = false;
+				m_displayWillRefresh = false;
 				
-				[[m_impl->view openGLContext] flushBuffer];
+				[[m_view openGLContext] flushBuffer];
 			}
 			
 			void CocoaContext::processPendingEvents (IInputHandler * handler)
 			{
-				CocoaContextDelegate * delegate = m_impl->delegate;
+				CocoaContextDelegate * delegate = m_delegate;
 				[delegate setInputHandler:handler];
 			
 				while (true) {
@@ -391,7 +442,7 @@ namespace Dream
 					
 					bool consumed = false;
 				
-					NSView * v = [m_impl->view hitTest:[e locationInWindow]];
+					NSView * v = [m_view hitTest:[e locationInWindow]];
 				
 					if ([e type] == NSKeyDown) {
 						Key key(DefaultKeyboard, [[e characters] characterAtIndex:0]);
@@ -457,26 +508,26 @@ namespace Dream
 			void CocoaContext::scheduleFrameNotificationCallback (REF(Events::Loop) loop, FrameCallbackT callback)
 			{
 				// We stop the display link initially,
-				CVDisplayLinkStop(m_impl->displayLink);
+				CVDisplayLinkStop(m_displayLink);
 				
 				if (callback) {
 					// Setup the notification source
-					if (!m_impl->notificationSource)
-						m_impl->notificationSource = new FrameNotificationSource(callback);
+					if (!m_notificationSource)
+						m_notificationSource = new FrameNotificationSource(callback);
 					else
-						m_impl->notificationSource->setCallback(callback);
+						m_notificationSource->setCallback(callback);
 				
-					m_impl->loop = loop;
-					m_impl->displayWillRefresh = false;
+					m_loop = loop;
+					m_displayWillRefresh = false;
 					
 					// Start the display link
-					CVDisplayLinkStart(m_impl->displayLink);
+					CVDisplayLinkStart(m_displayLink);
 				}					
 			}
 			
-			REF(MacOSXOpenGLRenderer) CocoaContext::renderer ()
+			REF(CocoaContext::MacOSXOpenGLRenderer) CocoaContext::renderer ()
 			{
-				return m_impl->renderer;
+				return m_renderer;
 			}
 
 		}

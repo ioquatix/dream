@@ -14,7 +14,7 @@
 #include "../../Numerics/Matrix.h"
 #include "Input.h"
 
-#include <set>
+#include <vector>
 
 namespace Dream {
 	namespace Client {
@@ -33,11 +33,16 @@ namespace Dream {
 			};
 			
 #pragma mark -
-						
+			/** A group is a non-specific collection of children layers.
+			
+			A group allows for multiple children layers to be rendered together. This serves
+			as the base class for nodes like TransformedGroup or Viewport which allow for
+			specific functionality to be applied before further rendering takes place.
+			*/
 			class Group : public Object, implements ILayer
 			{
 			public:
-				typedef std::set<REF(ILayer)> ChildrenT;
+				typedef std::vector<REF(ILayer)> ChildrenT;
 			
 				protected:
 					ChildrenT m_children;
@@ -47,6 +52,8 @@ namespace Dream {
 					
 					virtual void didBecomeCurrent (ISceneManager * manager, IScene * scene);
 					virtual void willRevokeCurrent (ISceneManager * manager, IScene * scene);
+					
+					virtual bool process (const Input & input);
 					
 					void add(PTR(ILayer) child);
 					void remove(PTR(ILayer) child);

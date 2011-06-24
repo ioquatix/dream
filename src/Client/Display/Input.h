@@ -12,6 +12,7 @@
 
 #include "../../Core/Timer.h"
 #include "../../Numerics/Vector.h"
+#include "../../Geometry/AlignedBox.h"
 
 #include <map>
 
@@ -20,6 +21,7 @@ namespace Dream {
 		namespace Display {
 			using namespace Dream::Core;
 			using namespace Dream::Numerics;
+			using namespace Dream::Geometry;
 			
 			typedef unsigned DeviceT;
 			typedef unsigned ButtonT;
@@ -118,7 +120,7 @@ namespace Dream {
 			class IInputHandler : implements IObject
 			{
 			public:
-				virtual bool resize(const ResizeInput &) { return true; }
+				virtual bool resize(const ResizeInput &) { return false; }
 				virtual bool button(const ButtonInput &) { return false; }
 				virtual bool motion(const MotionInput &) { return false; }
 				virtual bool event(const EventInput &) { return false; }
@@ -174,8 +176,11 @@ namespace Dream {
 				StateT m_state;
 				Vec3 m_position, m_motion;
 				
+				// The bounds of the view/screen which handled the motion input.
+				AlignedBox<2> m_bounds;
+				
 			public:
-				MotionInput(const Key &e, const StateT &s, const Vec3 &p, const Vec3 &m);
+				MotionInput(const Key &key, const StateT &state, const Vec3 &position, const Vec3 &motion, const AlignedBox<2> & bounds);
 				virtual ~MotionInput ();
 				
 				virtual bool act(IInputHandler &h) const;
@@ -183,6 +188,11 @@ namespace Dream {
 				const Vec3 & currentPosition () const { return m_position; }
 				const Vec3 previousPosition () const { return m_position - m_motion; }
 				const Vec3 motion () const { return m_motion; }
+				
+				const AlignedBox<2> & bounds() const { return m_bounds; }
+				
+				// Updated bounds must be within the coordinate system provided by the current input event.
+				MotionInput inputByRefiningBounds(const AlignedBox<2> & updatedBounds);
 				
 				const Key & key () const { return m_key; }
 				const StateT & state () const { return m_state; }

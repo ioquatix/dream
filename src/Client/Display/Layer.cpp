@@ -27,14 +27,24 @@ namespace Dream {
 
 #pragma mark -
 
-			
-
 			void Group::renderFrameForTime (IScene * scene, TimeT time)
 			{
 				for (ChildrenT::iterator i = m_children.begin(); i != m_children.end(); i++)
 				{
 					(*i)->renderFrameForTime(scene, time);
 				}
+			}
+			
+			bool Group::process (const Input & input)
+			{
+				bool result = false;
+				
+				for (ChildrenT::iterator i = m_children.begin(); i != m_children.end(); i++)
+				{
+					result |= (*i)->process(input);
+				}
+				
+				return false;
 			}
 			
 			void Group::didBecomeCurrent (ISceneManager * manager, IScene * scene)
@@ -50,17 +60,17 @@ namespace Dream {
 				for (ChildrenT::iterator i = m_children.begin(); i != m_children.end(); i++)
 				{
 					(*i)->willRevokeCurrent(manager, scene);
-				}			
+				}
 			}
 			
 			void Group::add(PTR(ILayer) child)
 			{
-				m_children.insert(child);
+				m_children.push_back(child);
 			}
 			
 			void Group::remove(PTR(ILayer) child)
 			{
-				m_children.erase(child);
+				//m_children.erase(child);
 			}
 			
 		}

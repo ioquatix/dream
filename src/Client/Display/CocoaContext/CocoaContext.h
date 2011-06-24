@@ -13,7 +13,16 @@
 // This is a private header, and should not be used as public API.
 
 #include "Context.h"
+#include "Renderer.h"
 #include "FrameNotificationSource.h"
+
+#import <Cocoa/Cocoa.h>
+
+#import <CoreVideo/CoreVideo.h>
+#import <CoreVideo/CVDisplayLink.h>
+
+#import "CocoaContextDelegate.h"
+#import "CocoaScreenManager.h"
 
 namespace Dream
 {
@@ -24,15 +33,50 @@ namespace Dream
 			
 			class CocoaContext : public Object, implements IContext {
 			protected:
-				//bool m_allowResize;
-				//String m_windowTitle;
+
+#ifdef DREAM_USE_OPENGL20
+				typedef OpenGL20::Renderer MacOSXOpenGLRenderer;
+#endif
+				REF(MacOSXOpenGLRenderer) m_renderer;
 				
-				//Vector<2, uint32_t> currentSize;
-								
-				struct CocoaContextImpl;
-				CocoaContextImpl *m_impl;
+				NSWindow * m_window;
+				NSOpenGLView * m_view;
+				NSAutoreleasePool * m_pool;
+				CocoaContextDelegate * m_delegate;
 				
-			public:				
+				// Sending frame notifications to main thread
+				REF(FrameNotificationSource) m_notificationSource;
+				REF(Events::Loop) m_loop;
+				
+				// Display link callback
+				static CVReturn displayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* now, const CVTimeStamp* outputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext);
+				CVReturn displayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* now, const CVTimeStamp* outputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut);
+				
+				// Display link state for managing rendering thread
+				CVDisplayLinkRef m_displayLink;
+				bool m_displayWillRefresh;
+				unsigned m_displayRefreshStallCount;
+				
+				// Setup the context
+				NSString * applicationName();
+				void createApplicationMenus();
+				void transformToForegroundApplication();
+				
+				// Event handling
+				unsigned buttonFromEvent(NSEvent * theEvent);
+				bool handleMouseEvent(NSEvent * theEvent, unsigned button, IInputHandler * handler);
+				
+				// For global availability of display modes.
+				class Modes {
+				public:
+					Modes ();
+				};
+				
+				static Modes s_modes;
+				
+			public:
+				static std::vector<REF(IContextMode)> availableModes ();
+				
 				virtual void setTitle (String title);
 				
 				virtual void setFrameSync (bool vsync);
@@ -51,9 +95,7 @@ namespace Dream
 				
 				virtual void scheduleFrameNotificationCallback (REF(Events::Loop) loop, FrameCallbackT callback);
 
-#ifdef DREAM_USE_OPENGL20
-				virtual REF(OpenGL20::Renderer) renderer ();
-#endif
+				virtual REF(MacOSXOpenGLRenderer) renderer ();
 			};
 		}
 	}

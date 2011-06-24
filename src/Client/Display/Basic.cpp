@@ -47,6 +47,8 @@ namespace Dream {
 
 				REF(IContextMode) mode = ContextManager::sharedManager()->bestContextMode();
 				
+				ensure(mode);
+				
 				m_displayContext = mode->setup(config);
 				m_displayContext->setTitle(String("Dream Framework (") + String(buildRevision()) + ")");
 
@@ -110,7 +112,6 @@ namespace Dream {
 			void BasicApplication::run ()
 			{
 				m_displayContext->show();
-				m_displayContext->setFrameSync(false);
 				
 				m_eventLoop->setStopWhenIdle(false);
 				m_eventLoop->runForever();
@@ -155,7 +156,7 @@ namespace Dream {
 			}
 			
 			void BasicScene::didBecomeCurrent () {				
-				for(unsigned i = 0; i < m_layers.size(); i += 1)
+				for (unsigned i = 0; i < m_layers.size(); i += 1)
 					m_layers[i]->didBecomeCurrent(m_sceneManager, this);
 
 				Scene::didBecomeCurrent();
@@ -163,7 +164,7 @@ namespace Dream {
 			
 			void BasicScene::willRevokeCurrent (ISceneManager * sceneManager)
 			{
-				for(unsigned i = 0; i < m_layers.size(); i += 1)
+				for (unsigned i = 0; i < m_layers.size(); i += 1)
 					m_layers[i]->willRevokeCurrent(sceneManager, this);
 				
 				m_layers.clear();
@@ -173,7 +174,7 @@ namespace Dream {
 			
 			void BasicScene::renderLayersForTime (TimeT time)
 			{
-				for(unsigned i = 0; i < m_layers.size(); i += 1)
+				for (unsigned i = 0; i < m_layers.size(); i += 1)
 					m_layers[i]->renderFrameForTime(this, time);
 			}
 			
@@ -181,7 +182,7 @@ namespace Dream {
 			{
 				bool result = false;
 				
-				for(unsigned i = 0; i < m_layers.size(); i += 1)
+				for (unsigned i = 0; i < m_layers.size(); i += 1)
 					result = m_layers[i]->process(input) | result;
 				
 				return result;
@@ -197,6 +198,11 @@ namespace Dream {
 			void BasicScene::add (PTR(ILayer) layer)
 			{
 				m_layers.push_back(layer);
+			}
+			
+			void BasicScene::removeAll ()
+			{
+				m_layers.resize(0);
 			}
 		}
 	}

@@ -60,9 +60,12 @@ namespace Dream
 			
 			}
 			
-			MotionInput::MotionInput(const Key &e, const StateT &s, const Vec3 &p, const Vec3 &m) 
-			: m_key(e), m_state(s), m_position(p), m_motion(m) {
-			
+			MotionInput::MotionInput(const Key &key, const StateT &state, const Vec3 &position, const Vec3 &motion, const AlignedBox<2> & bounds) 
+				: m_key(key), m_state(state), m_motion(motion), m_bounds(bounds)
+			{
+				// We ensure that m_position is within the coordinate system provided by bounds
+				// Normally this is the origin, but a Viewport may provide a different coordinate system.
+				m_position = position - (bounds.min() << 0.0);
 			}
 			
 			bool MotionInput::act(IInputHandler &h) const {
@@ -71,6 +74,10 @@ namespace Dream
 			
 			MotionInput::~MotionInput () {
 			
+			}
+			
+			MotionInput MotionInput::inputByRefiningBounds(const AlignedBox<2> & updatedBounds) {
+				return MotionInput(m_key, m_state, m_position, m_motion, updatedBounds);
 			}
 			
 			ResizeInput::ResizeInput (const Vec2u & oldSize, const Vec2u & newSize)

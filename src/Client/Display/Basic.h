@@ -74,6 +74,7 @@ namespace Dream {
 					virtual void renderFrameForTime (TimeT time);
 					
 					void add (PTR(ILayer) layer);
+					void removeAll ();
 			};
 			
 		}

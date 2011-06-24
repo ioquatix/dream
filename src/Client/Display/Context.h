@@ -34,10 +34,9 @@ namespace Dream {
 			public:
 				virtual ~IContextMode();
 				
-				virtual StringT descriptiveName ();
-				virtual ResolutionT resolution ();
+				virtual StringT descriptiveName () const abstract;
 				
-				virtual REF(IContext) setup (PTR(Dictionary) config);
+				virtual REF(IContext) setup (PTR(Dictionary) config) const abstract;
 			};
 			
 			class ContextManager {
