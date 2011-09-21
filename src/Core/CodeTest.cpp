@@ -10,7 +10,6 @@
 #include "CodeTest.h"
 
 #include "Strings.h"
-#include "Singleton.h"
 
 #include <iostream>
 
@@ -28,12 +27,20 @@ namespace Dream
 		
 #pragma mark -
 		
-		typedef Singleton<CodeTestRegistry> g_codeTestRegistry;
+		CodeTestRegistry * sharedCodeTestRegistry () {
+			static CodeTestRegistry * s_codeTestRegistry = NULL;
+			
+			if (!s_codeTestRegistry) {
+				s_codeTestRegistry = new CodeTestRegistry;
+			}
+			
+			return s_codeTestRegistry;
+		}
 
 		CodeTestRegistry::CodeTestRegistry ()
 		{
 		}
-
+		
 		void CodeTestRegistry::addTest (CodeTest * test)
 		{
 			m_codeTests.push_back(test);
@@ -45,13 +52,13 @@ namespace Dream
 			
 			REF(CodeTest::Statistics) overall = new CodeTest::Statistics("Code Test Registry");
 			
-			foreach (CodeTest * test, m_codeTests)
+			foreach (test, m_codeTests)
 			{
-				//if (test->m_name != "Cascade Test") continue;
+				if ((*test)->m_name != "Thread Test") continue;
 				
-				test->performTests ();
+				(*test)->performTests ();
 
-				REF(CodeTest::Statistics) stats = test->overallStatistics();
+				REF(CodeTest::Statistics) stats = (*test)->overallStatistics();
 				*overall += *stats;
 			}
 
@@ -61,12 +68,16 @@ namespace Dream
 		
 		void CodeTestRegistry::performAllTests ()
 		{
-			g_codeTestRegistry::instance()._performAllTests();
+			sharedCodeTestRegistry()->_performAllTests();
 		}
 
 		CodeTest::CodeTest (std::string name) : m_name (name)
 		{
-			g_codeTestRegistry::instance().addTest(this);
+			sharedCodeTestRegistry()->addTest(this);
+		}
+		
+		CodeTest::~CodeTest ()
+		{
 		}
 
 		void CodeTest::testing (std::string testName)
@@ -151,9 +162,9 @@ namespace Dream
 		{
 			REF(Statistics) overall = new Statistics(m_name);
 
-			foreach(PTR(Statistics) stats, m_tests)
+			foreach(stats, m_tests)
 			{
-				*overall += *stats;
+				*overall += **stats;
 			}
 
 			return overall;
@@ -161,9 +172,9 @@ namespace Dream
 
 		void CodeTest::printSummaries () const
 		{
-			foreach (PTR(Statistics) stats, m_tests)
+			foreach (stats, m_tests)
 			{
-				stats->printSummary();
+				(*stats)->printSummary();
 			}
 		}
 

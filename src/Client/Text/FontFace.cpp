@@ -86,16 +86,16 @@ namespace Dream
 			
 				FontFace::~FontFace ()
 				{
-					int cnt = 0;
+					int count = 0;
 					
-					for (iterateEach(m_glyphCache, g)) {
-						delete g->second;
-						cnt += 1;
+					foreach(glyph, m_glyphCache) {
+						delete glyph->second;
+						count += 1;
 					}
 					
 					FT_Done_Face(m_face);
 					
-					std::cerr << "Freed " << cnt << " cached glyphs." << std::endl;
+					std::cerr << "Freed " << count << " cached glyphs." << std::endl;
 				}
 			
 				bool FontFace::hasKerning ()

@@ -20,8 +20,6 @@ namespace Dream {
 		TimeT systemTime ();
 		void sleep (const TimeT & s);
 		
-		class Stopwatch;
-		
 		class Timer {
 		protected:
 			mutable TimeT m_last, m_total;
@@ -34,6 +32,7 @@ namespace Dream {
 			virtual TimeT time () const;
 		};
 		
+		// Counts up
 		class Stopwatch {
 		protected:		
 			mutable TimeT m_total;
@@ -57,6 +56,7 @@ namespace Dream {
 			void pause ();
 		};
 		
+		// Counts down
 		class EggTimer : public Stopwatch
 		{			
 		protected:

@@ -32,16 +32,16 @@ namespace Dream {
 			/* An array of the root nodes */
 			NodeArray m_roots;
 			
-			String m_name;
+			StringT m_name;
 
 			const IAxis *m_location;
 			
 	public:
-			Entity (String name) : m_name(name) {
+			Entity (StringT name) : m_name(name) {
 				
 			}
 			
-			Entity (String name, const IAxis *location) : m_name(name), m_location(location) {
+			Entity (StringT name, const IAxis *location) : m_name(name), m_location(location) {
 				
 			}
 			
@@ -57,11 +57,11 @@ namespace Dream {
 			
 			void render (Renderer* r) const;
 			
-			const String name() const {
+			const StringT name() const {
 				return m_name;
 			}
 			
-			void setName(String newName) {
+			void setName(StringT newName) {
 				m_name = newName;
 			}
 
@@ -85,7 +85,7 @@ namespace Dream {
 				typedef std::vector<IAxis*> AxisArray;
 		
 			protected:
-				String m_name;
+				StringT m_name;
 				
 				REF(IRenderable) m_renderable;
 				AxisArray m_axes;
@@ -94,8 +94,8 @@ namespace Dream {
 				Vec3 m_color;
 				
 			public:
-				EntityComponent (String name, REF(IRenderable) renderable);
-				EntityComponent (String name);
+				EntityComponent (StringT name, REF(IRenderable) renderable);
+				EntityComponent (StringT name);
 				virtual ~EntityComponent();
 				
 				REF(IRenderable) renderable () {
@@ -106,11 +106,11 @@ namespace Dream {
 					return m_renderable;
 				}
 				
-				const String name () {
+				const StringT name () {
 					return m_name;
 				}
 				
-				void setName (String name) {
+				void setName (StringT name) {
 					m_name = name;
 				}
 				

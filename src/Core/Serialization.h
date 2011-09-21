@@ -97,7 +97,7 @@ namespace Dream
 		class TypeSerialization<TI_STRING>
 		{
 		public:	
-			typedef String TypeT;
+			typedef StringT TypeT;
 			
 			static TypeT readFromBuffer (const Buffer & buf, IndexT & offset)
 			{
@@ -105,7 +105,7 @@ namespace Dream
 				
 				offset += buf.read(offset, length);
 				
-				String value(buf.at(offset), buf.at(offset + length));
+				StringT value(buf.at(offset), buf.at(offset + length));
 				
 				offset += length;
 				
@@ -146,7 +146,7 @@ namespace Dream
 		TypeIdentifierSpecialization(int64_t, TI_INT64)
 		TypeIdentifierSpecialization(float, TI_FLOAT32)
 		TypeIdentifierSpecialization(double, TI_FLOAT64)
-		TypeIdentifierSpecialization(String, TI_STRING)
+		TypeIdentifierSpecialization(StringT, TI_STRING)
 	}
 }
 

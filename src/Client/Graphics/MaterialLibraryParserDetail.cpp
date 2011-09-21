@@ -32,10 +32,10 @@ namespace Dream
 					REF(MaterialFactory) material;
 					MaterialLibrary * materialLibrary;
 					
-					String defineKey, defineValue;
+					StringT defineKey, defineValue;
 					TextureUnitProperties textureProperty;
 					
-					String blendFuncSrc, blendFuncDst;
+					StringT blendFuncSrc, blendFuncDst;
 				};
 				
 				struct CommentsParser : public grammar<CommentsParser> {
@@ -65,11 +65,11 @@ namespace Dream
 					
 					// Blend Function
 					void setBlendFuncSrc(const ByteT *s, const ByteT *e) const {
-						m_state.blendFuncSrc = String(s, e);
+						m_state.blendFuncSrc = StringT(s, e);
 					}
 					
 					void setBlendFuncDst(const ByteT *s, const ByteT *e) const {
-						m_state.blendFuncDst = String(s, e);
+						m_state.blendFuncDst = StringT(s, e);
 					}
 					
 					void finishBlendProperty () const {
@@ -78,11 +78,11 @@ namespace Dream
 					
 					// Shader Defines
 					void setDefineKey(const ByteT *s, const ByteT *e) const {
-						m_state.defineKey = String(s, e);
+						m_state.defineKey = StringT(s, e);
 					}
 					
 					void setDefineValue(const ByteT *s, const ByteT *e) const {
-						m_state.defineValue = String(s, e);
+						m_state.defineValue = StringT(s, e);
 					}
 					
 					void finishDefineProperty () const {
@@ -91,28 +91,28 @@ namespace Dream
 					
 					// Texturing
 					void setTexturePath (const ByteT *s, const ByteT *e) const {
-						m_state.textureProperty.resourcePath = String(s,e);
+						m_state.textureProperty.resourcePath = StringT(s,e);
 					}
 					
 					void setTextureName (const ByteT *s, const ByteT *e) const {
-						m_state.textureProperty.name = String(s,e);
+						m_state.textureProperty.name = StringT(s,e);
 					}
 					
 					void setTextureMinFilter (const ByteT *s, const ByteT *e) const {
-						m_state.textureProperty.minFilter = String(s,e);
+						m_state.textureProperty.minFilter = StringT(s,e);
 					}
 					
 					void setTextureMagFilter (const ByteT *s, const ByteT *e) const {
-						m_state.textureProperty.magFilter = String(s,e);
+						m_state.textureProperty.magFilter = StringT(s,e);
 					}
 					
 					void setTextureMipMap (const ByteT *s, const ByteT *e) const {
-						String value = String(s,e);
+						StringT value = StringT(s,e);
 						m_state.textureProperty.generateMipMap = (value == "YES");
 					}
 					
 					void setTextureTarget (const ByteT *s, const ByteT *e) const {
-						m_state.textureProperty.target = String(s,e);
+						m_state.textureProperty.target = StringT(s,e);
 					}
 					
 					void finishTextureProperty () const {
@@ -123,12 +123,12 @@ namespace Dream
 					}
 					
 					void setShaderPath(const ByteT *s, const ByteT *e) const {
-						String shaderPath(s, e);
+						StringT shaderPath(s, e);
 						m_state.material->setShaderPath(shaderPath);
 					}
 					
 					void beginNewMaterial(const ByteT *s, const ByteT *e) const {
-						String materialName(s, e);
+						StringT materialName(s, e);
 						m_state.material = new MaterialFactory(materialName, m_state.loader);
 					}
 					
@@ -209,7 +209,7 @@ namespace Dream
 						}
 						
 						static void debug (ByteT * s, ByteT * e) {
-							std::cout << String(s,e) << std::endl;
+							std::cout << StringT(s,e) << std::endl;
 						}
 					};
 				};
@@ -235,9 +235,9 @@ namespace Dream
 					cout << "Success!" << endl;
 					cout << "Listing loaded materials..." << endl;
 					
-					for (iterateEach(m_factories, f)) {
-						cout << "material " << (*f).second->resourceName();
-						cout << " shader " << (*f).second->shaderPath () << endl;
+					foreach(f, m_factories) {
+						cout << "material " << f->second->resourceName();
+						cout << " shader " << f->second->shaderPath () << endl;
 					}			
 				}
 			}

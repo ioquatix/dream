@@ -21,7 +21,6 @@ namespace Dream
 	namespace Core
 	{
 		typedef std::string StringT;
-		typedef std::string String; // Legacy
 		typedef std::stringstream StringStreamT;
 		
 		/// Converts UTF8 to UTF16

@@ -35,11 +35,11 @@ namespace Dream
 				TextureUnitProperties ();
 				
 				bool generateMipMap;
-				String resourcePath;
-				String name;
-				String minFilter, magFilter;
-				String blendFuncSrc, blendFuncDst;
-				String target;
+				StringT resourcePath;
+				StringT name;
+				StringT minFilter, magFilter;
+				StringT blendFuncSrc, blendFuncDst;
+				StringT target;
 			};
 			
 #pragma mark -
@@ -47,32 +47,32 @@ namespace Dream
 			class MaterialFactory : public Object, implements IMaterialFactory 
 			{
 			protected:		
-				String m_name;
+				StringT m_name;
 				
 				bool m_shaderPathSet;
-				String m_shaderPath;
+				StringT m_shaderPath;
 				
-				std::map<String, String> m_definitions;
+				std::map<StringT, StringT> m_definitions;
 				std::list<TextureUnitProperties> m_texUnits;
 				
 				REF(const ILoader) m_loader;
 				
 				bool m_blendingEnabled;
-				String m_blendFuncSrc, m_blendFuncDst;
+				StringT m_blendFuncSrc, m_blendFuncDst;
 				
 			public:
-				MaterialFactory (String name, const ILoader * loader);
+				MaterialFactory (StringT name, const ILoader * loader);
 				virtual ~MaterialFactory ();
 				
-				virtual const String & resourceName () const { return m_name; }
+				virtual const StringT & resourceName () const { return m_name; }
 				
-				void setShaderPath (String shaderPath);
-				const String & shaderPath () const { return m_shaderPath; }
+				void setShaderPath (StringT shaderPath);
+				const StringT & shaderPath () const { return m_shaderPath; }
 				
-				void setDefine(String name, String value = "");
-				void clearDefine(String name);
+				void setDefine(StringT name, StringT value = "");
+				void clearDefine(StringT name);
 				
-				void setBlendFunc (String src, String dst);
+				void setBlendFunc (StringT src, StringT dst);
 				
 				void addTexture (const TextureUnitProperties &p);
 				
@@ -94,7 +94,7 @@ namespace Dream
 				};
 				
 			protected:
-				std::map<String, REF(IMaterialFactory)> m_factories;
+				std::map<StringT, REF(IMaterialFactory)> m_factories;
 				REF(const ILoader) m_loader;
 				
 			public:		
@@ -103,7 +103,7 @@ namespace Dream
 				
 				void addMaterialFactory (REF(MaterialFactory) materialFactory);
 				
-				virtual REF(IMaterialFactory) resourceNamed (String name) const;
+				virtual REF(IMaterialFactory) resourceNamed (StringT name) const;
 			};
 			
 		}

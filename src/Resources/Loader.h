@@ -50,9 +50,9 @@ namespace Dream {
 		/// Default application resources path.
 		Path applicationWorkingPath();
 		
-		String extension(const Path &s, bool dot);
+		StringT extension(const Path &s, bool dot);
 		
-		typedef std::map<String, REF(ILoadable)> LoadersT;
+		typedef std::map<StringT, REF(ILoadable)> LoadersT;
 		
 		class ILoader : implements IObject {
 		public:
@@ -62,8 +62,8 @@ namespace Dream {
 			
 			/// Normalize a resource request
 			virtual Path pathForResource(Path) const abstract;
-			virtual Path pathForResource(String name, String ext, Path dir) const abstract;
-			virtual void resourcesForType(String ext, Path subdir, std::vector<Path> & paths) const abstract;
+			virtual Path pathForResource(StringT name, StringT ext, Path dir) const abstract;
+			virtual void resourcesForType(StringT ext, Path subdir, std::vector<Path> & paths) const abstract;
 
 			/// Primary interface for loading resources
 			template <typename InterfaceT>
@@ -82,9 +82,12 @@ namespace Dream {
 			virtual void preloadResource (const Path & path) abstract;
 			virtual void preloadResources (std::vector<Path> & paths) abstract;
 
-			virtual void setLoaderForExtension (PTR(ILoadable) loadable, String ext) abstract;
-			virtual PTR(ILoadable) loaderForExtension (String ext) const abstract;
+			virtual void setLoaderForExtension (PTR(ILoadable) loadable, StringT ext) abstract;
+			virtual PTR(ILoadable) loaderForExtension (StringT ext) const abstract;
 			virtual void addLoader(PTR(ILoadable) loader) abstract;
+			
+			/// Load the raw data for a given path.
+			virtual REF(IData) fetchDataForPath (const Path & path) const abstract;
 		};
 		
 		class Loader : public Object, implements ILoader {
@@ -99,10 +102,9 @@ namespace Dream {
 			typedef std::map<Path, REF(IData)> CacheT;
 			mutable CacheT m_dataCache;
 			
-			REF(IData) fetchDataForPath (const Path & path) const;
 		public:
-			virtual void setLoaderForExtension (PTR(ILoadable) loadable, String ext);
-			virtual PTR(ILoadable) loaderForExtension (String ext) const;
+			virtual void setLoaderForExtension (PTR(ILoadable) loadable, StringT ext);
+			virtual PTR(ILoadable) loaderForExtension (StringT ext) const;
 			virtual void addLoader(PTR(ILoadable) loader);
 			
 			Loader ();
@@ -115,18 +117,17 @@ namespace Dream {
 			
 			// Normalize a resource request
 			Path pathForResource(Path) const;
-			Path pathForResource(String name, String ext, Path dir) const;
+			Path pathForResource(StringT name, StringT ext, Path dir) const;
 			
 			// Load a path directly with no processing
 			virtual REF(Object) loadPath (const Path &res) const;
+			virtual REF(IData) fetchDataForPath (const Path & path) const;
 						
-			void resourcesForType(String ext, Path subdir, std::vector<Path> &paths) const;
+			void resourcesForType(StringT ext, Path subdir, std::vector<Path> &paths) const;
 
 			virtual void preloadResource (const Path & path);
 			virtual void preloadResources (std::vector<Path> & paths);
 		};
-		
-		REF(Loader) applicationLoader ();
 		
 		/*
 		class AggregateLoader {

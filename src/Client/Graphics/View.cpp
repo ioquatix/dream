@@ -153,7 +153,7 @@ namespace Dream {
 				outp << space << "Enabled = " << m_enabled << " Bounds = " << m_bounds << " Rotation = " << m_rotation << " Subviews = " << m_subviews.size() << endl;
 				outp << space << "Size = " << m_size << " Scale = " << m_scale << " Offset = " << m_offset << " Orientation = " << m_orientation << endl;
 				
-				for (iterateEach(m_subviews, sv)) {
+				foreach (sv, m_subviews) {
 					(*sv)->dumpStructure(outp, indent + 1);
 				}
 			}
@@ -217,7 +217,7 @@ namespace Dream {
 				if (first && intersectsWith(point))
 					views.push_back(this);
 				
-				for (iterateEach(m_subviews, sv)) {
+				foreach(sv, m_subviews) {
 					if ((*sv)->intersectsWith(point)) {
 						views.push_back((*sv).get());			
 						
@@ -239,7 +239,6 @@ namespace Dream {
 				else
 					boundingBoxRenderer.setPrimaryColor(Vec4(0.0, 1.0, 0.0, 0.2));
 				
-				
 				if (m_controller->debugMode())
 					boundingBoxRenderer.render(scene->renderer(), m_bounds);
 			}
@@ -256,7 +255,7 @@ namespace Dream {
 				
 				renderView(scene, time);
 				
-				for (iterateEach(m_subviews, sv)) {
+				foreach(sv, m_subviews) {
 					(*sv)->renderFrameForTime(scene, time);
 				}
 				
@@ -266,13 +265,13 @@ namespace Dream {
 			}
 			
 			void View::didBecomeCurrent (ISceneManager * manager, IScene * scene) {
-				for (iterateEach(m_subviews, sv)) {
+				foreach(sv, m_subviews) {
 					(*sv)->didBecomeCurrent(manager, scene);
 				}
 			}
 			
 			void View::willRevokeCurrent (ISceneManager * manager, IScene * scene) {
-				for (iterateEach(m_subviews, sv)) {
+				foreach(sv, m_subviews) {
 					(*sv)->willRevokeCurrent(manager, scene);
 				}			
 			}
@@ -295,7 +294,7 @@ namespace Dream {
 				bool result = false;
 				
 				// Propagate resize input down
-				for (iterateEach(m_subviews, sv)) {
+				foreach(sv, m_subviews) {
 					result = result || (*sv)->resize(ipt);
 				}
 				
@@ -307,7 +306,7 @@ namespace Dream {
 				
 				bool handled = false;
 				
-				for (iterateEach(m_subviews, sv)) {
+				foreach(sv, m_subviews) {
 					handled = handled || (*sv)->button(ipt);
 				}
 				
@@ -333,7 +332,7 @@ namespace Dream {
 			void View::enable () {
 				m_enabled = true;
 				
-				for (iterateEach(m_subviews, sv)) {
+				foreach(sv, m_subviews) {
 					(*sv)->enable();
 				}
 			}
@@ -341,7 +340,7 @@ namespace Dream {
 			void View::disable () {
 				m_enabled = false;
 				
-				for (iterateEach(m_subviews, sv)) {
+				foreach(sv, m_subviews) {
 					(*sv)->disable();
 				}
 			}
@@ -426,8 +425,6 @@ namespace Dream {
 			}
 		
 #pragma mark -
-
-			
 			
 			TextView::TextView (PTR(View) parent, PTR(Font) font) : View(parent), m_offset(0) {
 				m_textBuffer = new Text::TextBuffer(font);
@@ -463,7 +460,6 @@ namespace Dream {
 			bool TextView::motion (const MotionInput & input) {
 				return View::motion(input);
 			}
-		
 		}
 	}
 }

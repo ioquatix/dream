@@ -42,8 +42,6 @@ namespace Dream {
 #pragma mark -
 #pragma mark class Socket
 		
-		
-		
 		Socket::Socket (int s) : m_socket(s) {
 		}
 		
@@ -348,10 +346,9 @@ namespace Dream {
 		
 		bool ClientSocket::connect (const AddressesT & addresses)
 		{
-			foreach (const Address & address, addresses)
-			{
-				if (connect(address))
-					return true;
+			foreach (address, addresses) {
+				if (connect(*address))
+					return true;			
 			}
 					
 			return false;

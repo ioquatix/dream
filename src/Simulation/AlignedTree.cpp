@@ -8,7 +8,7 @@
  */
 
 #include "AlignedTree.h"
-#include <Dream/Assertion.h>
+#include "../Assertion.h"
 
 namespace Dream {
 	namespace Geometry {

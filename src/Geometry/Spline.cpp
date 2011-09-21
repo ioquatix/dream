@@ -205,7 +205,7 @@ namespace Dream {
 				std::list<PlaneAtTime> planes;
 				
 				//Generate the plane for each point in the spline
-				for (iterateEach(times, t)) {
+				foreach(t, times) {
 					PlaneAtTime pat;
 					pat.interpolated = false;
 					pat.time = *t;
@@ -215,7 +215,7 @@ namespace Dream {
 				}
 				
 				//Subdivide parallel planes that are in opporsite directions
-				for (iterateEach(planes, pl)) {
+				foreach(pl, planes) {
 					PlaneAtTime &p1 = *pl; pl++; // Fetch the current plane
 					PlaneAtTime &p2 = *pl; // Fetch the next plane
 					
@@ -326,7 +326,7 @@ namespace Dream {
 				*/
 				
 				// What spline should we use for the new spline???
-				for (iterateEach(normals, nml)) {
+				foreach(nml, normals) {
 					if (!(*nml).fixed) continue; // Skip temporary normals
 					// This next line is important but doesn't compile right now
 					// normalSpline->points().push_back(spline->pointAtTime((*nml).time) + ((*nml).normal.normalize() * 100));

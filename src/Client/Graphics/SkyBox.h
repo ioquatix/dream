@@ -21,13 +21,13 @@ namespace Dream {
 				static const int SIDES = 6;
 				
 			protected:
-				String m_name;
+				StringT m_name;
 				RealT m_size;
 				
 				REF(Texture) m_crossTexture;
 				
 			public:				
-				SkyBox(const String & name, const RealT & size);
+				SkyBox(const StringT & name, const RealT & size);
 				SkyBox(const RealT & size);
 				
 				void setSize(RealT size) { m_size = size; }

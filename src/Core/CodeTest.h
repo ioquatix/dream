@@ -105,6 +105,7 @@ namespace Dream
 
 		public:
 			CodeTest (std::string name);
+			virtual ~CodeTest ();
 
 			/// Used to indicate the next set of assertions are testing a particular feature or functionality.
 			void testing (std::string testName);

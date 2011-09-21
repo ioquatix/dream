@@ -10,13 +10,12 @@
 #ifndef _DREAM_SIMULATION_PATHFINDER_H
 #define _DREAM_SIMULATION_PATHFINDER_H
 
-#include <Dream/Numerics/Numerics.h>
+#include "../Numerics/Numerics.h"
 
 #include <queue>
 #include <vector>
 #include <set>
 #include <map>
-
 #include <iostream>
 
 namespace Dream {
@@ -138,7 +137,7 @@ namespace Dream {
 					openPop();
 				}
 				
-				for (iterateEach(m_closed, closedNode)) {
+				foreach(closedNode, m_closed) {
 					delete *closedNode;
 				}
 			}

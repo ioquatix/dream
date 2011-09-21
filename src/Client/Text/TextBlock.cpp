@@ -203,8 +203,8 @@ namespace Dream
 				r.setImage(img);
 				r.setOrigin(pen);
 				
-				for (iterateEach(m_chars, c)) {
-					AlignedBox2u box = r.processCharacter(*c);
+				foreach (chr, m_chars) {
+					AlignedBox2u box = r.processCharacter(*chr);
 					
 					if (boxes) boxes->push_back(box);
 				}
@@ -227,8 +227,8 @@ namespace Dream
 			
 			TextBlock::~TextBlock ()
 			{
-				for (iterateEach(m_lines, line)) {
-					delete (*line);
+				foreach (line, m_lines) {
+					delete *line;
 				}
 			}
 			
@@ -321,8 +321,8 @@ namespace Dream
 			
 			void TextBlock::clear ()
 			{
-				for (iterateEach(m_lines, line)) {
-					delete (*line);
+				foreach (line, m_lines) {
+					delete *line;
 				}
 				
 				m_lines.clear();
@@ -341,7 +341,7 @@ namespace Dream
 			{
 				TextLine * line = lastLine();
 				
-				for (iterateEach(str, c)) {
+				foreach (c, str) {
 					if (*c == '\n') {
 						line = new TextLine(this);
 						m_lines.push_back(line);
@@ -368,7 +368,7 @@ namespace Dream
 			{
 				std::wstring str;
 				
-				for (iterateEach(m_lines, line)) {
+				foreach (line, m_lines) {
 					str += (*line)->text();
 				}
 				
@@ -392,7 +392,7 @@ namespace Dream
 				
 				//std::cout << "Text Origin: " << textOrigin() << std::endl;
 				
-				for (iterateEach(m_lines, line)) {
+				foreach (line, m_lines) {
 					if (m_lineDir == TB) {
 						//std::cerr << "Line Origin: " << origin - pen << std::endl;
 						(*line)->compositeToImage(pbuf, origin - pen, boxes);
@@ -417,7 +417,7 @@ namespace Dream
 					result[X] = lineWidth();
 				} else {
 					result[X] = 0;
-					for (iterateEach(m_lines, line)) {
+					foreach (line, m_lines) {
 						//std::wcout << "'" << (*line)->text() << "' " << (*line)->width() << "(" << result[X] << ")" << std::endl;
 						result[X] = std::max(result[X], (*line)->width());
 					}

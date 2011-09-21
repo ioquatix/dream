@@ -38,7 +38,7 @@ namespace Dream
 		class URI
 		{
 		private:
-			String m_url;
+			StringT m_url;
 
 			class Parser
 			{
@@ -75,48 +75,48 @@ namespace Dream
 
 		public:
 			/// Construct a URI from a RFC2396 formatted string.
-			URI (const String & s);
+			URI (const StringT & s);
 
 			/// Construct a URI from a file path.
-			URI (const String & scheme, const Path & path);
+			URI (const StringT & scheme, const Path & path);
 
 			/// The scheme component of the URI.
-			String scheme () const;
+			StringT scheme () const;
 
 			/// The location portion of the URI.
-			String location () const;
+			StringT location () const;
 
 			/// The hostname portion of the URI.
-			String hostname () const;
+			StringT hostname () const;
 
 			/// The username portion of the URI.
-			String username () const;
+			StringT username () const;
 
 			/// The password portion of the URI.
-			String password () const;
+			StringT password () const;
 
 			/// The port number of the URI (if specified) or 0.
 			unsigned port () const;
 
 			/// The port number as a string, or the scheme.
-			String service () const;
+			StringT service () const;
 
-			String resource () const;
+			StringT resource () const;
 
 			/// Whether or not the URI was relative or absolute.
 			bool isAbsolute () const;
 
 			/// The path portion of the URI.
-			String path () const;
+			StringT path () const;
 
 			/// The query portion of the URI.
-			String query () const;
+			StringT query () const;
 
 			/// The parameters portion of the URI.
-			String params () const;
+			StringT params () const;
 
 			/// The fragment portion of the URI.
-			String fragment () const;
+			StringT fragment () const;
 
 			/// True if the URI represents a file path. The path is local and accessible via path().
 			bool isFilePath ();

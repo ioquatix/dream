@@ -95,7 +95,7 @@ namespace Dream
 			glPointSize(size);
 
 			glBegin(GL_POINTS);
-			for (iterateEach(m_particles, p)) {
+			foreach(p, m_particles) {
 				
 				if ((*p)->active()) {
 					(*p)->render(r);

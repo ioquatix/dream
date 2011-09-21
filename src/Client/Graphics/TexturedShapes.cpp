@@ -134,7 +134,7 @@ namespace Dream {
 			
 			
 			
-			TexturedBox::TexturedBox (const String & name, const RealT & size, const RealT & inset)
+			TexturedBox::TexturedBox (const StringT & name, const RealT & size, const RealT & inset)
 				: m_name(name), m_size(size), m_inset(inset)
 			{
 

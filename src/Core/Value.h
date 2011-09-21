@@ -22,7 +22,7 @@ namespace Dream
 		 */
 		class ConversionError : public std::exception
 		{
-			String m_what;
+			StringT m_what;
 		public:
 			ConversionError (const std::type_info & convertFrom, const std::type_info & convertTo) throw ();
 			virtual ~ConversionError () throw ();
@@ -66,7 +66,7 @@ namespace Dream
 				return equal(&other);
 			}
 			
-			virtual const std::type_info & typeinfo () const abstract;
+			virtual const std::type_info & valueType () const abstract;
 			
 			/// Compares two values
 			/// @returns True if the TypedValue objects are of the same type and contained value.			
@@ -170,7 +170,7 @@ namespace Dream
 				return TypeIdentifierTypeTraits<ValueT>::TypeIdentifierValue;
 			}
 			
-			virtual const std::type_info & typeinfo () const
+			virtual const std::type_info & valueType () const
 			{
 				return typeid(ValueT);
 			}
@@ -248,7 +248,7 @@ namespace Dream
 			}
 			else 
 			{
-				throw ConversionError(typeinfo(), typeid(ValueT));
+				throw ConversionError(valueType(), typeid(ValueT));
 			}
 		}
 
@@ -263,7 +263,7 @@ namespace Dream
 				v->value() = value;
 			} else
 			{
-				throw ConversionError(typeinfo(), typeid(ValueT));
+				throw ConversionError(valueType(), typeid(ValueT));
 			}
 		}
 
@@ -285,7 +285,7 @@ namespace Dream
 			{
 			}
 			
-			explicit Value (const char * value) : m_ptr (new TypedValue<String> (String(value)))
+			explicit Value (const char * value) : m_ptr (new TypedValue<StringT> (StringT(value)))
 			{
 			}
 

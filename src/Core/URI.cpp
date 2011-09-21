@@ -146,39 +146,39 @@ namespace Dream
 			#undef SCAN
 		}
 
-		URI::URI (const String & s) : m_url (s), m_parser (m_url.c_str ())
+		URI::URI (const StringT & s) : m_url (s), m_parser (m_url.c_str ())
 		{
 		}
 
-		URI::URI (const String & scheme, const Path & path)
+		URI::URI (const StringT & scheme, const Path & path)
 		{
-			std::stringstream s;
+			StringStreamT s;
 			s << scheme << ":" << path;
 
 			m_url = s.str();
 			m_parser = Parser(m_url.c_str());
 		}
 
-		std::string URI::scheme () const
+		StringT URI::scheme () const
 		{
 			if (m_parser.schemeStart)
-				return std::string(m_parser.schemeStart, m_parser.schemeEnd);
+				return StringT(m_parser.schemeStart, m_parser.schemeEnd);
 			else
 				return "";
 		}
 
-		std::string URI::location () const
+		StringT URI::location () const
 		{
 			if (m_parser.locationStart)
-				return std::string(m_parser.locationStart, m_parser.locationEnd);
+				return StringT(m_parser.locationStart, m_parser.locationEnd);
 			else
 				return "";
 		}
 
-		std::string URI::hostname () const
+		StringT URI::hostname () const
 		{
 			if (m_parser.hostnameStart)
-				return std::string(m_parser.hostnameStart, m_parser.hostnameEnd);
+				return StringT(m_parser.hostnameStart, m_parser.hostnameEnd);
 			else
 				return "";
 		}
@@ -191,7 +191,7 @@ namespace Dream
 			{
 				try
 				{
-					std::string portString(m_parser.portStart, m_parser.portEnd);
+					StringT portString(m_parser.portStart, m_parser.portEnd);
 					return lexical_cast<unsigned>(portString);
 				} catch(bad_lexical_cast &)
 				{
@@ -201,28 +201,28 @@ namespace Dream
 				return 0;
 		}
 
-		String URI::service () const
+		StringT URI::service () const
 		{
 			if (m_parser.portStart)
-				return std::string(m_parser.portStart, m_parser.portEnd);
+				return StringT(m_parser.portStart, m_parser.portEnd);
 			else if (m_parser.schemeStart)
 				return scheme();
 			else
 				return "";
 		}
 
-		std::string URI::username () const
+		StringT URI::username () const
 		{
 			if (m_parser.usernameStart)
-				return std::string(m_parser.usernameStart, m_parser.usernameEnd);
+				return StringT(m_parser.usernameStart, m_parser.usernameEnd);
 			else
 				return "";
 		}
 
-		std::string URI::password () const
+		StringT URI::password () const
 		{
 			if (m_parser.passwordStart)
-				return std::string(m_parser.passwordStart, m_parser.passwordEnd);
+				return StringT(m_parser.passwordStart, m_parser.passwordEnd);
 			else
 				return "";
 		}
@@ -232,44 +232,44 @@ namespace Dream
 			return m_parser.absStart != NULL;
 		}
 
-		std::string URI::resource () const
+		StringT URI::resource () const
 		{
 			if (m_parser.absStart)
-				return std::string(m_parser.absStart, m_parser.absEnd);
+				return StringT(m_parser.absStart, m_parser.absEnd);
 			else if (m_parser.relStart)
-				return std::string(m_parser.relStart, m_parser.relEnd);
+				return StringT(m_parser.relStart, m_parser.relEnd);
 			else
 				return "";
 		}
 
-		std::string URI::path () const
+		StringT URI::path () const
 		{
 			if (m_parser.pathStart)
-				return std::string(m_parser.pathStart, m_parser.pathEnd);
+				return StringT(m_parser.pathStart, m_parser.pathEnd);
 			else
 				return "";
 		}
 
-		std::string URI::query () const
+		StringT URI::query () const
 		{
 			if (m_parser.queryStart)
-				return std::string(m_parser.queryStart, m_parser.queryEnd);
+				return StringT(m_parser.queryStart, m_parser.queryEnd);
 			else
 				return "";
 		}
 
-		std::string URI::params () const
+		StringT URI::params () const
 		{
 			if (m_parser.paramsStart)
-				return std::string(m_parser.paramsStart, m_parser.paramsEnd);
+				return StringT(m_parser.paramsStart, m_parser.paramsEnd);
 			else
 				return "";
 		}
 
-		std::string URI::fragment () const
+		StringT URI::fragment () const
 		{
 			if (m_parser.fragmentStart)
-				return std::string(m_parser.fragmentStart, m_parser.fragmentEnd);
+				return StringT(m_parser.fragmentStart, m_parser.fragmentEnd);
 			else
 				return "";
 		}

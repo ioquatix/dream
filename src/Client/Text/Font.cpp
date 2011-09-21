@@ -10,7 +10,6 @@
 #include "Font.h"
 
 #include "../../Resources/Loader.h"
-#include "../../Core/Singleton.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -64,7 +63,7 @@ namespace Dream
 				FT_Error err = FT_New_Face(freetypeLibrary(), p.toLocalPath().c_str(), 0, &face);
 				
 				if (err) {
-					throw LoadError(String("Error loading freetype font (") + p.toLocalPath() + "): " + ft2_error_message(err));
+					throw LoadError(StringT("Error loading freetype font (") + p.toLocalPath() + "): " + ft2_error_message(err));
 				} else {
 					m_face = new Detail::FontFace(face, ALPHA);
 				}
@@ -81,7 +80,7 @@ namespace Dream
 				m_fontData = data;
 				
 				if (err) {
-					throw LoadError(String("Error loading freetype font:") + ft2_error_message(err));
+					throw LoadError(StringT("Error loading freetype font:") + ft2_error_message(err));
 				} else {
 					m_face = new Detail::FontFace(face, ALPHA);
 				}

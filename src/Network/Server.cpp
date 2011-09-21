@@ -86,9 +86,9 @@ namespace Dream {
 		{
 			if (m_eventLoop)
 			{
-				foreach(REF(ServerSocket) serverSocket, m_serverSockets)
+				foreach(serverSocket, m_serverSockets)
 				{
-					m_eventLoop->stopMonitoringFileDescriptor(serverSocket);
+					m_eventLoop->stopMonitoringFileDescriptor(*serverSocket);
 				}
 			}
 		}
@@ -97,8 +97,8 @@ namespace Dream {
 		{
 			AddressesT serverAddresses = Address::interfaceAddressesForService(service, sockType);
 			
-			foreach(Address & addr, serverAddresses) {
-				REF(ServerSocket) serverSocket(new ServerSocket(addr));
+			foreach(addr, serverAddresses) {
+				REF(ServerSocket) serverSocket(new ServerSocket(*addr));
 				serverSocket->connectionCallback = bind(&Server::connectionCallbackHandler, this, _1, _2, _3, _4);
 
 				m_serverSockets.push_back(serverSocket);

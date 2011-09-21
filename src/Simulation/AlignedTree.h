@@ -10,8 +10,8 @@
 #ifndef _DREAM_ALIGNED_TREE_H
 #define _DREAM_ALIGNED_TREE_H
 
-#include <Dream/Numerics/Vector.h>
-#include <Dream/Geometry/AlignedBox.h>
+#include "../Numerics/Vector.h"
+#include "../Geometry/AlignedBox.h"
 
 #include <vector>
 #include <set>
@@ -215,8 +215,8 @@ namespace Dream {
 					ObjectSetT resort;
 					std::swap(m_objects, resort);
 
-					for (iterateEach(resort, o)) {
-						this->insert(*o);
+					foreach(object, resort) {
+						this->insert(*object);
 					}
 				}
 				
@@ -324,7 +324,7 @@ namespace Dream {
 					
 					ObjectSetT selection;
 					
-					for (iterateEach(m_objects, o)) {
+					foreach(o, m_objects) {
 						SpaceT b = TraitsT::calculateBoundingBox(*o);
 						
 						if (b.intersectsWith(rect)) {

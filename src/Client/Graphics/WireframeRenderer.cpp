@@ -286,12 +286,12 @@ namespace Dream {
 				CompiledMesh::CompiledMesh (const Mesh & mesh) {
 					unsigned j = 0;
 					
-					for (iterateEach(mesh.surfaces(), surf)) {
+					foreach(surf, mesh.surfaces()) {
 						const MeshPointArray &pts = (*surf)->points();
 						
 						assert(pts.size() == 3);
 						
-						for (iterateEach(pts, point)) {
+						foreach(point, pts) {
 							MeshVertex *vertex = (*point)->vertex();
 							m_vertices.vector().push_back (vertex->vector());
 							m_normals.vector().push_back (vertex->normal());

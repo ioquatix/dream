@@ -8,7 +8,9 @@
  */
 
 #include "Path.h"
+#include "System.h"
 
+#include <Foundation/NSError.h>
 #include <Foundation/NSFileManager.h>
 #include <Foundation/NSAutoreleasePool.h>
 
@@ -45,17 +47,18 @@ namespace Dream
 			}
 		}
 		
-		Path::FileSizeT Path::fileSize() {
+		Path::FileSizeT Path::fileSize() const {
 			FileSizeT fileSize = 0;
 						
 			NSAutoreleasePool * pool = [NSAutoreleasePool new];			
 
+			NSError * error = nil;
 			NSString * path = [[[NSString alloc] initWithUTF8String:toLocalPath().c_str()] autorelease];
-			NSError * error = NULL;
 			NSDictionary * attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error];
 			
 			if (error) {
-				SystemError systemError([[error domain] UTF8String], [error code], [[error description] UTF8String], toLocalPath());
+				//StringT domain, ErrorNumberT errorNumber, StringT errorDescription, StringT errorTarge
+				SystemError systemError(StringT([[error domain] UTF8String]), ErrorNumberT([error code]), StringT([[error description] UTF8String]), toLocalPath());
 				
 				[pool release];
 				

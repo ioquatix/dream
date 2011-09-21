@@ -31,8 +31,8 @@ namespace Dream
 			class IMaterialFactory : implements IObject 
 			{
 			public:				
-				virtual const String & resourceName () const abstract;
-				virtual const String & shaderPath () const abstract;
+				virtual const StringT & resourceName () const abstract;
+				virtual const StringT & shaderPath () const abstract;
 				
 				virtual REF(RenderState) createRenderState (Renderer *) const abstract;
 			};
@@ -40,7 +40,7 @@ namespace Dream
 			class IMaterialLibrary : implements IObject
 			{
 			public:				
-				virtual REF(IMaterialFactory) resourceNamed (String name) const abstract;
+				virtual REF(IMaterialFactory) resourceNamed (StringT name) const abstract;
 			};
 			
 		}

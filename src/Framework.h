@@ -10,7 +10,7 @@
 #ifndef _DREAM_FRAMEWORK_H
 #define _DREAM_FRAMEWORK_H
 
-#include <boost/utility.hpp>
+#include <cstddef>
 
 #define abstract = 0
 #define implements virtual public
@@ -21,11 +21,8 @@
 #error Cannot define PACKED. Please supply a macro for packing structs.
 #endif
 
-#include <boost/foreach.hpp>
-#define foreach BOOST_FOREACH
-
-// Make iteration of std containers easier
-#define iterateEach(c, iter) typeof(c.begin()) iter = c.begin(); iter != c.end(); ++iter
+// Collection should typically avoid being a function call to avoid unnessary overhead. 
+#define foreach(iterator,collection) for(typeof((collection).begin()) iterator = (collection).begin(); iterator != (collection).end(); ++iterator)
 
 /**
 	Dream is a framework for creating and enhancing C++ applications.

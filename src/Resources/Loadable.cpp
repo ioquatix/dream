@@ -12,7 +12,7 @@
 namespace Dream {
 	namespace Resources {
 		
-		LoadError::LoadError (String what) : m_what(what) {
+		LoadError::LoadError (StringT what) : m_what(what) {
 			
 		}
 		

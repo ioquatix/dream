@@ -16,7 +16,7 @@ namespace Dream {
 			
 			
 			
-			SkyBox::SkyBox (const String & name, const RealT & size) : m_name(name), m_size(size) {
+			SkyBox::SkyBox (const StringT & name, const RealT & size) : m_name(name), m_size(size) {
 
 			}
 

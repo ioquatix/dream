@@ -24,7 +24,7 @@ namespace Dream
 #pragma mark -
 #pragma mark class MaterialFactory
 						
-			MaterialFactory::MaterialFactory (String name, const ILoader * loader) : m_name(name), m_shaderPathSet(false), m_loader(loader),
+			MaterialFactory::MaterialFactory (StringT name, const ILoader * loader) : m_name(name), m_shaderPathSet(false), m_loader(loader),
 			m_blendingEnabled(false)
 			{
 				
@@ -34,22 +34,22 @@ namespace Dream
 				
 			}
 			
-			void MaterialFactory::setShaderPath (String shaderPath) {
+			void MaterialFactory::setShaderPath (StringT shaderPath) {
 				m_shaderPath = shaderPath;
 				m_shaderPathSet = true;
 			}
 			
-			void MaterialFactory::setBlendFunc (String src, String dst) {
+			void MaterialFactory::setBlendFunc (StringT src, StringT dst) {
 				m_blendFuncSrc = src;
 				m_blendFuncDst = dst;
 				m_blendingEnabled = true;
 			}
 			
-			void MaterialFactory::setDefine(String name, String value) {
+			void MaterialFactory::setDefine(StringT name, StringT value) {
 				m_definitions[name] = value;
 			}
 			
-			void MaterialFactory::clearDefine(String name) {
+			void MaterialFactory::clearDefine(StringT name) {
 				m_definitions.erase(name);
 			}
 			
@@ -58,7 +58,7 @@ namespace Dream
 			}
 
 #if defined(DREAM_USE_OPENGLES11) || defined(DREAM_USE_OPENGL20)
-			GLenum blendFunctionValue (const String & key, GLenum defaultValue)
+			GLenum blendFunctionValue (const StringT & key, GLenum defaultValue)
 			{
 				// Common Blend Values
 				if (key == "ZERO") return GL_ZERO;
@@ -82,7 +82,7 @@ namespace Dream
 				return defaultValue;
 			}
 			
-			GLenum filterFunctionValue (const String & key, GLenum defaultValue)
+			GLenum filterFunctionValue (const StringT & key, GLenum defaultValue)
 			{
 				if (key == "NEAREST") return GL_NEAREST;
 				else if (key == "LINEAR") return GL_LINEAR;
@@ -97,7 +97,7 @@ namespace Dream
 #endif
 			
 #ifdef DREAM_USE_OPENGL20
-			GLenum textureTargetValue (const String & key, GLenum defaultValue)
+			GLenum textureTargetValue (const StringT & key, GLenum defaultValue)
 			{
 				if (key == "1D") return GL_TEXTURE_1D;
 				else if (key == "2D") return GL_TEXTURE_2D;
@@ -163,7 +163,7 @@ namespace Dream
 				
 				int currentUnit = -1;
 				std::vector<REF(Texture)> textures;
-				for (iterateEach(m_texUnits, t)) {
+				foreach (t, m_texUnits) {
 					currentUnit += 1;
 					
 					REF(Texture) tex = createTexture(renderer, *t);
@@ -195,7 +195,7 @@ namespace Dream
 				
 				int currentUnit = -1;
 				std::vector<REF(Texture)> textures;
-				for (iterateEach(m_texUnits, t)) {
+				foreach(t, m_texUnits) {
 					currentUnit += 1;
 					
 					REF(Texture) tex = createTexture(renderer, *t);
@@ -231,7 +231,7 @@ namespace Dream
 				m_factories[materialFactory->resourceName()] = materialFactory;
 			}
 			
-			REF(IMaterialFactory) MaterialLibrary::resourceNamed (String name) const {
+			REF(IMaterialFactory) MaterialLibrary::resourceNamed (StringT name) const {
 				typeof(m_factories.begin()) iter = m_factories.find(name);
 				
 				if (iter != m_factories.end())

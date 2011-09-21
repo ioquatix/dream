@@ -195,7 +195,7 @@ namespace Dream
 			testing("Typed Value");
 			TypedValue<int> intValue (10);
 
-			check(intValue.typeinfo() == typeid(5)) << "Typeinfo is same";
+			check(intValue.valueType() == typeid(5)) << "Typeinfo is same";
 			check(intValue.size() == sizeof(5)) << "Size is same";
 
 			TypedValue<unsigned> unsignedValue (10);

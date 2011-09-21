@@ -33,7 +33,7 @@ namespace Dream {
 		 
 		 In the case of files which index a set of resources, you should create a
 		 MyDataTypeLibrary which has a function:
-			REF(MyDataTypeFactory) findResource (String name);
+			REF(MyDataTypeFactory) findResource (StringT name);
 		 This factory can then be used to create corresponding resources.
 		 */
 		
@@ -41,9 +41,9 @@ namespace Dream {
 
 		class LoadError : public std::exception {
 		protected:
-			String m_what;
+			StringT m_what;
 		public:
-			LoadError (String what);
+			LoadError (StringT what);
 			virtual ~LoadError () throw ();
 			
 			virtual const char * what() throw ();

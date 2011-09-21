@@ -433,9 +433,9 @@ namespace Dream {
 			
 			cout << desc << endl;
 			
-			foreach(const Address & a, addresses)
+			foreach(a, addresses)
 			{
-				cout << a.description() << endl;
+				cout << a->description() << endl;
 			}
 		}
 		
@@ -447,9 +447,9 @@ namespace Dream {
 			debugAddresses("interfaceAddressesForPort(1024, SOCK_STREAM)", addrs1);
 			
 			bool foundIPv4AddressFamily;
-			foreach(const Address & a, addrs1)
+			foreach(a, addrs1)
 			{
-				if (a.addressFamily() == AF_INET)
+				if (a->addressFamily() == AF_INET)
 					foundIPv4AddressFamily = true;
 			}
 			

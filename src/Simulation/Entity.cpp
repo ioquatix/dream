@@ -16,19 +16,19 @@ namespace Dream {
 		}
 		
 		void Entity::render (Renderer* r) const {		
-			for (iterateEach(m_roots, root)) {						
+			foreach(root, m_roots) {						
 				(*root)->render(r);
 			}
 		}
 		
 #pragma mark -
 		
-		EntityComponent::EntityComponent (String name, REF(IRenderable) renderable) 
+		EntityComponent::EntityComponent (StringT name, REF(IRenderable) renderable) 
 			: m_name(name), m_renderable(renderable), m_useColor(false) {
 			
 		}
 		
-		EntityComponent::EntityComponent (String name) 
+		EntityComponent::EntityComponent (StringT name) 
 			: m_name(name), m_useColor(false) {
 			m_renderable = NULL;
 		}
@@ -98,7 +98,7 @@ namespace Dream {
 			m_component->render(r);
 			
 			//Render all children
-			for (iterateEach(m_children, child)) {
+			foreach(child, m_children) {
 				(*child)->render(r);
 			}
 			

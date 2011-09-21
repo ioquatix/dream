@@ -44,7 +44,7 @@ namespace Dream {
 				static const int SIDES = 6;
 				
 			protected:
-				String m_name;
+				StringT m_name;
 				RealT m_size;
 				
 				RealT m_rotation;
@@ -62,7 +62,7 @@ namespace Dream {
 					UP = 5
 				};
 				
-				TexturedBox(const String & name, const RealT & size, const RealT & inset = 0);
+				TexturedBox(const StringT & name, const RealT & size, const RealT & inset = 0);
 				TexturedBox(const RealT & size);
 				
 				void setInset(RealT inset);

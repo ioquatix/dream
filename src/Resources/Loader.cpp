@@ -8,7 +8,6 @@
  */
 
 #include "Loader.h"
-#include "../Core/Singleton.h"
 
 #include <iostream>
 #include <map>
@@ -16,11 +15,11 @@
 namespace Dream {
 	namespace Resources {
 		
-		void Loader::setLoaderForExtension (PTR(ILoadable) loadable, String ext) {
+		void Loader::setLoaderForExtension (PTR(ILoadable) loadable, StringT ext) {
 			m_loaders[ext] = loadable;
 		}
 		
-		PTR(ILoadable) Loader::loaderForExtension (String ext) const {
+		PTR(ILoadable) Loader::loaderForExtension (StringT ext) const {
 			LoadersT::const_iterator loader = m_loaders.find(ext);
 			
 			if (loader != m_loaders.end()) {
@@ -53,7 +52,7 @@ namespace Dream {
 			std::cerr << "Loader being deallocated: " << this << std::endl;
 			
 			double totalSize = 0.0;
-			for (iterateEach(m_dataCache, cache)) {
+			foreach(cache, m_dataCache) {
 				totalSize += cache->second->size();
 			}
 			
@@ -85,9 +84,9 @@ namespace Dream {
 		
 		void Loader::preloadResources (std::vector<Path> & paths)
 		{
-			foreach (const Path & p, paths)
+			foreach (path, paths)
 			{
-				preloadResource(p);
+				preloadResource(*path);
 			}
 		}
 		
@@ -97,7 +96,7 @@ namespace Dream {
 			return pathForResource(nameInfo.basename, nameInfo.extension, p.dirname());
 		}
 		
-		void Loader::resourcesForType(String ext, Path subdir, std::vector<Path> &paths) const {
+		void Loader::resourcesForType(StringT ext, Path subdir, std::vector<Path> &paths) const {
 			Path fullPath = m_currentPath + subdir;
 			
 			if (fullPath.exists()) {
@@ -110,7 +109,7 @@ namespace Dream {
 			}
 		}
 		
-		Path Loader::pathForResource(String name, String ext, Path dir) const {
+		Path Loader::pathForResource(StringT name, StringT ext, Path dir) const {
 			Path fullPath = m_currentPath + dir;
 			
 			//std::cerr << "Looking for: " << name << " ext: " << ext << " in: " << fullPath << std::endl;
@@ -134,8 +133,8 @@ namespace Dream {
 				
 				if (resourcePaths.size() > 1) {
 					std::cerr << "Multiple paths found for resource: " << name << " in " << fullPath << std::endl;
-					foreach(Path p, resourcePaths)
-						std::cerr << "\t" << p << std::endl;
+					foreach(path, resourcePaths)
+						std::cerr << "\t" << *path << std::endl;
 				}
 				
 				if (resourcePaths.size() >= 1) {
@@ -162,7 +161,7 @@ namespace Dream {
 				return REF(Object)();
 			}
 			
-			String ext = p.splitFileName().extension;
+			StringT ext = p.splitFileName().extension;
 			PTR(ILoadable) loader = loaderForExtension(ext);
 			
 			if (!loader) {
@@ -186,15 +185,6 @@ namespace Dream {
 			}
 			
 			return resource;
-		}
-		
-		REF(Loader) applicationLoader () {
-			static REF(Loader) s_applicationLoader;
-			
-			if (!s_applicationLoader)
-				s_applicationLoader = new Loader;
-			
-			return s_applicationLoader;
 		}
 	}
 }

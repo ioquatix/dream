@@ -9,7 +9,6 @@
 
 #include "Console.h"
 
-#include "../Core/Singleton.h"
 #include "Source.h"
 
 #include <boost/thread.hpp>
@@ -91,11 +90,15 @@ namespace Dream
 			}
 		};
 		
-		Singleton<ConsolePipeRedirector> g_consolePipeRedirector;
-		
 		void reopenStandardFileDescriptorsAsPipes ()
 		{
-			g_consolePipeRedirector->reopenStandardFileDescriptorsAsPipes();
+			static ConsolePipeRedirector * s_redirector = NULL;
+			
+			if (s_redirector)
+				return;
+			
+			s_redirector = new ConsolePipeRedirector;
+			s_redirector->reopenStandardFileDescriptorsAsPipes();
 		}
 	}
 }

@@ -12,7 +12,6 @@
 #include <cmath>
 
 #include <iostream>
-#include "Singleton.h"
 
 #include "Strings/utf8.h"
 

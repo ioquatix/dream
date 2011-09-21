@@ -114,11 +114,11 @@ namespace Dream
 			testing("Vector Reflection");
 
 			unsigned k = 0;
-			foreach (ReflectTestRecord r, reflectionTests)
+			foreach (r, reflectionTests)
 			{
-				Vec2 c = get<1>(r).reflect(get<0>(r));
+				Vec2 c = get<1>(*r).reflect(get<0>(*r));
 
-				check(c.equivalent(get<2>(r))) << k << ": R <" << get<2>(r) << "> is reflected around N <" << get<1>(r) << ">";
+				check(c.equivalent(get<2>(*r))) << k << ": R <" << get<2>(*r) << "> is reflected around N <" << get<1>(*r) << ">";
 
 				k += 1;
 			}
