@@ -1,6 +1,7 @@
 .DS_Store
 build/
 docs/
+ext/packages/*/*.tar.gz
 ext/packages/*/*/
 ext/darwin_macosx/
 ext/darwin_iphoneos/
