@@ -29,9 +29,7 @@ namespace Dream
 				
 			public:
 				WireframeRenderer ();
-				
-				void setFilled (bool filled);
-				
+								
 				void renderGrid (Display::RendererT *) const;
 				void renderAxis (Display::RendererT *) const;
 				
