@@ -3,7 +3,7 @@ BOOST_PACKAGE = Pathname.new(__FILE__).dirname
 BOOST_IPHONE_CONFIG = BOOST_PACKAGE + "iphone.jam"
 BOOST_MODULES = ["--with-thread", "--with-system"]
 
-Package.define("boost_1_44_0") do |package|
+Package.define("boost_1_47_0") do |package|
 	bootstrap_bjam = lambda do
 		Dir.chdir(package.src) do
 			sh("./bootstrap.sh") unless File.exist? "bjam"
@@ -19,7 +19,9 @@ Package.define("boost_1_44_0") do |package|
 			Dir.chdir(package.src) do
 				args = ["--prefix=#{platform.prefix}", "--build-type=minimal"]
 				args += BOOST_MODULES
-				args += ["link=static", "threading=multi", "architecture=combined", "address-model=32_64"]
+				#args += ["link=static", "threading=multi", "architecture=combined", "address-model=32_64"]
+				args += ["link=static", "threading=multi", "architecture=x86", "address-model=32_64"]
+				# args += ["link=static", "threading=multi", "address-model=32_64"]
 				args << "install"
 				
 				sh(bjam, *args)
@@ -56,7 +58,7 @@ Package.define("boost_1_44_0") do |package|
 				args += ["target-os=iphone", "macosx-version=iphonesim-#{config.sdk_version}"]
 				
 				# Fix a bug when compiling C++ code with SDK 3.2
-				args += ["include=#{config.sdk}/usr/include/c++/4.2.1/armv6-apple-darwin9/"]
+				# args += ["include=#{config.sdk}/usr/include/c++/4.2.1/armv6-apple-darwin9/"]
 				
 				args << "install"
 				
