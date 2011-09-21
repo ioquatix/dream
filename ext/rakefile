@@ -110,15 +110,17 @@ class Platform
 end
 
 GLOBAL_CFLAGS = "-O2 -Wall -Wmissing-prototypes -std=c99 -ffast-math -fno-strict-aliasing -mdynamic-no-pic -pipe"
-MACOSX_SDK_VERSION = "10.6"
-IPHONE_SDK_VERSION = "4.2"
+MACOSX_SDK_VERSION = "10.7"
+IPHONE_SDK_VERSION = "4.3"
 
 Platform.new(:darwin_macosx) do |config|
 	config.platform = Pathname.new("/")
 	config.sdk_version = MACOSX_SDK_VERSION
 	config.sdk = config.platform + Pathname.new("Developer/SDKs/MacOSX#{config.sdk_version}.sdk")
 	
-	config.arch = "-arch ppc -arch i386 -arch x86_64"
+	# PowerPC is no longer supported on the current architectures.
+	# config.arch = "-arch ppc -arch i386 -arch x86_64"
+	config.arch = "-arch i386 -arch x86_64"
 	config.cflags = "#{config.arch} -isysroot #{config.sdk} -mmacosx-version-min=#{config.sdk_version}"
 	config.configure = []
 	
@@ -134,7 +136,11 @@ Platform.new(:darwin_iphoneos) do |config|
 	config.sdk = config.platform + "Developer/SDKs/iPhoneOS#{config.sdk_version}.sdk"
 	
 	# Add -mthumb to config.arch if desired
-	config.arch = "-arch armv6 -arch armv7"
+	# config.arch = "-arch armv6 -arch armv7"
+	
+	# Apparently this now builds for armv6 _and_ armv7?
+	config.arch = "-arch armv7"
+	
 	config.cflags = "#{config.arch} -isysroot #{config.sdk} -miphoneos-version-min=#{config.sdk_version}"
 	config.configure = ["--host=arm-apple-darwin"]
 	
