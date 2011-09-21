@@ -25,6 +25,10 @@ namespace Dream
 	{
 	}
 	
+	IClassType::~IClassType()
+	{
+	}
+	
 	Object::~Object ()
 	{
 	}

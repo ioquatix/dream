@@ -15,10 +15,31 @@
 
 namespace Dream
 {
-	class IObject : public SharedObject
+	class IObject : implements SharedObject
 	{
 	public:
 		virtual ~IObject ();
+	};
+
+	class IClassType {
+		public:
+			virtual ~IClassType();
+			virtual bool isClassOf(const PTR(IObject) other) abstract;
+	};
+	
+	/**
+		Check whether a particular object implements a given class type.
+	*/
+	template <typename ClassT>
+	class ClassType : implements IClassType {
+		public:
+			virtual ~ClassType() {}
+			
+			//return typeid(ClassT) == typeid(other.get());
+			
+			virtual bool isClassOf(const PTR(IObject) other) {
+				return dynamic_cast<const ClassT*>(other.get()) != NULL;
+			}
 	};
 
 	/** The top level concrete object class.
