@@ -16,6 +16,8 @@
 - (void)deleteFramebuffer;
 @end
 
+const int RENDER_THREAD_FINISHED = 1;
+
 @implementation EAGLView
 
 @synthesize context;
@@ -183,34 +185,55 @@
     resizeBuffers = YES;
 }
 
+- (void) render:(CADisplayLink*)displayLink
+{
+
+}
+
+- (void) _exit
+{
+
+}
+
 - (void) _start
 {
+	// Lock the render process
+	[renderThreadLock lock];
+	
 	// We shouldn't begin the rendering thread more than once.
-	@synchronized(self) {
-		NSAutoreleasePool * pool = [NSAutoreleasePool new];
+	NSAutoreleasePool * pool = [NSAutoreleasePool new];	
 
-		CADisplayLink * displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(render:)];
-		[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+	NSRunLoop * currentRunLoop = [NSRunLoop currentRunLoop];
 
-		NSLog(@"Entering rendering loop.");
+	// Add display link
+	CADisplayLink * displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(render:)];
+	[displayLink addToRunLoop:currentRunLoop forMode:NSRunLoopCommonModes];
+	
+	NSLog(@"Entering rendering loop.");
 
-		NSThread * currentThread = [[NSThread currentThread] retain];
-		while (![currentThread isCancelled]) {
-			NSDate * timeStep = [NSDate dateWithTimeIntervalSinceNow:0.25f];
-			[[NSRunLoop currentRunLoop] runUntilDate:timeStep];
-		}
-		
-		NSLog(@"Exiting rendering loop.");
-		
-		[displayLink invalidate];
-		[currentThread release];
-		[pool release];
+	NSThread * currentThread = [[NSThread currentThread] retain];
+	while (![currentThread isCancelled]) {
+		[currentRunLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
 	}
+	
+	NSLog(@"Exiting rendering loop.");
+	
+	[displayLink invalidate];
+	[currentThread release];
+	[pool release];
+	
+	// Signal that we are done.
+	[renderThreadLock unlockWithCondition:RENDER_THREAD_FINISHED];
 }
 
 - (void) start
 {
+	if (!renderThreadLock) {
+		renderThreadLock = [NSConditionLock new];
+	}
+
 	if (!renderThread) {
+		NSLog(@"Starting render thread...");
 		renderThread = [[NSThread alloc] initWithTarget:self selector:@selector(_start) object:nil];
 		
 		[renderThread start];
@@ -221,11 +244,23 @@
 
 - (void) stop
 {
+	NSLog(@"Stopping render thread...");
+	
 	if (renderThread) {
 		[renderThread cancel];
 		
+		// Send a notification via a mach port to the other thread's run loop. This causes the
+		// runMode:beforeDate: method to return immediately, with the end result that the run-loop
+		// is stopped.
+		[self performSelector:@selector(_exit) onThread:renderThread withObject:nil waitUntilDone:NO];
+		
+		// Wait for the render thread to finish.
+		[renderThreadLock lockWhenCondition:RENDER_THREAD_FINISHED];
+		
 		[renderThread release];
 		renderThread = nil;
+		
+		[renderThreadLock unlock];
 	}
 }
 

@@ -34,6 +34,7 @@ Note that setting the view non-opaque will only work if the EAGL surface has an 
 	
 	// The display link and associated render thread.
 	NSThread * renderThread;
+	NSConditionLock * renderThreadLock;
 }
 
 @property (nonatomic, retain) EAGLContext *context;
