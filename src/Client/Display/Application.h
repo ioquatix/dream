@@ -44,6 +44,9 @@ namespace Dream {
 					virtual REF(IContext) createContext (REF(Dictionary) config) abstract;
 					
 					virtual IApplicationDelegate * delegate () const abstract;
+					
+					/// Helper for very basic apps.
+					static void runScene(PTR(IScene) scene, PTR(Dictionary) config);
 			};
 			
 		}

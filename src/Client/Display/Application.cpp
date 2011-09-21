@@ -7,6 +7,7 @@
 //
 
 #include "Application.h"
+#include "../../Events/Thread.h"
 
 namespace Dream {
 	namespace Client {
@@ -58,7 +59,74 @@ namespace Dream {
 			IApplication::~IApplication ()
 			{
 			}
-															
+			
+			
+#pragma mark -
+
+			class ApplicationDelegate : public Object, implements IApplicationDelegate
+			{
+				public:
+					ApplicationDelegate(PTR(IScene) scene, PTR(Dictionary) config);
+					virtual ~ApplicationDelegate();
+					
+				protected:
+					REF(IScene) m_scene;
+					REF(Dictionary) m_config;
+					REF(Context) m_context;
+					REF(Events::Thread) m_thread;
+					
+					virtual void applicationDidFinishLaunching (IApplication * application);
+					
+					virtual void applicationWillEnterBackground (IApplication * application);
+					virtual void applicationDidEnterForeground (IApplication * application);
+			};
+
+			ApplicationDelegate::ApplicationDelegate(PTR(IScene) scene, PTR(Dictionary) config)
+				: m_scene(scene), m_config(config)
+			{
+			
+			}
+			
+			ApplicationDelegate::~ApplicationDelegate()
+			{
+				m_context->stop();
+				m_thread->stop();
+			}
+			
+			void ApplicationDelegate::applicationDidFinishLaunching (IApplication * application)
+			{
+				m_context = application->createContext(m_config);
+				
+				m_thread = new Events::Thread;
+				REF(ILoader) loader = SceneManager::defaultResourceLoader();
+				
+				REF(SceneManager) sceneManager = new SceneManager(m_context, m_thread->loop(), loader);
+				
+				sceneManager->pushScene(m_scene);
+				
+				m_thread->start();
+				m_context->start();
+			}
+			
+			void ApplicationDelegate::applicationWillEnterBackground (IApplication * application)
+			{
+				m_context->stop();
+				m_thread->stop();
+			}
+			
+			void ApplicationDelegate::applicationDidEnterForeground (IApplication * application)
+			{
+				m_thread->start();
+				m_context->start();
+			}
+			
+			void IApplication::runScene(PTR(IScene) scene, PTR(Dictionary) config)
+			{
+				REF(ApplicationDelegate) applicationDelegate = new ApplicationDelegate(scene, config);
+				
+				IApplication::start(applicationDelegate);
+			}
+			
 		}
 	}
 }
