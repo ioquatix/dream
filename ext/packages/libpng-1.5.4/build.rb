@@ -1,5 +1,5 @@
 
-Package.define("libpng-1.4.3") do |package|
+Package.define("libpng-1.5.4") do |package|
 	package.variant(:all) do |platform, config|
 		RExec.env(config.build_flags) do
 			Dir.chdir(package.src) do

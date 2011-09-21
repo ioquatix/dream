@@ -1,5 +1,5 @@
 
-Package.define("jpeg-8b") do |package|
+Package.define("jpeg-8c") do |package|
 	package.variant(:all) do |platform, config|
 		RExec.env(config.build_flags) do
 			Dir.chdir(package.src) do

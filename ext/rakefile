@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+require 'rubygems'
+gem 'rexec'
+
 require 'rexec/environment'
 require 'stringio'
 require 'fileutils'
@@ -16,23 +19,58 @@ class Package
 		ALL.values
 	end
 	
+	def self.build_order(packages)
+		ordered = []
+		
+		expand = lambda do |name|
+			package = packages[name]
+			
+			unless package
+				puts "Couldn't resolve #{name}"
+			else
+				package.depends.each do |dependency|
+					expand.call(dependency)
+				end
+			
+				unless ordered.include? package
+					ordered << package
+				end
+			end
+		end
+		
+		packages.each do |name, package|
+			expand.call(name)
+		end
+		
+		return ordered
+	end
+	
 	class BuildError < StandardError
 	end
 	
 	def initialize(name, path)
-		@name = name
+		@name, @version = name.split('-', 2)
+		
 		@path = path
 		@variants = {}
+		@depends = []
 		
-		ALL[name] = self
+		@source_path = @path + name
+		
+		ALL[@name] = self
 	end
 	
 	attr :name
+	attr :version
 	attr :path
 	attr :variants
 	
+	attr :depends, true
+	attr :source_path, true
+	
+	# For compatibility, now use .source_path
 	def src
-		@path + @name
+		@source_path
 	end
 	
 	def self.define(name, &block)
@@ -179,10 +217,46 @@ Dir[PACKAGES_PATH + "*"].each do |path|
 	Package.require(File.basename(path))
 end
 
-task :default => [:build_all, :link_headers]
+task :default => [:fetch, :build_all, :link_headers]
+
+task :fetch do
+	info = YAML::load_file(EXT_PATH + "fetch.yaml")
+	
+	Package::ALL.each do |name, package|
+		# We are interested in full name..
+		name = package.name + "-" + package.version
+		
+		unless info[name]
+			puts "Couldn't find information for #{name}!"
+			next
+		end
+		
+		url = info[name]['url']
+		local_path = package.path + (info[name]['filename'] || File.basename(url))
+		
+		unless File.exist? local_path
+			puts "Downloading #{name} to #{local_path}..."
+			puts ["curl", "-L", url, "-o", local_path].join(' ')
+			system("curl", "-L", url, "-o", local_path)
+			
+			puts "Extracting #{name}..."
+			system("tar", "-C", package.path, "-xvf",local_path)
+		end
+	end
+end
 
 task :build_all do
 	Platform.all.each do |platform|
+		order = []
+		Package.all.each do |package|
+			if package.depends.size == 0
+				order << package.name
+			else
+				package.depends
+			end
+			package.name
+		end
+		
 		# For testing...
 		# next unless platform.name == :darwin_iphonesimulator
 		Package.all.each do |package|
@@ -211,7 +285,13 @@ task :build, [:package] do |task, arguments|
 end
 
 task :list do
-	Package::ALL.each do |name, package|
-		puts "Package: #{name.inspect}"
+	ordered = Package::build_order(Package::ALL)
+	
+	ordered.each do |package|
+		puts "Package: #{package.name}"
+		
+		if package.depends.size > 0
+			puts "	(depends on #{package.depends.join(', ')})"
+		end
 	end
 end
