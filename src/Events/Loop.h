@@ -150,9 +150,11 @@ namespace Dream
 			/// generally be used to ensure a robust loop i.e. events are processed promptly.
 			void setRateLimit (unsigned rate = 10);
 			
+			/// This stopwatch is not thread-safe.
 			const Stopwatch & stopwatch () const;
 			
-			/// Schedule a timer for periodic events.
+			/// Schedule a timer for periodic events. This function is thread-safe. If called from a spearate thread, the timer is added by sending
+			/// an asynchronous notification. The timer will be run on the same thread as the loop, not the calling thread.
 			void scheduleTimer (REF(ITimerSource) source);
 			
 			/// This function performs a notification as soon as possible. This function is thread-safe. If called from a separate thread, it may block while it
@@ -162,14 +164,17 @@ namespace Dream
 			void postNotification (REF(INotificationSource) note, bool urgent = false);
 			
 			/// Monitor a file descriptor and process any read/write events when it is possible to do so.
+			/// This function is NOT thread-safe.
 			void monitorFileDescriptor (PTR(IFileDescriptorSource) source);
+			
 			/// Stop monitoring a file descriptor.
+			/// This function is NOT thread-safe.
 			void stopMonitoringFileDescriptor (PTR(IFileDescriptorSource) source);
 			
 			/// Stops the event loop. This function is thread-safe. If called from a separate thread, sends an urgent stop notification.
 			void stop ();
 			
-			/// Run through the event loop once
+			/// Run through the event loop once.
 			void runOnce (bool block);
 			
 			/// Run through the event loop until it is stopped.

@@ -385,17 +385,58 @@ namespace Dream
 			return m_stopwatch;
 		}
 		
+#pragma mark -
+		
+		/// Used to schedule a timer to the loop via a notification.
+		class ScheduleTimerNotificationSource : public Object, implements INotificationSource
+		{
+			protected:
+				REF(ITimerSource) m_timerSource;
+			
+			public:
+				ScheduleTimerNotificationSource(REF(ITimerSource) timerSource);
+				virtual ~ScheduleTimerNotificationSource ();
+				
+				virtual void processEvents (Loop * eventLoop, Event event);
+		};
+		
+		ScheduleTimerNotificationSource::ScheduleTimerNotificationSource(REF(ITimerSource) timerSource)
+			: m_timerSource(timerSource)
+		{
+			
+		}
+		
+		ScheduleTimerNotificationSource::~ScheduleTimerNotificationSource ()
+		{
+		
+		}
+		
+		void ScheduleTimerNotificationSource::processEvents (Loop * eventLoop, Event event)
+		{
+			// Add the timer into the run-loop.
+			if (event == NOTIFICATION)
+				eventLoop->scheduleTimer(m_timerSource);
+		}
+		
 		void Loop::scheduleTimer (REF(ITimerSource) source)
 		{
-			TimerHandle th;
-			
-			TimeT currentTime = m_stopwatch.time();
-			th.timeout = source->nextTimeout(currentTime, currentTime);
-			
-			th.source = source;
-			
-			m_timerHandles.push(th);
+			if (boost::this_thread::get_id() == m_currentThread) {
+				TimerHandle th;
+				
+				TimeT currentTime = m_stopwatch.time();
+				th.timeout = source->nextTimeout(currentTime, currentTime);
+				
+				th.source = source;
+				
+				m_timerHandles.push(th);
+			} else {
+				// Add the timer via a notification which is passed across the thread.
+				REF(ScheduleTimerNotificationSource) note = new ScheduleTimerNotificationSource(source);
+				this->postNotification(note);
+			}
 		}
+		
+#pragma mark -
 		
 		void Loop::postNotification (REF(INotificationSource) note, bool urgent)
 		{
@@ -603,10 +644,10 @@ namespace Dream
 		{
 			using namespace boost;
 			
-			std::cerr << "Entering runloop " << std::flush;
+			//std::cerr << "Entering runloop " << std::flush;
 			m_running = true;
 			m_currentThread = this_thread::get_id();
-			std::cerr << "..." << std::endl;
+			//std::cerr << "..." << std::endl;
 			
 			while(m_running)
 			{
@@ -697,7 +738,7 @@ namespace Dream
 		}
 		
 		int notified;
-		static void sendNotificationAfterDelay (REF(Loop) eventLoop, REF(NotificationSource) note)
+		static void sendNotificationAfterDelay (REF(Loop) eventLoop, REF(INotificationSource) note)
 		{
 			int count = 0;
 			while (count < 10)
@@ -720,7 +761,7 @@ namespace Dream
 				rl->stop();
 		}
 		
-		UNIT_TEST(NotificationSource)
+		UNIT_TEST(Notification)
 		{
 			using namespace boost;
 			
