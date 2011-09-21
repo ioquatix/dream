@@ -156,9 +156,7 @@ namespace Dream
 					return false;
 				}
 				
-				AudioError::reset();
-				alBufferData(buffer, m_format, chunk, size, m_frequency);
-				AudioError::check("Buffering Data");
+				bufferData(source, buffer, m_format, chunk, size, m_frequency);
 				
 				return true;
 			}

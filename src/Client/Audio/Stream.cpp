@@ -33,8 +33,35 @@ namespace Dream
 				return 1;
 			}
 			
-			
+#pragma mark -
 
+			IStreamDelegate::~IStreamDelegate ()
+			{
+			
+			}
+
+			void IStreamDelegate::streamWillPlay (PTR(Stream) stream)
+			{
+			
+			}
+			
+			void IStreamDelegate::streamDidPause (PTR(Stream) stream)
+			{
+			
+			}
+			
+			void IStreamDelegate::streamDidStop (PTR(Stream) stream)
+			{
+			
+			}
+			
+			void IStreamDelegate::streamDidQueueBuffer (PTR(Stream) stream, ALenum format, const ALvoid * data, ALsizei size)
+			{
+			
+			}
+			
+#pragma mark -
+			
 			Stream::Stream (PTR(Source) source, ALenum format, ALsizei frequency) 
 				: m_source(source), m_format(format), m_frequency(frequency)
 			{
@@ -44,6 +71,14 @@ namespace Dream
 			
 			Stream::~Stream () {
 				alDeleteBuffers(m_buffers.size(), &m_buffers[0]);
+			}
+			
+			void Stream::bufferData(PTR(Source) source, ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq)
+			{
+				if (m_delegate)
+					m_delegate->streamDidQueueBuffer(this, format, data, size);
+				
+				IStreamable::bufferData(source, buffer, format, data, size, freq);
 			}
 			
 			void Stream::bufferCallback ()
@@ -73,6 +108,9 @@ namespace Dream
 				if (m_fader) m_fader->cancel();
 			
 				if (!m_source->isPlaying()) {
+					if (m_delegate)
+						m_delegate->streamWillPlay(this);
+				
 					AudioError::reset();
 					
 					// If buffers are currently being processed,
@@ -111,6 +149,9 @@ namespace Dream
 			{
 				stopBufferCallbacks();
 				m_source->pause();
+				
+				if (m_delegate)
+					m_delegate->streamDidPause(this);
 			}
 			
 			void Stream::stop ()
@@ -120,14 +161,17 @@ namespace Dream
 				
 				// Remove any queued buffers.
 				m_source->setSound(0);
+				
+				if (m_delegate)
+					m_delegate->streamDidStop(this);
 			}
 			
-			void Stream::fadeOut (PTR(Events::Loop) loop, TimeT duration)
+			void Stream::fadeOut (PTR(Events::Loop) loop, TimeT duration, RealT gain)
 			{
 				if (m_fader)
 					m_fader->cancel();
 				
-				Shared<IKnob> decreaseGain = new LinearKnob<float>(m_source, AL_GAIN, m_source->gain(), 0.0);
+				Shared<IKnob> decreaseGain = new LinearKnob<float>(m_source, AL_GAIN, m_source->gain(), gain);
 				m_fader = new Fader(decreaseGain, 100, duration / 100);
 				
 				m_fader->setFinishCallback(boost::bind(&Stream::pause, this));
@@ -135,12 +179,12 @@ namespace Dream
 				loop->scheduleTimer(m_fader);
 			}
 			
-			void Stream::fadeIn (PTR(Events::Loop) loop, TimeT duration)
+			void Stream::fadeIn (PTR(Events::Loop) loop, TimeT duration, RealT gain)
 			{
 				// This will cancel any existing fader
 				play(loop);
 				
-				Shared<IKnob> increaseGain = new LinearKnob<float>(m_source, AL_GAIN, m_source->gain(), 1.0);
+				Shared<IKnob> increaseGain = new LinearKnob<float>(m_source, AL_GAIN, m_source->gain(), gain);
 				m_fader = new Fader(increaseGain, 100, duration / 100);
 				
 				loop->scheduleTimer(m_fader);
@@ -150,6 +194,16 @@ namespace Dream
 				// Frequency is the number of samples per second.
 				TimeT bytesPerSecond = TimeT(m_frequency) * bytesPerSample(m_format);
 				return TimeT(ChunkSize) / bytesPerSecond;
+			}
+			
+			void Stream::setDelegate(PTR(IStreamDelegate) delegate)
+			{
+				m_delegate = delegate;
+			}
+			
+			PTR(IStreamDelegate) Stream::delegate ()
+			{
+				return m_delegate;
 			}
 		}
 	}

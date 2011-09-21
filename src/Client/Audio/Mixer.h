@@ -69,6 +69,10 @@ namespace Dream
 				Vec3 position ();
 				Vec3 velocity ();
 				
+				ALint sampleOffset ();
+				TimeT timeOffset ();
+				IndexT byteOffset ();
+				
 				void setLocal ();
 				
 				void setReferenceDistance (float dist);
@@ -124,8 +128,12 @@ namespace Dream
 			class IStreamable : implements IObject
 			{
 			public:
+				virtual ~IStreamable ();
+			
 				// Return false if there are no more buffers.
 				virtual bool loadNextBuffer (PTR(Source) source, ALuint buffer) abstract;
+				
+				virtual void bufferData(PTR(Source) source, ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq);
 			};
 			
 			class Mixer : public Object

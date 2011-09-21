@@ -41,6 +41,8 @@ namespace Dream
 					virtual ~OggResource ();
 					
 					REF(Stream) createStream (PTR(Source) source);
+					
+					// Current implementation returns NULL. Use createStream or WAV files.
 					REF(Sound) createSound (PTR(Source) source);
 					
 					//void debug();

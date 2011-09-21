@@ -140,6 +140,33 @@ namespace Dream
 				return value;
 			}
 			
+			ALint Source::sampleOffset ()
+			{
+				ALint offset = 0;
+				
+				alGetSourcei(m_sourceID, AL_SAMPLE_OFFSET, &offset);
+				
+				return offset;
+			}
+			
+			TimeT Source::timeOffset ()
+			{
+				ALfloat offset = 0;
+				
+				alGetSourcef(m_sourceID, AL_SEC_OFFSET, &offset);
+				
+				return offset;
+			}
+			
+			IndexT Source::byteOffset ()
+			{
+				ALint offset = 0;
+				
+				alGetSourcei(m_sourceID, AL_BYTE_OFFSET, &offset);
+				
+				return offset;
+			}
+			
 			void Source::setLocal ()
 			{
 			    alSource3f(m_sourceID, AL_POSITION, 0.0, 0.0, 0.0);
@@ -200,6 +227,18 @@ namespace Dream
 				AudioError::reset();
 				
 				return value;
+			}
+			
+			IStreamable::~IStreamable ()
+			{
+			
+			}
+			
+			void IStreamable::bufferData(PTR(Source) source, ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq)
+			{
+				AudioError::reset();
+				alBufferData(buffer, format, data, size, freq);
+				AudioError::check("Buffering Data");				
 			}
 			
 			bool Source::streamBuffers (IStreamable * stream) {
@@ -321,7 +360,8 @@ namespace Dream
 				static ALCdevice * device = NULL;
 				
 				if (!device) {
-					device = alcOpenDevice(NULL);
+					const ALCchar * deviceName = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
+					device = alcOpenDevice(deviceName);
 				}
 				
 				return device;
@@ -329,12 +369,12 @@ namespace Dream
 			
 			Mixer::Mixer ()
 			{
-				const ALCchar * deviceName;
+				const ALCchar * deviceName = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
 				
-				deviceName = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
-				
+				AudioError::reset();
 				m_audioDevice = _defaultAudioDevice();
 				m_audioContext = alcCreateContext(m_audioDevice, NULL);
+				AudioError::check("Initializing Audio Context");
 				
 				bool result = alcMakeContextCurrent(m_audioContext);
 				std::cerr << "OpenAL Context Initialized..." << std::endl;
