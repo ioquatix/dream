@@ -236,9 +236,12 @@ namespace Dream {
 			class TextView : public View {
 			protected:
 				REF(Text::TextBuffer) m_textBuffer;
+				PixelBufferRenderer m_imageRenderer;
 				
 				bool m_editable;
 				unsigned int m_offset;
+				
+				virtual void renderView (IScene * scene, TimeT time);
 				
 			public:
 				TextView (PTR(View) parent, PTR(Font) font);

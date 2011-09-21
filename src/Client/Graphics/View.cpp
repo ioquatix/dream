@@ -446,6 +446,26 @@ namespace Dream {
 				return m_editable;
 			}
 			
+			void TextView::renderView (IScene * scene, TimeT time) {
+				// Add a white background - need to improve on this.
+				//SolidRenderer wr;
+				//wr.setPrimaryColor(Vec4(1.0, 1.0, 1.0, 1.0));
+				//wr.render(scene->renderer(), m_bounds);
+				
+				bool updated = false;
+				REF(IPixelBuffer) textPixelBuffer = m_textBuffer->renderText(updated);
+				
+				if (updated) {
+					AlignedBox<2> textBounds = m_bounds;
+					textBounds.setCenterAndSize(textBounds.center(), textPixelBuffer->size().reduce());
+					m_imageRenderer.change(scene->renderer(), textPixelBuffer, textBounds, vec(false, false));
+				}
+				
+				m_imageRenderer.render(scene->renderer());
+
+				View::renderView(scene, time);
+			}
+			
 			bool TextView::button (const ButtonInput & input) {
 				if (m_editable && hasStaticFocus()) {
 					m_textBuffer->insertCharacterAtOffset(m_offset, input.key().button());
