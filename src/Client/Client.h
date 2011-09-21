@@ -10,6 +10,12 @@
 #ifndef _DREAM_CLIENT_CLIENT_H
 #define _DREAM_CLIENT_CLIENT_H
 
+#ifdef __APPLE__
+#include <TargetConditionals.h>
+#elif __LINUX__
+#define TARGET_OS_LINUX 1
+#endif
+
 namespace Dream
 {
 	/** The Client namespace is functionality which is specific to actual graphical applications.
