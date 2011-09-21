@@ -1,46 +1,51 @@
-/*
- *  Client/Display/Application.h
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
- *
- *  Created by Samuel Williams on 27/12/08.
- *  Copyright 2008 Orion Transfer Ltd. All rights reserved.
- *
- */
+//
+//  Application.h
+//  Dream
+//
+//  Created by Samuel Williams on 14/09/11.
+//  Copyright 2011 Orion Transfer Ltd. All rights reserved.
+//
 
 #ifndef _DREAM_CLIENT_DISPLAY_APPLICATION_H
 #define _DREAM_CLIENT_DISPLAY_APPLICATION_H
 
 #include "Context.h"
+#include "Scene.h"
 
-namespace Dream
-{	
-	namespace Client
-	{
-		namespace Display
-		{
+namespace Dream {
+	namespace Client {
+		namespace Display {
 			
-			class IContext;
+			/// An abstract interface to platform specific application implementation.
+			// This part of the framework is optional.
+			/// You can also depend on IContext directly and embed the rendering
+			/// process directly into a host-specific application for enhanced
+			/// functionality.
+			class IApplication;
 			
-			/**
-			 Controller class for running an application.
-			 
-			 This class is an incredibly simple interface for building complete apps with only a few lines of code. It 
-			 is not designed to be flexible, and you shouldn't implement much code inside your IApplication. Typically,
-			 you'd do most of this in your Scenes, so that it can be easily reused.
-				
-			 */
-			class IApplication : implements IObject
-			{
-			public:
-				/// Start the application by initialising the appropriate context and calling setup() then run().
-				virtual void start (PTR(Dictionary) config);
-				
-				/// Called once the application has started and can start loading resources
-				virtual void setup () abstract;
-				
-				/// Start the event loop and begin processing events
-				virtual void run () abstract;
+			class IApplicationDelegate : implements IObject {
+				public:
+					virtual ~IApplicationDelegate ();
+					
+					virtual void applicationDidFinishLaunching (IApplication * application);
+					virtual void applicationWillTerminate (IApplication * application);
+					
+					virtual void applicationWillEnterBackground (IApplication * application);
+					virtual void applicationDidEnterForeground (IApplication * application);
 			};
+			
+			class IApplication : implements IObject {
+				public:
+					virtual ~IApplication ();
+					
+					static void start (PTR(IApplicationDelegate) delegate);
+					
+					/// Create a display context for rendering.
+					virtual REF(IContext) createContext (REF(Dictionary) config) abstract;
+					
+					virtual IApplicationDelegate * delegate () const abstract;
+			};
+			
 		}
 	}
 }

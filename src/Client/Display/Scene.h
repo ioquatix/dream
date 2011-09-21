@@ -15,7 +15,6 @@
 
 #include "Input.h"
 #include "Context.h"
-#include "Renderer.h"
 
 #include <set>
 
@@ -33,8 +32,7 @@ namespace Dream
 			
 			class ISceneManager;
 			
-	#pragma mark -
-	#pragma mark Base Scene Interfaces
+#pragma mark -
 			
 			/** Abstract representation of graphical sequence.
 			 
@@ -58,14 +56,11 @@ namespace Dream
 				/// Called directly after willBecomeCurrent.
 				virtual void didBecomeCurrent () abstract;
 				
-				/// Callback from the ISceneManager to indicate that the scene will no longer be rendering frames
+				/// Callback from the ISceneManager to indicate that the scene will no longer be rendering frames.
 				virtual void willRevokeCurrent (ISceneManager *) abstract;
 				
 				/// Render a frame which will be displayed at ''time''.
 				virtual void renderFrameForTime (TimeT time) abstract;
-				
-				/// The renderer for the scene
-				virtual RendererT * renderer () abstract;
 				
 				/// The current scene manager controlling this scene
 				virtual ISceneManager * manager () abstract;
@@ -113,17 +108,68 @@ namespace Dream
 				/// Called by the current scene to notify the manager that it has completed and the next scene should be shown.
 				/// The next scene is determined by calling provideNextScene(). This is done at the beginning of renderFrameForTime().
 				virtual void currentSceneIsFinished () abstract;
+				
+				/// Dequeue input from the associated context.
+				virtual void processPendingEvents (IInputHandler * handler) abstract;
 			};
 			
-	#pragma mark -
+#pragma mark -
+
+			/// Scenes are composed of layers of content which can handle input and render graphics.
+			class ILayer : implements IObject, implements IInputHandler
+			{
+				public:
+					virtual void renderFrameForTime (IScene * scene, TimeT time);
+					
+					virtual void didBecomeCurrent (ISceneManager * manager, IScene * scene);
+					virtual void willRevokeCurrent (ISceneManager * manager, IScene * scene);
+			};
+
+#pragma mark -
+	
+			/** A group is a non-specific collection of children layers.
 			
-			class SceneManager : public Object, implements ISceneManager
+			A group allows for multiple children layers to be rendered together. This serves
+			as the base class for nodes like TransformedGroup or Viewport which allow for
+			specific functionality to be applied before further rendering takes place.
+			*/
+			class Group : public Object, implements ILayer
+			{
+			public:
+				typedef std::vector<REF(ILayer)> ChildrenT;
+			
+				protected:
+					ChildrenT m_children;
+				
+				public:
+					virtual void renderFrameForTime (IScene * scene, TimeT time);
+					
+					virtual void didBecomeCurrent (ISceneManager * manager, IScene * scene);
+					virtual void willRevokeCurrent (ISceneManager * manager, IScene * scene);
+					
+					virtual bool process (const Input & input);
+					
+					void add (PTR(ILayer) child);
+					void remove (PTR(ILayer) child);
+					void removeAll ();
+					
+					ChildrenT & children() { return m_children; }
+					const ChildrenT & children() const { return m_children; }
+			};
+			
+#pragma mark -
+			
+			/// A stack-based scene manager which can support typical game logic.
+			class SceneManager : public Object, implements ISceneManager, implements IContextDelegate
 			{
 			public:
 				typedef std::list<REF(IScene)> ScenesT;
 				typedef boost::function<void (ISceneManager *)> FinishedCallbackT;
 				
-			protected:			
+			protected:
+				Stopwatch m_stopwatch;
+				TimerStatistics m_stats;
+				
 				ScenesT m_scenes;
 				REF(IScene) m_currentScene;
 				
@@ -139,7 +185,12 @@ namespace Dream
 				
 				void updateCurrentScene ();
 				
+				/// Queue input from display context.
+				InputQueue m_inputQueue;
+								
 			public:
+				static REF(Resources::ILoader) defaultResourceLoader ();
+				
 				SceneManager (REF(IContext) displayContext, REF(Loop) eventLoop, REF(ILoader) resourceLoader);
 				virtual ~SceneManager ();
 				
@@ -161,15 +212,17 @@ namespace Dream
 				virtual void currentSceneIsFinished ();
 				
 				/// Calls provideNextScene if there is no current scene.
-				virtual void renderFrameForTime (TimeT time);
-				
+				virtual void renderFrameForTime (PTR(IContext) context, TimeT time);
+							
 				/// Process any events available from the display context and pass them on to the current scene.
-				virtual void processPendingEvents ();
+				virtual void processInput (PTR(IContext) context, const Input & input);
+				virtual void processPendingEvents (IInputHandler * handler);
 				
 				virtual void setFinishedCallback (FinishedCallbackT callback);
 			};
-						
-			class Scene : public Object, implements IScene
+			
+			/// A basic scene implementation which manages the context for a single logical part of the application.
+			class Scene : public Group, implements IScene
 			{
 			protected:
 				ISceneManager * m_sceneManager;
@@ -184,14 +237,12 @@ namespace Dream
 				virtual void willBecomeCurrent (ISceneManager *);
 				
 				/// Used to process layers which have been created in willBecomeCurrent.
-				virtual void didBecomeCurrent ();
-				
+				virtual void didBecomeCurrent ();				
 				virtual void willRevokeCurrent (ISceneManager *);
 				
-				virtual bool resize (const Display::ResizeInput & ipt);
-				virtual bool event (const Display::EventInput & ipt);
+				virtual bool resize (const Display::ResizeInput & input);
+				virtual bool event (const Display::EventInput & input);
 				
-				virtual RendererT * renderer ();
 				virtual ISceneManager * manager ();
 				virtual ILoader * resourceLoader ();
 				virtual TimeT currentTime () const;
@@ -199,6 +250,7 @@ namespace Dream
 				virtual void renderFrameForTime (TimeT time);
 			};
 			
+			/// A place-holder scene that does nothing.
 			class VoidScene : public Scene 
 			{
 			public:

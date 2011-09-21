@@ -15,10 +15,8 @@
 #include "../../Numerics/Vector.h"
 #include "../../Events/Loop.h"
 
-#include "Renderer.h"
 #include "Input.h"
 
-#include <boost/function.hpp>
 #include <vector>
 
 namespace Dream {
@@ -26,34 +24,21 @@ namespace Dream {
 		namespace Display {
 			using namespace Dream::Numerics;
 			
-			typedef Vector<2, uint32_t> ResolutionT;
-			typedef boost::function<void (TimeT at)> FrameCallbackT;
+#pragma mark -
+			
 			class IContext;
 			
-			class IContextMode : public Object {
+			class IContextDelegate : implements IObject {
 			public:
-				virtual ~IContextMode();
+				virtual ~IContextDelegate ();
 				
-				virtual StringT descriptiveName () const abstract;
+				/// Render a frame with the given context. You should lock the context before rendering as
+				/// this function may be called from a separate thread.
+				virtual void renderFrameForTime (PTR(IContext) context, TimeT time);
 				
-				virtual REF(IContext) setup (PTR(Dictionary) config) const abstract;
-			};
-			
-			class ContextManager {
-			protected:
-				std::vector<REF(IContextMode)> m_modes;
-				
-				ContextManager();
-				~ContextManager();
-				
-			public:
-				static ContextManager * sharedManager();
-				
-				/// Register a mode with the manager
-				void registerContextMode (PTR(IContextMode) mode);
-				
-				/// Return the best context class for the given operating system and library compilation.
-				REF(IContextMode) bestContextMode() const;
+				/// Process the given user event. This event may typically come from main thread, so you should
+				/// use InputQueue to pass events to main context event loop.
+				virtual void processInput (PTR(IContext) context, const Input & input);
 			};
 			
 			/** Simple generic method of showing a window for use with 3D graphics.
@@ -62,34 +47,47 @@ namespace Dream {
 			 */
 			class IContext : implements IObject {				
 			public:
-				/// Synchronize the frame updates to screen updates. This is on by default, and should generally not be adjusted.
-				virtual void setFrameSync (bool vsync) abstract;
+				virtual ~IContext ();
 				
-				/// Set the title of the window, if it is possible.
-				virtual void setTitle (String title) abstract;
-				
-				/// Show the display context.
+				/// Start the display context.
+				/// The delegate's IContextDelegate::renderFrameForTime method will begin being called periodically.
 				/// If it is a window, show the window. If it is a full-screen context, take control of the screen.
-				virtual void show () abstract;
+				virtual void start () abstract;
 				
 				/// Hide the display context and return control to the system if the context was fullscreen.
-				virtual void hide () abstract;
+				virtual void stop () abstract;
+				
+				/// Make the associated graphics context current for the given thread of execution.
+				virtual void makeCurrent () abstract;
 				
 				/// Flip the buffers. Generally should be called at the end of rendering to indicate the frame is complete.
-				virtual void flipBuffers () abstract;
+				virtual void flushBuffers () abstract;
 				
 				/// The resolution of the current display window or screen.
-				virtual ResolutionT resolution () abstract;
+				virtual Vec2u size () abstract;
 				
-				/// This function aggregates any events that have occurred and calls the appropriate methods on the provided handler.
-				virtual void processPendingEvents (IInputHandler * handler) abstract;
+				/// Set the delegate that will be used to handle frame rendering.
+				/// This delegate will typically be called on a separate thread.
+				virtual void setDelegate(PTR(IContextDelegate) contextDelegate) abstract;
 				
-				/// Set the callback that will occur when a frame is to be displayed.
-				/// This callback will include the time that the frame will be rendered, and may be called from another thread.
-				virtual void scheduleFrameNotificationCallback (REF(Events::Loop) loop, FrameCallbackT callback) abstract;
+				/// Possibly add some mouse handling functions?
+				/// void grabCursor ();
+			};
+			
+			class Context : public Object, implements IContext, implements IInputHandler {
+			protected:
+				REF(IContextDelegate) m_contextDelegate;
 				
-				/// The renderer for this display context.
-				virtual REF(RendererT) renderer () abstract;
+			public:
+				// Process some input
+				virtual bool process (const Input & input);
+				
+				// Render a frame
+				virtual void renderFrameForTime (TimeT time);
+			
+				virtual ~Context();
+				
+				virtual void setDelegate(PTR(IContextDelegate) contextDelegate);
 			};
 		}
 	}

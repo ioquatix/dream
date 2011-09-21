@@ -15,14 +15,35 @@ namespace Dream
 	{
 		namespace Display
 		{
-			//Input::Input (const TimeT & inputTime) : m_time(inputTime)
-			//{
-				
-			//}
+		
+			Input::Input ()
+				: m_time(systemTime())
+			{
+			
+			}
+			
+			Input::Input (const Input & other)
+				: m_time(other.m_time)
+			{
+			
+			}
+			
+			Input::~Input()
+			{
+			}
+			
+#pragma mark -
+			
+			IInputHandler::~IInputHandler ()
+			{
+			
+			}
 						
 			bool IInputHandler::process (const Input & input) {
-				return input.act(*this);
+				return input.act(this);
 			}
+			
+#pragma mark -
 			
 			EventInput::EventInput(EventName event)
 				: m_event(event)
@@ -30,14 +51,20 @@ namespace Dream
 			
 			}
 			
+			EventInput::EventInput (const EventInput & other)
+				: Input(other), m_event(other.m_event)
+			{
+				
+			}
+			
 			EventInput::~EventInput()
 			{
 			
 			}
 			
-			bool EventInput::act(IInputHandler &h) const
+			bool EventInput::act(IInputHandler * handler) const
 			{
-				return h.event(*this);
+				return handler->event(*this);
 			}
 			
 			EventInput::EventName EventInput::event () const
@@ -45,20 +72,30 @@ namespace Dream
 				return m_event;
 			}
 			
+#pragma mark -
+			
 			ButtonInput::ButtonInput(const Key &e, const StateT &s) 
 				: m_key(e), m_state(s) 
 			{
 			
 			}
 			
-			bool ButtonInput::act(IInputHandler &h) const
+			ButtonInput::ButtonInput(const ButtonInput & other)
+				: Input(other), m_key(other.m_key), m_state(other.m_state)
 			{
-				return h.button(*this);
+			
+			}
+			
+			bool ButtonInput::act (IInputHandler * handler) const
+			{
+				return handler->button(*this);
 			}
 			
 			ButtonInput::~ButtonInput () {
 			
 			}
+			
+#pragma mark -
 			
 			MotionInput::MotionInput(const Key &key, const StateT &state, const Vec3 &position, const Vec3 &motion, const AlignedBox<2> & bounds) 
 				: m_key(key), m_state(state), m_motion(motion), m_bounds(bounds)
@@ -68,8 +105,14 @@ namespace Dream
 				m_position = position - (bounds.min() << 0.0);
 			}
 			
-			bool MotionInput::act(IInputHandler &h) const {
-				return h.motion(*this);
+			MotionInput::MotionInput(const MotionInput & other)
+				: Input(other), m_key(other.m_key), m_state(other.m_state), m_position(other.m_position), m_motion(other.m_motion), m_bounds(other.m_bounds)
+			{
+			
+			}
+			
+			bool MotionInput::act (IInputHandler * handler) const {
+				return handler->motion(*this);
 			}
 			
 			MotionInput::~MotionInput () {
@@ -80,18 +123,78 @@ namespace Dream
 				return MotionInput(m_key, m_state, m_position, m_motion, updatedBounds);
 			}
 			
-			ResizeInput::ResizeInput (const Vec2u & oldSize, const Vec2u & newSize)
-			: m_oldSize(oldSize), m_newSize(newSize) {
+#pragma mark -
+			
+			ResizeInput::ResizeInput (const Vec2u & newSize)
+				: m_newSize(newSize)
+			{
 				
 			}
 			
-			bool ResizeInput::act(IInputHandler &h) const {
-				return h.resize(*this);
+			ResizeInput::ResizeInput(const ResizeInput & other)
+				: Input(other), m_newSize(other.m_newSize)
+			{
+			
+			}
+			
+			bool ResizeInput::act (IInputHandler * handler) const {
+				return handler->resize(*this);
 			}
 			
 			ResizeInput::~ResizeInput () {
 			
 			}
+			
+#pragma mark -
+			
+			InputQueue::~InputQueue ()
+			{
+				std::vector<Input*> * items = m_queue.fetch();
+				
+				foreach(input, *items) {
+					delete *input;
+				}
+			}
+			
+			bool InputQueue::resize(const ResizeInput & input)
+			{
+				m_queue.add(new ResizeInput(input));
+				
+				return true;
+			}
+			
+			bool InputQueue::button(const ButtonInput & input)
+			{
+				m_queue.add(new ButtonInput(input));
+				
+				return true;
+			}
+			
+			bool InputQueue::motion(const MotionInput & input)
+			{
+				m_queue.add(new MotionInput(input));
+			
+				return true;
+			}
+			
+			bool InputQueue::event(const EventInput & input)
+			{
+				m_queue.add(new EventInput(input));
+				
+				return true;
+			}
+			
+			void InputQueue::dequeue (IInputHandler * handler)
+			{
+				std::vector<Input*> * items = m_queue.fetch();
+				
+				foreach(input, *items) {
+					handler->process(**input);
+					
+					delete *input;
+				}
+			}
+
 		}
 	}
 }

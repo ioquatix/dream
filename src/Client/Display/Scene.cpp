@@ -8,9 +8,15 @@
  */
 
 #include "Scene.h"
-#include "Layer.h"
+#include "Context.h"
 
 #include "../../Geometry/AlignedBox.h"
+
+// Resource loader
+#include "../../Imaging/Image.h"
+#include "../Text/Font.h"
+#include "../Audio/Sound.h"
+#include "../Audio/OggResource.h"
 
 #include <numeric>
 #include <algorithm>
@@ -31,10 +37,24 @@ namespace Dream
 			
 	#pragma mark -
 			
-			SceneManager::SceneManager (REF(IContext) displayContext, REF(Loop) eventLoop, REF(ILoader) resourceLoader) : m_displayContext(displayContext),
-			m_eventLoop(eventLoop), m_currentSceneIsFinished(true), m_resourceLoader(resourceLoader)
+			REF(Resources::ILoader) SceneManager::defaultResourceLoader ()
 			{
+				REF(Resources::Loader) loader = new Resources::Loader;
 				
+				loader->addLoader(new Imaging::Image::Loader);
+				loader->addLoader(new Client::Audio::Sound::Loader);
+				loader->addLoader(new Client::Audio::OggResource::Loader);
+				loader->addLoader(new Client::Text::Font::Loader);
+				
+				return loader;
+			}
+			
+			SceneManager::SceneManager (REF(IContext) displayContext, REF(Loop) eventLoop, REF(ILoader) resourceLoader)
+				: m_displayContext(displayContext), m_eventLoop(eventLoop), m_currentSceneIsFinished(true), m_resourceLoader(resourceLoader)
+			{
+				m_displayContext->setDelegate(this);
+				
+				m_stopwatch.start();
 			}
 			
 			SceneManager::~SceneManager ()
@@ -125,17 +145,38 @@ namespace Dream
 				return s;
 			}
 			
-			void SceneManager::renderFrameForTime (TimeT time)
+			void SceneManager::renderFrameForTime (PTR(IContext) context, TimeT time)
 			{
+				context->makeCurrent();
+				
+				m_stats.beginTimer(m_stopwatch.time());
+
 				if (!m_currentScene || m_currentSceneIsFinished)
 					updateCurrentScene();
 				
 				ISceneManager::renderFrameForTime(time);
+								
+				m_stats.update(m_stopwatch.time());
+				
+				if (m_stats.updateCount() > (60 * 20))
+				{
+					std::cerr << "FPS: " << m_stats.updatesPerSecond() << std::endl;
+					m_stats.reset();
+				}
+				
+				context->flushBuffers();
 			}
 			
-			void SceneManager::processPendingEvents ()
+			void SceneManager::processInput (PTR(IContext) context, const Input & input)
 			{
-				m_displayContext->processPendingEvents(currentScene().get());
+				// Add the event to the thread-safe queue.
+				m_inputQueue.process(input);
+			}
+			
+			void SceneManager::processPendingEvents (IInputHandler * handler)
+			{
+				// Remove a block of events from the input queue and pass to the handler for processing.
+				m_inputQueue.dequeue(handler);
 			}
 			
 			void SceneManager::setFinishedCallback (FinishedCallbackT callback)
@@ -145,7 +186,79 @@ namespace Dream
 			
 #pragma mark -
 			
+			void ILayer::renderFrameForTime (IScene * scene, TimeT time) {
 			
+			}
+			
+			void ILayer::didBecomeCurrent (ISceneManager * manager, IScene * scene) {
+			
+			}
+			
+			void ILayer::willRevokeCurrent (ISceneManager * manager, IScene * scene) {
+			
+			}
+
+#pragma mark -
+
+			void Group::renderFrameForTime (IScene * scene, TimeT time)
+			{
+				for (ChildrenT::iterator i = m_children.begin(); i != m_children.end(); i++)
+				{
+					(*i)->renderFrameForTime(scene, time);
+				}
+			}
+			
+			bool Group::process (const Input & input)
+			{
+				bool result = false;
+				
+				for (ChildrenT::iterator i = m_children.begin(); i != m_children.end(); i++)
+				{
+					result |= (*i)->process(input);
+				}
+				
+				result |= IInputHandler::process(input);
+				
+				return result;
+			}
+			
+			void Group::didBecomeCurrent (ISceneManager * manager, IScene * scene)
+			{
+				for (ChildrenT::iterator i = m_children.begin(); i != m_children.end(); i++)
+				{
+					(*i)->didBecomeCurrent(manager, scene);
+				}
+			}
+			
+			void Group::willRevokeCurrent (ISceneManager * manager, IScene * scene)
+			{
+				for (ChildrenT::iterator i = m_children.begin(); i != m_children.end(); i++)
+				{
+					(*i)->willRevokeCurrent(manager, scene);
+				}
+			}
+			
+			void Group::add(PTR(ILayer) child)
+			{
+				m_children.push_back(child);
+			}
+			
+			void Group::remove(PTR(ILayer) child)
+			{
+				//m_children.erase(child);
+				ChildrenT::iterator pos = std::find(m_children.begin(), m_children.end(), child);
+				
+				if (pos != m_children.end()) {
+					m_children.erase(pos);
+				}
+			}
+			
+			void Group::removeAll ()
+			{
+				m_children.resize(0);
+			}
+			
+#pragma mark -
 			
 			Scene::Scene () : m_sceneManager(NULL), m_firstFrame(true), m_startTime(0), m_currentTime(0)
 			{
@@ -155,13 +268,6 @@ namespace Dream
 			Scene::~Scene()
 			{
 				
-			}
-			
-			RendererT * Scene::renderer ()
-			{
-				ensure(m_sceneManager);
-				
-				return m_sceneManager->displayContext()->renderer().get();
 			}
 			
 			ISceneManager * Scene::manager ()
@@ -181,8 +287,10 @@ namespace Dream
 			}
 			
 			void Scene::didBecomeCurrent () {
-				Display::ResizeInput initialSize(Vec2(ZERO), m_sceneManager->displayContext()->resolution());
+				Display::ResizeInput initialSize(m_sceneManager->displayContext()->size());
 				process(initialSize);
+				
+				Group::didBecomeCurrent(m_sceneManager, this);
 			}
 			
 			void Scene::willRevokeCurrent (ISceneManager * sceneManager)
@@ -191,12 +299,7 @@ namespace Dream
 			}
 			
 			bool Scene::resize (const Display::ResizeInput &ipt)
-			{
-				using namespace Geometry;
-				
-				//renderer()->setViewport(Vec2(ZERO), ipt.newSize());
-				//renderer()->setOrthographicView(AlignedBox<2>::fromCenterAndSize(Vec2(ZERO), ipt.newSize()), 0, 1024);
-				
+			{				
 				std::cout << "Resizing to " << ipt.newSize() << std::endl;
 				
 				return true;
@@ -221,6 +324,8 @@ namespace Dream
 				}
 				
 				m_currentTime = time;
+				
+				Group::renderFrameForTime(this, time);
 			}
 			
 			TimeT Scene::currentTime () const
@@ -229,8 +334,6 @@ namespace Dream
 			}
 			
 	#pragma mark -
-			
-			
 			
 			VoidScene::VoidScene ()
 			{

@@ -11,6 +11,7 @@
 #define _DREAM_CLIENT_DISPLAY_INPUT_H
 
 #include "../../Core/Timer.h"
+#include "../../Events/Thread.h"
 #include "../../Numerics/Vector.h"
 #include "../../Geometry/AlignedBox.h"
 
@@ -108,23 +109,35 @@ namespace Dream {
 			class Input
 			{
 			protected:
-				//TimeT m_time;
+				TimeT m_time;
 				
 			public:
-				//Input (const TimeT & inputTime);
+				Input ();
+				Input (const Input & other);
 				
-				//TimeT time () const { return m_time; }
-				virtual bool act(IInputHandler &h) const abstract;
+				virtual ~Input();
+				
+				TimeT time () const { return m_time; }
+				virtual bool act (IInputHandler * handler) const abstract;
 			};
 			
-			class IInputHandler : implements IObject
+			class IInputHandler
 			{
-			public:
+			protected:
+				friend class ResizeInput;
 				virtual bool resize(const ResizeInput &) { return false; }
+				
+				friend class ButtonInput;
 				virtual bool button(const ButtonInput &) { return false; }
+				
+				friend class MotionInput;
 				virtual bool motion(const MotionInput &) { return false; }
+				
+				friend class EventInput;
 				virtual bool event(const EventInput &) { return false; }
 				
+			public:
+				virtual ~IInputHandler ();
 				virtual bool process (const Input & input);
 			};
 			
@@ -137,6 +150,8 @@ namespace Dream {
 				};
 				
 				EventInput(EventName event);
+				EventInput (const EventInput & other);
+				
 				virtual ~EventInput ();
 				
 				EventName event() const;
@@ -144,7 +159,7 @@ namespace Dream {
 			protected:
 				EventName m_event;
 				
-				virtual bool act(IInputHandler &h) const;
+				virtual bool act (IInputHandler * handler) const;
 			};
 			
 			class ButtonInput : public Input {
@@ -154,9 +169,11 @@ namespace Dream {
 				
 			public:
 				ButtonInput(const Key &e, const StateT &s);
+				ButtonInput(const ButtonInput & other);
+				
 				virtual ~ButtonInput ();
 				
-				virtual bool act(IInputHandler &h) const;
+				virtual bool act (IInputHandler * handler) const;
 				
 				const Key & key () const { return m_key; }
 				const StateT & state () const { return m_state; }
@@ -181,9 +198,11 @@ namespace Dream {
 				
 			public:
 				MotionInput(const Key &key, const StateT &state, const Vec3 &position, const Vec3 &motion, const AlignedBox<2> & bounds);
+				MotionInput(const MotionInput & other);
+				
 				virtual ~MotionInput ();
 				
-				virtual bool act(IInputHandler &h) const;
+				virtual bool act (IInputHandler * handler) const;
 				
 				const Vec3 & currentPosition () const { return m_position; }
 				const Vec3 previousPosition () const { return m_position - m_motion; }
@@ -212,36 +231,52 @@ namespace Dream {
 			
 			class ResizeInput : public Input {
 			private:
-				Vec2u m_oldSize;
 				Vec2u m_newSize;
 				
 			public:
-				ResizeInput(const Vec2u & oldSize, const Vec2u & newSize);
+				ResizeInput(const Vec2u & newSize);
+				ResizeInput(const ResizeInput & other);
+				
 				virtual ~ResizeInput ();
 				
-				virtual bool act(IInputHandler &h) const;
+				virtual bool act (IInputHandler * handler) const;
 				
-				Vec2u oldSize () const { return m_oldSize; }
 				Vec2u newSize () const { return m_newSize; }
 			};
 			
-			template <typename action_t>
+			/// The input queue can send user input across threads.
+			class InputQueue : implements IInputHandler {
+				protected:
+					Events::Queue<Input*> m_queue;
+					
+					virtual bool resize(const ResizeInput &);
+					virtual bool button(const ButtonInput &);
+					virtual bool motion(const MotionInput &);
+					virtual bool event(const EventInput &);
+					
+				public:
+					virtual ~InputQueue ();
+										
+					void dequeue (IInputHandler * handler);
+			};
+			
+			template <typename ActionT>
 			class InputMapper {
 			protected:
-				typedef std::map<Key, action_t> ActionsMap;
+				typedef std::map<Key, ActionT> ActionsMap;
 				ActionsMap m_actions;
 				
 			public:
-				void bind (const Key &e, action_t a) {
+				void bind (const Key &e, ActionT a) {
 					m_actions[e] = a;
 				}
 				
-				void bind (DeviceT d, ButtonT b, action_t a) {
+				void bind (DeviceT d, ButtonT b, ActionT a) {
 					Key e(d,b);
 					m_actions[e] = a;
 				}
 				
-				bool lookup (const Key &e, const action_t &a) const {
+				bool lookup (const Key &e, const ActionT &a) const {
 					typename ActionsMap::const_iterator i = m_actions.find(e);
 					if (i != m_actions.end()) {
 						a = *i;

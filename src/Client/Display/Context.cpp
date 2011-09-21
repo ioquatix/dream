@@ -15,40 +15,49 @@ namespace Dream {
 		namespace Display {
 			
 #pragma mark -
-#pragma mark IContextManager
 
-			IContextMode::~IContextMode() {
+			IContextDelegate::~IContextDelegate ()
+			{
+			}
+			
+			void IContextDelegate::renderFrameForTime (PTR(IContext) context, TimeT time)
+			{
+			}
+			
+			void IContextDelegate::processInput (PTR(IContext) context, const Input & input)
+			{
+			}
+			
+#pragma mark -
+			
+			IContext::~IContext ()
+			{
+			}
+			
+			Context::~Context ()
+			{
+			}
+
+			void Context::setDelegate(PTR(IContextDelegate) contextDelegate)
+			{
+				m_contextDelegate = contextDelegate;
+			}
+			
+			bool Context::process(const Input & input)
+			{
+				if (m_contextDelegate) {
+					m_contextDelegate->processInput(this, input);
 				
-			}
-			
-			ContextManager::ContextManager() {
-			
-			}
-			
-			ContextManager::~ContextManager() {
-			
-			}
-			
-			ContextManager * ContextManager::sharedManager() {
-				static ContextManager * contextManager = NULL;
-				
-				if (!contextManager) {
-					contextManager = new ContextManager;
+					return true;
 				}
 				
-				return contextManager;
+				return false;
 			}
 			
-			void ContextManager::registerContextMode (PTR(IContextMode) mode) {
-				m_modes.push_back(mode);
-			}
-			
-			/// Return the best context class for the given operating system and library compilation.
-			REF(IContextMode) ContextManager::bestContextMode() const {
-				if (m_modes.size() > 0) {
-					return m_modes.front();
-				} else {
-					return NULL;
+			void Context::renderFrameForTime (TimeT time)
+			{
+				if (m_contextDelegate) {
+					m_contextDelegate->renderFrameForTime(this, time);
 				}
 			}
 			
