@@ -21,9 +21,9 @@ ARCHS=$(VALID_ARCHS)
 
 DEBUG_CFLAGS[variant=debug]=-DDREAM_DEBUG
 
-OTHER_CFLAGS[sdk=macosx*]=-DDREAM_USE_OPENGL20 -DDREAM_VARIANT=$(BUILD_VARIANT) $(DEBUG_CFLAGS)
-OTHER_CFLAGS[sdk=iphoneos*]=-DDREAM_USE_OPENGLES11 -DDREAM_VARIANT=$(BUILD_VARIANT) $(DEBUG_CFLAGS)
-OTHER_CFLAGS[sdk=iphonesimulator*]=-DDREAM_USE_OPENGLES11 -DDREAM_VARIANT=$(BUILD_VARIANT) $(DEBUG_CFLAGS)
+OTHER_CFLAGS[sdk=macosx*]=-DDREAM_VARIANT=$(BUILD_VARIANT) $(DEBUG_CFLAGS)
+OTHER_CFLAGS[sdk=iphoneos*]=-DDREAM_VARIANT=$(BUILD_VARIANT) $(DEBUG_CFLAGS)
+OTHER_CFLAGS[sdk=iphonesimulator*]=-DDREAM_VARIANT=$(BUILD_VARIANT) $(DEBUG_CFLAGS)
 
 OTHER_LDFLAGS[sdk=macosx*]=$(EXT_LIBS) -framework OpenGL -framework OpenAL -framework Foundation -framework Cocoa -framework AppKit -framework CoreVideo -framework CoreServices
 OTHER_LDFLAGS[sdk=iphone*]=$(EXT_LIBS) -framework QuartzCore -framework OpenGLES -framework OpenAL -framework Foundation -framework CoreGraphics -framework Foundation -framework UIKit
