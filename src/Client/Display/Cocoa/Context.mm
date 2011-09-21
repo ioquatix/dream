@@ -168,7 +168,7 @@ namespace Dream
 						NSOpenGLPixelFormat * pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes.data()];
 						
 						DOpenGLView * graphicsView = [[DOpenGLView alloc] initWithFrame:frame pixelFormat:pixelFormat];
-						[graphicsView setInputHandler:this];
+						[graphicsView setDisplayContext:this];
 												
 						m_graphicsView = graphicsView;						
 					}

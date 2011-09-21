@@ -135,10 +135,8 @@ namespace Dream {
 					[NSApplication sharedApplication];
 					
 					// Setup the application delegate wrapper:
-					DApplicationDelegate * wrapper = [[DApplicationDelegate alloc] init];
-					
+					DApplicationDelegate * wrapper = [[DApplicationDelegate alloc] init];					
 					[wrapper setApplication:this];
-					[wrapper setApplicationDelegate:m_applicationDelegate.get()];
 					
 					[NSApp setDelegate:wrapper];
 
