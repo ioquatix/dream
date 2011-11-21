@@ -9,8 +9,10 @@
 
 #include "Buffer.h"
 
+// File and memory manipulation
 #include <sys/mman.h>
 #include <sys/fcntl.h>
+#include <unistd.h>
 
 // For testing
 #include <string>

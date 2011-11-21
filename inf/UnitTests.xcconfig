@@ -6,6 +6,6 @@
 //  Copyright 2011 Orion Transfer Ltd. All rights reserved.
 //
 
-EXT_LIBS=-lboost_system -lboost_thread -lpng -ljpeg -lfreetype -logg -lvorbis -lvorbisfile -lz
+EXT_LIBS=-lpng -ljpeg -lfreetype -logg -lvorbis -lvorbisfile -lz
 
 #include "Library.xcconfig"

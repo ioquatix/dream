@@ -11,16 +11,11 @@
 #include <Dream/Numerics/Interpolate.h>
 #include <Dream/Geometry/Plane.h>
 
-#include <boost/function.hpp>
-#include <boost/assign/std/vector.hpp>
-
 #include <vector>
 #include <list>
 
 namespace Dream {
 	namespace Geometry {
-		using namespace boost;
-		
 		/** A generic spline interface.
 
 			@templatefield	D	The dimensions of the spline. Can be 2 or 3.

@@ -14,6 +14,8 @@
 #include <fcntl.h>
 #include <iostream>
 
+#include <unistd.h>
+
 namespace Dream
 {
 	namespace Events

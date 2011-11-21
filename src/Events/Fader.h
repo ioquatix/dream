@@ -37,7 +37,7 @@ namespace Dream
 		class Fader : public Object, implements ITimerSource
 		{
 			public:
-				typedef boost::function<void (PTR(Fader) fader)> FinishCallbackT;
+				typedef std::function<void (PTR(Fader) fader)> FinishCallbackT;
 			
 			protected:
 				Shared<IKnob> m_knob;

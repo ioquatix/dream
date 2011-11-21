@@ -16,8 +16,7 @@
 
 // Threading is often needed for coordinating network servers and clients
 // But- a multi-threaded server model (one thread per client) is not advised.
-#include <boost/thread/thread.hpp>
-#include <boost/shared_ptr.hpp>
+#include <thread>
 
 namespace Dream {
 	namespace Network {
@@ -78,8 +77,7 @@ namespace Dream {
 			REF(Events::Loop) m_eventLoop;
 			
 			REF(Server) m_server;
-			typedef boost::shared_ptr<boost::thread> thread_ptr;
-			thread_ptr m_thread;
+			Shared<std::thread> m_thread;
 			
 			void run ();
 			

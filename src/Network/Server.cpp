@@ -16,7 +16,7 @@ namespace Dream {
 	namespace Network {
 		
 		using namespace Events;
-		using boost::bind;
+		using std::bind;
 		
 #pragma mark -
 #pragma mark ServerContainer
@@ -48,28 +48,30 @@ namespace Dream {
 		}
 		
 		void ServerContainer::start (REF(Server) server) {
-			using namespace boost;
-			
 			if (!m_run) {
 				m_server = server;
 				
 				m_run = true;
 				
 				std::cerr << "Starting server container..." << std::endl;
+				
 				ensure(!m_thread);
-				m_thread = shared_ptr<thread> (new thread(bind(&ServerContainer::run, this)));
+				
+				m_thread = new std::thread(std::bind(&ServerContainer::run, this));
 			}
 		}
 		
 		void ServerContainer::stop () {
-			using namespace boost;
-
 			if (m_run) {
 				std::cerr << "Stopping server container..." << std::endl;
 				
 				// Stop the runloop
 				m_eventLoop->stop();
+				
 				m_thread->join();
+				m_thread = NULL;
+				
+				m_run = false;
 			}
 		}
 		
@@ -99,7 +101,7 @@ namespace Dream {
 			
 			foreach(addr, serverAddresses) {
 				REF(ServerSocket) serverSocket(new ServerSocket(*addr));
-				serverSocket->connectionCallback = bind(&Server::connectionCallbackHandler, this, _1, _2, _3, _4);
+				serverSocket->connectionCallback = std::bind(&Server::connectionCallbackHandler, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
 
 				m_serverSockets.push_back(serverSocket);
 
@@ -163,8 +165,6 @@ namespace Dream {
 				
 			}
 		};
-		
-		
 		
 		REF(TimerSource) g_timer1, g_timer2, g_timer3;
 		

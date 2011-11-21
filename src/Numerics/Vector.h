@@ -13,9 +13,6 @@
 #include "Numerics.h"
 #include "Number.h"
 
-#include <boost/mpl/min_max.hpp>
-#include <boost/static_assert.hpp>
-
 namespace Dream
 {
 	namespace Numerics

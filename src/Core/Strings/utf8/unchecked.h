@@ -25,8 +25,8 @@ DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef _DREAM_CORE_STRINGS_UTF8_UNCHECKED_H
-#define _DREAM_CORE_STRINGS_UTF8_UNCHECKED_H
+#ifndef UTF8_FOR_CPP_UNCHECKED_H_2675DCD0_9480_4c0c_B92A_CC14C027B731
+#define UTF8_FOR_CPP_UNCHECKED_H_2675DCD0_9480_4c0c_B92A_CC14C027B731
 
 #include "core.h"
 
@@ -45,13 +45,13 @@ namespace utf8
             }
             else if (cp < 0x10000) {              // three octets
                 *(result++) = static_cast<uint8_t>((cp >> 12)         | 0xe0);
-                *(result++) = static_cast<uint8_t>((cp >> 6) & 0x3f   | 0x80);
+                *(result++) = static_cast<uint8_t>(((cp >> 6) & 0x3f) | 0x80);
                 *(result++) = static_cast<uint8_t>((cp & 0x3f)        | 0x80);
             }
             else {                                // four octets
                 *(result++) = static_cast<uint8_t>((cp >> 18)         | 0xf0);
-                *(result++) = static_cast<uint8_t>((cp >> 12)& 0x3f   | 0x80);
-                *(result++) = static_cast<uint8_t>((cp >> 6) & 0x3f   | 0x80);
+                *(result++) = static_cast<uint8_t>(((cp >> 12) & 0x3f)| 0x80);
+                *(result++) = static_cast<uint8_t>(((cp >> 6) & 0x3f) | 0x80);
                 *(result++) = static_cast<uint8_t>((cp & 0x3f)        | 0x80);
             }
             return result;
@@ -132,7 +132,7 @@ namespace utf8
             while (start != end) {
                 uint32_t cp = internal::mask16(*start++);
             // Take care of surrogate pairs first
-                if (internal::is_surrogate(cp)) {
+                if (internal::is_lead_surrogate(cp)) {
                     uint32_t trail_surrogate = internal::mask16(*start++);
                     cp = (cp << 10) + trail_surrogate + internal::SURROGATE_OFFSET;
                 }
@@ -144,7 +144,7 @@ namespace utf8
         template <typename u16bit_iterator, typename octet_iterator>
         u16bit_iterator utf8to16 (octet_iterator start, octet_iterator end, u16bit_iterator result)
         {
-            while (start != end) {
+            while (start < end) {
                 uint32_t cp = next(start);
                 if (cp > 0xffff) { //make a surrogate pair
                     *result++ = static_cast<uint16_t>((cp >> 10)   + internal::LEAD_OFFSET);

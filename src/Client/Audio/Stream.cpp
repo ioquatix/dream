@@ -90,7 +90,7 @@ namespace Dream
 			{
 				stopBufferCallbacks();
 				
-				m_timer = new TimerSource(boost::bind(&Stream::bufferCallback, this), secondsPerBuffer(), true, true);
+				m_timer = new TimerSource(std::bind(&Stream::bufferCallback, this), secondsPerBuffer(), true, true);
 				
 				loop->scheduleTimer(m_timer);
 			}
@@ -174,7 +174,7 @@ namespace Dream
 				Shared<IKnob> decreaseGain = new LinearKnob<float>(m_source, AL_GAIN, m_source->gain(), gain);
 				m_fader = new Fader(decreaseGain, 100, duration / 100);
 				
-				m_fader->setFinishCallback(boost::bind(&Stream::pause, this));
+				m_fader->setFinishCallback(std::bind(&Stream::pause, this));
 				
 				loop->scheduleTimer(m_fader);
 			}

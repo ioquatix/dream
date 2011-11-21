@@ -17,6 +17,8 @@
 #include "Context.h"
 
 #include <set>
+#include <list>
+#include <functional>
 
 namespace Dream
 {
@@ -164,7 +166,7 @@ namespace Dream
 			{
 			public:
 				typedef std::list<REF(IScene)> ScenesT;
-				typedef boost::function<void (ISceneManager *)> FinishedCallbackT;
+				typedef std::function<void (ISceneManager *)> FinishedCallbackT;
 				
 			protected:
 				Stopwatch m_stopwatch;

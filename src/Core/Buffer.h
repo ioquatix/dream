@@ -14,7 +14,6 @@
 #include "Endian.h"
 
 #include <sstream>
-#include <boost/noncopyable.hpp>
 
 namespace Dream
 {
@@ -233,7 +232,7 @@ namespace Dream
 		 The buffer uses mmap (or equivalent) internally to load data from the disk. This buffer is designed to be as fast as possible to load data from the
 		 disk, and will reduce the number of copies required.
 		 */
-		class FileBuffer : public Buffer, private boost::noncopyable
+		class FileBuffer : public Buffer, private NonCopyable
 		{
 		protected:
 			IndexT m_size;
@@ -254,7 +253,7 @@ namespace Dream
 
 		 This buffer provides maximum flexibility when dealing with data which may change its size, and is almost API compatible with <tt>std::vector<unsigned char></tt>, but has optimizations for data buffering. This can provide up to 30% increase in performance when dealing with a lot of data.
 		 */
-		class DynamicBuffer : private boost::noncopyable, public ResizableBuffer
+		class DynamicBuffer : public ResizableBuffer, private NonCopyable
 		{
 			IndexT m_capacity, m_size;
 			ByteT * m_buf;
@@ -308,7 +307,7 @@ namespace Dream
 
 		 This class will copy its data. Therefore, you may want to consider StaticBuffer if you don't want to copy the data.
 		 */
-		class PackedBuffer : private boost::noncopyable, public MutableBuffer
+		class PackedBuffer : public MutableBuffer, private NonCopyable
 		{
 			IndexT m_size;
 

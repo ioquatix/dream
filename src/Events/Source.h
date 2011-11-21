@@ -12,15 +12,10 @@
 
 #include "Events.h"
 
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
-
 namespace Dream
 {
 	namespace Events
 	{
-		using boost::function;
-		
 		class Loop;
 		class ISource;
 		
@@ -38,7 +33,7 @@ namespace Dream
 		
 		class NotificationSource : public Object, implements INotificationSource
 		{
-			typedef boost::function<void (Loop *, NotificationSource *, Event)> CallbackT;
+			typedef std::function<void (Loop *, NotificationSource *, Event)> CallbackT;
 			
 			protected:
 				CallbackT m_callback;
@@ -63,7 +58,7 @@ namespace Dream
 		
 		class TimerSource : public Object, implements ITimerSource
 		{
-			typedef boost::function<void (Loop *, TimerSource *, Event)> CallbackT;
+			typedef std::function<void (Loop *, TimerSource *, Event)> CallbackT;
 
 			protected:
 				bool m_cancelled, m_repeats, m_strict;
@@ -98,7 +93,7 @@ namespace Dream
 		
 		class FileDescriptorSource : public Object, implements IFileDescriptorSource
 		{
-			typedef boost::function<void (Loop *, FileDescriptorSource *, Event)> CallbackT;
+			typedef std::function<void (Loop *, FileDescriptorSource *, Event)> CallbackT;
 			
 			protected:
 				int m_fd;

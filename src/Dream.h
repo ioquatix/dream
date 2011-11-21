@@ -16,7 +16,7 @@
 	applications which could be easily ported across different platforms. It was designed to simplify the way things were programmed in C++, and to reduce
 	verbosity of code where it was not needed.
 
-	The framework has relied heavily from external libraries, such as libpng, libjpeg, libfreetype, boost, and others. The idea behind this is not to reinvent the
+	The framework has relied heavily from external libraries, such as libpng, libjpeg, libfreetype, and others. The idea behind this is not to reinvent the
 	wheel, but to provide a set of reliable functionality which is easy to use, well documented, and easy to adapt and extend.
 
 	In many cases, new algorithms and structures have been designed to solve problems, because this is what I enjoy the most.
@@ -24,13 +24,6 @@
 
 #ifndef _DREAM_DREAM_H
 #define _DREAM_DREAM_H
-
-/*
-	port install boost
-	port install freetype
-	port install libpng
-	port install jpeg
-*/
 
 // Framework is a private header
 #include "Framework.h"

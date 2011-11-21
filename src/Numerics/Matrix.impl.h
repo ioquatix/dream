@@ -15,8 +15,6 @@
 #include <iostream>
 #include <iomanip>
 
-#include <boost/static_assert.hpp>
-
 namespace Dream
 {
 	namespace Numerics
@@ -181,7 +179,7 @@ namespace Dream
 		template <unsigned N, typename NumericT> template <unsigned K>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::scalingMatrix (const Vector<K, NumericT> & amount)
 		{
-			BOOST_STATIC_ASSERT((K <= N));
+			static_ensure((K <= N));
 
 			Matrix<N, N, NumericT> result;
 			result.loadIdentity();
@@ -195,7 +193,7 @@ namespace Dream
 		template <unsigned N, typename NumericT> template <unsigned K>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::translatingMatrix (const Vector<K, NumericT> & amount)
 		{
-			BOOST_STATIC_ASSERT((K <= N));
+			static_ensure((K <= N));
 
 			Matrix<N, N, NumericT> result;
 			result.loadIdentity();
@@ -210,7 +208,7 @@ namespace Dream
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotatingMatrix (const NumericT & angle, const Vector<3, NumericT> & p)
 		{
 			// Typically used for N == 3, N == 4 size matricies
-			BOOST_STATIC_ASSERT((N > 2));
+			static_ensure((N > 2));
 
 			Matrix<N, N, NumericT> result;
 			result.loadIdentity();
@@ -282,7 +280,7 @@ namespace Dream
 		template <unsigned N, typename NumericT>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotatingMatrixAroundX (const NumericT & radians)
 		{
-			BOOST_STATIC_ASSERT((N >= 3));
+			static_ensure((N >= 3));
 
 			NumericT ca = Number<NumericT>::cos(radians);
 			NumericT sa = Number<NumericT>::sin(radians);
@@ -302,7 +300,7 @@ namespace Dream
 		template <unsigned N, typename NumericT>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotatingMatrixAroundY (const NumericT & radians)
 		{
-			BOOST_STATIC_ASSERT((N >= 3));
+			static_ensure((N >= 3));
 
 			NumericT ca = Number<NumericT>::cos(radians);
 			NumericT sa = Number<NumericT>::sin(radians);
@@ -323,7 +321,7 @@ namespace Dream
 		template <unsigned N, typename NumericT>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotatingMatrixAroundZ (const NumericT & radians)
 		{
-			BOOST_STATIC_ASSERT((N >= 2));
+			static_ensure((N >= 2));
 
 			NumericT ca = Number<NumericT>::cos(radians);
 			NumericT sa = Number<NumericT>::sin(radians);
@@ -451,7 +449,7 @@ namespace Dream
 		template <unsigned R, unsigned C, typename N>
 		void Matrix<R, C, N>::loadIdentity (const NumericT & n)
 		{
-			BOOST_STATIC_ASSERT((unsigned)R == (unsigned)C);
+			static_ensure((unsigned)R == (unsigned)C);
 
 			zero();
 

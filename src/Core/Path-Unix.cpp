@@ -24,6 +24,9 @@
 // MAXPATHLEN
 #include <sys/param.h>
 
+// getcwd
+#include <unistd.h>
+
 namespace Dream
 {
 	namespace Core

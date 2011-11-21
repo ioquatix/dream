@@ -234,7 +234,7 @@ namespace Dream
 		template <unsigned E, typename NumericT>
 		Vector<E, NumericT>::Vector (const NumericT & x, const NumericT & y)
 		{
-			BOOST_STATIC_ASSERT(E == 2);
+			static_ensure(E == 2);
 		
 			m_vector[0] = x;
 			m_vector[1] = y;
@@ -243,7 +243,7 @@ namespace Dream
 		template <unsigned E, typename NumericT>
 		Vector<E, NumericT>::Vector (const NumericT & x, const NumericT & y, const NumericT & z)
 		{
-			BOOST_STATIC_ASSERT(E == 3);
+			static_ensure(E == 3);
 		
 			m_vector[0] = x;
 			m_vector[1] = y;
@@ -253,7 +253,7 @@ namespace Dream
 		template <unsigned E, typename NumericT>
 		Vector<E, NumericT>::Vector (const NumericT & x, const NumericT & y, const NumericT & z, const NumericT & w)
 		{
-			BOOST_STATIC_ASSERT(E == 4);
+			static_ensure(E == 4);
 			
 			m_vector[0] = x;
 			m_vector[1] = y;
@@ -288,10 +288,9 @@ namespace Dream
 		template <unsigned E, typename NumericT> template <unsigned E2, typename otherNumericT>
 		void Vector<E, NumericT>::set (const Vector<E2, otherNumericT> & other)
 		{
-			using namespace boost::mpl;
-			typedef typename min<int_<E>, int_<E2> >::type S;
-
-			for (unsigned i = 0; i < S::value; ++i)
+			const unsigned I = E < E2 ? E : E2;
+			
+			for (unsigned i = 0; i < I; ++i)
 				this->m_vector[i] = (NumericT)other[i];
 		}
 

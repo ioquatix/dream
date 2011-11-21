@@ -13,12 +13,12 @@ namespace Dream {
 	namespace Numerics {
 
 		RandomSequence::RandomSequence (unsigned seed, RealT min, RealT max)
-		: m_sequence(BaseGeneratorT(seed), DistributionT (min, max)) {
+		: m_generator(seed), m_distribution(min, max) {
 		
 		}
 
 		const RealT RandomSequence::nextReal () {
-			return m_sequence();
+			return m_distribution(m_generator);
 		}
 		
 	}

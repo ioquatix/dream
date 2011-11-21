@@ -9,21 +9,20 @@
 
 #include "PerlinNoise.h"
 
-#include <boost/random.hpp>
+#include <random>
 #include "Interpolate.h"
 
 namespace Dream {
 	namespace Numerics {
 		PerlinNoise::PerlinNoise(unsigned seed) {
-			typedef boost::uniform_real<> real_distribution_t;
-			typedef boost::uniform_int<> int_distribution_t;
+			std::mt19937 rng(seed);
 			
-			typedef boost::minstd_rand base_generator_t;
-			typedef boost::variate_generator<base_generator_t, int_distribution_t> i_gen_t;
-			typedef boost::variate_generator<base_generator_t, real_distribution_t> r_gen_t;
+			std::uniform_int_distribution<int> byteDistribution(0, 256);
+			auto r256 = std::bind(byteDistribution, rng);
 			
-			i_gen_t r256(base_generator_t (seed), int_distribution_t (0, 256)); // glues randomness with mapping
-			
+			std::uniform_real_distribution<RealT> realDistribution(0.0, 1.0);
+			auto r01 = std::bind(realDistribution, rng);
+						
 			for (IndexT i = 0; i < 256; ++i) m_indicies[i] = i;
 			
 			/* Mix it up! */
@@ -35,9 +34,7 @@ namespace Dream {
 				m_indicies[w] = m_indicies[i];
 				m_indicies[i] = c;
 			}
-			
-			r_gen_t r01(base_generator_t (seed+1), real_distribution_t (0.0, 1.0)); // glues randomness with mapping
-			
+						
 			for (IndexT i = 0; i < 256; ++i) m_table[i] = (RealT)r01();
 		}
 

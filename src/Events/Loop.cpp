@@ -15,6 +15,7 @@
 #include <iostream>
 #include <limits>
 #include <fcntl.h>
+#include <unistd.h>
 
 // PollFileDescriptorMonitor
 #include <poll.h>
@@ -419,8 +420,8 @@ namespace Dream
 		}
 		
 		void Loop::scheduleTimer (REF(ITimerSource) source)
-		{
-			if (boost::this_thread::get_id() == m_currentThread) {
+		{			
+			if (std::this_thread::get_id() == m_currentThread) {
 				TimerHandle th;
 				
 				TimeT currentTime = m_stopwatch.time();
@@ -440,19 +441,16 @@ namespace Dream
 		
 		void Loop::postNotification (REF(INotificationSource) note, bool urgent)
 		{
-			using namespace boost;
-			typedef boost::mutex::scoped_lock scoped_lock;
-		
 			// Lock the event loop notification queue
 			// Add note to the end of the queue
 			// Interrupt event loop thread if urgent
 			
-			if (this_thread::get_id() == m_currentThread) {
+			if (std::this_thread::get_id() == m_currentThread) {
 				note->processEvents(this, NOTIFICATION);
 			} else {
 				{
 					// Enqueue the notification to be processed
-					scoped_lock lock(m_notifications.lock);
+					std::lock_guard<std::mutex> lock(m_notifications.lock);
 					m_notifications.sources.push(note);
 				}
 				
@@ -497,7 +495,7 @@ namespace Dream
 		
 		void Loop::stop ()
 		{
-			if (boost::this_thread::get_id() != m_currentThread)
+			if (std::this_thread::get_id() != m_currentThread)
 			{
 				postNotification(NotificationSource::stopLoopNotification(), true);	
 			}
@@ -519,9 +517,7 @@ namespace Dream
 		}
 		
 		void Loop::processNotifications ()
-		{
-			typedef boost::mutex::scoped_lock scoped_lock;		
-		
+		{		
 			// Escape quickly - if this is not thread-safe, we still shouldn't have a problem unless
 			// the data-structure itself gets corrupt, but this shouldn't be possible because empty() is const.
 			// If we get a false positive, we still check below by locking the structure properly.
@@ -529,7 +525,7 @@ namespace Dream
 				return;
 						
 			{
-				scoped_lock lock(m_notifications.lock);
+				std::lock_guard<std::mutex> lock(m_notifications.lock);
 				
 				// Grab all pending notifications
 				m_notifications.swap();
@@ -630,10 +626,8 @@ namespace Dream
 		
 		void Loop::runOnce (bool block)
 		{
-			using namespace boost;
-			
 			m_running = true;
-			m_currentThread = this_thread::get_id();
+			m_currentThread = std::this_thread::get_id();
 			
 			runOneIteration(false, block ? -1 : 0);
 			
@@ -641,12 +635,10 @@ namespace Dream
 		}
 		
 		void Loop::runForever ()
-		{
-			using namespace boost;
-			
+		{			
 			//std::cerr << "Entering runloop " << std::flush;
 			m_running = true;
-			m_currentThread = this_thread::get_id();
+			m_currentThread = std::this_thread::get_id();
 			//std::cerr << "..." << std::endl;
 			
 			while(m_running)
@@ -659,11 +651,10 @@ namespace Dream
 		{
 			ensure(timeout > 0);
 			
-			using namespace boost;
 			using Core::EggTimer;
 			
 			m_running = true;
-			m_currentThread = this_thread::get_id();
+			m_currentThread = std::this_thread::get_id();
 			
 			EggTimer timer(timeout);
 			
@@ -763,8 +754,6 @@ namespace Dream
 		
 		UNIT_TEST(Notification)
 		{
-			using namespace boost;
-			
 			testing("Notification Sources");
 			
 			REF(Loop) eventLoop = new Loop;
@@ -775,10 +764,11 @@ namespace Dream
 			
 			notified = 0;
 			
-			thread_group children;
-			children.create_thread(bind(sendNotificationAfterDelay, eventLoop, note));
+			std::thread notificationThread(std::bind(sendNotificationAfterDelay, eventLoop, note));
 			
 			eventLoop->runForever();
+			
+			notificationThread.join();
 			
 			check(notified == 10) << "Notification occurred";
 		}
@@ -798,7 +788,6 @@ namespace Dream
 		
 		UNIT_TEST(EventLoopStop)
 		{
-			typedef boost::thread_group ThreadGroup;
 			testing("Stopping from another thread");
 			
 			timerStopped = false;
@@ -808,11 +797,12 @@ namespace Dream
 			
 			eventLoop->scheduleTimer(new TimerSource(markAndStopCallback, 1.0));
 			
-			ThreadGroup children;
-			children.create_thread(boost::bind(sendStopAfterDelay, eventLoop));
+			std::thread stopThread(std::bind(sendStopAfterDelay, eventLoop));
 			
 			// Will be stopped after 2 seconds from the above thread
 			eventLoop->runForever();
+			
+			stopThread.join();
 			
 			check(!timerStopped) << "Thread stopped runloop";
 		}

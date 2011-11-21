@@ -7,7 +7,6 @@
 //
 
 #include "Thread.h"
-#include <boost/thread.hpp>
 
 namespace Dream {
 	namespace Events {
@@ -32,19 +31,19 @@ namespace Dream {
 		void Thread::start ()
 		{			
 			if (!m_thread)
-				m_thread = new boost::thread(boost::bind(&Thread::run, this));
+				m_thread = new std::thread(std::bind(&Thread::run, this));
 		}
 		
 		void Thread::run ()
 		{
-			//std::cerr << "Starting thread..." << std::endl;
+			std::cerr << "Starting thread event loop..." << std::endl;
 		
 			// Lock the loop to ensure it isn't released by another thread.
 			REF(Loop) loop = m_loop;
 			
 			loop->runForever();
 			
-			//std::cerr << "Exiting thread..." << std::endl;
+			std::cerr << "Exiting thread event loop..." << std::endl;
 		}
 		
 		void Thread::stop ()
@@ -53,7 +52,6 @@ namespace Dream {
 				m_loop->stop();
 				m_thread->join();
 				
-				delete m_thread;
 				m_thread = NULL;
 			}
 		}
@@ -124,9 +122,9 @@ namespace Dream {
 			// Three threads will generate semi-random integers.
 			REF(Queue<int>) queue = new Queue<int>();
 			
-			REF(TimerSource) e1 = new TimerSource(boost::bind(add1, queue), 0.001, true);
-			REF(TimerSource) e2 = new TimerSource(boost::bind(add1, queue), 0.001, true);
-			REF(TimerSource) e3 = new TimerSource(boost::bind(add1, queue), 0.001, true);
+			REF(TimerSource) e1 = new TimerSource(std::bind(add1, queue), 0.001, true);
+			REF(TimerSource) e2 = new TimerSource(std::bind(add1, queue), 0.001, true);
+			REF(TimerSource) e3 = new TimerSource(std::bind(add1, queue), 0.001, true);
 			
 			t1->loop()->scheduleTimer(e1);
 			t2->loop()->scheduleTimer(e2);

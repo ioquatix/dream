@@ -14,9 +14,6 @@
 #include <iostream>
 #include <cstdlib>
 
-#include <boost/integer.hpp>
-#include <boost/static_assert.hpp>
-
 namespace Dream
 {
 	namespace Numerics

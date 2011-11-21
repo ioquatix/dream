@@ -31,6 +31,10 @@ OTHER_LDFLAGS[sdk=iphone*]=$(EXT_LIBS) -framework QuartzCore -framework OpenGLES
 HEADER_SEARCH_PATHS="$(DREAM_EXT)/include" "$(DREAM_EXT)/include/freetype2"
 LIBRARY_SEARCH_PATHS="$(DREAM_EXT)/lib"
 
+// Use C++0x11 features
+CLANG_CXX_LANGUAGE_STANDARD=gnu++0x
+CLANG_CXX_LIBRARY=libc++
+
 // Avoid probems with C++ visibility
 GCC_INLINES_ARE_PRIVATE_EXTERN=NO
 GCC_SYMBOLS_PRIVATE_EXTERN=NO

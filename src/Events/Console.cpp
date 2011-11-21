@@ -10,20 +10,22 @@
 #include "Console.h"
 
 #include "Source.h"
+#include "../Reference.h"
 
-#include <boost/thread.hpp>
-#include <boost/bind.hpp>
+#include <thread>
+#include <mutex>
+#include <algorithm>
+#include <unistd.h>
 
 namespace Dream
 {
 	namespace Events
 	{
-		using namespace boost;
 		using namespace Core;
 		
-		class ConsolePipeRedirector {
-			thread_group m_threads;
-			mutex m_setupMutex;
+		class ConsolePipeRedirector : private NonCopyable {
+			Shared<std::thread> m_thread;
+			std::mutex m_setupMutex;
 			bool m_done;
 			
 		public:
@@ -53,7 +55,7 @@ namespace Dream
 			void reopenStandardFileDescriptorsAsPipes ()
 			{	
 				{
-					mutex::scoped_lock lock(m_setupMutex);
+					std::lock_guard<std::mutex> lock(m_setupMutex);
 				
 					if (m_done) return;
 					m_done = true;
@@ -84,7 +86,7 @@ namespace Dream
 				//dup2(stderrPipe[1], STDERR_FILENO);
 								
 				// Spawn threads to handle reading and writing in a blocking fashion.
-				m_threads.create_thread(bind(copyDataBetweenFileDescriptors, stdinDevice, stdinPipe[1]));
+				m_thread = new std::thread(copyDataBetweenFileDescriptors, stdinDevice, stdinPipe[1]);
 				//m_threads.create_thread(bind(copyDataBetweenFileDescriptors, stdoutPipe[0], stdoutDevice));
 				//m_threads.create_thread(bind(copyDataBetweenFileDescriptors, stderrPipe[0], stderrDevice));
 			}

@@ -12,8 +12,7 @@
 #include "Server.h"
 
 #include "../Numerics/Average.h"
-
-#include <boost/thread.hpp>
+#include <functional>
 
 #ifdef ENABLE_TESTING
 
@@ -27,8 +26,8 @@ namespace Dream
 		const unsigned PK_PING = 0xAF;
 		
 		Numerics::Average<TimeT> g_latency;
-		boost::mutex g_latencyLock, g_outputLock;
-		typedef boost::mutex::scoped_lock scoped_lock;
+		std::mutex g_latencyLock, g_outputLock;
+		typedef std::lock_guard<std::mutex> scoped_lock;
 
 		class Pinger : public MessageClientSocket {
 		protected:
@@ -39,12 +38,12 @@ namespace Dream
 			
 		public:
 			Pinger (const SocketHandleT & h, const Address & a) : m_ttl(50), MessageClientSocket(h, a), m_started(false) {
-				messageReceivedCallback = boost::bind(&Pinger::receivedMessage, this);
+				messageReceivedCallback = std::bind(&Pinger::receivedMessage, this);
 				sendPing ();
 			}
 			
 			Pinger () : m_ttl(50), m_started(false) {
-				messageReceivedCallback = boost::bind(&Pinger::receivedMessage, this);
+				messageReceivedCallback = std::bind(&Pinger::receivedMessage, this);
 			}
 			
 			virtual ~Pinger () {
@@ -123,18 +122,6 @@ namespace Dream
 		class PingPongServer : public Server
 		{
 		protected:
-			virtual void connectionCallbackHandler (Loop * eventLoop, ServerSocket * serverSocket, const SocketHandleT & h, const Address & a)
-			{
-				REF(MessageClientSocket) clientSocket = new MessageClientSocket(h, a);
-				
-				//std::cerr << "Accepted connection " << clientSocket << " from " << clientSocket->remoteAddress().description();
-				//std::cerr << " (" << clientSocket->remoteAddress().addressFamilyName() << ")" << std::endl;
-				
-				clientSocket->messageReceivedCallback = bind(&PingPongServer::messageReceived, this, _1);
-				
-				eventLoop->monitorFileDescriptor(clientSocket);
-			}
-			
 			void messageReceived (MessageClientSocket * client) {
 				while (client->receivedMessages().size()) {
 					REF(Message) msg = client->receivedMessages().front();
@@ -146,6 +133,18 @@ namespace Dream
 					
 					client->sendMessage(pongMsg);
 				}
+			}
+			
+			virtual void connectionCallbackHandler (Loop * eventLoop, ServerSocket * serverSocket, const SocketHandleT & h, const Address & a)
+			{
+				REF(MessageClientSocket) clientSocket = new MessageClientSocket(h, a);
+				
+				//std::cerr << "Accepted connection " << clientSocket << " from " << clientSocket->remoteAddress().description();
+				//std::cerr << " (" << clientSocket->remoteAddress().addressFamilyName() << ")" << std::endl;
+				
+				clientSocket->messageReceivedCallback = std::bind(&PingPongServer::messageReceived, this, std::placeholders::_1);
+				
+				eventLoop->monitorFileDescriptor(clientSocket);
 			}
 			
 		public:
@@ -163,8 +162,6 @@ namespace Dream
 				
 		
 		UNIT_TEST(CompleteServer) {
-			using namespace boost;
-			
 			testing("Server and Clients");
 			
 			int k = 100;
@@ -180,21 +177,23 @@ namespace Dream
 				REF(Server) server(new PingPongServer(container->eventLoop(), "1404", SOCK_STREAM));
 				container->start(server);
 				
-				thread_group children;
+				std::vector<std::thread> children;
 				
 				sleep(1);
-				children.create_thread(bind(runEfficientClientProcess, k));
-				children.create_thread(bind(runEfficientClientProcess, k));
+				children.push_back(std::thread(runEfficientClientProcess, k));
+				children.push_back(std::thread(runEfficientClientProcess, k));
 							
 				sleep(1);
-				children.create_thread(bind(runEfficientClientProcess, k));
-				children.create_thread(bind(runEfficientClientProcess, k));
+				children.push_back(std::thread(runEfficientClientProcess, k));
+				children.push_back(std::thread(runEfficientClientProcess, k));
 
 				sleep(1);
-				children.create_thread(bind(runEfficientClientProcess, k));
-				children.create_thread(bind(runEfficientClientProcess, k));
+				children.push_back(std::thread(runEfficientClientProcess, k));
+				children.push_back(std::thread(runEfficientClientProcess, k));
 				
-				children.join_all();
+				foreach(thread, children) {
+					thread->join();
+				}
 				
 				container->stop();
 				

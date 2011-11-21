@@ -8,19 +8,20 @@
  */
  
 #include "Vector.h"
-#include <boost/random.hpp>
+
+#include <random>
 
 namespace Dream {
 	namespace Numerics {
 		
 		class RandomSequence {
 		protected:
-			typedef boost::uniform_real<> DistributionT;		
-			typedef boost::minstd_rand BaseGeneratorT;
-			typedef boost::variate_generator<BaseGeneratorT, DistributionT> GeneratorT;
-			
-			GeneratorT m_sequence;
-		
+			typedef std::uniform_real_distribution<> DistributionT;		
+			typedef std::minstd_rand GeneratorT;
+
+			DistributionT m_distribution;
+			GeneratorT m_generator;
+					
 			Vec3 m_currentPoint;
 			Vec3 m_scale;
 		public:

@@ -32,7 +32,7 @@ namespace Dream
 		
 		/// This function is typically used for parsing OpenGL extension strings.		
 		template <typename OutT>
-		OutT split(const StringT & input, const char divider, OutT result) {
+		void split(const StringT & input, const char divider, OutT result) {
 			std::size_t pos = 0, next = 0;
 			
 			do {
@@ -43,8 +43,6 @@ namespace Dream
 				
 				pos = next + 1;
 			} while (next != StringT::npos);
-			
-			return result;
 		}
 		
 		StringT unescapeString (const StringT &);

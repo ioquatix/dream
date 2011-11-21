@@ -199,7 +199,7 @@ namespace Dream {
 			virtual void processEvents (Events::Loop *, Events::Event);
 			
 			/// Delegate function to handle incoming messages. Called when a message is received.
-			boost::function<void (MessageClientSocket *)> messageReceivedCallback;
+			std::function<void (MessageClientSocket *)> messageReceivedCallback;
 		};
 		
 	}

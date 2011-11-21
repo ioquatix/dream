@@ -10,7 +10,9 @@
 #define _DREAM_EVENTS_THREAD_H
 
 #include "Loop.h"
-#include <boost/thread.hpp>
+
+#include <thread>
+#include <mutex>
 
 namespace Dream
 {
@@ -22,7 +24,7 @@ namespace Dream
 		{
 			protected:
 				REF(Loop) m_loop;
-				boost::thread * m_thread;
+				Shared<std::thread> m_thread;
 				
 				void run ();
 				
@@ -47,7 +49,7 @@ namespace Dream
 		class Queue : public Object
 		{
 			protected:
-				boost::mutex m_lock;
+				std::mutex m_lock;
 				std::vector<ItemT> * m_waiting, * m_processing;
 			
 			public:
@@ -63,7 +65,8 @@ namespace Dream
 		template <typename ItemT>
 		Queue<ItemT>::Queue ()
 		{
-			boost::mutex::scoped_lock lock(m_lock);
+			std::lock_guard<std::mutex> lock(m_lock);
+			
 			m_waiting = new std::vector<ItemT>;
 			m_processing = new std::vector<ItemT>;
 		}
@@ -71,7 +74,8 @@ namespace Dream
 		template <typename ItemT>
 		Queue<ItemT>::~Queue ()
 		{
-			boost::mutex::scoped_lock lock(m_lock);
+			std::lock_guard<std::mutex> lock(m_lock);
+			
 			delete m_waiting;
 			delete m_processing;
 		}
@@ -80,7 +84,8 @@ namespace Dream
 		template <typename ItemT>
 		void Queue<ItemT>::add (ItemT item)
 		{
-			boost::mutex::scoped_lock lock(m_lock);
+			std::lock_guard<std::mutex> lock(m_lock);
+
 			m_waiting->push_back(item);
 		}
 
@@ -88,7 +93,8 @@ namespace Dream
 		template <typename ItemT>
 		void Queue<ItemT>::flush ()
 		{
-			boost::mutex::scoped_lock lock(m_lock);
+			std::lock_guard<std::mutex> lock(m_lock);
+			
 			m_waiting->resize(0);
 		}
 
@@ -98,7 +104,8 @@ namespace Dream
 		std::vector<ItemT> * Queue<ItemT>::fetch ()
 		{
 			{
-				boost::mutex::scoped_lock lock(m_lock);
+				std::lock_guard<std::mutex> lock(m_lock);
+
 				std::swap(m_processing, m_waiting);
 				m_waiting->resize(0);
 			}

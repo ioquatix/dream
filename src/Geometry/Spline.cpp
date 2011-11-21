@@ -14,9 +14,7 @@
 #include <Dream/Geometry/Line.h>
 
 namespace Dream {
-	namespace Geometry {
-		using namespace boost::assign;
-	
+	namespace Geometry {	
 #pragma mark -
 #pragma mark ISpline
 			

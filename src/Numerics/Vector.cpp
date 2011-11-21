@@ -11,10 +11,9 @@
 
 #include <iostream>
 #include <vector>
-#include <boost/assign/std/vector.hpp>
-#include <boost/assign/list_of.hpp>
 
 #include <set>
+#include <tuple>
 
 namespace Dream
 {
@@ -97,28 +96,31 @@ namespace Dream
 
 		UNIT_TEST(VectorReflection)
 		{
-			using namespace boost;
-
 			// 0:Wall Normal, 1:I, 2:R
-			typedef tuple<Vec2, Vec2, Vec2> ReflectTestRecord;
-			std::vector<ReflectTestRecord> reflectionTests = assign::tuple_list_of
-				(Vec2(1.0, 0.0), Vec2(-1.0, -1.0), Vec2(1.0, -1.0))
-				(Vec2(1.0, 0.0), Vec2(-1.0, 0.0), Vec2(1.0, 0.0))
-				(Vec2(1.0, 1.0).normalize(), Vec2(-1.0, -1.0), Vec2(1.0, 1.0))
-				(Vec2(1.0, 1.0).normalize(), Vec2(-1.0, 0.0), Vec2(0.0, 1.0))
+			typedef std::tuple<Vec2, Vec2, Vec2> ReflectTestRecord;
+			std::vector<ReflectTestRecord> reflectionTests;
+			
+			reflectionTests.push_back(std::make_tuple(Vec2(1.0, 0.0), Vec2(-1.0, -1.0), Vec2(1.0, -1.0)));
+			reflectionTests.push_back(std::make_tuple(Vec2(1.0, 0.0), Vec2(-1.0, 0.0), Vec2(1.0, 0.0)));
+			reflectionTests.push_back(std::make_tuple(Vec2(1.0, 1.0).normalize(), Vec2(-1.0, -1.0), Vec2(1.0, 1.0)));
+			reflectionTests.push_back(std::make_tuple(Vec2(1.0, 1.0).normalize(), Vec2(-1.0, 0.0), Vec2(0.0, 1.0)));
+				
+			/*
 				(Vec2(1.0, 0.0), Vec2(-0.417897, 0.908494), Vec2(0.417897, 0.908494))
 				(Vec2(0.0, 1.0), Vec2(-0.593251, -0.805017), Vec2(-0.593251, 0.805017))
 				(Vec2(0.0, 1.0), Vec2(-1, 0), Vec2(-1, 0))
-				(Vec2(0.106533, 0.994309), Vec2(-0.593248, -0.80502), Vec2(-0.409235, 0.912429));
-
+				(Vec2(0.106533, 0.994309), Vec2(-0.593248, -0.80502), Vec2(-0.409235, 0.912429)
+				 };
+			*/
+			
 			testing("Vector Reflection");
 
 			unsigned k = 0;
 			foreach (r, reflectionTests)
 			{
-				Vec2 c = get<1>(*r).reflect(get<0>(*r));
+				Vec2 c = std::get<1>(*r).reflect(std::get<0>(*r));
 
-				check(c.equivalent(get<2>(*r))) << k << ": R <" << get<2>(*r) << "> is reflected around N <" << get<1>(*r) << ">";
+				check(c.equivalent(std::get<2>(*r))) << k << ": R <" << std::get<2>(*r) << "> is reflected around N <" << std::get<1>(*r) << ">";
 
 				k += 1;
 			}

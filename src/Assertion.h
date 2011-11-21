@@ -15,6 +15,10 @@
 
 /// Similar to assert, however will throw an AssertionError on failure.
 #define ensure(e) ::Dream::AssertionError::assertHandler(e, #e, __FILE__, __LINE__)
+
+/// Similar to ensure, but works statically, e.g. on consts, template arguments, etc.
+#define static_ensure(e) ::Dream::StaticAssertion<(e) != 0>::failed()
+
 namespace Dream
 {
 	/**
@@ -43,6 +47,17 @@ namespace Dream
 		/// The ensure() macro calls this function to handle throwing the actual exception.
 		static void assertHandler (bool condition, const char * expression, const char * file, unsigned line);
 	};
+	
+	/// Simple static assertion implementation
+	template <bool>
+	class StaticAssertion {
+	public:
+		static void failed() {}
+	};
+	
+	template<>
+	class StaticAssertion<false> {
+	};	
 }
 
 #endif

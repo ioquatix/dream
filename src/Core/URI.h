@@ -19,61 +19,36 @@ namespace Dream
 {
 	namespace Core
 	{
-		/**
-		 A simple URI parser. Provides access to the components of RFC2396 formatted URIs.
-
-		 Here are the results of parsing an example URI:
-		 @verbatim
-		 URI: http://user12:abc@www.google.com:80/blah?bob=2
-		 Scheme: http
-		 Location: user12:abc@www.google.com:80
-		 Username: user12
-		 Password: abc
-		 Hostname: www.google.com
-		 Port: 80
-		 Path: /blah
-		 Query: ?bob=2
-		 @endverbatim
-		 */
 		class URI
 		{
 		private:
 			StringT m_url;
-
-			class Parser
-			{
-			private:
-				void parse ();
-				void clear ();
-			public:
-				void debug ();
-
-				typedef const char * ScannerT;
-				ScannerT url, stop;
-
-				bool full, hit;
-				unsigned length;
-
-				ScannerT schemeStart, schemeEnd;
-				ScannerT usernameStart, usernameEnd;
-				ScannerT passwordStart, passwordEnd;
-				ScannerT hostnameStart, hostnameEnd;
-				ScannerT portStart, portEnd;
-				ScannerT relStart, relEnd;
-				ScannerT absStart, absEnd;
-				ScannerT locationStart, locationEnd;
-				ScannerT pathStart, pathEnd;
-				ScannerT paramsStart, paramsEnd;
-				ScannerT queryStart, queryEnd;
-				ScannerT fragmentStart, fragmentEnd;
-
-				Parser ();
-				Parser (ScannerT s);
-			};
-
-			Parser m_parser;
-
+			
+			/// According to RFC3986.
+			StringT m_scheme, m_authority, m_path, m_query, m_fragment;
+			
+			/// Standard parts of the authority
+			StringT m_hostname;
+			unsigned m_port;
+			
+			/// Other parts that may or may not be defined:
+			std::vector<StringT> m_userInfo;
+			
 		public:
+			
+			class InvalidFormatError : std::exception {
+			protected:
+				StringT m_url;
+				std::size_t m_offset;
+				
+				StringT m_message;
+				
+			public:
+				InvalidFormatError(const StringT & url, std::size_t offset);
+				
+				virtual const char* what() const noexcept;
+			};
+			
 			/// Construct a URI from a RFC2396 formatted string.
 			URI (const StringT & s);
 
@@ -81,18 +56,26 @@ namespace Dream
 			URI (const StringT & scheme, const Path & path);
 
 			/// The scheme component of the URI.
-			StringT scheme () const;
+			const StringT & scheme () const;
 
 			/// The location portion of the URI.
-			StringT location () const;
+			const StringT & authority () const;
+			
+			/// The path portion of the URI.
+			const StringT & path () const;
+			
+			/// The query portion of the URI.
+			const StringT & query () const;
+			
+			/// The fragment portion of the URI.
+			const StringT & fragment () const;
 
 			/// The hostname portion of the URI.
-			StringT hostname () const;
+			const StringT & hostname () const;
 
-			/// The username portion of the URI.
+			/// A list of user info items, normally username, password.
+			const std::vector<StringT> & userInfo () const;
 			StringT username () const;
-
-			/// The password portion of the URI.
 			StringT password () const;
 
 			/// The port number of the URI (if specified) or 0.
@@ -100,24 +83,10 @@ namespace Dream
 
 			/// The port number as a string, or the scheme.
 			StringT service () const;
-
-			StringT resource () const;
-
+			
 			/// Whether or not the URI was relative or absolute.
 			bool isAbsolute () const;
-
-			/// The path portion of the URI.
-			StringT path () const;
-
-			/// The query portion of the URI.
-			StringT query () const;
-
-			/// The parameters portion of the URI.
-			StringT params () const;
-
-			/// The fragment portion of the URI.
-			StringT fragment () const;
-
+			
 			/// True if the URI represents a file path. The path is local and accessible via path().
 			bool isFilePath ();
 		};

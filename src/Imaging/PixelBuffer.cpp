@@ -10,6 +10,7 @@
 #include "PixelBuffer.h"
 
 #include <iostream>
+#include <unistd.h>
 
 namespace Dream {
 	namespace Imaging {

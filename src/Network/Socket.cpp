@@ -18,6 +18,7 @@
 #include <errno.h>
 //#include <execinfo.h>
 #include <stdio.h>
+#include <unistd.h>
 
 namespace Dream {
 	namespace Network {

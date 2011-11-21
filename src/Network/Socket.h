@@ -110,7 +110,7 @@ namespace Dream {
 			virtual void processEvents (Events::Loop *, Events::Event);
 			
 			/// Delegate function to handle incoming connections.
-			boost::function<void (Events::Loop *, ServerSocket *, const SocketHandleT & h, const Address & na)> connectionCallback;
+			std::function<void (Events::Loop *, ServerSocket *, const SocketHandleT & h, const Address & na)> connectionCallback;
 		};
 		
 		/** A ClientSocket represents either the server-side or client-side endpoint of a connection.

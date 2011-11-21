@@ -15,11 +15,10 @@
 
 #include <set>
 #include <queue>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
 
-#include <boost/thread/thread.hpp>
-#include <boost/thread/mutex.hpp>
+#include <functional>
+#include <thread>
+#include <mutex>
 
 #ifdef BSD
 #define DREAM_USE_KQUEUE
@@ -89,7 +88,7 @@ namespace Dream
 				Notifications ();
 				void swap ();
 				
-				boost::mutex lock;
+				std::mutex lock;
 				
 				/// A queue of notifications that need to be processed
 				QueueT sources;
@@ -97,7 +96,7 @@ namespace Dream
 			};			
 			
 			Notifications m_notifications;
-			boost::thread::id m_currentThread;
+			std::thread::id m_currentThread;
 			bool m_running;
 			
 			struct TimerHandle

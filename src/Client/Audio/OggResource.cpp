@@ -26,7 +26,7 @@ namespace Dream
 #pragma mark -
 #pragma mark OggReader
 
-			class OggReader : public boost::noncopyable
+			class OggReader : private NonCopyable
 			{
 				protected:
 					Shared<std::istream> m_inputStream;
