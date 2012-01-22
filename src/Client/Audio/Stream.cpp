@@ -71,6 +71,8 @@ namespace Dream
 			
 			Stream::~Stream () {
 				alDeleteBuffers(m_buffers.size(), &m_buffers[0]);
+				
+				stopBufferCallbacks();
 			}
 			
 			void Stream::bufferData(PTR(Source) source, ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq)

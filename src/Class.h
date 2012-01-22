@@ -26,6 +26,14 @@ namespace Dream
 		NonCopyable & operator = (const NonCopyable &);
 	};
 	
+	/// This function returns the offset of a member of a class.
+	///		memberOffset(VertexData::color)
+	template<class T, typename U>
+	inline constexpr std::ptrdiff_t memberOffset(U T::* member)
+	{
+		return reinterpret_cast<std::ptrdiff_t>(&(reinterpret_cast<T const volatile*>(NULL)->*member));
+	}
+	
 	class IObject : implements SharedObject
 	{
 	public:

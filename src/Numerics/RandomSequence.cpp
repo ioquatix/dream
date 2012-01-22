@@ -13,7 +13,7 @@ namespace Dream {
 	namespace Numerics {
 
 		RandomSequence::RandomSequence (unsigned seed, RealT min, RealT max)
-		: m_generator(seed), m_distribution(min, max) {
+		: m_distribution(min, max), m_generator(seed) {
 		
 		}
 

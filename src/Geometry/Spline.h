@@ -11,6 +11,7 @@
 #include <Dream/Numerics/Interpolate.h>
 #include <Dream/Geometry/Plane.h>
 
+#include <functional>
 #include <vector>
 #include <list>
 
@@ -189,7 +190,7 @@ namespace Dream {
 			}
 			
 			// Tangent (MU) Function
-			typedef function<Vector<D> (const HermiteSpline<D> *spline, unsigned n)> SplineFunctionT;
+			typedef std::function<Vector<D> (const HermiteSpline<D> *spline, unsigned n)> SplineFunctionT;
 			SplineFunctionT m_tangent;
 			
 			typedef Vector<D> PointT;

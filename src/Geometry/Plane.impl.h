@@ -44,6 +44,7 @@ namespace Dream
 			/* Line and Plane are parallel? */
 			if (d == 0.0) return false;
 			
+            // This minus sign may need to be inside the (-m_normal)
 			NumericT r = -(m_normal.dot(line.point()) - m_distance);
 			NumericT t = r / d;
 			

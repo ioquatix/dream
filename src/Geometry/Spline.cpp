@@ -29,8 +29,8 @@ namespace Dream {
 			const RealT f = 0.001;
 			RealT t1 = Math::wrap(t-f, 1.0), t2 = Math::wrap(t+f, 1.0);
 					
-			assert(t1 >= 0.0 && t1 <= 1.0);
-			assert(t2 >= 0.0 && t2 <= 1.0);
+			ensure(t1 >= 0.0 && t1 <= 1.0);
+			ensure(t2 >= 0.0 && t2 <= 1.0);
 			
 			return (pointAtTime(t2) - pointAtTime(t1)).normalize();
 		}
@@ -87,7 +87,7 @@ namespace Dream {
 			
 			Vector<D> t1(tangentAtTime(t)), t2(tangentAtTime(t+d));
 			
-			bool divide = n > 0 || t1.dot(t2) < res2 && n > -10 /* Sanity check */;
+			bool divide = n > 0 || (t1.dot(t2) < res2 && n > -10) /* Sanity check */;
 			
 			// First point of segment
 			if (divide) divideAndAppend(t, hd, n - 1, res2, true & first, times);
@@ -270,8 +270,8 @@ namespace Dream {
 						Line<D> lineIntersection;
 						
 						// There must be an intersection
-						assert(pat1.plane.intersectsWith(pat2.plane, lineIntersection));
-						assert(p3.intersectsWith(lineIntersection, it.intersection));
+						ensure(pat1.plane.intersectsWith(pat2.plane, lineIntersection));
+						ensure(p3.intersectsWith(lineIntersection, it.intersection));
 						
 						// it.intersection = (lineIntersection.pointForClosestPoint(pt1) + lineIntersection.pointForClosestPoint(pt2)) / 2.0;
 						// This point gives us the best (shortest) normal from pt1 to pt2
@@ -386,7 +386,7 @@ namespace Dream {
 			}
 		
 			// We need to add the first point last so that the line is closed.
-			assert(m_points.size() > 0);
+			ensure(m_points.size() > 0);
 			PointsT segmentPoints(m_points);
 			segmentPoints.push_back(m_points[0]);
 			
@@ -421,7 +421,7 @@ namespace Dream {
 				return Spline<D>::generateSegmentPoints();
 			}
 			
-			assert(this->m_points.size() > 3);
+			ensure(this->m_points.size() > 3);
 			PointsT pts;
 			
 			pts.push_back(this->m_points[this->m_points.size() - 1]);
@@ -435,7 +435,7 @@ namespace Dream {
 		template <unsigned D>
 		Vector<D> CubicSpline<D>::pointAtTime(RealT t) const {
 			const PointsT &pts = this->segmentPoints();
-			assert(pts.size() > 3 && "CublicSpline<D> requires at least 4 points");
+			ensure(pts.size() > 3 && "CublicSpline<D> requires at least 4 points");
 			
 			unsigned sp = this->startingPoint(t) + 1;
 			RealT fr = this->fractionalComponent(t);
@@ -452,7 +452,7 @@ namespace Dream {
 		Vector<D> HermiteSpline<D>::pointAtTime(RealT t) const {
 			const PointsT &pts = this->segmentPoints();
 			
-			assert(pts.size() > 3 && "HermiteSpline<D> requires at least 4 points");
+			ensure(pts.size() > 3 && "HermiteSpline<D> requires at least 4 points");
 			
 			unsigned sp = this->startingPoint(t) + 1;
 			RealT fr = this->fractionalComponent(t);

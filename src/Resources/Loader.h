@@ -64,7 +64,7 @@ namespace Dream {
 			virtual Path pathForResource(Path) const abstract;
 			virtual Path pathForResource(StringT name, StringT ext, Path dir) const abstract;
 			virtual void resourcesForType(StringT ext, Path subdir, std::vector<Path> & paths) const abstract;
-
+			
 			/// Primary interface for loading resources
 			template <typename InterfaceT>
 			REF(InterfaceT) load (const Path &res) const {
@@ -85,9 +85,14 @@ namespace Dream {
 			virtual void setLoaderForExtension (PTR(ILoadable) loadable, StringT ext) abstract;
 			virtual PTR(ILoadable) loaderForExtension (StringT ext) const abstract;
 			virtual void addLoader(PTR(ILoadable) loader) abstract;
-			
+						
 			/// Load the raw data for a given path.
 			virtual REF(IData) fetchDataForPath (const Path & path) const abstract;
+			
+			/// Useful for loading buffers of data.
+			REF(IData) dataForResource (const Path & resource) {
+				return fetchDataForPath(pathForResource(resource));
+			}
 		};
 		
 		class Loader : public Object, implements ILoader {

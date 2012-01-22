@@ -149,6 +149,7 @@ namespace Dream {
 		{
 		public:			
 			virtual ByteT * pixelData () abstract;
+			using IPixelBuffer::pixelData;
 			
 			void zero (PixelT px = 0);
 			

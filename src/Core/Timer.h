@@ -81,10 +81,10 @@ namespace Dream {
 			bool m_performReset;
 			TimeT m_lastTime;
 			
-			TimeT m_min;
-			TimeT m_max;
-			
 			TimeT m_duration;
+						
+			TimeT m_min, m_max;
+			
 			unsigned long m_count;
 			
 		public:

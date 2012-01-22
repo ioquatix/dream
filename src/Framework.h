@@ -22,7 +22,7 @@
 #endif
 
 // Collection should typically avoid being a function call to avoid unnessary overhead. 
-#define foreach(iterator,collection) for(typeof((collection).begin()) iterator = (collection).begin(); iterator != (collection).end(); ++iterator)
+#define foreach(iterator,collection) for(decltype((collection).begin()) iterator = (collection).begin(); iterator != (collection).end(); ++iterator)
 
 /**
 	Dream is a framework for creating and enhancing C++ applications.

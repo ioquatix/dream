@@ -114,6 +114,9 @@ namespace Dream
 		public:
 			virtual ~MutableBuffer ();
 
+			/// Provide the const version
+			using Buffer::begin;
+			
 			/// Returns the address of the first byte in the buffer.
 			virtual ByteT * begin () abstract;
 			/// Returns the address of the last byte + 1 in the buffer.

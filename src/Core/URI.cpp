@@ -59,20 +59,7 @@ namespace Dream
 					
 					return begin;
 				}
-				
-				static IteratorT parsePredicate(PredicateT predicate, std::size_t max, IteratorT begin, IteratorT end) {
-					std::size_t count = 0;
-					
-					while (begin != end && predicate(begin)) {
-						++begin;
-						
-						if (count++ >= max)
-							break;
-					}
-					
-					return begin;	
-				}
-				
+								
 				typedef IteratorT (*ParserT)(IteratorT begin, IteratorT end);
 				
 				static IteratorT parseString(ParserT parser, IteratorT begin, IteratorT end) {
@@ -134,9 +121,9 @@ namespace Dream
 				}
 				
 				//   gen-delims    = ":" / "/" / "?" / "#" / "[" / "]" / "@"
-				static bool isGenDelimiter(IteratorT i) {
-					return *i == ':' || *i == '/' || *i == '?' || *i == '#' || *i == '[' || *i == ']' || *i == '@';
-				}
+				//static bool isGenDelimiter(IteratorT i) {
+				//	return *i == ':' || *i == '/' || *i == '?' || *i == '#' || *i == '[' || *i == ']' || *i == '@';
+				//}
 				
 				//   sub-delims    = "!" / "$" / "&" / "'" / "(" / ")" / "*" / "+" / "," / ";" / "="
 				static bool isSubDelimiter(IteratorT i) {
@@ -144,9 +131,9 @@ namespace Dream
 				}
 				
 				//   reserved      = gen-delims / sub-delims
-				static bool isReserved(IteratorT i) {
-					return isGenDelimiter(i) || isSubDelimiter(i);
-				}
+				//static bool isReserved(IteratorT i) {
+				//	return isGenDelimiter(i) || isSubDelimiter(i);
+				//}
 				
 				//   pct-encoded   = "%" HEXDIG HEXDIG
 				static IteratorT parsePercentEncoded(IteratorT begin, IteratorT end) {
@@ -241,7 +228,7 @@ namespace Dream
 					IteratorT portBegin = parseConstant(":", hostEnd, end);
 					
 					if (portBegin != hostEnd) {
-						IteratorT portEnd = parsePredicate(isNumeric, portBegin, portEnd);
+						IteratorT portEnd = parsePredicate(isNumeric, portBegin, end);
 						
 						authority.portBegin = portBegin;
 						authority.portEnd = portEnd;

@@ -361,7 +361,7 @@ namespace Dream
 			
 			// Create and open an urgent notification pipe
 			m_urgentNotificationPipe = new NotificationPipeSource;
-			monitorFileDescriptor(m_urgentNotificationPipe);
+			monitor(m_urgentNotificationPipe);
 		}
 		
 		Loop::~Loop ()
@@ -461,7 +461,7 @@ namespace Dream
 			}
 		}
 			
-		void Loop::monitorFileDescriptor (PTR(IFileDescriptorSource) source)
+		void Loop::monitor (PTR(IFileDescriptorSource) source)
 		{
 			ensure(source->fileDescriptor() != -1);
 			//std::cerr << this << " monitoring fd: " << fd << std::endl;
@@ -711,7 +711,7 @@ namespace Dream
 			eventLoop->scheduleTimer(new TimerSource(stopCallback, 1.1));
 			eventLoop->scheduleTimer(new TimerSource(tickerCallback, 0.01, true));
 			
-			eventLoop->monitorFileDescriptor(FileDescriptorSource::forStandardIn(stdinCallback));
+			eventLoop->monitor(FileDescriptorSource::forStandardIn(stdinCallback));
 			
 			eventLoop->runForever ();
 			

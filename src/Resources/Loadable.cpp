@@ -20,7 +20,7 @@ namespace Dream {
 			
 		}
 		
-		const char * LoadError::what () throw () {
+		const char * LoadError::what () const noexcept {
 			return m_what.c_str();
 		}
 		

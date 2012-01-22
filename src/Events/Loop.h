@@ -164,7 +164,7 @@ namespace Dream
 			
 			/// Monitor a file descriptor and process any read/write events when it is possible to do so.
 			/// This function is NOT thread-safe.
-			void monitorFileDescriptor (PTR(IFileDescriptorSource) source);
+			void monitor (PTR(IFileDescriptorSource) source);
 			
 			/// Stop monitoring a file descriptor.
 			/// This function is NOT thread-safe.

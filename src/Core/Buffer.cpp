@@ -305,7 +305,7 @@ namespace Dream
 			return StaticBuffer((const ByteT*)str, strlen(str) + (int)includeNullByte);
 		}
 		
-		StaticBuffer::StaticBuffer (const ByteT * buf, const IndexT & size) : m_buf (buf), m_size (size)
+		StaticBuffer::StaticBuffer (const ByteT * buf, const IndexT & size) : m_size(size), m_buf(buf)
 		{
 		}
 

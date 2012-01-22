@@ -171,14 +171,21 @@ namespace Dream
 			/// The type of the vector elements.
 			typedef typename RealType<NumericT>::RealT NumericRealT;
 
-		protected:
 			/// The actual data.
 			NumericT m_vector[E];
 
-		public:
 			/// Empty constructor. Value of vector is undefined.
-			Vector ()
-			{
+			Vector () = default;
+			
+			// Default copy constructor and assignment operator
+			Vector (const Vector & other) {
+				this->set(other.m_vector);
+			}
+			
+			Vector & operator= (const Vector & other) {
+				this->set(other.m_vector);
+				
+				return *this;
 			}
 
 			/// Zero constructor. Value is zeroed.

@@ -54,7 +54,7 @@ namespace Dream
 #pragma mark class TimerSource
 				
 		TimerSource::TimerSource (CallbackT callback, TimeT duration, bool repeats, bool strict) 
-			: m_repeats(repeats), m_strict(strict), m_duration(duration), m_callback(callback), m_cancelled(false)
+			: m_cancelled(false), m_repeats(repeats), m_strict(strict), m_duration(duration), m_callback(callback)
 		{
 			
 		}
@@ -150,7 +150,7 @@ namespace Dream
 #pragma mark -
 #pragma mark class FileDescriptorSource
 		
-		FileDescriptorSource::FileDescriptorSource (CallbackT callback, int fd) : m_callback(callback), m_fd(fd) 
+		FileDescriptorSource::FileDescriptorSource (CallbackT callback, int fd) : m_fd(fd), m_callback(callback)
 		{
 			
 		}

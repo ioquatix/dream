@@ -136,7 +136,7 @@ namespace Dream {
 				Partition (Partition *parent, typename TraitsT::PartitionLocation location)
 					: m_parent(parent), m_location(location)
 				{
-					assert(m_parent->m_children[m_location] == NULL);
+					ensure(m_parent->m_children[m_location] == NULL);
 					
 					m_parent->m_children[m_location] = this;
 					m_base = parent->m_base;

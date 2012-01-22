@@ -46,7 +46,7 @@ namespace Dream {
 			LoadError (StringT what);
 			virtual ~LoadError () throw ();
 			
-			virtual const char * what() throw ();
+			virtual const char * what() const noexcept;
 		};
 
 		class ILoadable : implements IObject 

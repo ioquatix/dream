@@ -11,7 +11,7 @@
 #define __INCLUDE_QD__
 
 #import <Cocoa/Cocoa.h>
-#include <Loadable.h>
+#include "Loadable.h"
 
 namespace Dream {
 	namespace Resources {
