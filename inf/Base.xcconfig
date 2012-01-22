@@ -28,10 +28,11 @@ OTHER_CFLAGS[sdk=iphonesimulator*]=-DDREAM_VARIANT=$(BUILD_VARIANT) $(DEBUG_CFLA
 OTHER_LDFLAGS[sdk=macosx*]=$(EXT_LIBS) -framework OpenGL -framework OpenAL -framework Foundation -framework Cocoa -framework AppKit -framework CoreVideo -framework CoreServices
 OTHER_LDFLAGS[sdk=iphone*]=$(EXT_LIBS) -framework QuartzCore -framework OpenGLES -framework OpenAL -framework CoreGraphics -framework Foundation -framework UIKit
 
-HEADER_SEARCH_PATHS="$(DREAM_EXT)/include" "$(DREAM_EXT)/include/freetype2"
-LIBRARY_SEARCH_PATHS="$(DREAM_EXT)/lib"
+HEADER_SEARCH_PATHS="$(DREAM_EXT)/include" "$(DREAM_EXT)/include/freetype2" $(LOCAL_HEADER_SEARCH_PATHS)
+LIBRARY_SEARCH_PATHS="$(DREAM_EXT)/lib" $(LOCAL_LIBRARY_SEARCH_PATHS)
 
 // Use C++0x11 features
+GCC_VERSION=com.apple.compilers.llvm.clang.1_0
 CLANG_CXX_LANGUAGE_STANDARD=gnu++0x
 CLANG_CXX_LIBRARY=libc++
 
