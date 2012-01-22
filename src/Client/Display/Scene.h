@@ -13,7 +13,7 @@
 #include "../../Core/Timer.h"
 #include "../../Resources/Loader.h"
 
-#include "Input.h"
+#include "../../Events/Input.h"
 #include "Context.h"
 
 #include <set>
@@ -30,7 +30,7 @@ namespace Dream
 			using namespace Dream::Numerics;
 			
 			using Dream::Resources::ILoader;
-			using Dream::Events::Loop;
+			using namespace Dream::Events;
 			
 			class ISceneManager;
 			
@@ -162,7 +162,7 @@ namespace Dream
 #pragma mark -
 			
 			/// A stack-based scene manager which can support typical game logic.
-			class SceneManager : public Object, implements ISceneManager, implements IContextDelegate
+			class SceneManager : public Object, implements ISceneManager, implements IContextDelegate, implements IInputHandler
 			{
 			public:
 				typedef std::list<REF(IScene)> ScenesT;
@@ -206,21 +206,25 @@ namespace Dream
 				ScenesT & scenes () { return m_scenes; }
 				const ScenesT & scenes () const { return m_scenes; }
 							
-				virtual REF(IScene) currentScene ();
-				virtual REF(IContext) displayContext ();
-				virtual REF(Loop) eventLoop ();
-				virtual REF(ILoader) resourceLoader ();
+				virtual REF(IScene) currentScene();
+				virtual REF(IContext) displayContext();
+				virtual REF(Loop) eventLoop();
+				virtual REF(ILoader) resourceLoader();
 				
-				virtual void currentSceneIsFinished ();
+				virtual void currentSceneIsFinished();
 				
 				/// Calls provideNextScene if there is no current scene.
-				virtual void renderFrameForTime (PTR(IContext) context, TimeT time);
-							
-				/// Process any events available from the display context and pass them on to the current scene.
-				virtual void processInput (PTR(IContext) context, const Input & input);
-				virtual void processPendingEvents (IInputHandler * handler);
+				virtual void renderFrameForTime(PTR(IContext) context, TimeT time);
 				
-				virtual void setFinishedCallback (FinishedCallbackT callback);
+				using ISceneManager::renderFrameForTime;
+				
+				/// Process any events available from the display context and pass them on to the current scene.
+				virtual void processInput(PTR(IContext) context, const Input & input);
+				virtual void processPendingEvents(IInputHandler * handler);
+				
+				virtual bool event(const Display::EventInput & input);
+				
+				virtual void setFinishedCallback(FinishedCallbackT callback);
 			};
 			
 			/// A basic scene implementation which manages the context for a single logical part of the application.
@@ -235,21 +239,22 @@ namespace Dream
 			public:
 				Scene ();
 				virtual ~Scene();
-								
+				
 				virtual void willBecomeCurrent (ISceneManager *);
+				using Group::willRevokeCurrent;
 				
 				/// Used to process layers which have been created in willBecomeCurrent.
-				virtual void didBecomeCurrent ();				
-				virtual void willRevokeCurrent (ISceneManager *);
+				virtual void didBecomeCurrent();
+				using Group::didBecomeCurrent;
 				
-				virtual bool resize (const Display::ResizeInput & input);
-				virtual bool event (const Display::EventInput & input);
+				virtual void willRevokeCurrent(ISceneManager *);
 				
 				virtual ISceneManager * manager ();
 				virtual ILoader * resourceLoader ();
 				virtual TimeT currentTime () const;
 				
 				virtual void renderFrameForTime (TimeT time);
+				using Group::renderFrameForTime;
 			};
 			
 			/// A place-holder scene that does nothing.

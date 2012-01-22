@@ -14,7 +14,7 @@
 
 // Resource loader
 #include "../../Imaging/Image.h"
-#include "../Text/Font.h"
+#include "../../Text/Font.h"
 #include "../Audio/Sound.h"
 #include "../Audio/OggResource.h"
 
@@ -44,13 +44,13 @@ namespace Dream
 				loader->addLoader(new Imaging::Image::Loader);
 				loader->addLoader(new Client::Audio::Sound::Loader);
 				loader->addLoader(new Client::Audio::OggResource::Loader);
-				loader->addLoader(new Client::Text::Font::Loader);
+				loader->addLoader(new Text::Font::Loader);
 				
 				return loader;
 			}
 			
 			SceneManager::SceneManager (REF(IContext) displayContext, REF(Loop) eventLoop, REF(ILoader) resourceLoader)
-				: m_displayContext(displayContext), m_eventLoop(eventLoop), m_currentSceneIsFinished(true), m_resourceLoader(resourceLoader)
+				: m_displayContext(displayContext), m_eventLoop(eventLoop), m_resourceLoader(resourceLoader), m_currentSceneIsFinished(true)
 			{
 				m_displayContext->setDelegate(this);
 				
@@ -145,7 +145,7 @@ namespace Dream
 				return s;
 			}
 			
-			void SceneManager::renderFrameForTime (PTR(IContext) context, TimeT time)
+			void SceneManager::renderFrameForTime(PTR(IContext) context, TimeT time)
 			{
 				context->makeCurrent();
 				
@@ -169,14 +169,24 @@ namespace Dream
 			
 			void SceneManager::processInput (PTR(IContext) context, const Input & input)
 			{
-				// Add the event to the thread-safe queue.
-				m_inputQueue.process(input);
+				if (!process(input)) {				
+					// Add the event to the thread-safe queue.
+					m_inputQueue.process(input);
+				}
 			}
 			
 			void SceneManager::processPendingEvents (IInputHandler * handler)
 			{
 				// Remove a block of events from the input queue and pass to the handler for processing.
 				m_inputQueue.dequeue(handler);
+			}
+			
+			bool SceneManager::event (const Display::EventInput & ipt)
+			{
+				if (ipt.event() == EventInput::EXIT)
+					eventLoop()->stop();
+				
+				return false;
 			}
 			
 			void SceneManager::setFinishedCallback (FinishedCallbackT callback)
@@ -280,40 +290,22 @@ namespace Dream
 				return m_sceneManager->resourceLoader().get();
 			}
 			
-			void Scene::willBecomeCurrent (ISceneManager * sceneManager)
+			void Scene::willBecomeCurrent(ISceneManager * sceneManager)
 			{
 				m_sceneManager = sceneManager;
 				m_firstFrame = true;
 			}
 			
-			void Scene::didBecomeCurrent () {
+			void Scene::didBecomeCurrent() {
 				Display::ResizeInput initialSize(m_sceneManager->displayContext()->size());
 				process(initialSize);
 				
 				Group::didBecomeCurrent(m_sceneManager, this);
 			}
 			
-			void Scene::willRevokeCurrent (ISceneManager * sceneManager)
+			void Scene::willRevokeCurrent(ISceneManager * sceneManager)
 			{
 				m_sceneManager = NULL;
-			}
-			
-			bool Scene::resize (const Display::ResizeInput &ipt)
-			{				
-				std::cout << "Resizing to " << ipt.newSize() << std::endl;
-				
-				return true;
-			}
-			
-			bool Scene::event (const Display::EventInput & ipt)
-			{
-				if (ipt.event() == EventInput::EXIT && m_sceneManager)
-				{
-					m_sceneManager->eventLoop()->stop();
-					return true;
-				}
-				
-				return false;
 			}
 			
 			void Scene::renderFrameForTime (TimeT time)

@@ -110,17 +110,21 @@ namespace Dream {
 			
 			void ApplicationDelegate::applicationWillEnterBackground (IApplication * application)
 			{
+				std::cerr << "Application entering background..." << std::endl;
+				
 				EventInput suspendEvent(EventInput::PAUSE);
 				m_sceneManager->processInput(m_context, suspendEvent);
 				
-				m_context->stop();
-				m_thread->stop();
+				//m_context->stop();
+				//m_thread->stop();
 			}
 			
 			void ApplicationDelegate::applicationDidEnterForeground (IApplication * application)
 			{
-				m_thread->start();
-				m_context->start();
+				std::cerr << "Application entering foreground..." << std::endl;
+				
+				//m_thread->start();
+				//m_context->start();
 				
 				EventInput resumeEvent(EventInput::RESUME);
 				m_sceneManager->processInput(m_context, resumeEvent);

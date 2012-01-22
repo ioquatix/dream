@@ -22,4 +22,14 @@
 	application->delegate()->applicationWillTerminate(application);
 }
 
+- (void)applicationDidBecomeActive:(NSNotification *)aNotification
+{
+	application->delegate()->applicationDidEnterForeground(application);
+}
+
+- (void)applicationWillResignActive:(NSNotification *)aNotification
+{
+	application->delegate()->applicationWillEnterBackground(application);
+}
+
 @end

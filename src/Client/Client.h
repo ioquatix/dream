@@ -10,10 +10,14 @@
 #ifndef _DREAM_CLIENT_CLIENT_H
 #define _DREAM_CLIENT_CLIENT_H
 
+// http://stackoverflow.com/questions/6649936/c-compiling-on-windows-and-linux-ifdef-switch
+
 #ifdef __APPLE__
 #include <TargetConditionals.h>
-#elif __LINUX__
+#elif __linux__
 #define TARGET_OS_LINUX 1
+#elif _WIN32
+#define TARGET_OS_WIN32 1
 #endif
 
 namespace Dream
