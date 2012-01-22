@@ -1,7 +1,7 @@
 
 Package.define("jpeg-8c") do |package|
 	package.variant(:all) do |platform, config|
-		RExec.env(config.build_flags) do
+		RExec.env(config.build_environment) do
 			Dir.chdir(package.src) do
 				sh("make", "clean") if File.exist? "Makefile"
 				

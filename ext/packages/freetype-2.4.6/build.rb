@@ -1,7 +1,7 @@
 
 Package.define("freetype-2.4.6") do |package|
 	package.variant(:all) do |platform, config|
-		RExec.env(config.build_flags) do
+		RExec.env(config.build_environment) do
 			Dir.chdir(package.src) do
 				sh("make", "distclean") if File.exist? "Makefile"
 				sh('rm', '-f', 'config.mk')

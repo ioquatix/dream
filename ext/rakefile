@@ -11,6 +11,8 @@ require 'yaml'
 
 EXT_PATH = Pathname.new(__FILE__).dirname
 PACKAGES_PATH = EXT_PATH + "packages"
+PLATFORMS_PATH = EXT_PATH + "platforms"
+OPTION_PATH = EXT_PATH + "opt"
 
 class Package
 	ALL = {}
@@ -147,70 +149,13 @@ class Platform
 	attr :config
 end
 
-GLOBAL_CFLAGS = "-O2 -Wall -Wmissing-prototypes -std=c99 -ffast-math -fno-strict-aliasing -mdynamic-no-pic -pipe"
+GLOBAL_CFLAGS = "-O2 -Wall -Wmissing-prototypes -std=c99 -ffast-math -fno-strict-aliasing -pipe"
 MACOSX_SDK_VERSION = "10.7"
 IPHONE_SDK_VERSION = "4.3"
 
-Platform.new(:darwin_macosx) do |config|
-	config.platform = Pathname.new("/")
-	config.sdk_version = MACOSX_SDK_VERSION
-	config.sdk = config.platform + Pathname.new("Developer/SDKs/MacOSX#{config.sdk_version}.sdk")
-	
-	# PowerPC is no longer supported on the current architectures.
-	# config.arch = "-arch ppc -arch i386 -arch x86_64"
-	config.arch = "-arch i386 -arch x86_64"
-	config.cflags = "#{config.arch} -isysroot #{config.sdk} -mmacosx-version-min=#{config.sdk_version}"
-	config.configure = []
-	
-	config.build_flags = {
-		"CFLAGS" => "#{GLOBAL_CFLAGS} #{config.cflags}",
-		"LDFLAGS" => "#{config.cflags}"
-	}
-end
-
-Platform.new(:darwin_iphoneos) do |config|
-	config.platform = Pathname.new("/Developer/Platforms/iPhoneOS.platform")
-	config.sdk_version = IPHONE_SDK_VERSION
-	config.sdk = config.platform + "Developer/SDKs/iPhoneOS#{config.sdk_version}.sdk"
-	
-	# Add -mthumb to config.arch if desired
-	# config.arch = "-arch armv6 -arch armv7"
-	
-	# Apparently this now builds for armv6 _and_ armv7?
-	config.arch = "-arch armv7"
-	
-	config.cflags = "#{config.arch} -isysroot #{config.sdk} -miphoneos-version-min=#{config.sdk_version}"
-	config.configure = ["--host=arm-apple-darwin"]
-	
-	# SDK Version 3.2 ?, version 3.1 used darwin9
-	# cc = "Developer/usr/bin/arm-apple-darwin10-gcc-4.0.1"
-	
-	config.build_flags = {
-		# This line must be a compiler that will produce ARM code.
-		"CC" => config.platform + "Developer/usr/bin/gcc",
-		"CPP" => config.platform + "Developer/usr/bin/cpp",
-		"LD" => config.platform + "Developer/usr/bin/ld",
-		"CFLAGS" => "#{GLOBAL_CFLAGS} #{config.cflags}",
-		"LDFLAGS" => "#{config.cflags}"
-	}
-end
-
-Platform.new(:darwin_iphonesimulator) do |config|
-	config.platform = Pathname.new("/Developer/Platforms/iPhoneSimulator.platform")
-	config.sdk_version = IPHONE_SDK_VERSION
-	config.sdk = config.platform + "Developer/SDKs/iPhoneSimulator#{config.sdk_version}.sdk"
-	
-	config.arch = "-arch i386"
-	config.cflags = "#{config.arch} -isysroot #{config.sdk} -miphoneos-version-min=#{config.sdk_version}"
-	config.configure = []
-	
-	config.build_flags = {
-		"CC" => config.platform + "Developer/usr/bin/gcc",
-		"CPP" => config.platform + "Developer/usr/bin/cpp",
-		"LD" => config.platform + "Developer/usr/bin/ld",
-		"CFLAGS" => "#{GLOBAL_CFLAGS} #{config.cflags}",
-		"LDFLAGS" => "#{config.cflags}"
-	}
+# Load all platforms - some might not build on the current host.
+Dir[PLATFORMS_PATH + "*.rb"].each do |path|
+	require path
 end
 
 Dir[PACKAGES_PATH + "*"].each do |path|
@@ -277,10 +222,22 @@ task :link_headers do
 	end
 end
 
-task :build, [:package] do |task, arguments|
-	package_name = arguments[:package]
-	Platform.all.each do |platform|
-		Package::ALL[package_name].build(platform)
+task :build, [:package, :platform] do |task, arguments|
+	platforms = Platform.all
+	packages = Package.all
+	
+	if arguments[:package]
+		packages = [Package::ALL[arguments[:package]]]
+	end
+	
+	if arguments[:platform]
+		platforms = [Platform::ALL[arguments[:platform].to_sym]]
+	end
+	
+	platforms.each do |platform|
+		packages.each do |package|
+			package.build(platform)
+		end
 	end
 end
 

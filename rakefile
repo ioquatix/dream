@@ -12,4 +12,3 @@ CPP_SOURCE = ['h', 'c', 'cpp']
 Dir["./tasks/*.rake"].each do |path|
 	load path
 end
-
