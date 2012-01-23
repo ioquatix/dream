@@ -5,9 +5,7 @@ Dream
 * Copyright (C) 2006, 2011 Samuel G. D. Williams.
 * Released under the MIT license.
 
-Dream is a cross-platform game development framework. It is currently under heavy development.
-
-It has the following features:
+Dream is a cross-platform game development framework. It is currently under heavy development. It has the following features:
 
 * Reference counted pointers for memory management.
 * Event driven networking and rendering engine.
@@ -23,15 +21,29 @@ For documentation and examples please see the main [project page][1].
 
 [1]: http://www.oriontransfer.co.nz/projects/dream
 
+Dependencies
+------------
+
+The following external dependencies are included and compiled statically for all supported platforms:
+
+* libjpeg
+* libpng
+* libfreetype
+* libvorbis
+* libogg
+
+For more information, see the `ext/README.md` directory.
+
 Compatibility
 -------------
 
 This framework has been designed for cross-platform compilation. It currently has support for the following targets:
 
-* Linux [Partial]
-* Windows [Partial]
-* iPhone [Full]
 * Mac OS X [Full]
+* iPhone [Full]
+* Linux [Partial]
+* Android NDK [Partial]
+* Windows [Unsupported at this time]
 
 Dream uses features from C++11, and therefore requires a C++11 compiler such as [clang][1] or [gcc][2].
 
