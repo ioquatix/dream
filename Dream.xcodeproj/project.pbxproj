@@ -41,9 +41,6 @@
 		7E257E570FBEAC1F0060BD2E /* PixelBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EC452300EE7E2D1000D47C2 /* PixelBuffer.cpp */; };
 		7E3B90CA0F9C18DF002B6541 /* Timer-Unix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3B90C80F9C18DF002B6541 /* Timer-Unix.cpp */; };
 		7E3B90CC0F9C18DF002B6541 /* Timer-Unix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3B90C80F9C18DF002B6541 /* Timer-Unix.cpp */; };
-		7E3C87920FADF6200049ABA3 /* STLAdditions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3C87900FADF6200049ABA3 /* STLAdditions.cpp */; };
-		7E3C87940FADF6200049ABA3 /* STLAdditions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3C87900FADF6200049ABA3 /* STLAdditions.cpp */; };
-		7E3C87950FADF6200049ABA3 /* STLAdditions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3C87900FADF6200049ABA3 /* STLAdditions.cpp */; };
 		7E3E1FEB118C5AFF00DA4F84 /* Color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3E1FEA118C5AFF00DA4F84 /* Color.cpp */; };
 		7E3E1FEC118C5AFF00DA4F84 /* Color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3E1FEA118C5AFF00DA4F84 /* Color.cpp */; };
 		7E3E1FED118C5AFF00DA4F84 /* Color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E3E1FEA118C5AFF00DA4F84 /* Color.cpp */; };
@@ -461,8 +458,6 @@
 		7E3B8B2E0F9C0BD8002B6541 /* Graphics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Graphics.h; sourceTree = "<group>"; };
 		7E3B90C80F9C18DF002B6541 /* Timer-Unix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Timer-Unix.cpp"; sourceTree = "<group>"; };
 		7E3B90CD0F9C18FD002B6541 /* Timer-CoreVideo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Timer-CoreVideo.cpp"; sourceTree = "<group>"; };
-		7E3C878F0FADF6200049ABA3 /* STLAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STLAdditions.h; sourceTree = "<group>"; };
-		7E3C87900FADF6200049ABA3 /* STLAdditions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = STLAdditions.cpp; sourceTree = "<group>"; };
 		7E3E1EDF118B575A00DA4F84 /* Color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Color.h; sourceTree = "<group>"; };
 		7E3E1FEA118C5AFF00DA4F84 /* Color.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Color.cpp; sourceTree = "<group>"; };
 		7E3EA859118086DB00F6C40B /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
@@ -835,14 +830,12 @@
 				7EA912000EB414FB0080E66D /* Value.cpp */,
 				7E3B8A790F9C069C002B6541 /* Dictionary.h */,
 				7EBDB7860EFE6089004E9BC3 /* Dictionary.cpp */,
+				7E3B8A7A0F9C069C002B6541 /* ObjectSet.h */,
+				7EA912040EB414FB0080E66D /* ObjectSet.cpp */,
 				7E3B8A870F9C069C002B6541 /* Timer.h */,
 				7EC4545F0EE9FE35000D47C2 /* Timer.cpp */,
 				7E3B90CD0F9C18FD002B6541 /* Timer-CoreVideo.cpp */,
 				7E3B90C80F9C18DF002B6541 /* Timer-Unix.cpp */,
-				7E3B8A7A0F9C069C002B6541 /* ObjectSet.h */,
-				7EA912040EB414FB0080E66D /* ObjectSet.cpp */,
-				7E3C878F0FADF6200049ABA3 /* STLAdditions.h */,
-				7E3C87900FADF6200049ABA3 /* STLAdditions.cpp */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -1317,7 +1310,6 @@
 				7EBC15AA0FA31F3500D2CA1D /* Scene.cpp in Sources */,
 				7EBC1A2A0FA46D2400D2CA1D /* Loader-UIKit.mm in Sources */,
 				7EBC22120FA7F6F100D2CA1D /* MultiFingerInput.cpp in Sources */,
-				7E3C87940FADF6200049ABA3 /* STLAdditions.cpp in Sources */,
 				7E257E030FBEA5360060BD2E /* PixelBufferSaver-PNG.cpp in Sources */,
 				7E696FF9107C0AE4007D2740 /* Stream.cpp in Sources */,
 				7E697000107C140F007D2740 /* OggResource.cpp in Sources */,
@@ -1409,7 +1401,6 @@
 				7EBC15AE0FA31F3500D2CA1D /* Scene.cpp in Sources */,
 				7EBC1A290FA46D2400D2CA1D /* Loader-UIKit.mm in Sources */,
 				7EBC22140FA7F6F100D2CA1D /* MultiFingerInput.cpp in Sources */,
-				7E3C87950FADF6200049ABA3 /* STLAdditions.cpp in Sources */,
 				7E257E040FBEA5370060BD2E /* PixelBufferSaver-PNG.cpp in Sources */,
 				7E696FF5107C0AE4007D2740 /* Stream.cpp in Sources */,
 				7E696FFC107C140F007D2740 /* OggResource.cpp in Sources */,
@@ -1500,7 +1491,6 @@
 				7EC86A680FAD7140005DD627 /* Framework.cpp in Sources */,
 				7EC86A690FAD7140005DD627 /* Timer-CoreVideo.cpp in Sources */,
 				7EC86A740FAD7140005DD627 /* Scene.cpp in Sources */,
-				7E3C87920FADF6200049ABA3 /* STLAdditions.cpp in Sources */,
 				7E257E050FBEA5370060BD2E /* PixelBufferSaver-PNG.cpp in Sources */,
 				7E696FF8107C0AE4007D2740 /* Stream.cpp in Sources */,
 				7E696FFF107C140F007D2740 /* OggResource.cpp in Sources */,
