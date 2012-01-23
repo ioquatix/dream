@@ -39,7 +39,7 @@ namespace Dream
 				
 				~FontGlyph ();
 				
-				void composite_to_buffer(Vector<2,unsigned> origin, REF(IMutablePixelBuffer) img) const;
+				void composite_to_buffer(Vector<2,unsigned> origin, Ref<IMutablePixelBuffer> img) const;
 				
 				Vector<2,unsigned> calculate_character_origin (Vector<2,unsigned> pen) const;
 				void get_cbox(FT_UInt bbox_mode, FT_BBox * acbox) const;
@@ -77,7 +77,7 @@ namespace Dream
 				
 				FontGlyph * load_glyph_for_index (FT_UInt c);
 				
-				Vector<2, unsigned> process_text(const std::wstring& text, REF(Image) dst);
+				Vector<2, unsigned> process_text(const std::wstring& text, Ref<Image> dst);
 			};
 		}
 	}

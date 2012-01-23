@@ -38,10 +38,10 @@ namespace Dream {
 		{
 		protected:
 			/// The list of server sockets that are currently accepting connections.
-			std::vector<REF(ServerSocket)> _server_sockets;
+			std::vector<Ref<ServerSocket>> _server_sockets;
 			
 			/// The server runloop.
-			REF(Events::Loop) _event_loop;
+			Ref<Events::Loop> _event_loop;
 			
 			/// Override this function to handle incoming connection requests.
 			virtual void connection_callback (Events::Loop *, ServerSocket *, const SocketHandleT & h, const Address &) abstract;
@@ -53,7 +53,7 @@ namespace Dream {
 			
 		public:
 			/// A server attaches to a runloop. It then should schedule incoming connections on the runloop.
-			Server (REF(Events::Loop) event_loop);
+			Server (Ref<Events::Loop> event_loop);
 			
 			virtual ~Server ();			
 		};
@@ -74,9 +74,9 @@ namespace Dream {
 		{
 		protected:
 			bool _run;
-			REF(Events::Loop) _event_loop;
+			Ref<Events::Loop> _event_loop;
 			
-			REF(Server) _server;
+			Ref<Server> _server;
 			Shared<std::thread> _thread;
 			
 			void run ();
@@ -87,10 +87,10 @@ namespace Dream {
 			virtual ~ServerContainer ();
 			
 			/// The runloop for the container. Be careful about accessing this from a different thread.
-			REF(Events::Loop) event_loop ();
+			Ref<Events::Loop> event_loop ();
 			
 			/// Start the container with a given server.
-			void start (REF(Server) server);
+			void start (Ref<Server> server);
 			
 			/// Stop the container. May interrupt the server thread if it does not stop in a reasonable timeframe.
 			/// (at present, is very nice and won't interrupt, but it may do in future implementation!)

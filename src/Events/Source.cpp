@@ -45,7 +45,7 @@ namespace Dream
 			event_loop->stop();
 		}
 		
-		REF(NotificationSource) NotificationSource::stop_loop_notification ()
+		Ref<NotificationSource> NotificationSource::stop_loop_notification ()
 		{
 			return new NotificationSource(stop_run_loop_callback);
 		}
@@ -170,17 +170,17 @@ namespace Dream
 			return _fd;
 		}
 		
-		REF(FileDescriptorSource) FileDescriptorSource::for_standard_in (CallbackT callback)
+		Ref<FileDescriptorSource> FileDescriptorSource::for_standard_in (CallbackT callback)
 		{
 			return new FileDescriptorSource(callback, STDIN_FILENO);
 		}
 		
-		REF(FileDescriptorSource) FileDescriptorSource::for_standard_out (CallbackT callback)
+		Ref<FileDescriptorSource> FileDescriptorSource::for_standard_out (CallbackT callback)
 		{
 			return new FileDescriptorSource(callback, STDOUT_FILENO);
 		}
 		
-		REF(FileDescriptorSource) FileDescriptorSource::for_standard_error (CallbackT callback)
+		Ref<FileDescriptorSource> FileDescriptorSource::for_standard_error (CallbackT callback)
 		{
 			return new FileDescriptorSource(callback, STDERR_FILENO);			
 		}

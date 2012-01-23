@@ -39,19 +39,19 @@ namespace Dream
 				return Value();
 		}
 		
-		void Dictionary::update (const PTR(Dictionary) other)
+		void Dictionary::update (const Ptr<Dictionary> other)
 		{
 			ValuesT values = other->_values;
 			values.insert(_values.begin(), _values.end());
 			_values.swap(values);
 		}
 		
-		void Dictionary::insert (const PTR(Dictionary) other)
+		void Dictionary::insert (const Ptr<Dictionary> other)
 		{
 			_values.insert(other->_values.begin(), other->_values.end());
 		}
 		
-		REF(IData) Dictionary::serialize () const
+		Ref<IData> Dictionary::serialize () const
 		{
 			Shared<DynamicBuffer> buffer(new DynamicBuffer);
 			
@@ -69,7 +69,7 @@ namespace Dream
 			return new BufferedData(buffer);
 		}
 		
-		void Dictionary::deserialize (REF(IData) data)
+		void Dictionary::deserialize (Ref<IData> data)
 		{
 			Shared<Buffer> buffer = data->buffer();
 			IndexT offset = 0;
@@ -101,7 +101,7 @@ namespace Dream
 			{
 				testing("Serialization");
 				
-				REF(Dictionary) dict1(new Dictionary);
+				Ref<Dictionary> dict1(new Dictionary);
 				
 				dict1->set("Key1", 5);
 				dict1->set("Key2", "Apples");
@@ -110,9 +110,9 @@ namespace Dream
 				
 				check(key1 == 5) << "Value is equal";
 				
-				REF(IData) data = dict1->serialize();
+				Ref<IData> data = dict1->serialize();
 				
-				REF(Dictionary) dict2(new Dictionary);
+				Ref<Dictionary> dict2(new Dictionary);
 				
 				dict2->deserialize(data);
 				

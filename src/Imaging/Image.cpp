@@ -38,7 +38,7 @@ namespace Dream {
 			loader->set_loader_for_extension(this, "png");
 		}
 		
-		REF(Object) Image::Loader::load_from_data(const PTR(IData) data, const ILoader * loader)
+		Ref<Object> Image::Loader::load_from_data(const Ptr<IData> data, const ILoader * loader)
 		{
 			return Image::load_from_data(data);
 		}

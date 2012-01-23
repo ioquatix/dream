@@ -57,7 +57,7 @@ namespace Dream
 			return -1;
 		}
 		
-		REF(Core::IData) save_pixel_buffer_as_png (IPixelBuffer * pixel_buffer)
+		Ref<Core::IData> save_pixel_buffer_as_png (IPixelBuffer * pixel_buffer)
 		{
 			Vec3u size = pixel_buffer->size();
 		
@@ -115,10 +115,10 @@ namespace Dream
 #ifdef ENABLE_TESTING
 
 		UNIT_TEST(PixelBufferSaver) {
-			REF(IPixelBuffer) pixel_buffer = new Image(vec(100.0, 100.0, 1.0), RGB, UBYTE);
+			Ref<IPixelBuffer> pixel_buffer = new Image(vec(100.0, 100.0, 1.0), RGB, UBYTE);
 			testing("PNG");
 			
-			REF(IData) png_data = save_pixel_buffer_as_png(pixel_buffer.get());
+			Ref<IData> png_data = save_pixel_buffer_as_png(pixel_buffer.get());
 			
 			png_data->buffer()->write_to_file("UnitTest.png");
 		}

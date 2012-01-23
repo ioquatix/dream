@@ -1,5 +1,5 @@
 //
-//  Reference.cpp
+//  Ref.cpp
 //  This file is part of the "Dream" project, and is released under the MIT license.
 //
 //  Created by Samuel Williams on 3/10/09.
@@ -46,7 +46,7 @@ namespace Dream {
 	}
 			
 	SharedObject & SharedObject::operator= (const SharedObject & other) {
-		// Don't touch reference count.
+		// Don't touch Ref count.
 		
 		return *this;
 	}
@@ -56,7 +56,7 @@ namespace Dream {
 	}
 	
 	void SharedObject::retain () const {
-		// std::cout << "Reference Increment @ " << this << " -> " << (_count+1) << std::endl;
+		// std::cout << "Ref Increment @ " << this << " -> " << (_count+1) << std::endl;
 
 		#ifdef TRACK_ALLOCATIONS
 		s_refCountBumps += 1;
@@ -66,7 +66,7 @@ namespace Dream {
 	}
 	
 	bool SharedObject::release () const {
-		// std::cout << "Reference Decrement @ " << this << " -> " << (_count-1) << std::endl;
+		// std::cout << "Ref Decrement @ " << this << " -> " << (_count-1) << std::endl;
 		
 		#ifdef TRACK_ALLOCATIONS
 		s_refCountBumps += 1;
@@ -117,11 +117,11 @@ namespace Dream {
 
 #ifdef ENABLE_TESTING
 
-	UNIT_TEST(Reference)
+	UNIT_TEST(Ref)
 	{
 		testing("Shared Object");
 		
-		REF(SharedObject) s1, s2, s3;
+		Ref<SharedObject> s1, s2, s3;
 		
 		check(s1 == s2) << "Null objects are equal";
 		
@@ -135,7 +135,7 @@ namespace Dream {
 		check(s1 == s1) << "Objects are equal";
 		check(s1 != s2) << "Objects are not equal";
 		
-		std::set<REF(SharedObject)> objects;
+		std::set<Ref<SharedObject>> objects;
 		objects.insert(s1);
 		objects.insert(s2);
 		objects.insert(s3);

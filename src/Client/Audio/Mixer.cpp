@@ -64,7 +64,7 @@ namespace Dream
 				//set_gain(1.0);
 				//set_position(Vec3(ZERO));
 				//set_velocity(Vec3(ZERO));
-				//set_reference_distance(100);
+				//set_Ref_distance(100);
 				
 				AudioError::check("Allocating Source");
 			}
@@ -176,7 +176,7 @@ namespace Dream
 				alSourcei(_sourceID, AL_SOURCE_RELATIVE, AL_TRUE);
 			}
 			
-			void Source::set_reference_distance (float dist)
+			void Source::set_Ref_distance (float dist)
 			{
 				alSourcef(_sourceID, AL_REFERENCE_DISTANCE, dist);
 			}
@@ -186,7 +186,7 @@ namespace Dream
 				alSourcei(_sourceID, AL_BUFFER, buffer_id);
 			}
 			
-			void Source::set_sound (PTR(Sound) sound)
+			void Source::set_sound (Ptr<Sound> sound)
 			{
 				_sound = sound;
 				
@@ -234,7 +234,7 @@ namespace Dream
 			
 			}
 			
-			void IStreamable::buffer_data(PTR(Source) source, ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq)
+			void IStreamable::buffer_data(Ptr<Source> source, ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq)
 			{
 				AudioError::reset();
 				alBufferData(buffer, format, data, size, freq);
@@ -275,7 +275,7 @@ namespace Dream
 			void Source::play ()
 			{
 				/*
-				float pitch, gain, min_gain, max_gain, max_distance, rolloff_factor, cone_outer_gain, cone_inner_angle, cone_outer_angle, reference_distance;
+				float pitch, gain, min_gain, max_gain, max_distance, rolloff_factor, cone_outer_gain, cone_inner_angle, cone_outer_angle, Ref_distance;
 				al_get_sourcef(_sourceID, AL_PITCH, &pitch);
 				al_get_sourcef(_sourceID, AL_GAIN, &gain);
 				al_get_sourcef(_sourceID, AL_MIN_GAIN, &min_gain);
@@ -285,11 +285,11 @@ namespace Dream
 				al_get_sourcef(_sourceID, AL_CONE_OUTER_GAIN, &cone_outer_gain);
 				al_get_sourcef(_sourceID, AL_CONE_INNER_ANGLE, &cone_inner_angle);
 				al_get_sourcef(_sourceID, AL_CONE_OUTER_ANGLE, &cone_outer_angle);
-				al_get_sourcef(_sourceID, AL_REFERENCE_DISTANCE, &reference_distance);
+				al_get_sourcef(_sourceID, AL_Ref_DISTANCE, &Ref_distance);
 				
 				std::cout << " ==== " << this << " ==== " << std::endl;
 				std::cout << "Audio properties: " << pitch << " " << gain << " " << min_gain << " " << max_gain << " " << max_distance << " " << rolloff_factor
-				<< " " << cone_outer_gain << " " << cone_inner_angle << " " << cone_outer_angle << " " << reference_distance << std::endl;
+				<< " " << cone_outer_gain << " " << cone_inner_angle << " " << cone_outer_angle << " " << Ref_distance << std::endl;
 				
 				ALint source_relative, buffer, source_state, buffers_queued, buffers_processed;
 				al_get_sourcei(_sourceID, AL_SOURCE_RELATIVE, &source_relative);
@@ -345,9 +345,9 @@ namespace Dream
 				return state == AL_PLAYING;
 			}
 			
-			REF(Mixer) Mixer::shared_mixer ()
+			Ref<Mixer> Mixer::shared_mixer ()
 			{
-				static REF(Mixer) g_mixer;
+				static Ref<Mixer> g_mixer;
 				
 				if (!g_mixer) {
 					g_mixer = new Mixer();
@@ -418,7 +418,7 @@ namespace Dream
 				alListenerfv(AL_VELOCITY, velocity.value());				
 			}
 			
-			REF(Source) Mixer::create_source ()
+			Ref<Source> Mixer::create_source ()
 			{
 				return new Source;
 			}

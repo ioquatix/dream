@@ -27,23 +27,23 @@ namespace Dream
 					{
 						public:
 							virtual void register_loader_types (ILoader * loader);
-							virtual REF(Object) load_from_data (const PTR(IData) data, const ILoader * loader);
+							virtual Ref<Object> load_from_data (const Ptr<IData> data, const ILoader * loader);
 					};
 				
 				protected:
-					REF(IData) _data;
+					Ref<IData> _data;
 					
 					ALenum _format;
 					ALsizei _frequency;
 					
 				public:
-					OggResource (const PTR(IData) data);
+					OggResource (const Ptr<IData> data);
 					virtual ~OggResource ();
 					
-					REF(Stream) create_stream (PTR(Source) source);
+					Ref<Stream> create_stream (Ptr<Source> source);
 					
 					// Current implementation returns NULL. Use create_stream or WAV files.
-					REF(Sound) create_sound (PTR(Source) source);
+					Ref<Sound> create_sound (Ptr<Source> source);
 					
 					//void debug();
 					static StringT error_string(int code);

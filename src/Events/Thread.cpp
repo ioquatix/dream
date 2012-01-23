@@ -23,7 +23,7 @@ namespace Dream {
 			stop();
 		}
 		
-		REF(Loop) Thread::loop()
+		Ref<Loop> Thread::loop()
 		{
 			return _loop;
 		}
@@ -39,7 +39,7 @@ namespace Dream {
 			std::cerr << "Starting thread event loop..." << std::endl;
 		
 			// Lock the loop to ensure it isn't released by another thread.
-			REF(Loop) loop = _loop;
+			Ref<Loop> loop = _loop;
 			
 			loop->run_forever();
 			
@@ -63,7 +63,7 @@ namespace Dream {
 		
 		class TTLNote : public Object, implements INotificationSource {			
 			public:
-				std::vector<REF(Loop)> loops;
+				std::vector<Ref<Loop>> loops;
 				std::size_t count;
 				
 				TTLNote ();
@@ -81,14 +81,14 @@ namespace Dream {
 			count += 1;
 			
 			if (loops.size() > 0) {
-				REF(Loop) next = loops.back();
+				Ref<Loop> next = loops.back();
 				loops.pop_back();
 				
 				next->post_notification(this, true);
 			}
 		}
 		
-		void add1(REF(Queue<int>) queue)
+		void add1(Ref<Queue<int>> queue)
 		{
 			queue->add(1);
 		}
@@ -96,13 +96,13 @@ namespace Dream {
 		UNIT_TEST(Thread) {
 			testing("Threads");
 			
-			REF(Thread) t1, t2, t3;
+			Ref<Thread> t1, t2, t3;
 			
 			t1 = new Thread;
 			t2 = new Thread;
 			t3 = new Thread;
 			
-			REF(TTLNote) note = new TTLNote;
+			Ref<TTLNote> note = new TTLNote;
 			note->loops.push_back(t1->loop());
 			note->loops.push_back(t2->loop());
 			note->loops.push_back(t3->loop());
@@ -120,11 +120,11 @@ namespace Dream {
 			testing("Queues");
 			
 			// Three threads will generate semi-random integers.
-			REF(Queue<int>) queue = new Queue<int>();
+			Ref<Queue<int>> queue = new Queue<int>();
 			
-			REF(TimerSource) e1 = new TimerSource(std::bind(add1, queue), 0.001, true);
-			REF(TimerSource) e2 = new TimerSource(std::bind(add1, queue), 0.001, true);
-			REF(TimerSource) e3 = new TimerSource(std::bind(add1, queue), 0.001, true);
+			Ref<TimerSource> e1 = new TimerSource(std::bind(add1, queue), 0.001, true);
+			Ref<TimerSource> e2 = new TimerSource(std::bind(add1, queue), 0.001, true);
+			Ref<TimerSource> e3 = new TimerSource(std::bind(add1, queue), 0.001, true);
 			
 			t1->loop()->schedule_timer(e1);
 			t2->loop()->schedule_timer(e2);

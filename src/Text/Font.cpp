@@ -47,11 +47,11 @@ namespace Dream
 			loader->set_loader_for_extension(this, "dfont");
 		}
 		
-		REF(Object) Font::Loader::init_with_path(const Path & p) {
+		Ref<Object> Font::Loader::init_with_path(const Path & p) {
 			return new Font(p);
 		}
 		
-		REF(Object) Font::Loader::load_from_data(const PTR(IData) data, const ILoader * loader) {
+		Ref<Object> Font::Loader::load_from_data(const Ptr<IData> data, const ILoader * loader) {
 			return new Font(data);
 		}
 		
@@ -69,7 +69,7 @@ namespace Dream
 			set_pixel_size(12);
 		}
 		
-		Font::Font (const PTR(IData) data) : _face(NULL)
+		Font::Font (const Ptr<IData> data) : _face(NULL)
 		{
 			Shared<Buffer> buffer = data->buffer();
 			
@@ -117,14 +117,14 @@ namespace Dream
 		{
 			ensure(_face != NULL);
 			
-			return _face->process_text(text, REF(Image)());
+			return _face->process_text(text, Ref<Image>());
 		}
 		
-		REF(Image) Font::render_text (const std::wstring & text)
+		Ref<Image> Font::render_text (const std::wstring & text)
 		{
 			ensure(_face != NULL);
 			
-			REF(Image) img = new Image(compute_bounding_box(text) << 1U, _face->pixel_format(), UBYTE);
+			Ref<Image> img = new Image(compute_bounding_box(text) << 1U, _face->pixel_format(), UBYTE);
 			img->zero();
 			
 			_face->process_text(text, img);

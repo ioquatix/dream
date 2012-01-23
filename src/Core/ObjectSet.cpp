@@ -14,7 +14,7 @@ namespace Dream
 	namespace Core
 	{
 				
-		ObjectSet::ObjectID::ObjectID (ValueT & value, IdentT ID, ObjectSet * ctx) : _value (value), __id (ID)
+		ObjectSet::ObjectID::ObjectID (ValueT & value, IdentT ID, ObjectSet * ctx) : _value (value), _id (ID)
 		{
 			
 		}
@@ -26,7 +26,7 @@ namespace Dream
 		
 		IdentT ObjectSet::ObjectID::identity ()
 		{
-			return __id;
+			return _id;
 		}
 		
 		ObjectSet::ValueT & ObjectSet::ObjectID::value ()
@@ -137,7 +137,7 @@ namespace Dream
 				return _objectContext->fetch(_index);
 			else
 			{
-				throw std::out_of_range("Trying to dereference the end iterator!");
+				throw std::out_of_range("Trying to deRef the end iterator!");
 			}
 		}
 		
@@ -222,7 +222,7 @@ namespace Dream
 			
 			UNIT_TEST(ObjectSet)
 			{
-				REF(ObjectSet) objects(new ObjectSet);
+				Ref<ObjectSet> objects(new ObjectSet);
 				
 				ObjectSet::ObjectID oid1 = objects->insert(new TestResource);
 				ObjectSet::ObjectID oid2 = objects->insert(new TestResource);

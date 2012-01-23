@@ -20,11 +20,11 @@ namespace Dream {
 			{
 			}
 			
-			void IContextDelegate::render_frame_for_time (PTR(IContext) context, TimeT time)
+			void IContextDelegate::render_frame_for_time (Ptr<IContext> context, TimeT time)
 			{
 			}
 			
-			void IContextDelegate::process_input (PTR(IContext) context, const Input & input)
+			void IContextDelegate::process_input (Ptr<IContext> context, const Input & input)
 			{
 			}
 			
@@ -38,7 +38,7 @@ namespace Dream {
 			{
 			}
 
-			void Context::set_delegate(PTR(IContextDelegate) context_delegate)
+			void Context::set_delegate(Ptr<IContextDelegate> context_delegate)
 			{
 				_context_delegate = context_delegate;
 			}

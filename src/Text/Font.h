@@ -39,7 +39,7 @@ namespace Dream
 		class Font : public Object {
 		protected:
 			Detail::FontFace *_face;
-			REF(IData) _font_data;
+			Ref<IData> _font_data;
 			
 			Vector<2, unsigned> compute_bounding_box (const std::wstring & text) const;
 			
@@ -48,12 +48,12 @@ namespace Dream
 			public:
 				virtual void register_loader_types (ILoader * loader);
 				
-				virtual REF(Object) init_with_path(const Path & p);
-				virtual REF(Object) load_from_data(const PTR(IData) data, const ILoader * loader);
+				virtual Ref<Object> init_with_path(const Path & p);
+				virtual Ref<Object> load_from_data(const Ptr<IData> data, const ILoader * loader);
 			};
 			
 			Font (const Path &);
-			Font (const PTR(IData) data);
+			Font (const Ptr<IData> data);
 			
 			virtual ~Font ();
 			
@@ -63,8 +63,8 @@ namespace Dream
 			void set_pixel_size (unsigned sz);
 			IndexT single_line_offset ();
 			
-			REF(Image) render_text (const std::wstring & text);
-			REF(Image) render_text (const std::wstring & text, unsigned line_width);
+			Ref<Image> render_text (const std::wstring & text);
+			Ref<Image> render_text (const std::wstring & text, unsigned line_width);
 		};
 		
 	}

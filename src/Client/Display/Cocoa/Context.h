@@ -66,10 +66,10 @@ namespace Dream
 						DWindowDelegate * _window_delegate;
 					
 						// Setup the graphics view
-						void setup_graphics_view (PTR(Dictionary) config, NSRect frame);
+						void setup_graphics_view (Ptr<Dictionary> config, NSRect frame);
 											
 					public:
-						WindowContext (PTR(Dictionary) config);
+						WindowContext (Ptr<Dictionary> config);
 						virtual ~WindowContext ();
 					
 						virtual void start ();

@@ -97,7 +97,7 @@ namespace Dream
 			
 #pragma mark -
 			
-				void WindowContext::setup_graphics_view (PTR(Dictionary) config, CGRect frame)
+				void WindowContext::setup_graphics_view (Ptr<Dictionary> config, CGRect frame)
 				{
 					if (config->get("Cocoa.View", _graphics_view)) {
 						// Graphics view from configuration.
@@ -128,7 +128,7 @@ namespace Dream
 					[EAGLContext setCurrentContext:nil];
 				}
 				
-				WindowContext::WindowContext (PTR(Dictionary) config)
+				WindowContext::WindowContext (Ptr<Dictionary> config)
 				{
 					_window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 					

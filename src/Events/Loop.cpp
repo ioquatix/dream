@@ -10,7 +10,6 @@
 #include "Loop.h"
 #include "Console.h"
 #include "../Core/Timer.h"
-#include "../Core/STLAdditions.h"
 
 #include <iostream>
 #include <limits>
@@ -68,7 +67,7 @@ namespace Dream
 #pragma mark File Descriptor Monitor Implementations		
 #pragma mark -
 		
-		typedef std::set<REF(IFileDescriptorSource)> FileDescriptorHandlesT;
+		typedef std::set<Ref<IFileDescriptorSource>> FileDescriptorHandlesT;
 		
 		class KQueueFileDescriptorMonitor : public Object, implements IFileDescriptorMonitor
 		{
@@ -82,8 +81,8 @@ namespace Dream
 			KQueueFileDescriptorMonitor ();
 			virtual ~KQueueFileDescriptorMonitor ();
 			
-			virtual void add_source (PTR(IFileDescriptorSource) source);
-			virtual void remove_source (PTR(IFileDescriptorSource) source);
+			virtual void add_source (Ptr<IFileDescriptorSource> source);
+			virtual void remove_source (Ptr<IFileDescriptorSource> source);
 			
 			virtual int source_count () const;
 			
@@ -100,7 +99,7 @@ namespace Dream
 			close(_kqueue);
 		}
 		
-		void KQueueFileDescriptorMonitor::add_source (PTR(IFileDescriptorSource) source)
+		void KQueueFileDescriptorMonitor::add_source (Ptr<IFileDescriptorSource> source)
 		{
 			FileDescriptorT fd = source->file_descriptor();
 			_file_descriptor_handles.insert(source);
@@ -127,7 +126,7 @@ namespace Dream
 			return _file_descriptor_handles.size();
 		}
 		
-		void KQueueFileDescriptorMonitor::remove_source (PTR(IFileDescriptorSource) source)
+		void KQueueFileDescriptorMonitor::remove_source (Ptr<IFileDescriptorSource> source)
 		{
 			FileDescriptorT fd = source->file_descriptor();
 			
@@ -219,7 +218,7 @@ namespace Dream
 		protected:
 			// Used to provide O(1) delete time within process_events handler
 			bool _delete_current_file_descriptor_handle;
-			REF(IFileDescriptorSource) _current_file_descriptor_source;
+			Ref<IFileDescriptorSource> _current_file_descriptor_source;
 			
 			FileDescriptorHandlesT _file_descriptor_handles;
 			
@@ -227,8 +226,8 @@ namespace Dream
 			PollFileDescriptorMonitor ();
 			virtual ~PollFileDescriptorMonitor ();
 			
-			virtual void add_source (PTR(IFileDescriptorSource) source);
-			virtual void remove_source (PTR(IFileDescriptorSource) source);
+			virtual void add_source (Ptr<IFileDescriptorSource> source);
+			virtual void remove_source (Ptr<IFileDescriptorSource> source);
 			
 			virtual int source_count () const;
 			
@@ -243,12 +242,12 @@ namespace Dream
 		{	
 		}
 		
-		void PollFileDescriptorMonitor::add_source (PTR(IFileDescriptorSource) source)
+		void PollFileDescriptorMonitor::add_source (Ptr<IFileDescriptorSource> source)
 		{
 			_file_descriptor_handles.insert(source);
 		}
 		
-		void PollFileDescriptorMonitor::remove_source (PTR(IFileDescriptorSource) source)
+		void PollFileDescriptorMonitor::remove_source (Ptr<IFileDescriptorSource> source)
 		{
 			if (_current_file_descriptor_source == source) {
 				_delete_current_file_descriptor_handle = true;
@@ -370,7 +369,7 @@ namespace Dream
 			//std::cerr << "Stop monitoring urgent notification pipe..." << std::endl;
 			//stop_monitoring_file_descriptor(_urgent_notification_pipe);
 			
-			//foreach(REF(IFileDescriptorSource) source, _file_descriptor_handles)
+			//foreach(Ref<IFileDescriptorSource> source, _file_descriptor_handles)
 			//{
 			//	std::cerr << "FD Still Scheduled: " << source->class_name() << source->file_descriptor() << std::endl;
 			//}
@@ -392,16 +391,16 @@ namespace Dream
 		class ScheduleTimerNotificationSource : public Object, implements INotificationSource
 		{
 			protected:
-				REF(ITimerSource) _timer_source;
+				Ref<ITimerSource> _timer_source;
 			
 			public:
-				ScheduleTimerNotificationSource(REF(ITimerSource) timer_source);
+				ScheduleTimerNotificationSource(Ref<ITimerSource> timer_source);
 				virtual ~ScheduleTimerNotificationSource ();
 				
 				virtual void process_events (Loop * event_loop, Event event);
 		};
 		
-		ScheduleTimerNotificationSource::ScheduleTimerNotificationSource(REF(ITimerSource) timer_source)
+		ScheduleTimerNotificationSource::ScheduleTimerNotificationSource(Ref<ITimerSource> timer_source)
 			: _timer_source(timer_source)
 		{
 			
@@ -419,7 +418,7 @@ namespace Dream
 				event_loop->schedule_timer(_timer_source);
 		}
 		
-		void Loop::schedule_timer (REF(ITimerSource) source)
+		void Loop::schedule_timer (Ref<ITimerSource> source)
 		{			
 			if (std::this_thread::get_id() == _current_thread) {
 				TimerHandle th;
@@ -432,14 +431,14 @@ namespace Dream
 				_timerHandles.push(th);
 			} else {
 				// Add the timer via a notification which is passed across the thread.
-				REF(ScheduleTimerNotificationSource) note = new ScheduleTimerNotificationSource(source);
+				Ref<ScheduleTimerNotificationSource> note = new ScheduleTimerNotificationSource(source);
 				this->post_notification(note);
 			}
 		}
 		
 #pragma mark -
 		
-		void Loop::post_notification (REF(INotificationSource) note, bool urgent)
+		void Loop::post_notification (Ref<INotificationSource> note, bool urgent)
 		{
 			// Lock the event loop notification queue
 			// Add note to the end of the queue
@@ -461,7 +460,7 @@ namespace Dream
 			}
 		}
 			
-		void Loop::monitor (PTR(IFileDescriptorSource) source)
+		void Loop::monitor (Ptr<IFileDescriptorSource> source)
 		{
 			ensure(source->file_descriptor() != -1);
 			//std::cerr << this << " monitoring fd: " << fd << std::endl;
@@ -470,7 +469,7 @@ namespace Dream
 			_file_descriptor_monitor->add_source(source);
 		}
 		
-		void Loop::stop_monitoring_file_descriptor (PTR(IFileDescriptorSource) source)
+		void Loop::stop_monitoring_file_descriptor (Ptr<IFileDescriptorSource> source)
 		{
 			ensure(source->file_descriptor() != -1);
 			
@@ -535,7 +534,7 @@ namespace Dream
 			
 			while (!_notifications.processing.empty()  && (rate-- || _rate_limit == 0))
 			{
-				REF(INotificationSource) note = _notifications.processing.front();
+				Ref<INotificationSource> note = _notifications.processing.front();
 				_notifications.processing.pop();
 				
 				note->process_events(this, NOTIFICATION);
@@ -546,7 +545,7 @@ namespace Dream
 				
 				while (!_notifications.processing.empty())
 				{
-					REF(INotificationSource) note = _notifications.processing.front();
+					Ref<INotificationSource> note = _notifications.processing.front();
 					_notifications.processing.pop();
 					
 					post_notification(note, false);
@@ -704,7 +703,7 @@ namespace Dream
 		{
 			testing("Timer Sources");
 			
-			REF(Loop) event_loop = new Loop;
+			Ref<Loop> event_loop = new Loop;
 			
 			ticks = 0;
 			
@@ -729,7 +728,7 @@ namespace Dream
 		}
 		
 		int notified;
-		static void send_notification_after_delay (REF(Loop) event_loop, REF(INotificationSource) note)
+		static void send_notification_after_delay (Ref<Loop> event_loop, Ref<INotificationSource> note)
 		{
 			int count = 0;
 			while (count < 10)
@@ -756,8 +755,8 @@ namespace Dream
 		{
 			testing("Notification Sources");
 			
-			REF(Loop) event_loop = new Loop;
-			REF(NotificationSource) note = new NotificationSource(notification_received);
+			Ref<Loop> event_loop = new Loop;
+			Ref<NotificationSource> note = new NotificationSource(notification_received);
 			
 			// Fail the test after 5 seconds if we are not notified.
 			event_loop->schedule_timer(new TimerSource(stop_callback, 2));
@@ -773,7 +772,7 @@ namespace Dream
 			check(notified == 10) << "Notification occurred";
 		}
 		
-		static void send_stop_after_delay (REF(Loop) event_loop)
+		static void send_stop_after_delay (Ref<Loop> event_loop)
 		{
 			Core::sleep(0.5);
 			event_loop->stop();
@@ -792,7 +791,7 @@ namespace Dream
 			
 			timer_stopped = false;
 			
-			REF(Loop) event_loop = new Loop;
+			Ref<Loop> event_loop = new Loop;
 			event_loop->set_stop_when_idle(false);
 			
 			event_loop->schedule_timer(new TimerSource(mark_and_stop_callback, 1.0));

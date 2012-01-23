@@ -31,13 +31,13 @@ namespace Dream
 			A fader object updates a knob with a time value linearly interpolated from 0.0 to 1.0. At the end, it calls
 			the finish callback if it is specified.
 			
-			It is used for providing time based animation/interpolation, and by reference counting can be used in a set
+			It is used for providing time based animation/interpolation, and by Ref counting can be used in a set
 			and forget fashion.
 		*/
 		class Fader : public Object, implements ITimerSource
 		{
 			public:
-				typedef std::function<void (PTR(Fader) fader)> FinishCallbackT;
+				typedef std::function<void (Ptr<Fader> fader)> FinishCallbackT;
 			
 			protected:
 				Shared<IKnob> _knob;

@@ -17,9 +17,6 @@
 #include <stdint.h>
 #include <iostream>
 
-#define PTR(t) Dream::Pointer<t> 
-#define REF(t) Dream::Reference<t> 
-
 namespace Dream {
 
 	/* Why use these?
@@ -39,6 +36,12 @@ namespace Dream {
 		option is to use const Reference<> &, however you can't convert a
 		raw pointer to this type.
 	*/
+
+#ifdef DREAM_REFERENCE_NO_USING
+	// If we don't have support for alias templates, we can use the preprocessor to make the classes look identical
+#define Pointer Ptr
+#define Reference Ref
+#endif
 	
 	void debug_allocations ();
 	
@@ -151,6 +154,9 @@ namespace Dream {
 			}
 	};
 	
+	template <typename ObjectT>
+	using Ptr = Pointer<ObjectT>;
+	
 	void mark_static_allocation (void*);
 	
 	template <typename ObjectT>
@@ -252,15 +258,18 @@ namespace Dream {
 		return Reference<ValueT>(value);
 	}
 	
+	template <typename ObjectT>
+	using Ref = Reference<ObjectT>;
+	
 	template <typename ValueT>
 	class Shared
 	{
 		protected:
-			REF(SharedObject) _controller;
+			Ref<SharedObject> _controller;
 			ValueT * _value;
 		
 		public:
-			REF(SharedObject) controller () const
+			Ref<SharedObject> controller () const
 			{
 				return _controller;
 			}

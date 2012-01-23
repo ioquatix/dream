@@ -22,7 +22,7 @@ namespace Dream
 				FT_Done_Glyph(glyph);
 			}
 			
-			void FontGlyph::composite_to_buffer(Vector<2,unsigned> origin, REF(IMutablePixelBuffer) img) const
+			void FontGlyph::composite_to_buffer(Vector<2,unsigned> origin, Ref<IMutablePixelBuffer> img) const
 			{
 				ensure(is_bitmap());
 				FT_BitmapGlyph bm = (FT_BitmapGlyph)glyph;
@@ -157,7 +157,7 @@ namespace Dream
 				return cache;
 			}
 			
-			Vector<2, unsigned> FontFace::process_text(const std::wstring& text, REF(Image) dst)
+			Vector<2, unsigned> FontFace::process_text(const std::wstring& text, Ref<Image> dst)
 			{
 				TextBlock block(this);
 				

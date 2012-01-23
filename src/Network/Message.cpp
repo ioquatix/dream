@@ -82,7 +82,7 @@ namespace Dream {
 #pragma mark -
 #pragma mark MessageSender
 		
-		MessageSender::MessageSender (REF(Message) msg) {
+		MessageSender::MessageSender (Ref<Message> msg) {
 			reset(msg);
 		}
 		
@@ -95,7 +95,7 @@ namespace Dream {
 			_offset = 0;
 		}
 		
-		void MessageSender::reset (REF(Message) msg) {
+		void MessageSender::reset (Ref<Message> msg) {
 			ensure(msg->is_valid());
 			
 			_message = msg;
@@ -140,7 +140,7 @@ namespace Dream {
 			_message = new Message;
 		}
 		
-		REF(Message) MessageReceiver::message () {
+		Ref<Message> MessageReceiver::message () {
 			return _message;
 		}
 		
@@ -193,7 +193,7 @@ namespace Dream {
 			return _sender.has_message_to_send() || _sendq.size() > 0;
 		}
 		
-		void MessageClientSocket::send_message (REF(Message) msg) {
+		void MessageClientSocket::send_message (Ref<Message> msg) {
 			_sendq.push(msg);
 		}
 		
@@ -207,9 +207,9 @@ namespace Dream {
 			return _recvq;
 		}
 		
-		REF(Message) MessageClientSocket::pop() {
+		Ref<Message> MessageClientSocket::pop() {
 			if (_recvq.size()) {
-				REF(Message) front = _recvq.front();
+				Ref<Message> front = _recvq.front();
 				_recvq.pop();
 				return front;
 			} else {
@@ -286,7 +286,7 @@ namespace Dream {
 		UNIT_TEST(Message) {
 			testing("Construction");
 			
-			REF(Message) m1(new Message);
+			Ref<Message> m1(new Message);
 			
 			m1->reset_header();
 			m1->header()->packet_type = 0xDEAD;

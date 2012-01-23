@@ -27,7 +27,7 @@ namespace Dream {
 			Shared<Buffer> buffer;
 			unsigned offset;
 			
-			DataFile (const REF(IData) data) {
+			DataFile (const Ref<IData> data) {
 				buffer = data->buffer();
 				offset = 0;
 			}
@@ -93,14 +93,14 @@ namespace Dream {
 			cinfo->src->bytes_in_buffer = bufsize;
 		}
 
-		REF(Image) load_jpegimage (const PTR(IData) data) {
+		Ref<Image> load_jpegimage (const Ptr<IData> data) {
 			jpeg_decompress_struct cinfo;
 			jpeg_error_mgr jerr;
 			
 			ImagePixelFormat format = ImagePixelFormat(0);
 			ImageDataType data_type = UBYTE;
 
-			REF(Image) result_image;
+			Ref<Image> result_image;
 			Shared<Buffer> buffer = data->buffer();
 			
 			unsigned width, height;
@@ -154,13 +154,13 @@ namespace Dream {
 			throw std::runtime_error(msg);
 		}
 		
-		REF(Image) load_pngimage (const PTR(IData) data) {
+		Ref<Image> load_pngimage (const Ptr<IData> data) {
 			// Image formatting details
 			ImagePixelFormat format = ImagePixelFormat(0);
 			ImageDataType data_type = ImageDataType(0);
 			
 			DataFile df(data);
-			REF(Image) result_image;
+			Ref<Image> result_image;
 			Shared<Buffer> buffer = data->buffer();
 			
 			// internally used by libpng
@@ -172,7 +172,7 @@ namespace Dream {
 			
 			if (!png_check_sig((png_byte*)buffer->begin(), 8)) {
 				std::cerr << "Could not verify PNG image!" << std::endl;
-				return REF(Image)();
+				return Ref<Image>();
 			}
 			
 			try {
@@ -265,11 +265,11 @@ namespace Dream {
 #pragma mark -
 #pragma mark Loader Multiplexer
 		
-		REF(Image) Image::load_from_data (const PTR(IData) data) {
+		Ref<Image> Image::load_from_data (const Ptr<IData> data) {
 			static Stopwatch t;
 			static unsigned count = 0; ++count;
 			
-			REF(Image) loaded_image;
+			Ref<Image> loaded_image;
 			Shared<Buffer> buffer;
 
 			t.start();

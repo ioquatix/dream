@@ -7,7 +7,7 @@ Dream
 
 Dream is a cross-platform game development framework. It is currently under heavy development. It has the following features:
 
-* Reference counted pointers for memory management.
+* Reference counted pointers for resource/memory management.
 * Event driven networking and rendering engine.
 * Vector, Matrix and Quaternion implementation for mathematics.
 * Sphere, Line, Plane, Frustrum, AlignedBox, Triangle for geometry calculations.
@@ -74,7 +74,7 @@ Only one of these implementations need to be compiled for a specific platform. G
 
 ### Resource Management ###
 
-One feature of the Dream framework is automatic resource/memory management. This is done by using reference counted pointers. It is important to understand a few things about the semantics of these "values" in order to get the best performance.
+One feature of the Dream framework is automatic resource/memory management. This is done by using Ref counted pointers. It is important to understand a few things about the semantics of these "values" in order to get the best performance.
 
 When an object has ownership of a resource, it should use a `Dream::Ref<Object>`. Ownership is typically referred to as a <em>has-a</em> or <em>has-many</em> relationship.
 

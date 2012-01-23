@@ -66,15 +66,15 @@ namespace Dream {
 			class ApplicationDelegate : public Object, implements IApplicationDelegate
 			{
 				public:
-					ApplicationDelegate(PTR(IScene) scene, PTR(Dictionary) config);
+					ApplicationDelegate(Ptr<IScene> scene, Ptr<Dictionary> config);
 					virtual ~ApplicationDelegate();
 					
 				protected:
-					REF(IScene) _scene;
-					REF(Dictionary) _config;
-					REF(Context) _context;
-					REF(Events::Thread) _thread;
-					REF(SceneManager) _sceneManager;
+					Ref<IScene> _scene;
+					Ref<Dictionary> _config;
+					Ref<Context> _context;
+					Ref<Events::Thread> _thread;
+					Ref<SceneManager> _sceneManager;
 					
 					virtual void application_did_finish_launching (IApplication * application);
 					
@@ -82,7 +82,7 @@ namespace Dream {
 					virtual void application_did_enter_foreground (IApplication * application);
 			};
 
-			ApplicationDelegate::ApplicationDelegate(PTR(IScene) scene, PTR(Dictionary) config)
+			ApplicationDelegate::ApplicationDelegate(Ptr<IScene> scene, Ptr<Dictionary> config)
 				: _scene(scene), _config(config)
 			{
 			
@@ -99,7 +99,7 @@ namespace Dream {
 				_context = application->create_context(_config);
 				
 				_thread = new Events::Thread;
-				REF(ILoader) loader = SceneManager::default_resource_loader();
+				Ref<ILoader> loader = SceneManager::default_resource_loader();
 				
 				_sceneManager = new SceneManager(_context, _thread->loop(), loader);
 				_sceneManager->push_scene(_scene);
@@ -130,9 +130,9 @@ namespace Dream {
 				_sceneManager->process_input(_context, resume_event);
 			}
 			
-			void IApplication::run_scene(PTR(IScene) scene, PTR(Dictionary) config)
+			void IApplication::run_scene(Ptr<IScene> scene, Ptr<Dictionary> config)
 			{
-				REF(ApplicationDelegate) application_delegate = new ApplicationDelegate(scene, config);
+				Ref<ApplicationDelegate> application_delegate = new ApplicationDelegate(scene, config);
 				
 				IApplication::start(application_delegate);
 			}

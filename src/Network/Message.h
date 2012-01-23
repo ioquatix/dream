@@ -100,11 +100,11 @@ namespace Dream {
 		 */
 		class MessageSender {
 		protected:
-			REF(Message) _message;
+			Ref<Message> _message;
 			unsigned _offset;
 			
 		public:
-			MessageSender (REF(Message) msg);
+			MessageSender (Ref<Message> msg);
 			MessageSender ();
 			
 			/// Cancel sending the current message. Note: Resetting the message part way through will corrupt the connection if the remote end expects
@@ -112,7 +112,7 @@ namespace Dream {
 			void reset ();
 			
 			/// Prepare to send another message.
-			void reset (REF(Message) msg);
+			void reset (Ref<Message> msg);
 			
 			/// Returns true if a message is currently waiting to be sent or in progress.
 			bool has_message_to_send () const;
@@ -131,7 +131,7 @@ namespace Dream {
 		 */
 		class MessageReceiver {
 		protected:
-			REF(Message) _message;
+			Ref<Message> _message;
 			
 		public:
 			MessageReceiver ();
@@ -141,7 +141,7 @@ namespace Dream {
 			void reset ();
 			
 			/// Retrieve the complete or partial message.
-			REF(Message) message ();
+			Ref<Message> message ();
 			
 			/// Read data from the socket to add to the incoming message.
 			/// @returns true when the message is complete.
@@ -164,7 +164,7 @@ namespace Dream {
 			MessageSender _sender;
 			MessageReceiver _receiver;
 			
-			typedef std::queue<REF(Message)> QueueT;
+			typedef std::queue<Ref<Message>> QueueT;
 			QueueT _recvq, _sendq;
 			
 			/// Processes any outgoing messages.
@@ -189,14 +189,14 @@ namespace Dream {
 			bool has_messages_to_send ();
 			
 			/// Queues a message to be sent.
-			void send_message (REF(Message) msg);
+			void send_message (Ref<Message> msg);
 			
 			/// Returns the queue containing incoming messages
 			QueueT & received_messages ();
 			const QueueT & received_messages () const;
 			
 			/// Pop the front message off the receive queue and return it, otherwise NULL.
-			REF(Message) pop();
+			Ref<Message> pop();
 			
 			/// Calls update_sender() and update_receiver() as needed.
 			virtual void process_events (Events::Loop *, Events::Event);

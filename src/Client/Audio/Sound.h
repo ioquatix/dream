@@ -30,7 +30,7 @@ namespace Dream
 					{
 					public:
 						virtual void register_loader_types (ILoader * loader);
-						virtual REF(Object) load_from_data (const PTR(IData) data, const ILoader * loader);
+						virtual Ref<Object> load_from_data (const Ptr<IData> data, const ILoader * loader);
 					};
 					
 				protected:

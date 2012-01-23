@@ -15,15 +15,15 @@ namespace Dream {
 	namespace Client {
 		namespace Display {
 		
-			void IApplication::start (PTR(IApplicationDelegate) delegate)
+			void IApplication::start (Ptr<IApplicationDelegate> delegate)
 			{
-				REF(UIKit::Application) application = new UIKit::Application(delegate);
+				Ref<UIKit::Application> application = new UIKit::Application(delegate);
 				
 				application->run();
 			}
 		
 			namespace UIKit {				
-				Application::Application(PTR(IApplicationDelegate) applicationDelegate)
+				Application::Application(Ptr<IApplicationDelegate> applicationDelegate)
 					: _application_delegate(applicationDelegate)
 				{
 				
@@ -39,7 +39,7 @@ namespace Dream {
 					[DApplicationDelegate startWithApplication:this];
 				}
 				
-				REF(IContext) Application::create_context (REF(Dictionary) config)
+				Ref<IContext> Application::create_context (Ref<Dictionary> config)
 				{
 					return new WindowContext(config);
 				}

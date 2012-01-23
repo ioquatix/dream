@@ -50,7 +50,7 @@ namespace Dream
 		{
 			using namespace std;
 			
-			REF(CodeTest::Statistics) overall = new CodeTest::Statistics("Code Test Registry");
+			Ref<CodeTest::Statistics> overall = new CodeTest::Statistics("Code Test Registry");
 			
 			foreach (test, _code_tests)
 			{
@@ -58,7 +58,7 @@ namespace Dream
 				
 				(*test)->perform_tests ();
 
-				REF(CodeTest::Statistics) stats = (*test)->overall_statistics();
+				Ref<CodeTest::Statistics> stats = (*test)->overall_statistics();
 				*overall += *stats;
 			}
 
@@ -150,7 +150,7 @@ namespace Dream
 				std::cerr << std::endl;
 		}
 
-		PTR(CodeTest::Statistics) CodeTest::current_test ()
+		Ptr<CodeTest::Statistics> CodeTest::current_test ()
 		{
 			if (_tests.size() == 0)
 				testing ("Unnamed");
@@ -158,9 +158,9 @@ namespace Dream
 			return _tests.back();
 		}
 
-		REF(CodeTest::Statistics) CodeTest::overall_statistics ()
+		Ref<CodeTest::Statistics> CodeTest::overall_statistics ()
 		{
-			REF(Statistics) overall = new Statistics(_name);
+			Ref<Statistics> overall = new Statistics(_name);
 
 			foreach(stats, _tests)
 			{

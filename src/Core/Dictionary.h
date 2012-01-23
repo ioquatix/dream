@@ -81,13 +81,13 @@ namespace Dream
 			}
 			
 			// Overwrites values present in the other dictionary.
-			void update (const PTR(Dictionary) other);
+			void update (const Ptr<Dictionary> other);
 			
 			// Only inserts key-values that don't already exist.
-			void insert (const PTR(Dictionary) other);
+			void insert (const Ptr<Dictionary> other);
 			
-			REF(IData) serialize () const;
-			void deserialize (REF(IData) data);
+			Ref<IData> serialize () const;
+			void deserialize (Ref<IData> data);
 			
 			void debug (std::ostream &) const;
 		};

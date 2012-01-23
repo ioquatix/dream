@@ -34,14 +34,14 @@ namespace Dream
 					return 0;
 			}
 			
-			typedef REF(Sound)(*DecoderT)(const Buffer *, ALint, ALint, ALfloat);
+			typedef Ref<Sound>(*DecoderT)(const Buffer *, ALint, ALint, ALfloat);
 			
-			REF(Sound) decode_linear_codec (const Buffer * buf, ALint channel_count, ALint bits_per_sample, ALfloat sample_frequency)
+			Ref<Sound> decode_linear_codec (const Buffer * buf, ALint channel_count, ALint bits_per_sample, ALfloat sample_frequency)
 			{
 				return new Sound(data_format(channel_count, bits_per_sample), sample_frequency, buf);
 			}
 			
-			REF(Sound) decode_pcm8SCodec (const Buffer * buf, ALint channel_count, ALint bits_per_sample, ALfloat sample_frequency)
+			Ref<Sound> decode_pcm8SCodec (const Buffer * buf, ALint channel_count, ALint bits_per_sample, ALfloat sample_frequency)
 			{
 				DynamicBuffer copy;
 				copy.assign(*buf);
@@ -56,7 +56,7 @@ namespace Dream
 			}
 			
 			const Endian PCM16Endian = LITTLE;
-			REF(Sound) decode_pcm16Codec (const Buffer * buf, ALint channel_count, ALint bits_per_sample, ALfloat sample_frequency)
+			Ref<Sound> decode_pcm16Codec (const Buffer * buf, ALint channel_count, ALint bits_per_sample, ALfloat sample_frequency)
 			{
 				if (host_endian() == PCM16Endian) {
 					return new Sound(data_format(channel_count, bits_per_sample), sample_frequency, buf);
@@ -74,7 +74,7 @@ namespace Dream
 				}
 			}
 						
-			REF(Sound) load_wave_data (const PTR(IData) data)
+			Ref<Sound> load_wave_data (const Ptr<IData> data)
 			{				
 				DecoderT decoder = NULL;
 				Shared<Buffer> buffer = data->buffer();
@@ -143,7 +143,7 @@ namespace Dream
 				throw LoadError("Corrupt or truncated data");
 			}
 						
-			REF(Object) Sound::Loader::load_from_data (const PTR(IData) data, const ILoader * loader)
+			Ref<Object> Sound::Loader::load_from_data (const Ptr<IData> data, const ILoader * loader)
 			{
 				Shared<Buffer> buffer = data->buffer();
 				

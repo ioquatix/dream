@@ -34,7 +34,7 @@ namespace Dream
 			
 			FT_Error err;
 			
-			REF(IMutablePixelBuffer) img;
+			Ref<IMutablePixelBuffer> img;
 			
 			unsigned _count;
 		public:
@@ -62,7 +62,7 @@ namespace Dream
 				_count = other._count;
 			}
 			
-			void set_image (REF(IMutablePixelBuffer) _img)
+			void set_image (Ref<IMutablePixelBuffer> _img)
 			{
 				img = _img;
 			}
@@ -195,7 +195,7 @@ namespace Dream
 			return true;
 		}
 		
-		void TextLine::composite_to_image (REF(IMutablePixelBuffer) img, Vector<2,unsigned> pen, CharacterBoxes * boxes)
+		void TextLine::composite_to_image (Ref<IMutablePixelBuffer> img, Vector<2,unsigned> pen, CharacterBoxes * boxes)
 		{
 			TextLineRenderer r(_block->_face, _block->kerning_enabled());
 			
@@ -374,7 +374,7 @@ namespace Dream
 			return str;
 		}
 		
-		void TextBlock::render (REF(IMutablePixelBuffer) pbuf, CharacterBoxes * boxes)
+		void TextBlock::render (Ref<IMutablePixelBuffer> pbuf, CharacterBoxes * boxes)
 		{
 			Vector<2,unsigned> pen(ZERO);
 			Vector<2,unsigned> origin = pbuf->size().reduce() * text_origin();

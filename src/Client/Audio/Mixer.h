@@ -51,7 +51,7 @@ namespace Dream
 			{
 			protected:
 				ALuint _sourceID;
-				REF(Sound) _sound;
+				Ref<Sound> _sound;
 				
 			public:
 				Source ();
@@ -75,10 +75,10 @@ namespace Dream
 				
 				void set_local ();
 				
-				void set_reference_distance (float dist);
+				void set_Ref_distance (float dist);
 				
 				void set_sound (ALuint buffer_id);
-				void set_sound (PTR(Sound) sound);
+				void set_sound (Ptr<Sound> sound);
 				
 				// Streaming buffers
 				void queue_buffers (ALuint * buffers, std::size_t count);
@@ -102,12 +102,12 @@ namespace Dream
 			class LinearKnob : implements IKnob
 			{
 				protected:
-					REF(Source) _source;
+					Ref<Source> _source;
 					ALenum _parameter;
 					ValueT _begin, _end;
 								
 				public:
-					LinearKnob (PTR(Source) source, ALenum parameter, ValueT begin, ValueT end)
+					LinearKnob (Ptr<Source> source, ALenum parameter, ValueT begin, ValueT end)
 						: _source(source), _parameter(parameter), _begin(begin), _end(end)
 					{
 					
@@ -131,9 +131,9 @@ namespace Dream
 				virtual ~IStreamable ();
 			
 				// Return false if there are no more buffers.
-				virtual bool load_next_buffer (PTR(Source) source, ALuint buffer) abstract;
+				virtual bool load_next_buffer (Ptr<Source> source, ALuint buffer) abstract;
 				
-				virtual void buffer_data(PTR(Source) source, ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq);
+				virtual void buffer_data(Ptr<Source> source, ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq);
 			};
 			
 			class Mixer : public Object
@@ -143,7 +143,7 @@ namespace Dream
 				ALCcontext * _audio_context;
 				
 			public:
-				static REF(Mixer) shared_mixer ();
+				static Ref<Mixer> shared_mixer ();
 				
 				Mixer ();
 				virtual ~Mixer ();
@@ -151,7 +151,7 @@ namespace Dream
 				void suspend_processing ();
 				void resume_processing ();
 				
-				REF(Source) create_source ();
+				Ref<Source> create_source ();
 				
 				void set_listener_position (const Vec3 &);
 				void set_listener_velocity (const Vec3 &);

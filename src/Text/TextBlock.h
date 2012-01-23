@@ -52,7 +52,7 @@ namespace Dream
 			
 			friend class TextLine;
 			
-			void composite_characters(REF(IMutablePixelBuffer) pbuf, CharacterBoxes * boxes);
+			void composite_characters(Ref<IMutablePixelBuffer> pbuf, CharacterBoxes * boxes);
 			
 		public:
 			TextBlock (Detail::FontFace * font);
@@ -74,7 +74,7 @@ namespace Dream
 			bool is_line_width_fixed () const;
 			unsigned line_width () const;
 			
-			void composite_to_image (REF(IMutablePixelBuffer) img);
+			void composite_to_image (Ref<IMutablePixelBuffer> img);
 			
 			void clear ();
 			TextLine * last_line ();
@@ -86,7 +86,7 @@ namespace Dream
 			
 			Vector<2,unsigned> calculate_size () const;
 			
-			void render (REF(IMutablePixelBuffer) pbuf, CharacterBoxes * boxes = NULL);
+			void render (Ref<IMutablePixelBuffer> pbuf, CharacterBoxes * boxes = NULL);
 		};
 		
 		class TextLineRenderer;
@@ -109,7 +109,7 @@ namespace Dream
 			bool can_add_character (wchar_t c) const;
 			
 			bool add_character (wchar_t c);
-			void composite_to_image (REF(IMutablePixelBuffer) img, Vector<2,unsigned> pen, CharacterBoxes * boxes = NULL);
+			void composite_to_image (Ref<IMutablePixelBuffer> img, Vector<2,unsigned> pen, CharacterBoxes * boxes = NULL);
 		};
 		
 	}

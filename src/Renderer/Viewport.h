@@ -53,19 +53,19 @@ namespace Dream
 			bool _size_changed_since_last_update;
 			AlignedBox<2> _bounds;
 			
-			REF(ICamera) _camera;
-			REF(IProjection) _projection;
+			Ref<ICamera> _camera;
+			Ref<IProjection> _projection;
 			
 		public:
-			Viewport(PTR(ICamera) camera, PTR(IProjection) projection);
+			Viewport(Ptr<ICamera> camera, Ptr<IProjection> projection);
 			
 			void set_bounds(AlignedBox<2> bounds);
 			
-			REF(ICamera) camera() const;
-			void set_camera(REF(ICamera) camera);
+			Ref<ICamera> camera() const;
+			void set_camera(Ref<ICamera> camera);
 			
-			REF(IProjection) projection() const;
-			void set_projection(REF(IProjection) projection);
+			Ref<IProjection> projection() const;
+			void set_projection(Ref<IProjection> projection);
 			
 			virtual Mat44 view_matrix() const;
 			virtual Mat44 projection_matrix() const;

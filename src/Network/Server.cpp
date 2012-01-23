@@ -42,12 +42,12 @@ namespace Dream {
 			std::cout << "Server container stopped." << std::endl;
 		}
 		
-		REF(Loop) ServerContainer::event_loop ()
+		Ref<Loop> ServerContainer::event_loop ()
 		{
 			return _event_loop;
 		}
 		
-		void ServerContainer::start (REF(Server) server) {
+		void ServerContainer::start (Ref<Server> server) {
 			if (!_run) {
 				_server = server;
 				
@@ -80,7 +80,7 @@ namespace Dream {
 
 		
 				
-		Server::Server (REF(Loop) event_loop) : _event_loop(event_loop)
+		Server::Server (Ref<Loop> event_loop) : _event_loop(event_loop)
 		{
 		}
 		
@@ -100,7 +100,7 @@ namespace Dream {
 			AddressesT server_addresses = Address::interface_addresses_for_service(service, sock_type);
 			
 			foreach(addr, server_addresses) {
-				REF(ServerSocket) server_socket(new ServerSocket(*addr));
+				Ref<ServerSocket> server_socket(new ServerSocket(*addr));
 				server_socket->connection_callback = std::bind(&Server::connection_callback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
 
 				_server_sockets.push_back(server_socket);
@@ -146,7 +146,7 @@ namespace Dream {
 			// (const SocketHandleT & h, const Address & address) : ClientSocket(h, address)
 			virtual void connection_callback (Loop * event_loop, ServerSocket * server_socket, const SocketHandleT & h, const Address & a)
 			{
-				REF(ClientSocket) client_socket(new TestServerClientSocket(h, a));
+				Ref<ClientSocket> client_socket(new TestServerClientSocket(h, a));
 				
 				std::cerr << "Accepted connection " << client_socket << " from " << client_socket->remote_address().description();
 				std::cerr << " (" << client_socket->remote_address().address_familyName() << ")" << std::endl;
@@ -155,7 +155,7 @@ namespace Dream {
 			}
 			
 		public:
-			TestServer (REF(Loop) event_loop, const char * service_name, SocketType socket_type) : Server(event_loop)
+			TestServer (Ref<Loop> event_loop, const char * service_name, SocketType socket_type) : Server(event_loop)
 			{
 				bind_to_service(service_name, socket_type);
 			}
@@ -166,7 +166,7 @@ namespace Dream {
 			}
 		};
 		
-		REF(TimerSource) g_timer1, g_timer2, g_timer3;
+		Ref<TimerSource> g_timer1, g_timer2, g_timer3;
 		
 		static void stop_timers_callback (Loop * event_loop, TimerSource *, Event event)
 		{
@@ -188,7 +188,7 @@ namespace Dream {
 		AddressesT g_connectAddresses;
 		static void connect_callback (Loop * event_loop, TimerSource *, Event event)
 		{
-			REF(ClientSocket) test_connection(new ClientSocket);
+			Ref<ClientSocket> test_connection(new ClientSocket);
 			
 			test_connection->connect(g_connectAddresses[g_addressIndex++ % g_connectAddresses.size()]);
 			
@@ -203,8 +203,8 @@ namespace Dream {
 		UNIT_TEST(Server) {
 			testing("Connecting and Message Sending");
 			
-			REF(Loop) event_loop = new Loop;
-			REF(TestServer) server = new TestServer(event_loop, "7979", SOCK_STREAM);
+			Ref<Loop> event_loop = new Loop;
+			Ref<TestServer> server = new TestServer(event_loop, "7979", SOCK_STREAM);
 						
 			g_addressIndex = 0;
 			g_message_receivedCount = 0;

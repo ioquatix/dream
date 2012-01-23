@@ -123,7 +123,7 @@ namespace Dream
 				
 #pragma mark -
 
-				void WindowContext::setup_graphics_view(PTR(Dictionary) config, NSRect frame)
+				void WindowContext::setup_graphics_view(Ptr<Dictionary> config, NSRect frame)
 				{					
 					NSOpenGLView * graphics_view = NULL;
 					if (config->get("Cocoa.View", graphics_view)) {
@@ -186,7 +186,7 @@ namespace Dream
 					[NSOpenGLContext clearCurrentContext];
 				}
 
-				WindowContext::WindowContext (PTR(Dictionary) config)
+				WindowContext::WindowContext (Ptr<Dictionary> config)
 				{
 					NSRect window_rect = NSMakeRect(50, 50, 1024, 768);
 					

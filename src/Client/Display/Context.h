@@ -35,11 +35,11 @@ namespace Dream {
 				
 				/// Render a frame with the given context. You should lock the context before rendering as
 				/// this function may be called from a separate thread.
-				virtual void render_frame_for_time (PTR(IContext) context, TimeT time);
+				virtual void render_frame_for_time (Ptr<IContext> context, TimeT time);
 				
 				/// Process the given user event. This event may typically come from main thread, so you should
 				/// use InputQueue to pass events to main context event loop.
-				virtual void process_input (PTR(IContext) context, const Input & input);
+				virtual void process_input (Ptr<IContext> context, const Input & input);
 			};
 			
 			/** Simple generic method of showing a window for use with 3D graphics.
@@ -69,7 +69,7 @@ namespace Dream {
 				
 				/// Set the delegate that will be used to handle frame rendering.
 				/// This delegate will typically be called on a separate thread.
-				virtual void set_delegate(PTR(IContextDelegate) context_delegate) abstract;
+				virtual void set_delegate(Ptr<IContextDelegate> context_delegate) abstract;
 				
 				/// Possibly add some mouse handling functions?
 				/// void grab_cursor ();
@@ -77,7 +77,7 @@ namespace Dream {
 			
 			class Context : public Object, implements IContext, implements IInputHandler {
 			protected:
-				REF(IContextDelegate) _context_delegate;
+				Ref<IContextDelegate> _context_delegate;
 				
 			public:
 				// Process some input
@@ -88,7 +88,7 @@ namespace Dream {
 			
 				virtual ~Context();
 				
-				virtual void set_delegate(PTR(IContextDelegate) context_delegate);
+				virtual void set_delegate(Ptr<IContextDelegate> context_delegate);
 			};
 		}
 	}

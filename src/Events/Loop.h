@@ -39,10 +39,10 @@ namespace Dream
 		{
 		public:			
 			/// Remove a source to be monitored
-			virtual void add_source (PTR(IFileDescriptorSource) source) abstract;
+			virtual void add_source (Ptr<IFileDescriptorSource> source) abstract;
 			
 			/// Add a source to be monitored
-			virtual void remove_source (PTR(IFileDescriptorSource) source) abstract;
+			virtual void remove_source (Ptr<IFileDescriptorSource> source) abstract;
 			
 			/// Count of active file descriptors
 			virtual int source_count () const abstract;
@@ -74,16 +74,16 @@ namespace Dream
 		class Loop : public Object
 		{
 		private:
-			REF(IFileDescriptorMonitor) _file_descriptor_monitor;
+			Ref<IFileDescriptorMonitor> _file_descriptor_monitor;
 						
 			friend class NotificationPipeSource;
-			REF(NotificationPipeSource) _urgent_notification_pipe;
+			Ref<NotificationPipeSource> _urgent_notification_pipe;
 			
 			void process_notifications ();
 			
 			struct Notifications
 			{				
-				typedef std::queue<REF(INotificationSource)> QueueT;
+				typedef std::queue<Ref<INotificationSource>> QueueT;
 				
 				Notifications ();
 				void swap ();
@@ -102,7 +102,7 @@ namespace Dream
 			struct TimerHandle
 			{
 				TimeT timeout;
-				REF(ITimerSource) source;
+				Ref<ITimerSource> source;
 				
 				bool operator< (const TimerHandle & other) const
 				{
@@ -154,21 +154,21 @@ namespace Dream
 			
 			/// Schedule a timer for periodic events. This function is thread-safe. If called from a spearate thread, the timer is added by sending
 			/// an asynchronous notification. The timer will be run on the same thread as the loop, not the calling thread.
-			void schedule_timer (REF(ITimerSource) source);
+			void schedule_timer (Ref<ITimerSource> source);
 			
 			/// This function performs a notification as soon as possible. This function is thread-safe. If called from a separate thread, it may block while it
 			/// locks the notification queue. Also, it is okay for a notification to schedule another notification, but it possibly won't run until the next
 			/// execution of the loop (with the current implementation, this is true in about 50% of cases as notifications are processed twice each run through
 			/// the loop).
-			void post_notification (REF(INotificationSource) note, bool urgent = false);
+			void post_notification (Ref<INotificationSource> note, bool urgent = false);
 			
 			/// Monitor a file descriptor and process any read/write events when it is possible to do so.
 			/// This function is NOT thread-safe.
-			void monitor (PTR(IFileDescriptorSource) source);
+			void monitor (Ptr<IFileDescriptorSource> source);
 			
 			/// Stop monitoring a file descriptor.
 			/// This function is NOT thread-safe.
-			void stop_monitoring_file_descriptor (PTR(IFileDescriptorSource) source);
+			void stop_monitoring_file_descriptor (Ptr<IFileDescriptorSource> source);
 			
 			/// Stops the event loop. This function is thread-safe. If called from a separate thread, sends an urgent stop notification.
 			void stop ();

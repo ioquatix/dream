@@ -31,7 +31,7 @@ namespace Dream
 			virtual const char * what () const throw ();
 		};
 
-		/** Thrown when a value is dereferenced and is undefined.
+		/** Thrown when a value is deRefd and is undefined.
 		 */
 		class ValueUndefinedError : public std::exception
 		{
@@ -185,13 +185,13 @@ namespace Dream
 				return (const ByteT *)&_value;
 			}
 
-			/// Retrieve non-const value reference.
+			/// Retrieve non-const value Ref.
 			ValueT & value ()
 			{
 				return _value;
 			}
 
-			/// Retrieve const value reference.
+			/// Retrieve const value Ref.
 			const ValueT & value () const
 			{
 				return _value;
@@ -273,7 +273,7 @@ namespace Dream
 		 */
 		class Value
 		{
-			REF(ITypedValue) _ptr;
+			Ref<ITypedValue> _ptr;
 			
 		public:
 			/// Construct an undefined value.

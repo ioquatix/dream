@@ -414,7 +414,7 @@ namespace Dream {
 		
 		class TestServerSocket : public ServerSocket
 		{
-			REF(TestClientSocket) _test_socket;
+			Ref<TestClientSocket> _test_socket;
 		
 		public:	
 			virtual void process_events(Events::Loop * event_loop, Events::Event events)
@@ -459,7 +459,7 @@ namespace Dream {
 			g_clientConnected = g_messageSent = g_message_received = false;
 			g_messageLengthSent = g_messageLengthReceived = 0;
 			
-			REF(Events::Loop) event_loop = new Events::Loop;
+			Ref<Events::Loop> event_loop = new Events::Loop;
 			
 			// This is a very simple example of a network server listening on a single port.
 			// This server can only accept one connection 
@@ -467,9 +467,9 @@ namespace Dream {
 			{
 				Address localhost = Address::interface_addresses_for_port(2000, SOCK_STREAM)[0];
 				std::cerr << "Initializing server..." << std::endl;
-				REF(TestServerSocket) server_socket = new TestServerSocket(localhost);
+				Ref<TestServerSocket> server_socket = new TestServerSocket(localhost);
 				std::cerr << "Initializing client..." << std::endl;
-				REF(TestClientSocket) client_socket = new TestClientSocket;
+				Ref<TestClientSocket> client_socket = new TestClientSocket;
 				
 				std::cerr << "Connecting to server..." << std::endl;
 				client_socket->connect(localhost);

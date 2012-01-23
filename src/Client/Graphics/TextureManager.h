@@ -98,13 +98,13 @@ namespace Dream {
 				~TextureManager();
 				
 				/// Creates a texture with the given pixel_buffer.
-				IndexT create(const TextureParameters &, PTR(IPixelBuffer) pixel_buffer);
+				IndexT create(const TextureParameters &, Ptr<IPixelBuffer> pixel_buffer);
 				
 				/// Also update the texture parameters.
-				void update(IndexT index, PTR(IPixelBuffer) pixel_buffer, const TextureParameters &);
+				void update(IndexT index, Ptr<IPixelBuffer> pixel_buffer, const TextureParameters &);
 				
 				/// Use the pre-existing parameters for the texture data.
-				void update(IndexT index, PTR(IPixelBuffer) pixel_buffer);
+				void update(IndexT index, Ptr<IPixelBuffer> pixel_buffer);
 				
 				/// Resize the texture, which invalidates any pixel data contained.
 				void resize(IndexT index, Vec3u size, GLenum format, GLenum data_type);

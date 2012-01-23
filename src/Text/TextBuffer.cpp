@@ -17,7 +17,7 @@ namespace Dream
 	
 #pragma mark -
 		
-		TextBuffer::TextBuffer (REF(Font) font) : _font(font), _text_updated(true), _use_static_size(false)
+		TextBuffer::TextBuffer (Ref<Font> font) : _font(font), _text_updated(true), _use_static_size(false)
 		{
 		
 		}
@@ -59,7 +59,7 @@ namespace Dream
 			return _text.size();
 		}
 		
-		REF(IPixelBuffer) TextBuffer::render_text (bool & regenerated)
+		Ref<IPixelBuffer> TextBuffer::render_text (bool & regenerated)
 		{
 			regenerated = false;
 			

@@ -29,7 +29,7 @@ namespace Dream
 		{
 			void ISceneManager::render_frame_for_time (TimeT time)
 			{
-				REF(IScene) s = current_scene();
+				Ref<IScene> s = current_scene();
 				
 				if (s) 
 					s->render_frame_for_time(time);
@@ -37,9 +37,9 @@ namespace Dream
 			
 	#pragma mark -
 			
-			REF(Resources::ILoader) SceneManager::default_resource_loader ()
+			Ref<Resources::ILoader> SceneManager::default_resource_loader ()
 			{
-				REF(Resources::Loader) loader = new Resources::Loader;
+				Ref<Resources::Loader> loader = new Resources::Loader;
 				
 				loader->add_loader(new Imaging::Image::Loader);
 				loader->add_loader(new Client::Audio::Sound::Loader);
@@ -49,7 +49,7 @@ namespace Dream
 				return loader;
 			}
 			
-			SceneManager::SceneManager (REF(IContext) display_context, REF(Loop) event_loop, REF(ILoader) resource_loader)
+			SceneManager::SceneManager (Ref<IContext> display_context, Ref<Loop> event_loop, Ref<ILoader> resource_loader)
 				: _display_context(display_context), _event_loop(event_loop), _resource_loader(resource_loader), _current_sceneIsFinished(true)
 			{
 				_display_context->set_delegate(this);
@@ -62,7 +62,7 @@ namespace Dream
 				
 			}
 			
-			void SceneManager::push_scene (REF(IScene) scene)
+			void SceneManager::push_scene (Ref<IScene> scene)
 			{
 				// Save the current scene on top of the queue.
 				if (_current_scene)
@@ -72,7 +72,7 @@ namespace Dream
 				replace_scene(scene);
 			}
 			
-			void SceneManager::replace_scene (REF(IScene) scene)
+			void SceneManager::replace_scene (Ref<IScene> scene)
 			{
 				_scenes.push_front(scene);
 				
@@ -80,12 +80,12 @@ namespace Dream
 				_current_scene = NULL;
 			}
 			
-			void SceneManager::append_scene (REF(IScene) scene)
+			void SceneManager::append_scene (Ref<IScene> scene)
 			{
 				_scenes.push_back(scene);
 			}
 			
-			REF(IScene) SceneManager::current_scene ()
+			Ref<IScene> SceneManager::current_scene ()
 			{
 				if (_current_scene)
 					return _current_scene;
@@ -93,17 +93,17 @@ namespace Dream
 					return VoidScene::shared_instance();
 			}
 			
-			REF(IContext) SceneManager::display_context ()
+			Ref<IContext> SceneManager::display_context ()
 			{
 				return _display_context;
 			}
 			
-			REF(Loop) SceneManager::event_loop ()
+			Ref<Loop> SceneManager::event_loop ()
 			{
 				return _event_loop;
 			}
 			
-			REF(ILoader) SceneManager::resource_loader ()
+			Ref<ILoader> SceneManager::resource_loader ()
 			{
 				return _resource_loader;
 			}
@@ -117,7 +117,7 @@ namespace Dream
 			{
 				_current_sceneIsFinished = false;
 				
-				REF(IScene) s = provide_next_scene();
+				Ref<IScene> s = provide_next_scene();
 				
 				if (_current_scene) {
 					_current_scene->will_revoke_current(this);
@@ -133,9 +133,9 @@ namespace Dream
 				}
 			}
 			
-			REF(IScene) SceneManager::provide_next_scene ()
+			Ref<IScene> SceneManager::provide_next_scene ()
 			{
-				REF(IScene) s;
+				Ref<IScene> s;
 				
 				if (!_scenes.empty()) {
 					s = _scenes.front();
@@ -145,7 +145,7 @@ namespace Dream
 				return s;
 			}
 			
-			void SceneManager::render_frame_for_time(PTR(IContext) context, TimeT time)
+			void SceneManager::render_frame_for_time(Ptr<IContext> context, TimeT time)
 			{
 				context->make_current();
 				
@@ -167,7 +167,7 @@ namespace Dream
 				context->flush_buffers();
 			}
 			
-			void SceneManager::process_input (PTR(IContext) context, const Input & input)
+			void SceneManager::process_input (Ptr<IContext> context, const Input & input)
 			{
 				if (!process(input)) {				
 					// Add the event to the thread-safe queue.
@@ -248,12 +248,12 @@ namespace Dream
 				}
 			}
 			
-			void Group::add(PTR(ILayer) child)
+			void Group::add(Ptr<ILayer> child)
 			{
 				_children.push_back(child);
 			}
 			
-			void Group::remove(PTR(ILayer) child)
+			void Group::remove(Ptr<ILayer> child)
 			{
 				//_children.erase(child);
 				ChildrenT::iterator pos = std::find(_children.begin(), _children.end(), child);
@@ -347,9 +347,9 @@ namespace Dream
 				
 			}
 			
-			REF(VoidScene) VoidScene::shared_instance ()
+			Ref<VoidScene> VoidScene::shared_instance ()
 			{
-				static REF(VoidScene) s_voidSceneSharedInstance;
+				static Ref<VoidScene> s_voidSceneSharedInstance;
 				
 				if (!s_voidSceneSharedInstance)
 					s_voidSceneSharedInstance = new VoidScene;

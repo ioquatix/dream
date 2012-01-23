@@ -74,7 +74,7 @@ namespace Dream
 		
 #pragma mark -
 		
-		Viewport::Viewport(PTR(ICamera) camera, PTR(IProjection) projection) : _bounds(ZERO, ZERO), _camera(camera), _projection(projection) {
+		Viewport::Viewport(Ptr<ICamera> camera, Ptr<IProjection> projection) : _bounds(ZERO, ZERO), _camera(camera), _projection(projection) {
 			
 		}
 		
@@ -82,19 +82,19 @@ namespace Dream
 			_bounds = bounds;
 		}
 		
-		REF(ICamera) Viewport::camera() const {
+		Ref<ICamera> Viewport::camera() const {
 			return _camera;
 		}
 		
-		void Viewport::set_camera(REF(ICamera) camera) {
+		void Viewport::set_camera(Ref<ICamera> camera) {
 			_camera = camera;
 		}
 		
-		REF(IProjection) Viewport::projection() const {
+		Ref<IProjection> Viewport::projection() const {
 			return _projection;
 		}
 		
-		void Viewport::set_projection(REF(IProjection) projection) {
+		void Viewport::set_projection(Ref<IProjection> projection) {
 			_projection = projection;
 		}
 		

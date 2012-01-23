@@ -15,11 +15,11 @@
 namespace Dream {
 	namespace Resources {
 		
-		void Loader::set_loader_for_extension (PTR(ILoadable) loadable, StringT ext) {
+		void Loader::set_loader_for_extension (Ptr<ILoadable> loadable, StringT ext) {
 			_loaders[ext] = loadable;
 		}
 		
-		PTR(ILoadable) Loader::loader_for_extension (StringT ext) const {
+		Ptr<ILoadable> Loader::loader_for_extension (StringT ext) const {
 			LoadersT::const_iterator loader = _loaders.find(ext);
 			
 			if (loader != _loaders.end()) {
@@ -29,7 +29,7 @@ namespace Dream {
 			}
 		}
 		
-		void Loader::add_loader(PTR(ILoadable) loader) {
+		void Loader::add_loader(Ptr<ILoadable> loader) {
 			loader->register_loader_types(this);
 		}
 		
@@ -60,14 +60,14 @@ namespace Dream {
 			std::cerr << "Freeing " << total_size << " Mbytes." << std::endl;
 		}
 		
-		REF(IData) Loader::fetch_data_for_path (const Path & path) const
+		Ref<IData> Loader::fetch_data_for_path (const Path & path) const
 		{
 			CacheT::iterator c = _dataCache.find(path);
 			
 			if (c != _dataCache.end())
 				return c->second;
 			
- 			REF(IData) data = new LocalFileData(path);
+ 			Ref<IData> data = new LocalFileData(path);
 			
 			std::cerr << "Adding " << path << " to cache." << std::endl;
 			
@@ -155,23 +155,23 @@ namespace Dream {
 			return Path();
 		}
 		
-		REF(Object) Loader::load_path (const Path &p) const {
+		Ref<Object> Loader::load_path (const Path &p) const {
 			if (!p.exists()) {
 				std::cerr << "File does not exist at path '" << p << "'" << std::endl;
-				return REF(Object)();
+				return Ref<Object>();
 			}
 			
 			StringT ext = p.split_file_name().extension;
-			PTR(ILoadable) loader = loader_for_extension(ext);
+			Ptr<ILoadable> loader = loader_for_extension(ext);
 			
 			if (!loader) {
 				// No loader for this type
 				std::cerr << "No loader found for type '" << ext << "' (" << p << ")." << std::endl;
-				return REF(Object)();
+				return Ref<Object>();
 			}
 			
-			REF(IData) data = fetch_data_for_path(p);
-			REF(Object) resource = NULL;
+			Ref<IData> data = fetch_data_for_path(p);
+			Ref<Object> resource = NULL;
 			
 			try {
 				resource = loader->load_from_data(data, this);

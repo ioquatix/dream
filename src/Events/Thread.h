@@ -23,7 +23,7 @@ namespace Dream
 		class Thread : public Object
 		{
 			protected:
-				REF(Loop) _loop;
+				Ref<Loop> _loop;
 				Shared<std::thread> _thread;
 				
 				void run ();
@@ -35,7 +35,7 @@ namespace Dream
 				~Thread ();
 				
 				/// The remote loop instance.
-				REF(Loop) loop();
+				Ref<Loop> loop();
 				
 				/// Start the event-loop on a new thread.
 				void start();

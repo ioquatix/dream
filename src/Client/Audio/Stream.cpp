@@ -40,29 +40,29 @@ namespace Dream
 			
 			}
 
-			void IStreamDelegate::stream_will_play (PTR(Stream) stream)
+			void IStreamDelegate::stream_will_play (Ptr<Stream> stream)
 			{
 			
 			}
 			
-			void IStreamDelegate::stream_did_pause (PTR(Stream) stream)
+			void IStreamDelegate::stream_did_pause (Ptr<Stream> stream)
 			{
 			
 			}
 			
-			void IStreamDelegate::stream_did_stop (PTR(Stream) stream)
+			void IStreamDelegate::stream_did_stop (Ptr<Stream> stream)
 			{
 			
 			}
 			
-			void IStreamDelegate::stream_did_queue_buffer (PTR(Stream) stream, ALenum format, const ALvoid * data, ALsizei size)
+			void IStreamDelegate::stream_did_queue_buffer (Ptr<Stream> stream, ALenum format, const ALvoid * data, ALsizei size)
 			{
 			
 			}
 			
 #pragma mark -
 			
-			Stream::Stream (PTR(Source) source, ALenum format, ALsizei frequency) 
+			Stream::Stream (Ptr<Source> source, ALenum format, ALsizei frequency) 
 				: _source(source), _format(format), _frequency(frequency)
 			{
 				_buffers.resize(BufferCount);
@@ -75,7 +75,7 @@ namespace Dream
 				stop_buffer_callbacks();
 			}
 			
-			void Stream::buffer_data(PTR(Source) source, ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq)
+			void Stream::buffer_data(Ptr<Source> source, ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq)
 			{
 				if (_delegate)
 					_delegate->stream_did_queue_buffer(this, format, data, size);
@@ -88,7 +88,7 @@ namespace Dream
 				_source->stream_buffers(this);
 			}
 			
-			void Stream::start_buffer_callbacks (PTR(Events::Loop) loop)
+			void Stream::start_buffer_callbacks (Ptr<Events::Loop> loop)
 			{
 				stop_buffer_callbacks();
 				
@@ -105,7 +105,7 @@ namespace Dream
 				}
 			}
 			
-			void Stream::play (PTR(Events::Loop) loop)
+			void Stream::play (Ptr<Events::Loop> loop)
 			{
 				if (_fader) _fader->cancel();
 			
@@ -168,7 +168,7 @@ namespace Dream
 					_delegate->stream_did_stop(this);
 			}
 			
-			void Stream::fade_out (PTR(Events::Loop) loop, TimeT duration, RealT gain)
+			void Stream::fade_out (Ptr<Events::Loop> loop, TimeT duration, RealT gain)
 			{
 				if (_fader)
 					_fader->cancel();
@@ -181,7 +181,7 @@ namespace Dream
 				loop->schedule_timer(_fader);
 			}
 			
-			void Stream::fade_in (PTR(Events::Loop) loop, TimeT duration, RealT gain)
+			void Stream::fade_in (Ptr<Events::Loop> loop, TimeT duration, RealT gain)
 			{
 				// This will cancel any existing fader
 				play(loop);
@@ -198,12 +198,12 @@ namespace Dream
 				return TimeT(ChunkSize) / bytes_per_second;
 			}
 			
-			void Stream::set_delegate(PTR(IStreamDelegate) delegate)
+			void Stream::set_delegate(Ptr<IStreamDelegate> delegate)
 			{
 				_delegate = delegate;
 			}
 			
-			PTR(IStreamDelegate) Stream::delegate ()
+			Ptr<IStreamDelegate> Stream::delegate ()
 			{
 				return _delegate;
 			}

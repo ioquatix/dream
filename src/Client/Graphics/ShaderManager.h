@@ -16,10 +16,10 @@ namespace Dream {
 		namespace Graphics {
 			
 			/*
-				REF(ShaderManager) shader_manager = new ShaderManager;
+				Ref<ShaderManager> shader_manager = new ShaderManager;
 				vertex_shader = shader_manager->compile(GL_VERTEX_SHADER, resource_loader()->...);
 				fragment_shader = shader_manager->compile(GL_VERTEX_SHADER, resource_loader()->...);
-				REF(Program) program = new Program();
+				Ref<Program> program = new Program();
 				program->attach(vertex_shader);
 				program->attach(fragment_shader);
 				program->link();

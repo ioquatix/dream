@@ -46,7 +46,7 @@ namespace Dream
 				NotificationSource (CallbackT callback);
 				virtual ~NotificationSource ();
 							
-				static REF(NotificationSource) stop_loop_notification ();
+				static Ref<NotificationSource> stop_loop_notification ();
 		};
 		
 		class ITimerSource : implements ISource
@@ -107,9 +107,9 @@ namespace Dream
 				
 				virtual void process_events (Loop *, Event);
 				
-				static REF(FileDescriptorSource) for_standard_in (CallbackT);
-				static REF(FileDescriptorSource) for_standard_out (CallbackT);
-				static REF(FileDescriptorSource) for_standard_error (CallbackT);
+				static Ref<FileDescriptorSource> for_standard_in (CallbackT);
+				static Ref<FileDescriptorSource> for_standard_out (CallbackT);
+				static Ref<FileDescriptorSource> for_standard_error (CallbackT);
 		};
 		
 		/* Internal class used for processing urgent notifications

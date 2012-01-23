@@ -91,10 +91,10 @@ namespace Dream
 				void operator+= (const Statistics & other);
 			};
 			
-			std::list<REF(Statistics)> _tests;
+			std::list<Ref<Statistics>> _tests;
 
-			PTR(Statistics) current_test ();
-			REF(Statistics) overall_statistics ();
+			Ptr<Statistics> current_test ();
+			Ref<Statistics> overall_statistics ();
 
 			void print_summaries () const;
 

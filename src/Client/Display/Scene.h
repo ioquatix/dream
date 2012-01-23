@@ -88,20 +88,20 @@ namespace Dream
 			{
 			protected:
 				/// Provide the next scene - this is called when the current_scene_is_finished() method is called.
-				virtual REF(IScene) provide_next_scene () abstract;
+				virtual Ref<IScene> provide_next_scene () abstract;
 				
 			public:			
 				/// Returns the current scene that is being rendered
-				virtual REF(IScene) current_scene () abstract;
+				virtual Ref<IScene> current_scene () abstract;
 				
 				/// Returns the display context which the manager is providing scenes for.
-				virtual REF(IContext) display_context () abstract;
+				virtual Ref<IContext> display_context () abstract;
 				
 				/// Returns the event loop which the manager is running as part of.
-				virtual REF(Loop) event_loop () abstract;
+				virtual Ref<Loop> event_loop () abstract;
 				
 				/// Returns the resource loader for the current scene
-				virtual REF(ILoader) resource_loader () abstract;
+				virtual Ref<ILoader> resource_loader () abstract;
 				
 				/// Render a frame which will be displayed at ''time''.
 				/// Default implementation uses current_scene().
@@ -138,7 +138,7 @@ namespace Dream
 			class Group : public Object, implements ILayer
 			{
 			public:
-				typedef std::vector<REF(ILayer)> ChildrenT;
+				typedef std::vector<Ref<ILayer>> ChildrenT;
 			
 				protected:
 					ChildrenT _children;
@@ -151,8 +151,8 @@ namespace Dream
 					
 					virtual bool process (const Input & input);
 					
-					void add (PTR(ILayer) child);
-					void remove (PTR(ILayer) child);
+					void add (Ptr<ILayer> child);
+					void remove (Ptr<ILayer> child);
 					void remove_all ();
 					
 					ChildrenT & children() { return _children; }
@@ -165,7 +165,7 @@ namespace Dream
 			class SceneManager : public Object, implements ISceneManager, implements IContextDelegate, implements IInputHandler
 			{
 			public:
-				typedef std::list<REF(IScene)> ScenesT;
+				typedef std::list<Ref<IScene>> ScenesT;
 				typedef std::function<void (ISceneManager *)> FinishedCallbackT;
 				
 			protected:
@@ -173,13 +173,13 @@ namespace Dream
 				TimerStatistics _stats;
 				
 				ScenesT _scenes;
-				REF(IScene) _current_scene;
+				Ref<IScene> _current_scene;
 				
-				REF(IContext) _display_context;
-				REF(Loop) _event_loop;
-				REF(ILoader) _resource_loader;
+				Ref<IContext> _display_context;
+				Ref<Loop> _event_loop;
+				Ref<ILoader> _resource_loader;
 				
-				virtual REF(IScene) provide_next_scene ();
+				virtual Ref<IScene> provide_next_scene ();
 				
 				FinishedCallbackT _finished_callback;
 				
@@ -191,35 +191,35 @@ namespace Dream
 				InputQueue _input_queue;
 								
 			public:
-				static REF(Resources::ILoader) default_resource_loader ();
+				static Ref<Resources::ILoader> default_resource_loader ();
 				
-				SceneManager (REF(IContext) display_context, REF(Loop) event_loop, REF(ILoader) resource_loader);
+				SceneManager (Ref<IContext> display_context, Ref<Loop> event_loop, Ref<ILoader> resource_loader);
 				virtual ~SceneManager ();
 				
 				/// Pushses a scene on to the top of the current stack - i.e. it will replace the current scene, but the current scene will be retained.
-				void push_scene (REF(IScene) scene);
+				void push_scene (Ref<IScene> scene);
 				/// Replaces the current scene - it will not be retained.
-				void replace_scene (REF(IScene) scene);
+				void replace_scene (Ref<IScene> scene);
 				/// Adds a scene on to the back of the scene queue. It will be displayed after all prior scenes have finished.
-				void append_scene (REF(IScene) scene);
+				void append_scene (Ref<IScene> scene);
 				
 				ScenesT & scenes () { return _scenes; }
 				const ScenesT & scenes () const { return _scenes; }
 							
-				virtual REF(IScene) current_scene();
-				virtual REF(IContext) display_context();
-				virtual REF(Loop) event_loop();
-				virtual REF(ILoader) resource_loader();
+				virtual Ref<IScene> current_scene();
+				virtual Ref<IContext> display_context();
+				virtual Ref<Loop> event_loop();
+				virtual Ref<ILoader> resource_loader();
 				
 				virtual void current_scene_is_finished();
 				
 				/// Calls provide_next_scene if there is no current scene.
-				virtual void render_frame_for_time(PTR(IContext) context, TimeT time);
+				virtual void render_frame_for_time(Ptr<IContext> context, TimeT time);
 				
 				using ISceneManager::render_frame_for_time;
 				
 				/// Process any events available from the display context and pass them on to the current scene.
-				virtual void process_input(PTR(IContext) context, const Input & input);
+				virtual void process_input(Ptr<IContext> context, const Input & input);
 				virtual void process_pending_events(IInputHandler * handler);
 				
 				virtual bool event(const Display::EventInput & input);
@@ -267,7 +267,7 @@ namespace Dream
 				virtual bool process (const Display::Input & input);
 				virtual void render_frame_for_time (TimeT time);
 				
-				static REF(VoidScene) shared_instance ();
+				static Ref<VoidScene> shared_instance ();
 			};
 		}
 	}

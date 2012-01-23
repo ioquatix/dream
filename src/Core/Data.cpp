@@ -104,7 +104,7 @@ namespace Dream
 			testing("Construction");
 
 			Shared<StaticBuffer> sb = new StaticBuffer(StaticBuffer::for_cstring(data, false));
-			REF(IData) a = new BufferedData(sb);
+			Ref<IData> a = new BufferedData(sb);
 
 			check(a->buffer()->size() == strlen(data)) << "Data length is correct";
 		}

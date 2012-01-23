@@ -70,7 +70,7 @@ namespace Dream
 			void received_message () {
 				TimeT total = _timer.time();
 				
-				REF(Message) recv_msg = received_messages().front();
+				Ref<Message> recv_msg = received_messages().front();
 				received_messages().pop();
 								
 				if (recv_msg->header()->ptype == PK_PING) {					
@@ -86,7 +86,7 @@ namespace Dream
 			}
 			
 			void send_ping () {				
-				REF(Message) send_msg (new Message);
+				Ref<Message> send_msg (new Message);
 				
 				send_msg->reset_header();
 				send_msg->header()->ptype = PK_PING;
@@ -103,11 +103,11 @@ namespace Dream
 			AddressesT server_addresses = Address::addresses_for_name("localhost", "1404", SOCK_STREAM);
 			
 			{
-				REF(Loop) clients = new Loop;
+				Ref<Loop> clients = new Loop;
 				
 				// Connect k times.
 				for (unsigned i = 0; i < k; i += 1) {
-					REF(Pinger) s (new Pinger);
+					Ref<Pinger> s (new Pinger);
 					s->connect(server_addresses);
 					
 					if (s->is_connected()) {
@@ -124,10 +124,10 @@ namespace Dream
 		protected:
 			void message_received (MessageClientSocket * client) {
 				while (client->received_messages().size()) {
-					REF(Message) msg = client->received_messages().front();
+					Ref<Message> msg = client->received_messages().front();
 					client->received_messages().pop();
 					
-					REF(Message) pong_msg = new Message;
+					Ref<Message> pong_msg = new Message;
 					pong_msg->reset_header();
 					pong_msg->header()->ptype = PK_PING;
 					
@@ -137,7 +137,7 @@ namespace Dream
 			
 			virtual void connection_callback (Loop * event_loop, ServerSocket * server_socket, const SocketHandleT & h, const Address & a)
 			{
-				REF(MessageClientSocket) client_socket = new MessageClientSocket(h, a);
+				Ref<MessageClientSocket> client_socket = new MessageClientSocket(h, a);
 				
 				//std::cerr << "Accepted connection " << client_socket << " from " << client_socket->remote_address().description();
 				//std::cerr << " (" << client_socket->remote_address().address_familyName() << ")" << std::endl;
@@ -148,7 +148,7 @@ namespace Dream
 			}
 			
 		public:
-			PingPongServer (REF(Loop) event_loop, const char * service_name, SocketType socket_type) : Server(event_loop)
+			PingPongServer (Ref<Loop> event_loop, const char * service_name, SocketType socket_type) : Server(event_loop)
 			{
 				bind_to_service(service_name, socket_type);
 			}
@@ -172,9 +172,9 @@ namespace Dream
 				
 				//g_latency = Numerics::Average<TimeT>();
 				
-				REF(ServerContainer) container(new ServerContainer);
+				Ref<ServerContainer> container(new ServerContainer);
 				
-				REF(Server) server(new PingPongServer(container->event_loop(), "1404", SOCK_STREAM));
+				Ref<Server> server(new PingPongServer(container->event_loop(), "1404", SOCK_STREAM));
 				container->start(server);
 				
 				std::vector<std::thread> children;

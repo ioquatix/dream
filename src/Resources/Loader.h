@@ -33,7 +33,7 @@ namespace Dream {
 	 This means that the user can write
 	 
 	 <code>
-	 REF(MyResourcesFactory) factory = loader->load <MyResourcesFactory> ("path/to/resource");
+	 Ref<MyResourcesFactory> factory = loader->load <MyResourcesFactory> ("path/to/resource");
 	 </code>
 	 
 	 Factory classes should process the loaded data accordingly. A resource factory should provide a set of creation methods, such as <tt>create_my_resource</tt>.
@@ -52,11 +52,11 @@ namespace Dream {
 		
 		StringT extension(const Path &s, bool dot);
 		
-		typedef std::map<StringT, REF(ILoadable)> LoadersT;
+		typedef std::map<StringT, Ref<ILoadable>> LoadersT;
 		
 		class ILoader : implements IObject {
 		public:
-			virtual REF(Object) load_path (const Path &res) const abstract;
+			virtual Ref<Object> load_path (const Path &res) const abstract;
 			// This resource loader's current base path
 			virtual Path resource_path () const abstract;
 			
@@ -67,12 +67,12 @@ namespace Dream {
 			
 			/// Primary interface for loading resources
 			template <typename InterfaceT>
-			REF(InterfaceT) load (const Path &res) const {
-				REF(Object) ptr = load_path(path_for_resource(res));
+			Ref<InterfaceT> load (const Path &res) const {
+				Ref<Object> ptr = load_path(path_for_resource(res));
 				
 				if (!ptr) std::cerr << "Resource failed to load: '" << res << "'" << std::endl;
 				
-				REF(InterfaceT) result = ptr;
+				Ref<InterfaceT> result = ptr;
 				
 				if (!result) std::cerr << "Resource was not correct type: '" << res << std::endl;
 				
@@ -82,15 +82,15 @@ namespace Dream {
 			virtual void preload_resource (const Path & path) abstract;
 			virtual void preload_resources (std::vector<Path> & paths) abstract;
 
-			virtual void set_loader_for_extension (PTR(ILoadable) loadable, StringT ext) abstract;
-			virtual PTR(ILoadable) loader_for_extension (StringT ext) const abstract;
-			virtual void add_loader(PTR(ILoadable) loader) abstract;
+			virtual void set_loader_for_extension (Ptr<ILoadable> loadable, StringT ext) abstract;
+			virtual Ptr<ILoadable> loader_for_extension (StringT ext) const abstract;
+			virtual void add_loader(Ptr<ILoadable> loader) abstract;
 						
 			/// Load the raw data for a given path.
-			virtual REF(IData) fetch_data_for_path (const Path & path) const abstract;
+			virtual Ref<IData> fetch_data_for_path (const Path & path) const abstract;
 			
 			/// Useful for loading buffers of data.
-			REF(IData) data_for_resource (const Path & resource) {
+			Ref<IData> data_for_resource (const Path & resource) {
 				return fetch_data_for_path(path_for_resource(resource));
 			}
 		};
@@ -104,13 +104,13 @@ namespace Dream {
 			
 			Path _current_path;
 			
-			typedef std::map<Path, REF(IData)> CacheT;
+			typedef std::map<Path, Ref<IData>> CacheT;
 			mutable CacheT _dataCache;
 			
 		public:
-			virtual void set_loader_for_extension (PTR(ILoadable) loadable, StringT ext);
-			virtual PTR(ILoadable) loader_for_extension (StringT ext) const;
-			virtual void add_loader(PTR(ILoadable) loader);
+			virtual void set_loader_for_extension (Ptr<ILoadable> loadable, StringT ext);
+			virtual Ptr<ILoadable> loader_for_extension (StringT ext) const;
+			virtual void add_loader(Ptr<ILoadable> loader);
 			
 			Loader ();
 			Loader (Path);
@@ -125,8 +125,8 @@ namespace Dream {
 			Path path_for_resource(StringT name, StringT ext, Path dir) const;
 			
 			// Load a path directly with no processing
-			virtual REF(Object) load_path (const Path &res) const;
-			virtual REF(IData) fetch_data_for_path (const Path & path) const;
+			virtual Ref<Object> load_path (const Path &res) const;
+			virtual Ref<IData> fetch_data_for_path (const Path & path) const;
 						
 			void resources_for_type(StringT ext, Path subdir, std::vector<Path> &paths) const;
 

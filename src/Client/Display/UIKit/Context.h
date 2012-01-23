@@ -56,10 +56,10 @@ namespace Dream
 						UIWindow * _window;
 						
 						// Setup the graphics view
-						void setup_graphics_view (PTR(Dictionary) config, CGRect frame);
+						void setup_graphics_view (Ptr<Dictionary> config, CGRect frame);
 											
 					public:
-						WindowContext (PTR(Dictionary) config);
+						WindowContext (Ptr<Dictionary> config);
 						virtual ~WindowContext ();
 					
 						virtual void start ();

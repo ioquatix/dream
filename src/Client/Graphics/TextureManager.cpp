@@ -103,7 +103,7 @@ namespace Dream {
 				}
 			}
 
-			IndexT TextureManager::create(const TextureParameters & parameters, PTR(IPixelBuffer) pixel_buffer)
+			IndexT TextureManager::create(const TextureParameters & parameters, Ptr<IPixelBuffer> pixel_buffer)
 			{
 				GLenum handle;
 				
@@ -157,14 +157,14 @@ namespace Dream {
 					glGenerateMipmap(parameters.target);
 			}
 			
-			void TextureManager::update(IndexT index, PTR(IPixelBuffer) pixel_buffer, const TextureParameters & parameters)
+			void TextureManager::update(IndexT index, Ptr<IPixelBuffer> pixel_buffer, const TextureParameters & parameters)
 			{
 				_textures[index].parameters = parameters;
 				
 				load_pixel_data(index, pixel_buffer->size(), pixel_buffer->pixel_data(), pixel_buffer->pixel_format(), pixel_buffer->pixel_dataType());
 			}
 			
-			void TextureManager::update(IndexT index, PTR(IPixelBuffer) pixel_buffer)
+			void TextureManager::update(IndexT index, Ptr<IPixelBuffer> pixel_buffer)
 			{
 				load_pixel_data(index, pixel_buffer->size(), pixel_buffer->pixel_data(), pixel_buffer->pixel_format(), pixel_buffer->pixel_dataType());
 			}

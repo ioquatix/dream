@@ -92,15 +92,15 @@ namespace Dream
 			
 			class OggStream : public Stream {
 			protected:
-				virtual bool load_next_buffer (PTR(Source) source, ALuint buffer);
+				virtual bool load_next_buffer (Ptr<Source> source, ALuint buffer);
 				
 				OggReader _reader;
-				const REF(IData) _data;
+				const Ref<IData> _data;
 				
 				bool _loop;
 				
 			public:
-				OggStream (PTR(Source) source, ALenum format, ALsizei frequency, const PTR(IData) data);
+				OggStream (Ptr<Source> source, ALenum format, ALsizei frequency, const Ptr<IData> data);
 				virtual ~OggStream ();
 				
 				virtual void stop ();
@@ -108,7 +108,7 @@ namespace Dream
 			
 			
 			
-			OggStream::OggStream (PTR(Source) source, ALenum format, ALsizei frequency, const PTR(IData) data)
+			OggStream::OggStream (Ptr<Source> source, ALenum format, ALsizei frequency, const Ptr<IData> data)
 				: Stream(source, format, frequency), _reader(data->input_stream()), _data(data), _loop(true)
 			{
 				
@@ -131,7 +131,7 @@ namespace Dream
 			}
 			
 			// Load a chunk of ogg data into the given buffer
-			bool OggStream::load_next_buffer (PTR(Source) source, ALuint buffer)
+			bool OggStream::load_next_buffer (Ptr<Source> source, ALuint buffer)
 			{
 				ByteT chunk[ChunkSize];
 				IndexT size = 0;
@@ -170,12 +170,12 @@ namespace Dream
 				loader->set_loader_for_extension(this, "oga");
 			}
 			
-			REF(Object) OggResource::Loader::load_from_data (const PTR(IData) data, const ILoader * loader)
+			Ref<Object> OggResource::Loader::load_from_data (const Ptr<IData> data, const ILoader * loader)
 			{
 				return new OggResource(data);
 			}
 			
-			OggResource::OggResource (const PTR(IData) data)
+			OggResource::OggResource (const Ptr<IData> data)
 				: _data(data)
 			{
 				OggReader ogg_reader(data->input_stream());
@@ -197,12 +197,12 @@ namespace Dream
 			
 			}
 			
-			REF(Stream) OggResource::create_stream (PTR(Source) source)
+			Ref<Stream> OggResource::create_stream (Ptr<Source> source)
 			{
 				return new OggStream(source, _format, _frequency, _data);
 			}
 			
-			REF(Sound) OggResource::create_sound (PTR(Source) source)
+			Ref<Sound> OggResource::create_sound (Ptr<Source> source)
 			{
 				return NULL;
 			}

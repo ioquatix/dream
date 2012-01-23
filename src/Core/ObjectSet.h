@@ -28,8 +28,8 @@ namespace Dream
 		{
 		public:
 			// Returns an identical shallow copy of this stateful object.
-			virtual REF(IStateful) duplicate_state () abstract;
-			virtual REF(IData) serialize_state () abstract;
+			virtual Ref<IStateful> duplicate_state () abstract;
+			virtual Ref<IData> serialize_state () abstract;
 			
 		};
 */
@@ -38,13 +38,13 @@ namespace Dream
 		class ObjectSet : public Object
 		{
 		public:
-			typedef REF(Object) ValueT;
+			typedef Ref<Object> ValueT;
 			
 			class ObjectID
 			{
 			protected:
 				ValueT & _value;
-				IdentT __id;
+				IdentT _id;
 				
 				friend class ObjectSet;
 				

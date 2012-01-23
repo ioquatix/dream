@@ -38,15 +38,15 @@ namespace Dream {
 				public:
 					virtual ~IApplication ();
 					
-					static void start (PTR(IApplicationDelegate) delegate);
+					static void start (Ptr<IApplicationDelegate> delegate);
 					
 					/// Create a display context for rendering.
-					virtual REF(IContext) create_context (REF(Dictionary) config) abstract;
+					virtual Ref<IContext> create_context (Ref<Dictionary> config) abstract;
 					
 					virtual IApplicationDelegate * delegate () const abstract;
 					
 					/// Helper for very basic apps.
-					static void run_scene(PTR(IScene) scene, PTR(Dictionary) config);
+					static void run_scene(Ptr<IScene> scene, Ptr<Dictionary> config);
 			};
 			
 		}

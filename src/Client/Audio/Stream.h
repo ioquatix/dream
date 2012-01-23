@@ -34,44 +34,44 @@ namespace Dream
 				public:
 					virtual ~IStreamDelegate();
 					
-					virtual void stream_will_play(PTR(Stream) stream);
-					virtual void stream_did_pause(PTR(Stream) stream);
-					virtual void stream_did_stop(PTR(Stream) stream);
+					virtual void stream_will_play(Ptr<Stream> stream);
+					virtual void stream_did_pause(Ptr<Stream> stream);
+					virtual void stream_did_stop(Ptr<Stream> stream);
 					
-					virtual void stream_did_queue_buffer(PTR(Stream) stream, ALenum format, const ALvoid * data, ALsizei size);
+					virtual void stream_did_queue_buffer(Ptr<Stream> stream, ALenum format, const ALvoid * data, ALsizei size);
 			};
 			
 			class Stream : public Object, implements IStreamable
 			{
 			protected:
-				PTR(IStreamDelegate) _delegate;
+				Ptr<IStreamDelegate> _delegate;
 				
-				REF(Source) _source;
+				Ref<Source> _source;
 				ALenum _format;
 				ALsizei _frequency;
 				
 				std::vector<ALuint> _buffers;
 								
-				REF(TimerSource) _timer;
-				REF(Fader) _fader;
+				Ref<TimerSource> _timer;
+				Ref<Fader> _fader;
 				
 				void buffer_callback ();
-				void start_buffer_callbacks (PTR(Events::Loop) loop);
+				void start_buffer_callbacks (Ptr<Events::Loop> loop);
 				void stop_buffer_callbacks ();
 				
 				// We provide additional callbacks for processing data
-				virtual void buffer_data(PTR(Source) source, ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq);
+				virtual void buffer_data(Ptr<Source> source, ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq);
 				
 			public:
-				Stream (PTR(Source) source, ALenum format, ALsizei frequency);
+				Stream (Ptr<Source> source, ALenum format, ALsizei frequency);
 				virtual ~Stream ();
 				
-				REF(Source) source () { return _source; }
+				Ref<Source> source () { return _source; }
 				
 				/// Start the audio stream playing.
 				/// If the audio stream has been paused, it may resume from that point.
 				/// If the stream is real time, it may resume playing audio at the current time.
-				virtual void play (PTR(Events::Loop) loop);
+				virtual void play (Ptr<Events::Loop> loop);
 				
 				/// Pause the audio stream. The audio stream may be resumed at this point exactly.
 				virtual void pause ();
@@ -81,16 +81,16 @@ namespace Dream
 				
 				/// Play the stream and linearly interpolate the current gain to the given.
 				/// When the fade is complete, the loop is stopped.
-				void fade_out (PTR(Events::Loop) loop, TimeT duration = 0.1, RealT gain = 0.0);
+				void fade_out (Ptr<Events::Loop> loop, TimeT duration = 0.1, RealT gain = 0.0);
 				
 				/// Play the stream and linearly interpolate the current gain to the given gain.
-				void fade_in (PTR(Events::Loop) loop, TimeT duration = 0.1, RealT gain = 1.0);
+				void fade_in (Ptr<Events::Loop> loop, TimeT duration = 0.1, RealT gain = 1.0);
 				
 				TimeT seconds_per_buffer () const;
 				
 				/// Delegate is not retained.
-				void set_delegate(PTR(IStreamDelegate) delegate);
-				PTR(IStreamDelegate) delegate ();
+				void set_delegate(Ptr<IStreamDelegate> delegate);
+				Ptr<IStreamDelegate> delegate ();
 			};
 		}
 	}

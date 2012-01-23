@@ -14,15 +14,15 @@ namespace Dream {
 	namespace Client {
 		namespace Display {
 		
-			void IApplication::start (PTR(IApplicationDelegate) delegate)
+			void IApplication::start (Ptr<IApplicationDelegate> delegate)
 			{
-				REF(Cocoa::Application) application = new Cocoa::Application(delegate);
+				Ref<Cocoa::Application> application = new Cocoa::Application(delegate);
 				
 				application->run();
 			}
 		
 			namespace Cocoa {
-				Application::Application(PTR(IApplicationDelegate) applicationDelegate) : _application_delegate(applicationDelegate)
+				Application::Application(Ptr<IApplicationDelegate> applicationDelegate) : _application_delegate(applicationDelegate)
 				{
 				
 				}
@@ -141,7 +141,7 @@ namespace Dream {
 					[NSApp run];
 				}
 				
-				REF(IContext) Application::create_context(REF(Dictionary) config)
+				Ref<IContext> Application::create_context(Ref<Dictionary> config)
 				{
 					return new WindowContext(config);
 				}

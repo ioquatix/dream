@@ -66,7 +66,7 @@ namespace Dream {
 			class Loader : public Object, implements ILoadable {
 			public:
 				virtual void register_loader_types (ILoader * loader);
-				virtual REF(Object) load_from_data (const PTR(IData) data, const ILoader * loader);
+				virtual Ref<Object> load_from_data (const Ptr<IData> data, const ILoader * loader);
 			};
 			
 		protected:
@@ -91,7 +91,7 @@ namespace Dream {
 			void allocate (const Vec3u & size, ImagePixelFormat format, ImageDataType data_type);
 
 		protected:
-			static REF(Image) load_from_data (const PTR(IData) data);
+			static Ref<Image> load_from_data (const Ptr<IData> data);
 
 		};
 	}

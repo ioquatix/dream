@@ -20,8 +20,8 @@ namespace Dream
 		
 		class TextBuffer : public Object {
 		protected:
-			REF(Font) _font;
-			REF(Image) _image;
+			Ref<Font> _font;
+			Ref<Image> _image;
 			std::wstring _image_text;
 			
 			std::wstring _text;
@@ -31,7 +31,7 @@ namespace Dream
 			Vector<2, unsigned> _size;
 			
 		public:
-			TextBuffer (REF(Font) font);
+			TextBuffer (Ref<Font> font);
 			virtual ~TextBuffer ();
 			
 			void set_text (const std::string & text);
@@ -56,7 +56,7 @@ namespace Dream
 			void set_static_size (Vector<2, unsigned> size);
 			void set_dynamic_size ();
 			
-			REF(IPixelBuffer) render_text (bool & regenerated);
+			Ref<IPixelBuffer> render_text (bool & regenerated);
 		};
 		
 	}

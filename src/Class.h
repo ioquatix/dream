@@ -43,7 +43,7 @@ namespace Dream
 	class IClassType {
 		public:
 			virtual ~IClassType();
-			virtual bool is_class_of(const PTR(IObject) other) abstract;
+			virtual bool is_class_of(const Ptr<IObject> other) abstract;
 	};
 	
 	/**
@@ -56,14 +56,14 @@ namespace Dream
 			
 			//return typeid(ClassT) == typeid(other.get());
 			
-			virtual bool is_class_of(const PTR(IObject) other) {
+			virtual bool is_class_of(const Ptr<IObject> other) {
 				return dynamic_cast<const ClassT*>(other.get()) != NULL;
 			}
 	};
 
 	/** The top level concrete object class.
 
-	 Provides a basic implementation of reference counting functionality and
+	 Provides a basic implementation of Ref counting functionality and
 	 */
 	class Object : implements IObject
 	{
