@@ -1,19 +1,42 @@
 
+#
+#  ext/platforms/android_ndk.rb
+#  This file is part of the "Dream" project, and is released under the MIT license.
+#
+
+# To use the android_ndk, you need to make sure that the directory "android-ndk-r7-crystax-4" is available by default.
+
 Platform.new(:android_ndk) do |config|
-	config.platform = PLATFORMS_PATH + "android-ndk-r7-crystax-4"
-	config.sdk = config.platform + "platforms/android-14/arch-arm"
+	# You can override these parameters by specifying appropriate environment variables; here are the defaults:
+	android_ndk_platform = ENV["ANDROID_NDK_PLATFORM"] || "android-ndk-r7-crystax-4"
+	android_ndk_sdk = ENV["ANDROID_NDK_SDK"] || "android-14"
+	android_ndk_toolchain = ENV["ANDROID_NDK_TOOLCHAIN"] || "arm-linux-androideabi-4.6.3"
+
+	android_ndk_build = ENV["ANDROID_NDK_BUILD"]
+	if PLATFORM =~ /darwin/
+		android_ndk_build ||= "darwin-x86"
+	elsif PLATFORM =~ /linux/
+		android_ndk_build ||= "linux-x86"
+	end
 	
-	# This needs to be modified for the platform you are building from:
-	config.toolchain = config.platform + "toolchains/arm-linux-androideabi-4.6.3/prebuilt/darwin-x86/bin/"
+	config.platform = PLATFORMS_PATH + android_ndk_platform
+	config.sdk = config.platform + "platforms/#{android_ndk_sdk}/arch-arm"
+	
+	config.toolchain = android_ndk_toolchain
+	config.toolchain_version = config.toolchain.split(/-/).last
+		
+	config.toolchain_bin = config.platform + "toolchains/#{config.toolchain}/prebuilt/#{android_ndk_build}/bin/"
 	
 	config.bin_prefix = "arm-linux-androideabi"
 	
 	toolchain_bin = lambda do |executable|
-		config.toolchain + (config.bin_prefix + "-" + executable)
+		config.toolchain_bin + (config.bin_prefix + "-" + executable)
 	end
 	
-	config.arch = "" # "-arch arm"
-	config.crystax_lib_path = config.platform + "sources/crystax/libs/armeabi/4.6.3/"
+	# Because we hard code the compilers to use, we don't touch this (one might think it should be "-arch arm").
+	config.arch = ""
+	
+	config.crystax_lib_path = config.platform + "sources/crystax/libs/armeabi/#{config.toolchain_version}/"
 	config.cflags = "#{config.arch} -nostdlib -L#{config.sdk}/usr/lib -L#{config.crystax_lib_path}"
 	config.configure = ["--host=arm-eabi"]
 	
