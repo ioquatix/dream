@@ -1,11 +1,11 @@
-/*
- *  Fader.cpp
- *  Dream
- *
- *  Created by Samuel Williams on 31/12/10.
- *  Copyright 2010 Orion Transfer Ltd. All rights reserved.
- *
- */
+//
+//  Events/Fader.cpp
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 31/12/10.
+//  Copyright (c) 2010 Samuel Williams. All rights reserved.
+//
+//
 
 #include "Fader.h"
 

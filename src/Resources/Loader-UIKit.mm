@@ -1,11 +1,11 @@
-/*
- *  Loader-UIKit.mm
- *  Dream
- *
- *  Created by Samuel Williams on 26/04/09.
- *  Copyright 2009 Orion Transfer Ltd. All rights reserved.
- *
- */
+//
+//  Resources/Loader-UIKit.mm
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 26/04/09.
+//  Copyright (c) 2009 Samuel Williams. All rights reserved.
+//
+//
 
 #import <UIKit/UIKit.h>
 #include "Loadable.h"
@@ -31,4 +31,3 @@ namespace Dream {
 		}
 	}
 }
-

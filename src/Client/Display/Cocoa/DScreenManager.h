@@ -1,9 +1,9 @@
 //
-//  DScreenManager.h
-//  Dream
+//  Client/Display/Cocoa/DScreenManager.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
 //
 //  Created by Samuel Williams on 8/06/11.
-//  Copyright 2011 Orion Transfer Ltd. All rights reserved.
+//  Copyright (c) 2011 Samuel Williams. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>

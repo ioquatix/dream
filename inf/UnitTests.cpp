@@ -1,10 +1,10 @@
-/*
-	  CodeTestMain.cpp
-	  Dream / Support
-
-	  Created by Samuel Williams on 25/09/06.
-	  Copyright 2006 Samuel WilliamsWilliams. All rights reserved.
- */
+//
+//  UnitTests.cpp
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 25/09/06.
+//  Copyright (c) 2006 Samuel Williams. All rights reserved.
+//
 
 #include <Dream/Core/CodeTest.h>
 #include <iostream>

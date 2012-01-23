@@ -1,12 +1,10 @@
-/*
- *  Numerics/Matrix.impl.h
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
- *
- *  Created by Samuel Williams on 21/07/07.
- *  Copyright 2007 Samuel Williams. All rights reserved.
-
-	  This header should not be included manually. Include Matrix.h instead.
- */
+//
+//  Numerics/Matrix.impl.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 21/07/07.
+//  Copyright (c) 2007 Samuel Williams. All rights reserved.
+//
 
 #ifndef _DREAM_NUMERICS_MATRIX_H
 #error This header should not be included manually. Include Matrix.h instead.

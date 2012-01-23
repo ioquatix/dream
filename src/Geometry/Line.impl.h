@@ -1,11 +1,11 @@
-/*
- *  Geometry/Line.impl.h
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
- *
- *  Created by Samuel Williams on 16/11/08.
- *  Copyright 2008 Orion Transfer Ltd. All rights reserved.
- *
- */
+//
+//  Geometry/Line.impl.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 16/11/08.
+//  Copyright (c) 2008 Samuel Williams. All rights reserved.
+//
+//
 
 #ifndef _DREAM_GEOMETRY_LINE_H
 #error This header should not be included manually. Include Line.h instead.

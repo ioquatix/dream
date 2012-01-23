@@ -1,11 +1,11 @@
-/*
- *  Client/Text/TextBlock.h
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
- *
- *  Created by Samuel Williams on 19/08/07.
- *  Copyright 2007 Samuel Williams. All rights reserved.
- *
- */
+//
+//  Text/TextBlock.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 19/08/07.
+//  Copyright (c) 2007 Samuel Williams. All rights reserved.
+//
+//
 
 #ifndef _DREAM_IMAGING_TEXT_TEXTBLOCK_H
 #define _DREAM_IMAGING_TEXT_TEXTBLOCK_H

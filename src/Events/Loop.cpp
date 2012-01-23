@@ -1,11 +1,11 @@
-/*
- *  Events/Loop.cpp
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
- *
- *  Created by Samuel Williams on 9/12/08.
- *  Copyright 2008 Orion Transfer Ltd. All rights reserved.
- *
- */
+//
+//  Events/Loop.cpp
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 9/12/08.
+//  Copyright (c) 2008 Samuel Williams. All rights reserved.
+//
+//
 
 #include "Loop.h"
 #include "Console.h"

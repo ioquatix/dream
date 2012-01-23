@@ -1,9 +1,9 @@
 //
-//  Thread.h
-//  Dream
+//  Events/Thread.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
 //
 //  Created by Samuel Williams on 13/09/11.
-//  Copyright 2011 Orion Transfer Ltd. All rights reserved.
+//  Copyright (c) 2011 Samuel Williams. All rights reserved.
 //
 
 #ifndef _DREAM_EVENTS_THREAD_H

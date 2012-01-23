@@ -1,11 +1,11 @@
-/*
- *  Network/Server.cpp
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
- *
- *  Created by Administrator on 17/11/07.
- *  Copyright 2007 Samuel Williams. All rights reserved.
- *
- */
+//
+//  Network/Server.cpp
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 17/11/07.
+//  Copyright (c) 2007 Samuel Williams. All rights reserved.
+//
+//
 
 #include "Server.h"
 

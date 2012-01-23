@@ -1,11 +1,11 @@
-/*
- *  Loader-Mac.cpp
- *  Dream
- *
- *  Created by Samuel Williams on 7/05/07.
- *  Copyright 2007 Samuel Williams. All rights reserved.
- *
- */
+//
+//  Resources/Loader-Cocoa.mm
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 7/05/07.
+//  Copyright (c) 2007 Samuel Williams. All rights reserved.
+//
+//
 
 // Include quickdraw for Cocoa
 #define __INCLUDE_QD__
@@ -34,4 +34,3 @@ namespace Dream {
 		}
 	}
 }
-

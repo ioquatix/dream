@@ -1,11 +1,11 @@
-/*
- *  Network/Socket.cpp
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
- *
- *  Created by Administrator on 26/10/07.
- *  Copyright 2007 Samuel Williams. All rights reserved.
- *
- */
+//
+//  Network/Socket.cpp
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 26/10/07.
+//  Copyright (c) 2007 Samuel Williams. All rights reserved.
+//
+//
 
 #include "Socket.h"
 

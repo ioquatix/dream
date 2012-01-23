@@ -1,11 +1,11 @@
-/*
- *  AlignedTree.h
- *  Dream
- *
- *  Created by Samuel Williams on 2/01/07.
- *  Copyright 2007 Samuel Williams. All rights reserved.
- *
- */
+//
+//  Simulation/AlignedTree.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 2/01/07.
+//  Copyright (c) 2007 Samuel Williams. All rights reserved.
+//
+//
 
 #ifndef _DREAM_ALIGNED_TREE_H
 #define _DREAM_ALIGNED_TREE_H

@@ -1,11 +1,11 @@
-/*
- *  Client/Display/Input.h
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
- *
- *  Created by Samuel Williams on 16/10/06.
- *  Copyright 2006 Samuel G. D. Williams. All rights reserved.
- *
- */
+//
+//  Events/Input.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 16/10/06.
+//  Copyright (c) 2006 Samuel Williams. All rights reserved.
+//
+//
 
 #ifndef _DREAM_CLIENT_DISPLAY_INPUT_H
 #define _DREAM_CLIENT_DISPLAY_INPUT_H

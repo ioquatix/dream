@@ -1,9 +1,9 @@
 //
-//  Renderer.h
-//  Dream
+//  Client/Display/UIKit/Renderer.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
 //
 //  Created by Samuel Williams on 20/09/11.
-//  Copyright 2011 Orion Transfer Ltd. All rights reserved.
+//  Copyright (c) 2011 Samuel Williams. All rights reserved.
 //
 
 #ifndef _DREAM_CLIENT_DISPLAY_UIKIT_RENDERER_H

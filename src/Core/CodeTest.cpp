@@ -1,11 +1,11 @@
-/*
- *  Core/CodeTest.cpp
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
- *
- *  Created by Samuel Williams on 14/09/06.
- *  Copyright 2006 Samuel Williams. All rights reserved.
- *
- */
+//
+//  Core/CodeTest.cpp
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 14/09/06.
+//  Copyright (c) 2006 Samuel Williams. All rights reserved.
+//
+//
 
 #include "CodeTest.h"
 

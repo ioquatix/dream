@@ -1,11 +1,11 @@
-/*
- *  Mesh.impl.h
- *  Dream
- *
- *  Created by Samuel Williams on 9/03/07.
- *  Copyright 2007 Samuel Williams. All rights reserved.
- *
- */
+//
+//  Geometry/Mesh.impl.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 9/03/07.
+//  Copyright (c) 2007 Samuel Williams. All rights reserved.
+//
+//
 
 #ifndef _DREAM_GEOMETRY_MESH_H
 #error This header should not be included manually. Include Mesh.h instead.

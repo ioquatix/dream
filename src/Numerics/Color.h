@@ -1,11 +1,11 @@
-/*
- *  Color.h
- *  Dream
- *
- *  Created by Samuel Williams on 1/05/10.
- *  Copyright 2010 Samuel Williams. All rights reserved.
- *
- */
+//
+//  Numerics/Color.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 1/05/10.
+//  Copyright (c) 2010 Samuel Williams. All rights reserved.
+//
+//
 
 #ifndef _DREAM_NUMERICS_COLOR_H
 #define _DREAM_NUMERICS_COLOR_H

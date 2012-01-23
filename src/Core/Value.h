@@ -1,11 +1,11 @@
-/*
- *  Core/Value.h
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
- *
- *  Created by Samuel Williams on 5/05/08.
- *  Copyright 2008 Samuel Williams. All rights reserved.
- *
- */
+//
+//  Core/Value.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 5/05/08.
+//  Copyright (c) 2008 Samuel Williams. All rights reserved.
+//
+//
 
 #ifndef _DREAM_CORE_VALUE_H
 #define _DREAM_CORE_VALUE_H

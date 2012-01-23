@@ -1,11 +1,11 @@
-/*
- *  Path-Cocoa.cpp
- *  Dream
- *
- *  Created by Samuel Williams on 3/09/10.
- *  Copyright 2010 Orion Transfer Ltd. All rights reserved.
- *
- */
+//
+//  Core/Path-Mac.mm
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 3/09/10.
+//  Copyright (c) 2010 Samuel Williams. All rights reserved.
+//
+//
 
 #include "Path.h"
 #include "System.h"
@@ -130,4 +130,3 @@ namespace Dream
 		}
 	}
 }
-

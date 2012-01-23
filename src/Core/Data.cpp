@@ -1,11 +1,11 @@
-/*
- *  Core/Data.cpp
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
- *
- *  Created by Samuel Williams on 5/05/07.
- *  Copyright 2007 Samuel Williams. All rights reserved.
- *
- */
+//
+//  Core/Data.cpp
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 5/05/07.
+//  Copyright (c) 2007 Samuel Williams. All rights reserved.
+//
+//
 
 #include "Data.h"
 

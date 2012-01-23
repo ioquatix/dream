@@ -1,11 +1,11 @@
-/*
- *  Client/Display/UIKit/DApplicationDelegate.h
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
- *
- *  Created by Samuel Williams on 18/04/09.
- *  Copyright Orion Transfer Ltd 2009. All rights reserved.
- *
- */
+//
+//  Client/Display/UIKit/DApplicationDelegate.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 18/04/09.
+//  Copyright Samuel Williams 2009. All rights reserved.
+//
+//
 
 // This is a private header, and should not be used as public API.
 

@@ -1,11 +1,11 @@
-/*
- *  Geometry/Triangle.h
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
- *
- *  Created by Samuel Williams on 15/03/06.
- *  Copyright 2006 Samuel Williams. All rights reserved.
- *
- */
+//
+//  Geometry/Triangle.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 15/03/06.
+//  Copyright (c) 2006 Samuel Williams. All rights reserved.
+//
+//
 
 #ifndef _DREAM_GEOMETRY_TRIANGLE_H
 #define _DREAM_GEOMETRY_TRIANGLE_H

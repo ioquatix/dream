@@ -1,11 +1,11 @@
-/*
- *  Context.mm
- *  Dream
- *
- *  Created by Samuel Williams on 20/04/09.
- *  Copyright 2009 Orion Transfer Ltd. All rights reserved.
- *
- */
+//
+//  Client/Display/UIKit/Context.mm
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 20/04/09.
+//  Copyright (c) 2009 Samuel Williams. All rights reserved.
+//
+//
 
 #include "Context.h"
 #import "DOpenGLView.h"

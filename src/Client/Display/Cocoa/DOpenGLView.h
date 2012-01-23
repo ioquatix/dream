@@ -1,9 +1,9 @@
 //
-//  DOpenGLView.h
-//  Dream
+//  Client/Display/Cocoa/DOpenGLView.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
 //
 //  Created by Samuel Williams on 14/09/11.
-//  Copyright 2011 Orion Transfer Ltd. All rights reserved.
+//  Copyright (c) 2011 Samuel Williams. All rights reserved.
 //
 
 #import <AppKit/AppKit.h>

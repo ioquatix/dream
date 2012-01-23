@@ -1,11 +1,11 @@
-/*
- *  RandomPointSequence.cpp
- *  Dream
- *
- *  Created by Administrator on 17/02/08.
- *  Copyright 2008 Samuel Williams. All rights reserved.
- *
- */
+//
+//  Numerics/RandomSequence.cpp
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 17/02/08.
+//  Copyright (c) 2008 Samuel Williams. All rights reserved.
+//
+//
 
 #include "RandomSequence.h"
 

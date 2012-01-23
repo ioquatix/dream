@@ -1,9 +1,9 @@
 //
-//  ShaderManager.cpp
-//  Dream
+//  Client/Graphics/ShaderManager.cpp
+//  This file is part of the "Dream" project, and is released under the MIT license.
 //
 //  Created by Samuel Williams on 5/12/11.
-//  Copyright (c) 2011 Orion Transfer Ltd. All rights reserved.
+//  Copyright (c) 2011 Samuel Williams. All rights reserved.
 //
 
 #include "ShaderManager.h"

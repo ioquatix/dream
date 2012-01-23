@@ -1,11 +1,11 @@
-/*
- *  System.h
- *  Dream
- *
- *  Created by Samuel Williams on 27/12/10.
- *  Copyright 2010 Orion Transfer Ltd. All rights reserved.
- *
- */
+//
+//  Core/System.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 27/12/10.
+//  Copyright (c) 2010 Samuel Williams. All rights reserved.
+//
+//
 
 #ifndef _DREAM_CORE_SYSTEM_H
 #define _DREAM_CORE_SYSTEM_H

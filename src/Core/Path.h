@@ -1,11 +1,11 @@
-/*
- *  Path.h
- *  Dream
- *
- *  Created by Samuel Williams on 2/09/10.
- *  Copyright 2010 Orion Transfer Ltd. All rights reserved.
- *
- */
+//
+//  Core/Path.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 2/09/10.
+//  Copyright (c) 2010 Samuel Williams. All rights reserved.
+//
+//
 
 #ifndef _DREAM_CORE_PATH_H
 #define _DREAM_CORE_PATH_H

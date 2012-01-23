@@ -1,11 +1,11 @@
-/*
- *  Network/Server.h
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
- *
- *  Created by Administrator on 17/11/07.
- *  Copyright 2007 Samuel Williams. All rights reserved.
- *
- */
+//
+//  Network/Server.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 17/11/07.
+//  Copyright (c) 2007 Samuel Williams. All rights reserved.
+//
+//
 
 #ifndef _DREAM_NETWORK_SERVER_H
 #define _DREAM_NETWORK_SERVER_H

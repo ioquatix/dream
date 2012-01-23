@@ -1,11 +1,11 @@
-/*
- *  Core/Serialization.h
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
- *
- *  Created by Samuel Williams on 23/12/08.
- *  Copyright 2008 Orion Transfer Ltd. All rights reserved.
- *
- */
+//
+//  Core/Serialization.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 23/12/08.
+//  Copyright (c) 2008 Samuel Williams. All rights reserved.
+//
+//
 
 #ifndef _DREAM_CORE_SERIALIZATION_H
 #define _DREAM_CORE_SERIALIZATION_H

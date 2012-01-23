@@ -1,9 +1,9 @@
 //
-//  DApplicationDelegate.m
-//  Dream
+//  Client/Display/Cocoa/DApplicationDelegate.mm
+//  This file is part of the "Dream" project, and is released under the MIT license.
 //
 //  Created by Samuel Williams on 15/09/11.
-//  Copyright 2011 Orion Transfer Ltd. All rights reserved.
+//  Copyright (c) 2011 Samuel Williams. All rights reserved.
 //
 
 #import "DApplicationDelegate.h"

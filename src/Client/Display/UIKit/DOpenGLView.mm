@@ -1,9 +1,9 @@
 //
-//  DreamView.m
-//  Dream
+//  Client/Display/UIKit/DOpenGLView.mm
+//  This file is part of the "Dream" project, and is released under the MIT license.
 //
 //  Created by Samuel Williams on 29/04/09.
-//  Copyright 2009 Orion Transfer Ltd. All rights reserved.
+//  Copyright (c) 2009 Samuel Williams. All rights reserved.
 //
 
 #import "DOpenGLView.h"

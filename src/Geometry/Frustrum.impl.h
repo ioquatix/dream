@@ -1,11 +1,11 @@
-/*
- *  Geometry/Frustrum.impl.h
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
- *
- *  Created by Samuel Williams on 2/12/08.
- *  Copyright 2008 Orion Transfer Ltd. All rights reserved.
- *
- */
+//
+//  Geometry/Frustrum.impl.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 2/12/08.
+//  Copyright (c) 2008 Samuel Williams. All rights reserved.
+//
+//
 
 #ifndef _DREAM_GEOMETRY_FRUSTUM_H
 #error This header should not be included manually. Include Frustum.h instead.

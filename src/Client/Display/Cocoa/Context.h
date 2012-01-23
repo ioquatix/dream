@@ -1,11 +1,11 @@
-/*
- *  Client/Display/Cocoa/Context.h
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
- *
- *  Created by Samuel Williams on 27/03/07.
- *  Copyright 2007 Samuel Williams. All rights reserved.
- *
- */
+//
+//  Client/Display/Cocoa/Context.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 27/03/07.
+//  Copyright (c) 2007 Samuel Williams. All rights reserved.
+//
+//
 
 #ifndef _DREAM_CLIENT_DISPLAY_COCOA_CONTEXT_H
 #define _DREAM_CLIENT_DISPLAY_COCOA_CONTEXT_H

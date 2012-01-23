@@ -1,11 +1,11 @@
-/*
- *  Client/Display/MultiFingerInput.cpp
- *  This file is part of the "Dream" project, and is licensed under the GNU GPLv3.
- *
- *  Created by Samuel Williams on 29/04/09.
- *  Copyright 2009 Orion Transfer Ltd. All rights reserved.
- *
- */
+//
+//  Events/MultiFingerInput.cpp
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 29/04/09.
+//  Copyright (c) 2009 Samuel Williams. All rights reserved.
+//
+//
 
 #include "MultiFingerInput.h"
 #include <iostream>

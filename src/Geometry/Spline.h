@@ -1,9 +1,6 @@
-/*!
-    @header
-    @abstract   This code provides a basic framework for various types of splines.
-	@copyright	2007 Samuel Williams. All rights reserved.
-*/
-
+//!
+//  Geometry/Spline.h
+//  This file is part of the "Dream" project, and is released under the MIT license.
 #ifndef _DREAM_GEOMETRY_SPLINE_H
 #define _DREAM_GEOMETRY_SPLINE_H
 

@@ -1,9 +1,9 @@
 //
-//  DApplicationDelegate.mm
-//  Death Ball Touch
+//  Client/Display/UIKit/DApplicationDelegate.mm
+//  This file is part of the "Dream" project, and is released under the MIT license.
 //
 //  Created by Samuel Williams on 18/04/09.
-//  Copyright Orion Transfer Ltd 2009. All rights reserved.
+//  Copyright Samuel Williams 2009. All rights reserved.
 //
 
 #import "DApplicationDelegate.h"
