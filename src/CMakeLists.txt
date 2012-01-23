@@ -23,7 +23,6 @@ add_library(dream STATIC
 	./Core/ObjectSet.cpp
 	./Core/Path-Unix.cpp
 	./Core/Path.cpp
-	./Core/STLAdditions.cpp
 	./Core/Serialization.cpp
 	./Core/Strings.cpp
 	./Core/System.cpp
