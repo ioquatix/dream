@@ -23,69 +23,69 @@ namespace Dream
 		{
 		protected:
 			/// The number of samples taken so far.
-			uint32_t m_times;
+			uint32_t _times;
 			/// The current total.
 			/// @todo This value might overflow. Is there a way to fix this behaviour?
-			type_t m_value;
+			type_t _value;
 
 			/// Add a set of samples to the average.
-			void addSamples (const type_t & v, const uint32_t & t)
+			void add_samples (const type_t & v, const uint32_t & t)
 			{
-				m_times += t;
-				m_value += v;
+				_times += t;
+				_value += v;
 			}
 
 		public:
 			/// Default constructor
-			Average () : m_times (0), m_value (0)
+			Average () : _times (0), _value (0)
 			{
 			}
 
 			/// Add a single sample to the average.
-			void addSample (const type_t & v)
+			void add_sample (const type_t & v)
 			{
-				m_times += 1;
-				m_value += v;
+				_times += 1;
+				_value += v;
 			}
 
 			/// Add samples from another instance of Average.
-			void addSamples (const Average<type_t> & other)
+			void add_samples (const Average<type_t> & other)
 			{
-				addSamples(other.m_value, other.m_times);
+				add_samples(other._value, other._times);
 			}
 
 			/// Calculate the average value.
 			/// @returns The average value.
 			type_t average ()
 			{
-				if (m_times == 0) return 0;
+				if (_times == 0) return 0;
 
-				return m_value / (type_t)m_times;
+				return _value / (type_t)_times;
 			}
 
 			/// Check if any samples have been added.
 			/// @returns true if there are samples.
-			bool hasSamples ()
+			bool has_samples ()
 			{
-				return m_times != 0;
+				return _times != 0;
 			}
 
 			/// The number of samples taken.
-			uint32_t numberOfSamples () const
+			uint32_t number_of_samples () const
 			{
-				return m_times;
+				return _times;
 			}
 
-			/// Helper for adding a sample. Same as addSample.
+			/// Helper for adding a sample. Same as add_sample.
 			void operator+= (const type_t & sample)
 			{
-				addSample(sample);
+				add_sample(sample);
 			}
 
-			/// Helper for adding a samples. Same as addSamples.
+			/// Helper for adding a samples. Same as add_samples.
 			void operator+= (const Average<type_t> & other)
 			{
-				addSamples(other);
+				add_samples(other);
 			}
 		};
 

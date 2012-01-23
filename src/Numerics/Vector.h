@@ -50,8 +50,8 @@ namespace Dream
 		class VectorEqualityTraits<E, float>
 		{
 		public:
-			/// Check whether a vector is equal to another using the equalWithinTolerance set of functions.
-			bool equalWithinTolerance (const Vector<E, float> & other, const unsigned & ulps = DEFAULT_ULPS) const;
+			/// Check whether a vector is equal to another using the equal_within_tolerance set of functions.
+			bool equal_within_tolerance (const Vector<E, float> & other, const unsigned & ulps = DEFAULT_ULPS) const;
 
 			bool equivalent (const Vector<E, float> & other) const;
 		};
@@ -62,8 +62,8 @@ namespace Dream
 		class VectorEqualityTraits<E, double>
 		{
 		public:
-			/// Check whether a vector is equal to another using the equalWithinTolerance set of functions.
-			bool equalWithinTolerance (const Vector<E, double> & other, const unsigned & ulps = DEFAULT_ULPS) const;
+			/// Check whether a vector is equal to another using the equal_within_tolerance set of functions.
+			bool equal_within_tolerance (const Vector<E, double> & other, const unsigned & ulps = DEFAULT_ULPS) const;
 
 			bool equivalent (const Vector<E, double> & other) const;
 		};
@@ -85,17 +85,17 @@ namespace Dream
 			/// Returns an orthogonal 2D vector.
 			Vector<2, NumericT> normal () const;
 			
-			NumericT aspectRatio () const;
-			Vector<2, NumericT> shrinkToFitAspectRatio(NumericT n) const;
-			Vector<2, NumericT> shrinkToFitAspectRatio(const Vector<2, NumericT> & other) const;
+			NumericT aspect_ratio () const;
+			Vector<2, NumericT> shrink_to_fit_aspect_ratio(NumericT n) const;
+			Vector<2, NumericT> shrink_to_fit_aspect_ratio(const Vector<2, NumericT> & other) const;
 			
-			Vector<2, NumericT> expandToFitAspectRatio(NumericT n) const;
-			Vector<2, NumericT> expandToFitAspectRatio(const Vector<2, NumericT> & other) const;
+			Vector<2, NumericT> expand_to_fit_aspect_ratio(NumericT n) const;
+			Vector<2, NumericT> expand_to_fit_aspect_ratio(const Vector<2, NumericT> & other) const;
 		};
 
 		/// Calculates the surface normal of a triangle given by three points.
 		template <typename NumericT>
-		Vector<3, NumericT> surfaceNormal (const Vector<3, NumericT> & a, const Vector<3, NumericT> & b, const Vector<3, NumericT> & c);
+		Vector<3, NumericT> surface_normal (const Vector<3, NumericT> & a, const Vector<3, NumericT> & b, const Vector<3, NumericT> & c);
 
 		/** 3-space Vector traits specialization.
 
@@ -115,20 +115,20 @@ namespace Dream
 			Vector<3, NumericT> normal (const Vector<3, NumericT> & other) const;
 			
 			/// Given three points, you can calculate the surface normal.
-			/// @sa surfaceNormal
+			/// @sa surface_normal
 			Vector<3, NumericT> normal (const Vector<3, NumericT> & a, const Vector<3, NumericT> & b) const;
 		};
 
 		/// 4-space cross product.
 		template <typename NumericT>
-		Vector<4, NumericT> crossProduct (const Vector<4, NumericT> & u, const Vector<4, NumericT> & v,
+		Vector<4, NumericT> cross_product (const Vector<4, NumericT> & u, const Vector<4, NumericT> & v,
 										   const Vector<4, NumericT> & w);
 
 		/** 4-space vector traits specialization.
 
 		 4-space vectors have a number of special traits. This allows the calculation of the 4-space cross product.
 
-		 @sa crossProduct
+		 @sa cross_product
 		 */
 		template <typename NumericT>
 		class VectorTraits<4, NumericT>
@@ -149,7 +149,7 @@ namespace Dream
 		 There are two kinds of comparisons that Vector supports: Geometric comparisons and numeric comparisons. It is important to understand the difference
 		 when using the two.
 
-		 Geometric comparisons use the functions lessThan(), lessThanOrEqual(), greaterThan(), greaterThanOrEqual() to compare the geometric differences between
+		 Geometric comparisons use the functions less_than(), less_than_or_equal(), greater_than(), greater_than_or_equal() to compare the geometric differences between
 		 two vectors.
 
 		 @image html "Vector Comparisons.png"
@@ -172,18 +172,18 @@ namespace Dream
 			typedef typename RealType<NumericT>::RealT NumericRealT;
 
 			/// The actual data.
-			NumericT m_vector[E];
+			NumericT _vector[E];
 
 			/// Empty constructor. Value of vector is undefined.
 			Vector () = default;
 			
 			// Default copy constructor and assignment operator
 			Vector (const Vector & other) {
-				this->set(other.m_vector);
+				this->set(other._vector);
 			}
 			
 			Vector & operator= (const Vector & other) {
-				this->set(other.m_vector);
+				this->set(other._vector);
 				
 				return *this;
 			}
@@ -197,7 +197,7 @@ namespace Dream
 			/// Identity constructor. Value is identity.
 			Vector (const Identity &, const NumericT & n = 1)
 			{
-				loadIdentity(n);
+				load_identity(n);
 			}
 
 			/// Construct a vector from a different type.
@@ -233,15 +233,15 @@ namespace Dream
 			/// Set the value of this instance to zero.
 			void zero ();
 		    /// Check if the value of this instance is zero.
-			bool isZero () const;
+			bool is_zero () const;
 		    /// Set the value of all components of the vector to the value specified.
 			/// The default value is 1.
-			void loadIdentity (const NumericT & n = 1);
+			void load_identity (const NumericT & n = 1);
 
 		    /// Return a pointer to the raw data.
 			const NumericT * value () const
 			{
-				return m_vector;
+				return _vector;
 			}
 
 		    /// Return a copy of the vector.
@@ -266,7 +266,7 @@ namespace Dream
 			{
 				if ((NumericT)n)
 					for (unsigned i = 0; i < E; ++i)
-						m_vector[i] = (NumericT)n;
+						_vector[i] = (NumericT)n;
 				else
 					this->zero();
 
@@ -278,7 +278,7 @@ namespace Dream
 			Vector & operator= (const Vector<E, OtherNumericT> & other)
 			{
 				for (unsigned i = 0; i < E; ++i)
-					m_vector[i] = (NumericT)other[i];
+					_vector[i] = (NumericT)other[i];
 
 				return *this;
 			}
@@ -286,12 +286,12 @@ namespace Dream
 			/// Access a component of the vector.
 			NumericT & operator[] (unsigned i)
 			{
-				return m_vector[i];
+				return _vector[i];
 			}
 		    /// Access a component of the vector.
 			const NumericT & operator[] (unsigned i) const
 			{
-				return m_vector[i];
+				return _vector[i];
 			}
 
 			/// Check for exact equivalence.
@@ -305,22 +305,22 @@ namespace Dream
 			/// Geometric comparison.
 			/// @returns true if all components are numerically lesser than the others.
 			template <typename OtherT>
-			bool lessThan (const OtherT & other) const;
+			bool less_than (const OtherT & other) const;
 
 			/// Geometric comparison.
 			/// @returns true if all components are numerically greater than the others.
 			template <typename OtherT>
-			bool greaterThan (const OtherT & other) const;
+			bool greater_than (const OtherT & other) const;
 
 			/// Geometric comparison.
 			/// @returns true if all components are numerically lesser than or equal to the others.
 			template <typename OtherT>
-			bool lessThanOrEqual (const OtherT & other) const;
+			bool less_than_or_equal (const OtherT & other) const;
 
 			/// Geometric comparison.
 			/// @returns true if all components are numerically greater than or equal to the others.
 			template <typename OtherT>
-			bool greaterThanOrEqual (const OtherT & other) const;
+			bool greater_than_or_equal (const OtherT & other) const;
 
 			/// Numeric comparison.
 			/// @returns true if the vector is numerically lesser than the other.
@@ -361,7 +361,7 @@ namespace Dream
 		
 			/// Calculates the angle between this vector and another.
 			template <typename OtherT>
-			NumericT angleBetween (const OtherT & other) const;
+			NumericT angle_between (const OtherT & other) const;
 
 			/// Calculate the sum of all components of the vector.
 			NumericT sum () const;
@@ -404,10 +404,10 @@ namespace Dream
 			Vector & frac ();
 
 			/// Normalize the vector to the given length. Defaults to 1.
-			Vector & normalize (const NumericT & toLength = 1);
+			Vector & normalize (const NumericT & to_length = 1);
 
 			/// Return a copy of the vector that is normalized
-			Vector normalizedVector (const NumericT & toLength = 1) const;
+			Vector normalized_vector (const NumericT & to_length = 1) const;
 
 			/// Constrain this vector with another, choosing the smaller or larger value.
 			/// Compare each component of this and another vector. If limits[i] is -1, we choose the smaller of the two values. If limits[i] is +1, we choose

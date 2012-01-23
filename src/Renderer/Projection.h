@@ -27,22 +27,22 @@ namespace Dream
 			virtual ~IProjection();
 			// This function must calculate an appropriate projection matrix for the given viewport.
 			// The viewport provides information such as size, etc.
-			virtual Mat44 projectionMatrixForViewport(const IViewport & viewport) abstract;
+			virtual Mat44 projection_matrix_for_viewport(const IViewport & viewport) abstract;
 		};
 		
 		class FixedProjection : public Object, implements IProjection {
 		protected:
-			Mat44 m_projectionMatrix;
+			Mat44 _projectionMatrix;
 			
 		public:
-			FixedProjection(const Mat44 projectionMatrix);
+			FixedProjection(const Mat44 projection_matrix);
 			
-			virtual Mat44 projectionMatrixForViewport(const IViewport & viewport);
+			virtual Mat44 projection_matrix_for_viewport(const IViewport & viewport);
 		};
 		
 		class OrthographicProjection : public Object, implements IProjection {
 		protected:
-			AlignedBox<3> m_box;
+			AlignedBox<3> _box;
 			
 		public:
 			/// The box provides the center and size for the orthographic projection.
@@ -50,36 +50,36 @@ namespace Dream
 			/// along with the near and far planes.
 			OrthographicProjection(const AlignedBox<3> & box);
 			
-			virtual void setBox(const AlignedBox<3> & box);
+			virtual void set_box(const AlignedBox<3> & box);
 			const AlignedBox<3> & box() const;
 			
-			virtual Mat44 projectionMatrixForViewport(const IViewport & viewport);
+			virtual Mat44 projection_matrix_for_viewport(const IViewport & viewport);
 		};
 		
 		class ScaledOrthographicProjection : public OrthographicProjection {
 		protected:
-			IndexT m_scaleAxis;
+			IndexT _scaleAxis;
 			
 		public:
-			/// Provide a scaleAxis to control how the orthographic projection should be resized
+			/// Provide a scale_axis to control how the orthographic projection should be resized
 			/// when the window is non-square.
-			ScaledOrthographicProjection(const AlignedBox<3> & box, IndexT scaleAxis);		
+			ScaledOrthographicProjection(const AlignedBox<3> & box, IndexT scale_axis);		
 			
-			virtual Mat44 projectionMatrixForViewport(const IViewport & viewport);
+			virtual Mat44 projection_matrix_for_viewport(const IViewport & viewport);
 		};
 		
 		class PerspectiveProjection : public Object, implements IProjection {
 		protected:
-			RealT m_fieldOfView;
-			RealT m_near, m_far;
+			RealT _field_of_view;
+			RealT _near, _far;
 			
 		public:
-			PerspectiveProjection(RealT fieldOfView, RealT near, RealT far);
+			PerspectiveProjection(RealT field_of_view, RealT near, RealT far);
 			
-			virtual void setFieldOfView(RealT fieldOfView);
-			RealT fieldOfView() const;
+			virtual void set_field_of_view(RealT field_of_view);
+			RealT field_of_view() const;
 			
-			virtual Mat44 projectionMatrixForViewport(const IViewport & viewport);
+			virtual Mat44 projection_matrix_for_viewport(const IViewport & viewport);
 		};
 		
 	}

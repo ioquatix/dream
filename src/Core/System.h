@@ -23,12 +23,12 @@ namespace Dream
 		class SystemError
 		{
 			protected:
-				ErrorNumberT m_errorNumber;
-				StringT m_message;
-				StringT m_formattedMessage;
+				ErrorNumberT _errorNumber;
+				StringT _message;
+				StringT _formatted_message;
 			
 			public:
-				SystemError(StringT domain, ErrorNumberT errorNumber, StringT errorDescription, StringT errorTarget);
+				SystemError(StringT domain, ErrorNumberT error_number, StringT error_description, StringT error_target);
 				SystemError(StringT message);
 				
 				StringT what () const;

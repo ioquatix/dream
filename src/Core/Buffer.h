@@ -59,17 +59,17 @@ namespace Dream
 			}
 			
 			template <typename t>
-			IndexT read (IndexT offset, t & value, Endian srcType, Endian dstType) const
+			IndexT read (IndexT offset, t & value, Endian src_type, Endian dst_type) const
 			{
 				IndexT cnt = read(offset, value);
-				endianDecode(value, srcType, dstType);
+				endian_decode(value, src_type, dst_type);
 				return cnt;
 			}
 			
 			template <typename t>
-			IndexT read (IndexT offset, t & value, Endian srcType) const
+			IndexT read (IndexT offset, t & value, Endian src_type) const
 			{
-				return read(offset, value, srcType, hostEndian());
+				return read(offset, value, src_type, host_endian());
 			}
 			
 			/// Access data at a particular location. Not range checked.
@@ -103,7 +103,7 @@ namespace Dream
 			uint32_t checksum () const;
 			
 			/// Write the contents of the buffer to the specified file path.
-			void writeToFile (const Path &);
+			void write_to_file (const Path &);
 		};
 
 		/**
@@ -130,11 +130,11 @@ namespace Dream
 			/// Copy count copies of value into the buffer at the specified offset.
 			void assign (IndexT count, const ByteT & value, IndexT offset = 0);
 			/// Copy data from another range of bytes at the specified offset.
-			void assign (const ByteT * otherBegin, const ByteT * otherEnd, IndexT offset = 0);
+			void assign (const ByteT * other_begin, const ByteT * other_end, IndexT offset = 0);
 			/// Assign data from another buffer
 			void assign (const Buffer & other, IndexT offset = 0);
 			/// Copy a slice of data from another buffer
-			void assign (const Buffer & other, IndexT otherOffset, IndexT otherSize, IndexT offset = 0);
+			void assign (const Buffer & other, IndexT other_offset, IndexT other_size, IndexT offset = 0);
 			/// Copy a c-style string into the buffer
 			void assign (const char * string, IndexT offset = 0);
 			
@@ -198,11 +198,11 @@ namespace Dream
 		 A useful case might be if you have some data, and want to manipulate it or pass it to another function as a buffer:
 
 		 @code
-		 ByteT * data = readData();
+		 ByteT * data = read_data();
 
 		 // Data is not copied, therefore performance is not lost:
 		 StaticBuffer buf(data);
-		 processBuffer(buf);
+		 process_buffer(buf);
 		 @endcode
 
 		 In this case, we could wrap the data up in a buffer, but we didn't have to copy the data needlessly. Using a different kind of buffer, such as
@@ -210,13 +210,13 @@ namespace Dream
 		 */
 		class StaticBuffer : public Buffer
 		{
-			IndexT m_size;
-			const ByteT * m_buf;
+			IndexT _size;
+			const ByteT * _buf;
 
 		public:
 			/// Allocate the data with a c-style string. Uses strlen to determine the length of the buffer. Includes the
 			/// null character by default.			
-			static StaticBuffer forCString (const char * str, bool includeNullByte = true);
+			static StaticBuffer for_cstring (const char * str, bool include_null_byte = true);
 
 			/// Allocate the data with a sequence of bytes, buf, of specified size.
 			StaticBuffer (const ByteT * buf, const IndexT & size);
@@ -238,12 +238,12 @@ namespace Dream
 		class FileBuffer : public Buffer, private NonCopyable
 		{
 		protected:
-			IndexT m_size;
-			void * m_buf;
+			IndexT _size;
+			void * _buf;
 			
 		public:
-			/// Maps the data from the file specified by filePath into memory.
-			FileBuffer (const Path & filePath);
+			/// Maps the data from the file specified by file_path into memory.
+			FileBuffer (const Path & file_path);
 			
 			virtual ~FileBuffer ();
 			
@@ -258,8 +258,8 @@ namespace Dream
 		 */
 		class DynamicBuffer : public ResizableBuffer, private NonCopyable
 		{
-			IndexT m_capacity, m_size;
-			ByteT * m_buf;
+			IndexT _capacity, _size;
+			ByteT * _buf;
 
 			void allocate (IndexT size);
 			void deallocate ();
@@ -312,7 +312,7 @@ namespace Dream
 		 */
 		class PackedBuffer : public MutableBuffer, private NonCopyable
 		{
-			IndexT m_size;
+			IndexT _size;
 
 			PackedBuffer (IndexT size);
 
@@ -323,7 +323,7 @@ namespace Dream
 			virtual ~PackedBuffer ();
 
 			/// Create a new buffer.
-			static PackedBuffer * newBuffer (IndexT size);
+			static PackedBuffer * new_buffer (IndexT size);
 
 			virtual IndexT size () const;
 

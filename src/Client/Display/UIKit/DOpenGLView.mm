@@ -18,7 +18,7 @@ using namespace Dream::Client::Display;
 - (BOOL)textFieldShouldReturn: (UITextField*)_textField;
 @end
 
-static Vec3 positionInView (UIView * view, UITouch * touch)
+static Vec3 position_in_view (UIView * view, UITouch * touch)
 {
 	CGPoint locationInView = [touch locationInView:view];
 	CGRect bounds = [view bounds];
@@ -26,7 +26,7 @@ static Vec3 positionInView (UIView * view, UITouch * touch)
 	return Vec3(locationInView.x, bounds.size.height - locationInView.y, 0);
 }
 
-AlignedBox<2> boundsFromFrame (CGRect frame)
+AlignedBox<2> bounds_from_frame (CGRect frame)
 {
 	Vec2 origin(frame.origin.x, frame.origin.y);
 	Vec2 size(frame.size.width, frame.size.height);
@@ -38,72 +38,72 @@ AlignedBox<2> boundsFromFrame (CGRect frame)
 
 @implementation DOpenGLView
 
-@synthesize displayContext;
+@synthesize displayContext = _display_context;
 
 - (void)setup
 {
 	[super setup];
 
-	m_multiFingerInput = new MultiFingerInput;
+	_multi_finger_input = new MultiFingerInput;
 		
 	[self initializeKeyboard];
 }
 
 - (void) dealloc
 {
-	delete m_multiFingerInput;
+	delete _multi_finger_input;
 	[super dealloc];
 }
 
 - (void) render: (CADisplayLink*)displayLink
 {
-	if (!displayContext)
+	if (!_display_context)
 		return;
 
 	TimeT nextTime = [displayLink timestamp] + [displayLink duration];
 	
-	displayContext->renderFrameForTime(nextTime);
+	_display_context->render_frame_for_time(nextTime);
 }
 
 - (void)touchesBegan: (NSSet *)touches withEvent: (UIEvent *)event
 {
-	if (!displayContext)
+	if (!_display_context)
 		return;
 
 	for (UITouch * touch in touches) {
-		const FingerTracking & ft = m_multiFingerInput->beginMotion((FingerID)touch, positionInView(self, touch));
+		const FingerTracking & ft = _multi_finger_input->begin_motion((FingerID)touch, position_in_view(self, touch));
 		
 		Key touchKey(DefaultTouchPad, ft.button);
-		MotionInput motionInput(touchKey, Pressed, ft.position, ft.motion, boundsFromFrame([self frame]));
-		displayContext->process(motionInput);
+		MotionInput motionInput(touchKey, Pressed, ft.position, ft.motion, bounds_from_frame([self frame]));
+		_display_context->process(motionInput);
 	}
 }
 
 - (void)touchesMoved: (NSSet *)touches withEvent: (UIEvent *)event
 {
-	if (!displayContext)
+	if (!_display_context)
 		return;
 
 	for (UITouch * touch in touches) {
-		const FingerTracking & ft = m_multiFingerInput->updateMotion((FingerID)touch, positionInView(self, touch));
+		const FingerTracking & ft = _multi_finger_input->update_motion((FingerID)touch, position_in_view(self, touch));
 		
 		Key touchKey(DefaultTouchPad, ft.button);
-		MotionInput motionInput(touchKey, Dragged, ft.position, ft.motion, boundsFromFrame([self frame]));
-		displayContext->process(motionInput);
+		MotionInput motionInput(touchKey, Dragged, ft.position, ft.motion, bounds_from_frame([self frame]));
+		_display_context->process(motionInput);
 	}
 }
 
 - (void)touchesEnded: (NSSet *)touches withEvent: (UIEvent *)event
 {
-	if (!displayContext)
+	if (!_display_context)
 		return;
 
 	for (UITouch * touch in touches) {
-		FingerTracking ft = m_multiFingerInput->finishMotion((FingerID)touch, positionInView(self, touch));
+		FingerTracking ft = _multi_finger_input->finish_motion((FingerID)touch, position_in_view(self, touch));
 		
 		Key touchKey(DefaultTouchPad, ft.button);
-		MotionInput motionInput(touchKey, Released, ft.position, ft.motion, boundsFromFrame([self frame]));
-		displayContext->process(motionInput);
+		MotionInput motionInput(touchKey, Released, ft.position, ft.motion, bounds_from_frame([self frame]));
+		_display_context->process(motionInput);
 	}
 }
 
@@ -116,43 +116,43 @@ AlignedBox<2> boundsFromFrame (CGRect frame)
 
 - (BOOL) isKeyboardVisible
 {
-	return m_keyboardVisible;
+	return _keyboard_visible;
 }
 
 - (void)initializeKeyboard
 {	
-	m_textField = [[[UITextField alloc] initWithFrame: CGRectZero] autorelease];
-	m_textField.delegate = self;
+	_text_field = [[[UITextField alloc] initWithFrame: CGRectZero] autorelease];
+	_text_field.delegate = self;
 	/* placeholder so there is something to delete! */
-	m_textField.text = @" ";	
+	_text_field.text = @" ";	
 	
 	/* set UITextInputTrait properties, mostly to defaults */
-	m_textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-	m_textField.autocorrectionType = UITextAutocorrectionTypeNo;
-	m_textField.enablesReturnKeyAutomatically = NO;
-	m_textField.keyboardAppearance = UIKeyboardAppearanceDefault;
-	m_textField.keyboardType = UIKeyboardTypeDefault;
-	m_textField.returnKeyType = UIReturnKeyDefault;
-	m_textField.secureTextEntry = NO;	
+	_text_field.autocapitalizationType = UITextAutocapitalizationTypeNone;
+	_text_field.autocorrectionType = UITextAutocorrectionTypeNo;
+	_text_field.enablesReturnKeyAutomatically = NO;
+	_text_field.keyboardAppearance = UIKeyboardAppearanceDefault;
+	_text_field.keyboardType = UIKeyboardTypeDefault;
+	_text_field.returnKeyType = UIReturnKeyDefault;
+	_text_field.secureTextEntry = NO;	
 	
-	m_textField.hidden = YES;
-	m_keyboardVisible = NO;
+	_text_field.hidden = YES;
+	_keyboard_visible = NO;
 	/* add the UITextField (hidden) to our view */
-	[self addSubview: m_textField];
+	[self addSubview: _text_field];
 }
 
 /* reveal onscreen virtual keyboard */
 - (void) showKeyboard
 {
-	[m_textField becomeFirstResponder];
-	m_keyboardVisible = YES;
+	[_text_field becomeFirstResponder];
+	_keyboard_visible = YES;
 }
 
 /* hide onscreen virtual keyboard */
 - (void) hideKeyboard
 {
-	[m_textField resignFirstResponder];
-	m_keyboardVisible = NO;
+	[_text_field resignFirstResponder];
+	_keyboard_visible = NO;
 }
 
 /* UITextFieldDelegate method.  Invoked when user types something. */

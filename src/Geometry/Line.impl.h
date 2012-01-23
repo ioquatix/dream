@@ -22,54 +22,54 @@ namespace Dream
 #pragma mark class LineTranslationTraits
 		
 		template <typename NumericT>
-		typename LineTranslationTraits<3, NumericT>::MatrixT LineTranslationTraits<3, NumericT>::transformationToMateWithLine (const LineT & other, const VectorT & normal) const 
+		typename LineTranslationTraits<3, NumericT>::MatrixT LineTranslationTraits<3, NumericT>::transformation_to_mate_with_line (const LineT & other, const VectorT & normal) const 
 		{
 			const LineT * t = static_cast<const LineT*> (this);
 			
 			// Optimization
 			if (t->direction() == other.direction())
-				return translationToMateWithPoint(other.point());
+				return translation_to_mate_with_point(other.point());
 			else {
-				MatrixT translationToOrigin = Mat44::translatingMatrix(-t->point());
-				MatrixT translationFromOrigin = Mat44::translatingMatrix(t->point());
-				return translationToMateWithPoint(other.point()) * translationFromOrigin * rotationToMateWithDirection(other.direction(), normal) * translationToOrigin;
+				MatrixT translation_to_origin = Mat44::translating_matrix(-t->point());
+				MatrixT translation_from_origin = Mat44::translating_matrix(t->point());
+				return translation_to_mate_with_point(other.point()) * translation_from_origin * rotation_to_mate_with_direction(other.direction(), normal) * translation_to_origin;
 			}
 		}
 		
 		template <typename NumericT>
-		typename LineTranslationTraits<3, NumericT>::MatrixT LineTranslationTraits<3, NumericT>::translationToMateWithPoint (const VectorT & point) const
+		typename LineTranslationTraits<3, NumericT>::MatrixT LineTranslationTraits<3, NumericT>::translation_to_mate_with_point (const VectorT & point) const
 		{
 			const LineT * t = static_cast<const LineT*> (this);
 			
-			return MatrixT::translatingMatrix(point - t->point());			
+			return MatrixT::translating_matrix(point - t->point());			
 		}
 		
 		template <typename NumericT>
-		typename LineTranslationTraits<3, NumericT>::MatrixT LineTranslationTraits<3, NumericT>::rotationToMateWithDirection (const VectorT & direction, const VectorT & normal) const
+		typename LineTranslationTraits<3, NumericT>::MatrixT LineTranslationTraits<3, NumericT>::rotation_to_mate_with_direction (const VectorT & direction, const VectorT & normal) const
 		{
 			const LineT * t = static_cast<const LineT*> (this);
 			
-			return MatrixT::rotatingMatrix(direction, t->direction(), normal);
+			return MatrixT::rotating_matrix(direction, t->direction(), normal);
 		}
 		
 		template <typename NumericT>
-		void LineTranslationTraits<3, NumericT>::rotate (const VectorT & rotationNormal, const NumericRealT & angle)
+		void LineTranslationTraits<3, NumericT>::rotate (const VectorT & rotation_normal, const NumericRealT & angle)
 		{
 			LineT * t = static_cast<LineT*> (this);
 			
-			MatrixT rotation = MatrixT::rotatingMatrix(angle, rotationNormal);
+			MatrixT rotation = MatrixT::rotating_matrix(angle, rotation_normal);
 			
-			t->setDirection(rotation * t->direction());
+			t->set_direction(rotation * t->direction());
 		}
 		
 		template <typename NumericT>
-		typename LineTranslationTraits<3, NumericT>::LineT LineTranslationTraits<3, NumericT>::rotatedLine (const VectorT & rotationNormal, const NumericRealT & angle) const
+		typename LineTranslationTraits<3, NumericT>::LineT LineTranslationTraits<3, NumericT>::rotated_line (const VectorT & rotation_normal, const NumericRealT & angle) const
 		{
 			const LineT * t = static_cast<const LineT*> (this);
 			
 			LineT result(*t);
 			
-			result.rotate (rotationNormal, angle);
+			result.rotate (rotation_normal, angle);
 			
 			return result;
 		}
@@ -83,32 +83,32 @@ namespace Dream
 		}
 		
 		template <unsigned D, typename NumericT>
-		Line<D, NumericT>::Line (const Zero &) : m_point(ZERO), m_direction(ZERO)
+		Line<D, NumericT>::Line (const Zero &) : _point(ZERO), _direction(ZERO)
 		{
 		}
 		
 		template <unsigned D, typename NumericT>
-		Line<D, NumericT>::Line (const Identity &, const NumericT & n) : m_point(ZERO), m_direction(IDENTITY, n)
+		Line<D, NumericT>::Line (const Identity &, const NumericT & n) : _point(ZERO), _direction(IDENTITY, n)
 		{
 		}
 		
 		template <unsigned D, typename NumericT>
-		Line<D, NumericT>::Line (const VectorT & direction) : m_point(ZERO), m_direction(direction)
+		Line<D, NumericT>::Line (const VectorT & direction) : _point(ZERO), _direction(direction)
 		{
 		}
 		
 		template <unsigned D, typename NumericT>
-		Line<D, NumericT>::Line (const VectorT & point, const VectorT & direction) : m_point(point), m_direction(direction)
+		Line<D, NumericT>::Line (const VectorT & point, const VectorT & direction) : _point(point), _direction(direction)
 		{
 		}
 		
 		template <unsigned D, typename NumericT>
-		NumericT Line<D, NumericT>::timeForClosestPoint (const VectorT & p3) const
+		NumericT Line<D, NumericT>::time_for_closest_point (const VectorT & p3) const
 		{
-			const VectorT & p1 = m_point;
-			VectorT p2 = m_point + m_direction;
+			const VectorT & p1 = _point;
+			VectorT p2 = _point + _direction;
 			
-			NumericT d = m_direction.length2();
+			NumericT d = _direction.length2();
 			NumericT t = 0;
 			
 			for (unsigned i = 0; i < D; ++i)
@@ -118,7 +118,7 @@ namespace Dream
 		}
 		
 		template <typename NumericT>
-		bool lineIntersectionTest (const Line<2, NumericT> & lhs, const Line<2, NumericT> & rhs, NumericT & leftTime, NumericT & rightTime)
+		bool line_intersectionTest (const Line<2, NumericT> & lhs, const Line<2, NumericT> & rhs, NumericT & left_time, NumericT & right_time)
 		{
 			Vector<2, NumericT> t = lhs.direction();
 			Vector<2, NumericT> o = rhs.direction();
@@ -130,34 +130,34 @@ namespace Dream
 			if (denom == (NumericT)0) return false;
 			
 			NumericT na = o[X] * (lhs.point()[Y] - rhs.point()[Y]) - o[Y] * (lhs.point()[X] - rhs.point()[X]);
-			leftTime = na / denom;
+			left_time = na / denom;
 			
 			NumericT nb = t[X] * (lhs.point()[Y] - rhs.point()[Y]) - t[Y] * (lhs.point()[X] - rhs.point()[X]);
-			rightTime = nb / denom;
+			right_time = nb / denom;
 			
 			return true;
 		}
 		
 		template <unsigned D, typename NumericT>
-		bool lineIntersectionTest (const Line<D, NumericT> & lhs, const Line<D, NumericT> & rhs, NumericT & leftTime, NumericT & rightTime)
+		bool line_intersectionTest (const Line<D, NumericT> & lhs, const Line<D, NumericT> & rhs, NumericT & left_time, NumericT & right_time)
 		{
-			Vector<2, NumericT> lhsPoint, lhsDir, rhsPoint, rhsDir;
-			lhsPoint.set(lhs.point());
-			lhsDir.set(lhs.direction());
+			Vector<2, NumericT> lhs_point, lhs_dir, rhs_point, rhs_dir;
+			lhs_point.set(lhs.point());
+			lhs_dir.set(lhs.direction());
 			
-			rhsPoint.set(rhs.point());
-			rhsDir.set(rhs.direction());
+			rhs_point.set(rhs.point());
+			rhs_dir.set(rhs.direction());
 			
-			Line<2, NumericT> lhs2d(lhsPoint, lhsDir), rhs2d(rhsPoint, rhsDir);
-			if (lineIntersectionTest(lhs2d, rhs2d, leftTime, rightTime))
+			Line<2, NumericT> lhs2d(lhs_point, lhs_dir), rhs2d(rhs_point, rhs_dir);
+			if (line_intersectionTest(lhs2d, rhs2d, left_time, right_time))
 			{
 				// Collision occurred in 2-space, check in n-space
-				Vector<D, NumericT> lhsPt, rhsPt;
+				Vector<D, NumericT> lhs_pt, rhs_pt;
 				
-				lhsPt = lhs.pointAtTime(leftTime);
-				rhsPt = rhs.pointAtTime(rightTime);
+				lhs_pt = lhs.point_at_time(left_time);
+				rhs_pt = rhs.point_at_time(right_time);
 				
-				return lhsPt.equivalent(rhsPt);
+				return lhs_pt.equivalent(rhs_pt);
 			}
 			else
 			{
@@ -167,13 +167,13 @@ namespace Dream
 		}
 		
 		template <unsigned D, typename NumericT>
-		bool Line<D, NumericT>::intersectsWith (const Line<D, NumericT> & other, NumericT & thisTime, NumericT & otherTime) const
+		bool Line<D, NumericT>::intersects_with (const Line<D, NumericT> & other, NumericT & this_time, NumericT & other_time) const
 		{
-			return lineIntersectionTest(*this, other, thisTime, otherTime);
+			return line_intersectionTest(*this, other, this_time, other_time);
 		}
 		
 		template <typename NumericT>
-		bool raySlabsIntersection(NumericT start, NumericT dir, NumericT min, NumericT max, NumericT& tfirst, NumericT& tlast)
+		bool ray_slabs_intersection(NumericT start, NumericT dir, NumericT min, NumericT max, NumericT& tfirst, NumericT& tlast)
 		{
 			if (Number<NumericT>::equivalent(dir, 0))
 				return (start < max && start > min);
@@ -193,12 +193,12 @@ namespace Dream
 		}
 		
 		template <unsigned D, typename NumericT>
-		bool Line<D, NumericT>::intersectsWith(const AlignedBox<D, NumericT> &a, NumericT & t1, NumericT & t2) const {
+		bool Line<D, NumericT>::intersects_with(const AlignedBox<D, NumericT> &a, NumericT & t1, NumericT & t2) const {
 			t1 = (NumericT)0;
 			t2 = (NumericT)1;
 			
 			for (unsigned i = 0; i < D; i += 1) {
-				if (!raySlabsIntersection(m_point[i], m_direction[i], a.min()[i], a.max()[i], t1, t2)) return false;	
+				if (!ray_slabs_intersection(_point[i], _direction[i], a.min()[i], a.max()[i], t1, t2)) return false;	
 			}
 			
 			return true;
@@ -223,40 +223,40 @@ namespace Dream
 		}
 
 		template <unsigned D, typename NumericT>
-		LineSegment<D, NumericT>::LineSegment (const Zero &) : m_start(ZERO), m_end(ZERO)
+		LineSegment<D, NumericT>::LineSegment (const Zero &) : _start(ZERO), _end(ZERO)
 		{	
 		}
 		
 		template <unsigned D, typename NumericT>
-		LineSegment<D, NumericT>::LineSegment (const Identity &, const NumericT & n) : m_start(ZERO), m_end(IDENTITY, n)
+		LineSegment<D, NumericT>::LineSegment (const Identity &, const NumericT & n) : _start(ZERO), _end(IDENTITY, n)
 		{	
 		}
 		
 		template <unsigned D, typename NumericT>
-		LineSegment<D, NumericT>::LineSegment (const Line<D, NumericT> & line, const NumericT & startTime, const NumericT & endTime)
+		LineSegment<D, NumericT>::LineSegment (const Line<D, NumericT> & line, const NumericT & start_time, const NumericT & end_time)
 		{
-			m_start = line.pointAtTime(startTime);
-			m_end = line.pointAtTime(endTime);
+			_start = line.point_at_time(start_time);
+			_end = line.point_at_time(end_time);
 		}
 		
 		template <unsigned D, typename NumericT>
-		LineSegment<D, NumericT>::LineSegment (const VectorT & start, const VectorT & end) : m_start(start), m_end(end)
+		LineSegment<D, NumericT>::LineSegment (const VectorT & start, const VectorT & end) : _start(start), _end(end)
 		{
 		}
 		
 		template <unsigned D, typename NumericT>
-		bool LineSegment<D, NumericT>::intersectsWith (const AlignedBox<D, NumericT> &other, VectorT & at) const
+		bool LineSegment<D, NumericT>::intersects_with (const AlignedBox<D, NumericT> &other, VectorT & at) const
 		{
 			Vector<D, NumericT> d((end() - start()).normalize());
 			Line<D, NumericT> l(start(), d);
 			
-			l.intersectsWith(other, at);
+			l.intersects_with(other, at);
 			
 			return (end() - at).normalize() == d;
 		}
 				
 		template <typename NumericT>
-		bool lineIntersectionTest (const LineSegment<1, NumericT> & lhs, const LineSegment<1, NumericT> & rhs, LineSegment<1, NumericT> & overlap)
+		bool line_intersectionTest (const LineSegment<1, NumericT> & lhs, const LineSegment<1, NumericT> & rhs, LineSegment<1, NumericT> & overlap)
 		{
 			NumericT lmin, lmax, rmin, rmax;
 			
@@ -271,7 +271,7 @@ namespace Dream
 			if (rmin > rmax) std::swap(rmin, rmax);
 			
 			Vector<2, NumericT> o;
-			if (segmentsIntersect(vec(lmin, lmax), vec(rmin, rmax), o))
+			if (segments_intersect(vec(lmin, lmax), vec(rmin, rmax), o))
 			{
 				overlap = LineSegment<1, NumericT>(vec(o[0]), vec(o[1]));
 				return true;
@@ -283,7 +283,7 @@ namespace Dream
 		}
 		
 		template <typename NumericT>
-		bool lineIntersectionTest (const LineSegment<2, NumericT> & lhs, const LineSegment<2, NumericT> & rhs, NumericT & leftTime, NumericT & rightTime)
+		bool line_intersectionTest (const LineSegment<2, NumericT> & lhs, const LineSegment<2, NumericT> & rhs, NumericT & left_time, NumericT & right_time)
 		{
 			Vector<2, NumericT> t = lhs.offset();
 			Vector<2, NumericT> o = rhs.offset();
@@ -295,40 +295,40 @@ namespace Dream
 			if (denom == 0.0f) return false;
 			
 			float na = o[X] * (lhs.start()[Y] - rhs.start()[Y]) - o[Y] * (lhs.start()[X] - rhs.start()[X]);
-			leftTime = na / denom;
+			left_time = na / denom;
 			
 			// Quick return
-			if (leftTime < 0.0 || leftTime > 1.0) return false;
+			if (left_time < 0.0 || left_time > 1.0) return false;
 			
 			float nb = t[X] * (lhs.start()[Y] - rhs.start()[Y]) - t[Y] * (lhs.start()[X] - rhs.start()[X]);
-			rightTime = nb / denom;
+			right_time = nb / denom;
 			
 			// Quick return
-			if (rightTime < 0.0 || rightTime > 1.0) return false;
+			if (right_time < 0.0 || right_time > 1.0) return false;
 			
 			return true;
 		}
 		
 		template <unsigned D, typename NumericT>
-		bool lineIntersectionTest (const LineSegment<D, NumericT> & lhs, const LineSegment<D, NumericT> & rhs, NumericT & leftTime, NumericT & rightTime)
+		bool line_intersectionTest (const LineSegment<D, NumericT> & lhs, const LineSegment<D, NumericT> & rhs, NumericT & left_time, NumericT & right_time)
 		{
-			Vector<2, NumericT> lhsStart, lhsEnd, rhsStart, rhsEnd;
-			lhsStart.set(lhs.start());
-			lhsEnd.set(lhs.end());
+			Vector<2, NumericT> lhs_start, lhs_end, rhs_start, rhs_end;
+			lhs_start.set(lhs.start());
+			lhs_end.set(lhs.end());
 			
-			rhsStart.set(rhs.start());
-			rhsEnd.set(rhs.end());
+			rhs_start.set(rhs.start());
+			rhs_end.set(rhs.end());
 			
-			LineSegment<2, NumericT> lhs2d(lhsStart, lhsEnd), rhs2d(rhsStart, rhsEnd);
-			if (lineIntersectionTest(lhs2d, rhs2d, leftTime, rightTime))
+			LineSegment<2, NumericT> lhs2d(lhs_start, lhs_end), rhs2d(rhs_start, rhs_end);
+			if (line_intersectionTest(lhs2d, rhs2d, left_time, right_time))
 			{
 				// Collision occurred in 2-space, check in n-space
-				Vector<D, NumericT> lhsPt, rhsPt;
+				Vector<D, NumericT> lhs_pt, rhs_pt;
 				
-				lhsPt = lhs.pointAtTime(leftTime);
-				rhsPt = rhs.pointAtTime(rightTime);
+				lhs_pt = lhs.point_at_time(left_time);
+				rhs_pt = rhs.point_at_time(right_time);
 				
-				return lhsPt.equivalent(rhsPt);
+				return lhs_pt.equivalent(rhs_pt);
 			}
 			else
 			{
@@ -338,15 +338,15 @@ namespace Dream
 		}
 		
 		template <unsigned D, typename NumericT>
-		bool LineSegment<D, NumericT>::intersectsWith (const LineSegment<D, NumericT> & other, LineSegment<D, NumericT> & overlap) const
+		bool LineSegment<D, NumericT>::intersects_with (const LineSegment<D, NumericT> & other, LineSegment<D, NumericT> & overlap) const
 		{
-			return lineIntersectionTest(*this, other, overlap);
+			return line_intersectionTest(*this, other, overlap);
 		}
 		
 		template <unsigned D, typename NumericT>
-		bool LineSegment<D, NumericT>::intersectsWith (const LineSegment<D, NumericT> & other, NumericT & leftTime, NumericT & rightTime) const
+		bool LineSegment<D, NumericT>::intersects_with (const LineSegment<D, NumericT> & other, NumericT & left_time, NumericT & right_time) const
 		{
-			return lineIntersectionTest(*this, other, leftTime, rightTime);
+			return line_intersectionTest(*this, other, left_time, right_time);
 		}
 		
 	}

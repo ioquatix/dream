@@ -24,15 +24,15 @@ namespace Dream
 #pragma mark -
 #pragma mark class NotificationSource
 		
-		NotificationSource::NotificationSource (CallbackT callback) : m_callback(callback)
+		NotificationSource::NotificationSource (CallbackT callback) : _callback(callback)
 		{
 			
 		}
 		
-		void NotificationSource::processEvents (Loop * eventLoop, Event event)
+		void NotificationSource::process_events (Loop * event_loop, Event event)
 		{
 			if (event == NOTIFICATION)
-				m_callback(eventLoop, this, event);
+				_callback(event_loop, this, event);
 		}
 		
 		NotificationSource::~NotificationSource ()
@@ -40,21 +40,21 @@ namespace Dream
 			
 		}
 		
-		void stopRunLoopCallback (Loop * eventLoop, NotificationSource * note, Event enent)
+		void stop_run_loop_callback (Loop * event_loop, NotificationSource * note, Event enent)
 		{
-			eventLoop->stop();
+			event_loop->stop();
 		}
 		
-		REF(NotificationSource) NotificationSource::stopLoopNotification ()
+		REF(NotificationSource) NotificationSource::stop_loop_notification ()
 		{
-			return new NotificationSource(stopRunLoopCallback);
+			return new NotificationSource(stop_run_loop_callback);
 		}
 		
 #pragma mark -
 #pragma mark class TimerSource
 				
 		TimerSource::TimerSource (CallbackT callback, TimeT duration, bool repeats, bool strict) 
-			: m_cancelled(false), m_repeats(repeats), m_strict(strict), m_duration(duration), m_callback(callback)
+			: _cancelled(false), _repeats(repeats), _strict(strict), _duration(duration), _callback(callback)
 		{
 			
 		}
@@ -64,42 +64,42 @@ namespace Dream
 			
 		}
 		
-		void TimerSource::processEvents (Loop * rl, Event events)
+		void TimerSource::process_events (Loop * rl, Event events)
 		{
-			if (!m_cancelled)
-				m_callback(rl, this, events);
+			if (!_cancelled)
+				_callback(rl, this, events);
 		}
 		
 		bool TimerSource::repeats () const
 		{
-			if (m_cancelled)
+			if (_cancelled)
 				return false;
 			
-			return m_repeats;
+			return _repeats;
 		}
 		
-		TimeT TimerSource::nextTimeout (const TimeT & lastTimeout, const TimeT & currentTime) const
+		TimeT TimerSource::next_timeout (const TimeT & last_timeout, const TimeT & current_time) const
 		{
 			// This means that TimerSource will attempt to "catch-up"
-			//return lastTimeout + m_duration;
+			//return last_timeout + _duration;
 			
 			// This means that TimerSource will process updates as is possible, and might drop
 			// updates if they are in the past
-			if (!m_strict && lastTimeout + m_duration < currentTime)
-				return currentTime;
+			if (!_strict && last_timeout + _duration < current_time)
+				return current_time;
 			else
-				return lastTimeout + m_duration;
+				return last_timeout + _duration;
 		}
 		
 		void TimerSource::cancel ()
 		{
-			m_cancelled = true;
+			_cancelled = true;
 		}
 		
 #pragma mark -
 #pragma mark class IFileDescriptorSource
 		
-		void IFileDescriptorSource::debugFileDescriptorFlags (int fd)
+		void IFileDescriptorSource::debug_file_descriptor_flags (int fd)
 		{
 			using namespace std;
 			
@@ -110,11 +110,11 @@ namespace Dream
 			if (flags & O_NONBLOCK)
 				cout << " NONBLOCK";
 			
-			int accessMode = flags & O_ACCMODE;
+			int access_mode = flags & O_ACCMODE;
 			
-			if (accessMode == O_RDONLY)
+			if (access_mode == O_RDONLY)
 				cout << " RDONLY";
-			else if (accessMode == O_WRONLY)
+			else if (access_mode == O_WRONLY)
 				cout << " WRONLY";
 			else
 				cout << " RDWR";
@@ -131,9 +131,9 @@ namespace Dream
 			cout << endl;
 		}
 		
-		void IFileDescriptorSource::setWillBlock (bool value)
+		void IFileDescriptorSource::set_will_block (bool value)
 		{
-			FileDescriptorT curfd = fileDescriptor();
+			FileDescriptorT curfd = file_descriptor();
 			
 			if (value == false) {
 				fcntl(curfd, F_SETFL, fcntl(curfd, F_GETFL) | O_NONBLOCK);
@@ -142,15 +142,15 @@ namespace Dream
 			}
 		}
 		
-		bool IFileDescriptorSource::willBlock ()
+		bool IFileDescriptorSource::will_block ()
 		{
-			return !(fcntl(fileDescriptor(), F_GETFL) & O_NONBLOCK);
+			return !(fcntl(file_descriptor(), F_GETFL) & O_NONBLOCK);
 		}
 		
 #pragma mark -
 #pragma mark class FileDescriptorSource
 		
-		FileDescriptorSource::FileDescriptorSource (CallbackT callback, int fd) : m_fd(fd), m_callback(callback)
+		FileDescriptorSource::FileDescriptorSource (CallbackT callback, int fd) : _fd(fd), _callback(callback)
 		{
 			
 		}
@@ -160,27 +160,27 @@ namespace Dream
 			
 		}
 		
-		void FileDescriptorSource::processEvents (Loop * eventLoop, Event events)
+		void FileDescriptorSource::process_events (Loop * event_loop, Event events)
 		{
-			m_callback(eventLoop, this, events);
+			_callback(event_loop, this, events);
 		}
 		
-		FileDescriptorT FileDescriptorSource::fileDescriptor () const
+		FileDescriptorT FileDescriptorSource::file_descriptor () const
 		{
-			return m_fd;
+			return _fd;
 		}
 		
-		REF(FileDescriptorSource) FileDescriptorSource::forStandardIn (CallbackT callback)
+		REF(FileDescriptorSource) FileDescriptorSource::for_standard_in (CallbackT callback)
 		{
 			return new FileDescriptorSource(callback, STDIN_FILENO);
 		}
 		
-		REF(FileDescriptorSource) FileDescriptorSource::forStandardOut (CallbackT callback)
+		REF(FileDescriptorSource) FileDescriptorSource::for_standard_out (CallbackT callback)
 		{
 			return new FileDescriptorSource(callback, STDOUT_FILENO);
 		}
 		
-		REF(FileDescriptorSource) FileDescriptorSource::forStandardError (CallbackT callback)
+		REF(FileDescriptorSource) FileDescriptorSource::for_standard_error (CallbackT callback)
 		{
 			return new FileDescriptorSource(callback, STDERR_FILENO);			
 		}
@@ -190,37 +190,37 @@ namespace Dream
 		
 		NotificationPipeSource::NotificationPipeSource ()
 		{
-			int result = pipe(m_filedes);
+			int result = pipe(_filedes);
 			ensure(result == 0);
 		}
 		
 		NotificationPipeSource::~NotificationPipeSource ()
 		{
-			close(m_filedes[0]);
-			close(m_filedes[1]);
+			close(_filedes[0]);
+			close(_filedes[1]);
 		}
 		
-		FileDescriptorT NotificationPipeSource::fileDescriptor () const
+		FileDescriptorT NotificationPipeSource::file_descriptor () const
 		{
 			// Read end
-			return m_filedes[0];
+			return _filedes[0];
 		}
 		
-		void NotificationPipeSource::notifyEventLoop () const
+		void NotificationPipeSource::notify_event_loop () const
 		{
 			// Send a byte down the pipe
-			write(m_filedes[1], "\0", 1);
+			write(_filedes[1], "\0", 1);
 		}
 		
-		void NotificationPipeSource::processEvents (Loop * loop, Event event)
+		void NotificationPipeSource::process_events (Loop * loop, Event event)
 		{
 			char buf[32];
 			
 			// Discard all notification bytes
-			read(m_filedes[0], &buf, 32);
+			read(_filedes[0], &buf, 32);
 			
 			// Process urgent notifications
-			loop->processNotifications();
+			loop->process_notifications();
 		}
 		
 		

@@ -33,12 +33,12 @@ namespace Dream
 				class ViewContext : public Context
 				{
 					protected:
-						DOpenGLView * m_graphicsView;
+						DOpenGLView * _graphics_view;
 						
 						ViewContext ();
 						
 					public:
-						ViewContext (DOpenGLView * graphicsView);
+						ViewContext (DOpenGLView * graphics_view);
 						virtual ~ViewContext ();
 						
 						virtual void start ();
@@ -46,17 +46,17 @@ namespace Dream
 						
 						virtual Vec2u size ();
 						
-						virtual void makeCurrent ();
-						virtual void flushBuffers ();
+						virtual void make_current ();
+						virtual void flush_buffers ();
 				};
 				
 				/// This context manages a window which can be used to display content.
 				class WindowContext : public ViewContext, implements IInputHandler {
 					protected:
-						UIWindow * m_window;
+						UIWindow * _window;
 						
 						// Setup the graphics view
-						void setupGraphicsView (PTR(Dictionary) config, CGRect frame);
+						void setup_graphics_view (PTR(Dictionary) config, CGRect frame);
 											
 					public:
 						WindowContext (PTR(Dictionary) config);

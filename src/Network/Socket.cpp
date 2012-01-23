@@ -43,94 +43,94 @@ namespace Dream {
 #pragma mark -
 #pragma mark class Socket
 		
-		Socket::Socket (int s) : m_socket(s) {
+		Socket::Socket (int s) : _socket(s) {
 		}
 		
-		Socket::Socket () : m_socket(-1) {
+		Socket::Socket () : _socket(-1) {
 		}
 		
 		Socket::~Socket () {
-			if (isValid()) {
+			if (is_valid()) {
 				close();
 			}
 		}
 		
-		void Socket::openSocket (AddressFamily af, SocketType st, SocketProtocol sp) {
-			ensure(m_socket == -1);
+		void Socket::open_socket (AddressFamily af, SocketType st, SocketProtocol sp) {
+			ensure(_socket == -1);
 			
-			m_socket = ::socket(af, st, sp);
-			// std::cerr << "=====> Opening socket " << m_socket << std::endl;
+			_socket = ::socket(af, st, sp);
+			// std::cerr << "=====> Opening socket " << _socket << std::endl;
 			
-			if (m_socket == -1) {
-				perror("Socket::openSocket");
+			if (_socket == -1) {
+				perror("Socket::open_socket");
 			}
 		}
 		
-		void Socket::openSocket (const Address & a) {
-			openSocket(a.addressFamily(), a.socketType(), a.socketProtocol());
+		void Socket::open_socket (const Address & a) {
+			open_socket(a.address_family(), a.socket_type(), a.socket_protocol());
 		}
 		
-		Socket::Socket (AddressFamily af, SocketType st, SocketProtocol sp) : m_socket(-1) {
-			openSocket(af, st, sp);
+		Socket::Socket (AddressFamily af, SocketType st, SocketProtocol sp) : _socket(-1) {
+			open_socket(af, st, sp);
 		}
 		
 		void Socket::shutdown (int mode) {
-			ensure(isValid());
+			ensure(is_valid());
 			
-			if (::shutdown(m_socket, mode) == -1) {
+			if (::shutdown(_socket, mode) == -1) {
 				perror("Socket::shutdown");
 			}
 		}
 		
 		void Socket::close () {
-			ensure(isValid());
+			ensure(is_valid());
 			
-			// std::cerr << "=====< Closing socket " << m_socket << std::endl;
+			// std::cerr << "=====< Closing socket " << _socket << std::endl;
 			
-			if (::close(m_socket) == -1) {
+			if (::close(_socket) == -1) {
 				perror("Socket::close");
 			}
 			
-			m_socket = -1;
+			_socket = -1;
 		}
 		
-		FileDescriptorT Socket::fileDescriptor () const
+		FileDescriptorT Socket::file_descriptor () const
 		{
-			return m_socket; 
+			return _socket; 
 		}
 		
-		void Socket::setNoDelayMode (bool mode) {
+		void Socket::set_no_delay_mode (bool mode) {
 			int flag = mode ? 1 : 0;
 			
 			// IPPROTO_TCP / SOL_SOCKET
-			int result = setsockopt(m_socket, SOL_SOCKET, TCP_NODELAY, (char*)&flag, sizeof(int));
+			int result = setsockopt(_socket, SOL_SOCKET, TCP_NODELAY, (char*)&flag, sizeof(int));
 			
 			if (result < 0) {
-				perror("Socket::setNoDelayMode");
+				perror("Socket::set_no_delay_mode");
 			}
 		}
 		
-		int Socket::socketSpecificError () const {
-			ensure(isValid());
+		int Socket::socket_specific_error () const {
+			ensure(is_valid());
 			
 			int error = 0;
 			socklen_t len = sizeof(error);
 			
 			//Get error code specific to this socket
-			getsockopt(m_socket, SOL_SOCKET, SO_ERROR, &error, &len);
+			getsockopt(_socket, SOL_SOCKET, SO_ERROR, &error, &len);
 			
 			return error;
 		}
 		
-		bool Socket::isValid () const {
-			return m_socket != -1;
+		bool Socket::is_valid () const {
+			return _socket != -1;
 		}
 		
-		bool Socket::isConnected () const {
+		bool Socket::is_connected () const {
 			sockaddr sa;
 			socklen_t len = sizeof(sockaddr);
 			
-			int err = getpeername(m_socket, &sa, &len);
+			int err = getpeername(_socket, &sa, &len);
 			
 			if (errno == ENOTCONN || err == -1) {
 				return false;
@@ -139,12 +139,12 @@ namespace Dream {
 			return true;
 		}
 		
-		void Socket::shutdownRead()
+		void Socket::shutdown_read()
 		{
 			shutdown(SHUT_RD); 
 		}
 
-		void Socket::shutdownWrite()
+		void Socket::shutdown_write()
 		{
 			shutdown(SHUT_WR);
 		}
@@ -159,7 +159,7 @@ namespace Dream {
 			
 			const ByteT * data = buf.begin() + offset;
 			
-			sz = ::send(m_socket, data, sz, flags);
+			sz = ::send(_socket, data, sz, flags);
 			
 			if (sz == 0)
 				throw ConnectionShutdown("write shutdown");
@@ -187,7 +187,7 @@ namespace Dream {
 			buf.resize(buf.capacity());
 			
 			// We read the size in the buffer
-			IndexT sz = ::recv(m_socket, (void*)&buf[offset], buf.size() - offset, flags);
+			IndexT sz = ::recv(_socket, (void*)&buf[offset], buf.size() - offset, flags);
 			
 			if (sz == 0)
 				throw ConnectionShutdown("read shutdown");
@@ -211,69 +211,69 @@ namespace Dream {
 		
 		
 		
-		ServerSocket::ServerSocket (const Address &serverAddress, unsigned listenCount) {
-			bind(serverAddress);
-			listen(listenCount);
+		ServerSocket::ServerSocket (const Address &server_address, unsigned listen_count) {
+			bind(server_address);
+			listen(listen_count);
 			
-			setWillBlock(false);
+			set_will_block(false);
 						
-			std::cerr << "Server " << this << " starting on address: " << serverAddress.description() << " fd: " << fileDescriptor() << std::endl;
+			std::cerr << "Server " << this << " starting on address: " << server_address.description() << " fd: " << file_descriptor() << std::endl;
 		}
 		
 		ServerSocket::~ServerSocket () {
 			
 		}
 		
-		void ServerSocket::processEvents (Events::Loop * eventLoop, Events::Event events)
+		void ServerSocket::process_events (Events::Loop * event_loop, Events::Event events)
 		{
 			if (events & Events::READ_READY)
 			{
-				ensure(connectionCallback);
+				ensure(connection_callback);
 				
-				SocketHandleT socketHandle;
+				SocketHandleT socket_handle;
 				Address address;
 				
-				while(accept(socketHandle, address))
-					connectionCallback(eventLoop, this, socketHandle, address);
+				while(accept(socket_handle, address))
+					connection_callback(event_loop, this, socket_handle, address);
 			}
 		}
 		
-		bool ServerSocket::bind (const Address & na, bool reuseAddr) {
-			openSocket(na);
+		bool ServerSocket::bind (const Address & na, bool reuse_addr) {
+			open_socket(na);
 			
-			ensure(isValid() && na.isValid());
+			ensure(is_valid() && na.is_valid());
 			
-			if (reuseAddr) {
-				setReuseAddress(true);
+			if (reuse_addr) {
+				set_reuse_address(true);
 			}
 			
-			if (::bind(m_socket, na.addressData(), na.addressDataSize()) == -1) {
+			if (::bind(_socket, na.address_data(), na.address_dataSize()) == -1) {
 				perror("Socket::bind");
 				return false;
 			}
 			
-			m_boundAddress = na;
+			_bound_address = na;
 			
 			return true;
 		}
 		
 		void ServerSocket::listen (unsigned n) {
-			if (::listen(m_socket, n) == -1) {
+			if (::listen(_socket, n) == -1) {
 				perror("Socket::listen");
 			}
 		}
 		
-		const Address & ServerSocket::boundAddress () const
+		const Address & ServerSocket::bound_address () const
 		{
-			return m_boundAddress;
+			return _bound_address;
 		}
 		
 		bool ServerSocket::accept (SocketHandleT & h, Address & na) {
-			ensure(isValid());
+			ensure(is_valid());
 			
 			socklen_t len = sizeof(sockaddr_storage);
 			sockaddr_storage ss;
-			h = ::accept(m_socket, (sockaddr*)&ss, &len);
+			h = ::accept(_socket, (sockaddr*)&ss, &len);
 			
 			if(h == -1)
 			{
@@ -284,19 +284,19 @@ namespace Dream {
 			}
 			
 			// Copy address
-			na = Address(m_boundAddress, (sockaddr*)&ss, len);
+			na = Address(_bound_address, (sockaddr*)&ss, len);
 			
 			return true;
 		}
 		
-		void ServerSocket::setReuseAddress (bool enabled) {
-			ensure(isValid());
+		void ServerSocket::set_reuse_address (bool enabled) {
+			ensure(is_valid());
 			
 			int val = (int)enabled;
-			int r = setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(int));
+			int r = setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(int));
 			
 			if (r == -1) {
-				perror("Socket::setReuseAddress");
+				perror("Socket::set_reuse_address");
 			}
 		}
 		
@@ -306,8 +306,8 @@ namespace Dream {
 		
 		
 		ClientSocket::ClientSocket(const SocketHandleT & h, const Address & address) {
-			m_socket = h;
-			m_remoteAddress = address;
+			_socket = h;
+			_remote_address = address;
 		}
 		
 		ClientSocket::ClientSocket() {
@@ -318,19 +318,19 @@ namespace Dream {
 			
 		}
 		
-		const Address & ClientSocket::remoteAddress () const
+		const Address & ClientSocket::remote_address () const
 		{
-			return m_remoteAddress;
+			return _remote_address;
 		}
 		
 		bool ClientSocket::connect (const Address & na) {
-			ensure(!isValid());
+			ensure(!is_valid());
 			
-			openSocket(na);
+			open_socket(na);
 			
-			ensure(isValid() && na.isValid());
+			ensure(is_valid() && na.is_valid());
 			
-			if (::connect(m_socket, na.addressData(), na.addressDataSize()) == -1)
+			if (::connect(_socket, na.address_data(), na.address_dataSize()) == -1)
 			{
 				if (errno == ECONNRESET)
 					throw ConnectionResetByPeer("connect error");
@@ -340,7 +340,7 @@ namespace Dream {
 				return false;
 			}
 			
-			m_remoteAddress = na;
+			_remote_address = na;
 			
 			return true;
 		}
@@ -355,7 +355,7 @@ namespace Dream {
 			return false;
 		}
 		
-		void ClientSocket::processEvents (Events::Loop * eventLoop, Events::Event events)
+		void ClientSocket::process_events (Events::Loop * event_loop, Events::Event events)
 		{
 			
 		}
@@ -368,7 +368,7 @@ namespace Dream {
 		bool g_messageSent;
 		IndexT g_messageLengthSent, g_messageLengthReceived;
 		bool g_clientConnected;
-		bool g_messageReceived;
+		bool g_message_received;
 		
 		const std::string g_message("Hello World!");
 		
@@ -377,7 +377,7 @@ namespace Dream {
 			public:
 				TestClientSocket (const SocketHandleT & h, const Address & address) : ClientSocket(h, address)
 				{				
-					Core::StaticBuffer buf = Core::StaticBuffer::forCString(g_message.c_str(), false);
+					Core::StaticBuffer buf = Core::StaticBuffer::for_cstring(g_message.c_str(), false);
 					
 					std::cerr << "Sending message from " << this << "..." << std::endl;
 					
@@ -391,51 +391,51 @@ namespace Dream {
 				{	
 				}
 				
-				virtual void processEvents(Events::Loop * eventLoop, Events::Event events)
+				virtual void process_events(Events::Loop * event_loop, Events::Event events)
 				{
 					if (events & Events::READ_READY) {
 						Core::DynamicBuffer buf(1024, true);
 						
 						recv(buf);
 						
-						g_messageReceived = true;
+						g_message_received = true;
 						g_messageLengthReceived = buf.size();
 						
-						std::string incomingMessage(buf.begin(), buf.end());
+						std::string incoming_message(buf.begin(), buf.end());
 						
-						std::cerr << "Message received by " << this << " fd " << this->fileDescriptor() << " : " << incomingMessage << std::endl;
+						std::cerr << "Message received by " << this << " fd " << this->file_descriptor() << " : " << incoming_message << std::endl;
 						
-						g_messageReceived = (g_message == incomingMessage);
+						g_message_received = (g_message == incoming_message);
 						
-						eventLoop->stopMonitoringFileDescriptor(this);
+						event_loop->stop_monitoring_file_descriptor(this);
 					}
 				}
 		};
 		
 		class TestServerSocket : public ServerSocket
 		{
-			REF(TestClientSocket) m_testSocket;
+			REF(TestClientSocket) _test_socket;
 		
 		public:	
-			virtual void processEvents(Events::Loop * eventLoop, Events::Event events)
+			virtual void process_events(Events::Loop * event_loop, Events::Event events)
 			{
-				if (events & Events::READ_READY & !m_testSocket) {
+				if (events & Events::READ_READY & !_test_socket) {
 					std::cerr << "Test server has received connection..." << std::endl;
 					g_clientConnected = true;
 					
 					SocketHandleT h;
 					Address a;
 					if (accept(h, a))
-						m_testSocket = new TestClientSocket(h, a);
-					eventLoop->monitorFileDescriptor(m_testSocket);
+						_test_socket = new TestClientSocket(h, a);
+					event_loop->monitor(_test_socket);
 					
-					eventLoop->stopMonitoringFileDescriptor(this);
+					event_loop->stop_monitoring_file_descriptor(this);
 				} else {
 					std::cerr << "More than one connection received!" << std::endl;
 				}
 			}
 			
-			TestServerSocket (const Address &serverAddress, unsigned listenCount = 100) : ServerSocket(serverAddress, listenCount)
+			TestServerSocket (const Address &server_address, unsigned listen_count = 100) : ServerSocket(server_address, listen_count)
 			{
 				
 			}
@@ -448,44 +448,44 @@ namespace Dream {
 		
 		
 		
-		static void stopCallback (Events::Loop * eventLoop, Events::TimerSource *, Events::Event event)
+		static void stop_callback (Events::Loop * event_loop, Events::TimerSource *, Events::Event event)
 		{
 			std::cerr << "Stopping test" << std::endl;
-			eventLoop->stop();
+			event_loop->stop();
 		}
 		
 		UNIT_TEST(Socket) {
 			testing("Network Communication");
-			g_clientConnected = g_messageSent = g_messageReceived = false;
+			g_clientConnected = g_messageSent = g_message_received = false;
 			g_messageLengthSent = g_messageLengthReceived = 0;
 			
-			REF(Events::Loop) eventLoop = new Events::Loop;
+			REF(Events::Loop) event_loop = new Events::Loop;
 			
 			// This is a very simple example of a network server listening on a single port.
 			// This server can only accept one connection 
 			
 			{
-				Address localhost = Address::interfaceAddressesForPort(2000, SOCK_STREAM)[0];
+				Address localhost = Address::interface_addresses_for_port(2000, SOCK_STREAM)[0];
 				std::cerr << "Initializing server..." << std::endl;
-				REF(TestServerSocket) serverSocket = new TestServerSocket(localhost);
+				REF(TestServerSocket) server_socket = new TestServerSocket(localhost);
 				std::cerr << "Initializing client..." << std::endl;
-				REF(TestClientSocket) clientSocket = new TestClientSocket;
+				REF(TestClientSocket) client_socket = new TestClientSocket;
 				
 				std::cerr << "Connecting to server..." << std::endl;
-				clientSocket->connect(localhost);
+				client_socket->connect(localhost);
 			
-				eventLoop->monitorFileDescriptor(serverSocket);
-				eventLoop->monitorFileDescriptor(clientSocket);
-				eventLoop->scheduleTimer(new Events::TimerSource(stopCallback, 1));
+				event_loop->monitor(server_socket);
+				event_loop->monitor(client_socket);
+				event_loop->schedule_timer(new Events::TimerSource(stop_callback, 1));
 			}
 			
-			eventLoop->runForever ();
-			eventLoop = NULL;
+			event_loop->run_forever ();
+			event_loop = NULL;
 			
 			check(g_clientConnected) << "Client connected";
 			check(g_messageSent) << "Message sent";
 			check(g_messageLengthSent == g_messageLengthReceived) << "Message length is correct";
-			check(g_messageReceived) << "Message received";
+			check(g_message_received) << "Message received";
 		}
 #endif
 		

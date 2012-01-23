@@ -29,12 +29,12 @@ namespace Dream {
 			typedef Vector<3, NumericRealT> VectorT;
 			typedef Line<3, NumericT> LineT;
 			
-			MatrixT transformationToMateWithLine (const LineT & other, const VectorT & normal) const;
-			MatrixT translationToMateWithPoint (const VectorT & point) const;
-			MatrixT rotationToMateWithDirection (const VectorT & direction, const VectorT & normal) const;
+			MatrixT transformation_to_mate_with_line (const LineT & other, const VectorT & normal) const;
+			MatrixT translation_to_mate_with_point (const VectorT & point) const;
+			MatrixT rotation_to_mate_with_direction (const VectorT & direction, const VectorT & normal) const;
 			
-			void rotate (const VectorT & rotationNormal, const NumericRealT & angle);
-			LineT rotatedLine (const VectorT & rotationNormal, const NumericRealT & angle) const;
+			void rotate (const VectorT & rotation_normal, const NumericRealT & angle);
+			LineT rotated_line (const VectorT & rotation_normal, const NumericRealT & angle) const;
 		};
 		
 		template <unsigned D, typename NumericT>
@@ -43,8 +43,8 @@ namespace Dream {
 			typedef typename RealType<NumericT>::RealT NumericRealT;
 			typedef Vector<D, NumericT> VectorT;
 		
-			VectorT m_point;
-			VectorT m_direction;
+			VectorT _point;
+			VectorT _direction;
 			
 		public:
 			Line ();
@@ -56,46 +56,46 @@ namespace Dream {
 			
 			const VectorT & point () const
 			{
-				return m_point;
+				return _point;
 			}
 			
 			const VectorT & direction () const
 			{
-				return m_direction;
+				return _direction;
 			}
 			
-			void setPoint (const VectorT & point)
+			void set_point (const VectorT & point)
 			{
-				m_point = point;
+				_point = point;
 			}
 			
-			void setDirection (const VectorT & direction)
+			void set_direction (const VectorT & direction)
 			{
-				m_direction = direction;
+				_direction = direction;
 			}
 			
-			VectorT pointAtTime (const NumericT & t) const
+			VectorT point_at_time (const NumericT & t) const
 			{
 				return point() + (direction() * t);	
 			}
 			
 			/// Returns the time on the line where a point is closest to the given point.
-			NumericT timeForClosestPoint (const VectorT & p3) const;
+			NumericT time_for_closest_point (const VectorT & p3) const;
 			
-			VectorT pointForClosestPoint (const VectorT & p) const
+			VectorT point_for_closest_point (const VectorT & p) const
 			{
-				return pointAtTime(timeForClosestPoint(p));
+				return point_at_time(time_for_closest_point(p));
 			}
 			
-			NumericRealT shortestDistanceToPoint (const VectorT &p) const
+			NumericRealT shortest_distance_to_point (const VectorT &p) const
 			{			
-				return (p - pointForClosestPoint(p)).length();
+				return (p - point_for_closest_point(p)).length();
 			}
 			
 			// Calculates the factor for line equations
 			NumericRealT factor (const NumericRealT & v, IndexT i) const
 			{
-				return (v + m_point[i]) / (NumericRealT)m_direction[i];
+				return (v + _point[i]) / (NumericRealT)_direction[i];
 			}
 			
 			Line<D-1, NumericT> reduce () const
@@ -106,29 +106,29 @@ namespace Dream {
 			bool equivalent (const Line<D, NumericT> & other)
 			{
 				// Are we pointing in the same direction
-				if (!m_direction.equivalent(other.m_direction))
+				if (!_direction.equivalent(other._direction))
 					return false;
 				
 				// Is the distance between the parallel lines equivalent to zero?
-				return Number<NumericT>::equivalent(shortestDistanceToPoint(other.m_point), 0);
+				return Number<NumericT>::equivalent(shortest_distance_to_point(other._point), 0);
 			}
 			
-			bool intersectsWith (const Line<D, NumericT> & other, NumericT & thisTime, NumericT & otherTime) const;
-			bool intersectsWith (const AlignedBox<D, NumericT> & other, NumericT & t1, NumericT & t2) const;
+			bool intersects_with (const Line<D, NumericT> & other, NumericT & this_time, NumericT & other_time) const;
+			bool intersects_with (const AlignedBox<D, NumericT> & other, NumericT & t1, NumericT & t2) const;
 			
 			/// Helper function for intersection testing where less information is needed.
-			bool intersectsWith (const AlignedBox<D, NumericT> & other, VectorT & at) const
+			bool intersects_with (const AlignedBox<D, NumericT> & other, VectorT & at) const
 			{
 				NumericT t1, t2;
 				
-				bool result = intersectsWith(other, t1, t2);
-				if (result) at = pointAtTime(t1);
+				bool result = intersects_with(other, t1, t2);
+				if (result) at = point_at_time(t1);
 				
 				return result;
 			}
 			
 			///@todo Implement this function
-			/// bool clipToBox (const AlignedBox<D, NumericT> & other, LineSegment<D, NumericT> & segment) const;
+			/// bool clip_to_box (const AlignedBox<D, NumericT> & other, LineSegment<D, NumericT> & segment) const;
 			
 			/// Construct a line given two points
 			static Line from (const VectorT & from, const VectorT & to) {
@@ -152,70 +152,70 @@ namespace Dream {
 			typedef Vector<D, NumericT> VectorT;
 			
 		protected:
-			VectorT m_start;
-			VectorT m_end;
+			VectorT _start;
+			VectorT _end;
 			
 		public:
 			LineSegment ();
 			LineSegment (const Zero &);
 			LineSegment (const Identity &, const NumericT & n = 1);
 			
-			LineSegment (const Line<D, NumericT> & line, const NumericT & startTime, const NumericT & endTime);
+			LineSegment (const Line<D, NumericT> & line, const NumericT & start_time, const NumericT & end_time);
 			LineSegment (const VectorT & start, const VectorT & end);
 			
-			VectorT pointAtTime(const RealT & t) const
+			VectorT point_at_time(const RealT & t) const
 			{
-				return m_start + (offset() * t);
+				return _start + (offset() * t);
 			}
 			
-			Line<D, NumericT> toLine () const
+			Line<D, NumericT> to_line () const
 			{
 				return Line<D, NumericT>(start(), offset().normalize()); 
 			}
 			
 			/// Is this segment zero-length?
-			bool isDegenerate ()
+			bool is_degenerate ()
 			{
-				return m_start.equivalent(m_end);
+				return _start.equivalent(_end);
 			}
 			
-			bool intersectsWith (const AlignedBox<D, NumericT> & other, VectorT & at) const;
-			bool intersectsWith (const LineSegment<D, NumericT> & other, NumericT & thisTime, NumericT & otherTime) const;
-			bool intersectsWith (const LineSegment<D, NumericT> & other, LineSegment<D, NumericT> & overlap) const;
+			bool intersects_with (const AlignedBox<D, NumericT> & other, VectorT & at) const;
+			bool intersects_with (const LineSegment<D, NumericT> & other, NumericT & this_time, NumericT & other_time) const;
+			bool intersects_with (const LineSegment<D, NumericT> & other, LineSegment<D, NumericT> & overlap) const;
 			
 			const VectorT & start () const
 			{
-				return m_start;
+				return _start;
 			}
 			
 			const VectorT & end () const
 			{
-				return m_end;
+				return _end;
 			}
 			
 			VectorT & start ()
 			{
-				return m_start;
+				return _start;
 			}
 			
 			VectorT & end ()
 			{
-				return m_end;
+				return _end;
 			}
 			
 			VectorT center ()
 			{
-				return (m_start + m_end) / 2.0;
+				return (_start + _end) / 2.0;
 			}
 			
 			VectorT offset () const
 			{
-				return m_end - m_start;
+				return _end - _start;
 			}
 			
 			Vector<D> direction () const
 			{
-				return (m_end - m_start).normalizedVector();
+				return (_end - _start).normalized_vector();
 			}
 
 		};

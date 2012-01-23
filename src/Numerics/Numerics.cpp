@@ -57,7 +57,7 @@ namespace Dream
 
 			static const FIntT S = FIntT (0x80ULL << ((sizeof (FloatT) - 1) * 8));
 
-			static FIntT convertToInteger (const FloatT & f)
+			static FIntT convert_toInteger (const FloatT & f)
 			{
 				Conversion c;
 				c.f = f;
@@ -68,7 +68,7 @@ namespace Dream
 					return c.i;
 			}
 
-			static FloatT convertToFloat (const FIntT & i)
+			static FloatT convert_toFloat (const FIntT & i)
 			{
 				Conversion c;
 				c.i = i;
@@ -79,7 +79,7 @@ namespace Dream
 				return c.f;
 			}
 
-			static bool isZero (const FIntT & value, const FIntT & threshold)
+			static bool is_zero (const FIntT & value, const FIntT & threshold)
 			{
 				if (value < 0)
 					return (value + threshold) > 0;
@@ -87,36 +87,36 @@ namespace Dream
 					return (value - threshold) < 0;
 			}
 
-			static bool isZero (const FloatT & value, const FIntT & threshold)
+			static bool is_zero (const FloatT & value, const FIntT & threshold)
 			{
-				FIntT p = convertToInteger(value);
+				FIntT p = convert_toInteger(value);
 
-				return isZero (p, threshold);
+				return is_zero (p, threshold);
 			}
 
-			static bool isZero (const FloatT & value)
+			static bool is_zero (const FloatT & value)
 			{
-				return isZero(value, FloatingPointIntegerTraits<t>::ACCURACY);
+				return is_zero(value, FloatingPointIntegerTraits<t>::ACCURACY);
 			}
 
-			static bool isZero (const FIntT & value)
+			static bool is_zero (const FIntT & value)
 			{
-				return isZero(value, FloatingPointIntegerTraits<t>::ACCURACY);
+				return is_zero(value, FloatingPointIntegerTraits<t>::ACCURACY);
 			}
 
-			static bool equalWithinTolerance (const FloatT & a, const FloatT & b, const unsigned & maxUlps)
+			static bool equal_within_tolerance (const FloatT & a, const FloatT & b, const unsigned & max_ulps)
 			{
-				// Make sure maxUlps is non-negative and small enough that the
+				// Make sure max_ulps is non-negative and small enough that the
 				// default NAN won't compare as equal to anything.
-				ensure(maxUlps < 4 * 1024 * 1024);
+				ensure(max_ulps < 4 * 1024 * 1024);
 
 				// Make lexicographically ordered as a twos-complement int
-				FIntT aInt = convertToInteger(a);
-				FIntT bInt = convertToInteger(b);
+				FIntT a_int = convert_toInteger(a);
+				FIntT b_int = convert_toInteger(b);
 
-				FIntT intDiff = Number<FIntT>::abs(aInt - bInt);
+				FIntT int_diff = Number<FIntT>::abs(a_int - b_int);
 
-				if (intDiff <= maxUlps)
+				if (int_diff <= max_ulps)
 					return true;
 
 				return false;
@@ -125,16 +125,16 @@ namespace Dream
 			static bool equivalent (const FloatT & a, const FloatT & b)
 			{
 				// Make lexicographically ordered as a twos-complement int
-				FIntT aInt = convertToInteger(a);
-				FIntT bInt = convertToInteger(b);
+				FIntT a_int = convert_toInteger(a);
+				FIntT b_int = convert_toInteger(b);
 
-				if (aInt == bInt) return true;
+				if (a_int == b_int) return true;
 
-				if (isZero(aInt) && isZero(bInt)) return true;
+				if (is_zero(a_int) && is_zero(b_int)) return true;
 
-				FIntT intDiff = Number<FIntT>::abs(aInt - bInt);
+				FIntT int_diff = Number<FIntT>::abs(a_int - b_int);
 
-				if (intDiff <= 100)
+				if (int_diff <= 100)
 					return true;
 
 				return false;
@@ -142,7 +142,7 @@ namespace Dream
 		};
 
 		// http://acius2.blogspot.com/2007/11/calculating-next-power-of-2.html
-		uint32_t nextHighestPowerOf2 (uint32_t n)
+		uint32_t next_highest_power_of2 (uint32_t n)
 		{
 			if (n == 0) return 0;
 			
@@ -156,21 +156,21 @@ namespace Dream
 			return n;
 		}
 
-		bool isPowerOf2 (uint32_t k)
+		bool is_power_of2 (uint32_t k)
 		{
 			return (k & k-1) == 0;
 		}
 
 		// Usable AlmostEqual function
-		bool equalWithinTolerance (const float & a, const float & b, const unsigned & maxUlps)
+		bool equal_within_tolerance (const float & a, const float & b, const unsigned & max_ulps)
 		{
-			return FloatingPointTraits<float>::equalWithinTolerance(a, b, maxUlps);
+			return FloatingPointTraits<float>::equal_within_tolerance(a, b, max_ulps);
 		}
 
 		// Usable AlmostEqual function
-		bool equalWithinTolerance (const double & a, const double & b, const unsigned & maxUlps)
+		bool equal_within_tolerance (const double & a, const double & b, const unsigned & max_ulps)
 		{
-			return FloatingPointTraits<double>::equalWithinTolerance(a, b, maxUlps);
+			return FloatingPointTraits<double>::equal_within_tolerance(a, b, max_ulps);
 		}
 
 		// Usable AlmostEqual function
@@ -201,47 +201,47 @@ namespace Dream
 			b = v / 7.500001;
 			c = v / 7.5001;
 
-			check(equalWithinTolerance(a, b)) << "Float values are equal";
-			check(!equalWithinTolerance(a, c)) << "Float values are not equal";
+			check(equal_within_tolerance(a, b)) << "Float values are equal";
+			check(!equal_within_tolerance(a, c)) << "Float values are not equal";
 
 			d = v / 7.5;
 			e = v / 7.50000000001;
 			f = v / 7.50000000000001;
 
-			check(!equalWithinTolerance(d, e)) << "Double values are not equal";
-			check(equalWithinTolerance(d, f)) << "Double values are equal";
+			check(!equal_within_tolerance(d, e)) << "Double values are not equal";
+			check(equal_within_tolerance(d, f)) << "Double values are equal";
 		}
 
 		UNIT_TEST(FloatingPointTraits)
 		{
 			typedef FloatingPointTraits<float> F;
-			F::FIntT i = F::convertToInteger(1.0056f);
-			F::FloatT f = F::convertToFloat(i);
+			F::FIntT i = F::convert_toInteger(1.0056f);
+			F::FloatT f = F::convert_toFloat(i);
 			check(1.0056f == f) << "Integer - float conversion correct for 1.0056";
 
-			i = F::convertToInteger(-0.52f);
-			f = F::convertToFloat(i);
+			i = F::convert_toInteger(-0.52f);
+			f = F::convert_toFloat(i);
 			check(-0.52f == f) << "Integer - float conversion correct for -0.52";
 
 			double t = 0.0000001;
 			std::cout << "acosf: " << cos(R90) << std::endl;
-			check(FloatingPointTraits<double>::isZero(cos(R90)) << FloatingPointTraits<double>::convertToInteger(t)) << "cosf is zero";
+			check(FloatingPointTraits<double>::is_zero(cos(R90)) << FloatingPointTraits<double>::convert_toInteger(t)) << "cosf is zero";
 
-			std::cout << "Accuracy of float: " << FloatingPointTraits<double>::convertToInteger(t) << std::endl;
+			std::cout << "Accuracy of float: " << FloatingPointTraits<double>::convert_toInteger(t) << std::endl;
 		}
 		
 		UNIT_TEST(PowerOfTwo)
 		{
-			int k = nextHighestPowerOf2(16);
+			int k = next_highest_power_of2(16);
 			check(k == 16) << "Next power of two calculated correctly";
 			
-			k = nextHighestPowerOf2(17);
+			k = next_highest_power_of2(17);
 			check(k == 32) << "Next power of two calculated correctly";
 		}
 
 		/// Calculate the accuracy of cos function. Interesting results..
 		template <typename t>
-		void calculateFloatAccuracy ()
+		void calculate_float_accuracy ()
 		{
 			using namespace std;
 			typedef FloatingPointTraits<t> F;
@@ -254,31 +254,31 @@ namespace Dream
 			if (v1 < (FloatT) 0.0)
 			{
 				// Increment floating point number to next discrete step
-				f = F::convertToFloat (F::convertToInteger (f) + 1);
+				f = F::convert_toFloat (F::convert_toInteger (f) + 1);
 			} else
 			{
 				// Decrement floating point number to previous discrete step
-				f = F::convertToFloat (F::convertToInteger (f) - 1);
+				f = F::convert_toFloat (F::convert_toInteger (f) - 1);
 			}
 
 			FloatT v2 = Number<FloatT>::cos(f);
 
-			FIntT d1 = Number<FIntT>::abs(F::convertToInteger(v1));
-			FIntT d2 = Number<FIntT>::abs(F::convertToInteger(v2));
+			FIntT d1 = Number<FIntT>::abs(F::convert_toInteger(v1));
+			FIntT d2 = Number<FIntT>::abs(F::convert_toInteger(v2));
 			FIntT d3 = Number<FIntT>::max(d1, d2);
 
 			std::cout << "d1 : " << d1 << " d2 : " << d2 << " = d3 : " << d3 << std::endl;
 			std::cout << "Trigonometric precision of " << typeid(t).name() << " around zero is ";
-			std::cout << F::convertToFloat(d3) << std::endl;
+			std::cout << F::convert_toFloat(d3) << std::endl;
 		}
 
 		UNIT_TEST(CalculateFloatAccuracy)
 		{
-			calculateFloatAccuracy<float>();
-			calculateFloatAccuracy<double>();
+			calculate_float_accuracy<float>();
+			calculate_float_accuracy<double>();
 
-			std::cout << "   Float ACCURACY: " << FloatingPointTraits<float>::convertToInteger(0.000001) << std::endl;
-			std::cout << "  Double ACCURACY: " << FloatingPointTraits<double>::convertToInteger(0.000000000001) << std::endl;
+			std::cout << "   Float ACCURACY: " << FloatingPointTraits<float>::convert_toInteger(0.000001) << std::endl;
+			std::cout << "  Double ACCURACY: " << FloatingPointTraits<double>::convert_toInteger(0.000000000001) << std::endl;
 		}
 		
 		UNIT_TEST(CheckRotationAccuracy)

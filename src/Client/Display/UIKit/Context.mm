@@ -22,46 +22,46 @@ namespace Dream
 			{
 			
 				ViewContext::ViewContext ()
-					: m_graphicsView(nil)
+					: _graphics_view(nil)
 				{
 				
 				}
 				
 				ViewContext::ViewContext (DOpenGLView * graphicsView)
-					: m_graphicsView(graphicsView)
+					: _graphics_view(graphicsView)
 				{
-					[m_graphicsView retain];
-					[m_graphicsView setDisplayContext:this];
+					[_graphics_view retain];
+					[_graphics_view setDisplayContext:this];
 				}
 				
 				ViewContext::~ViewContext ()
 				{
-					if (m_graphicsView) {
-						[m_graphicsView release];
-						m_graphicsView = nil;
+					if (_graphics_view) {
+						[_graphics_view release];
+						_graphics_view = nil;
 					}
 				}
 				
 				void ViewContext::start ()
 				{
-					[m_graphicsView start];
+					[_graphics_view start];
 				}
 				
 				void ViewContext::stop ()
 				{
-					[m_graphicsView stop];
+					[_graphics_view stop];
 				}
 				
 				Vec2u ViewContext::size ()
 				{
-					CGRect frame = [m_graphicsView frame];
+					CGRect frame = [_graphics_view frame];
 					
 					return Vec2u(frame.size.width, frame.size.height);
 				}
 				
-				void ViewContext::makeCurrent ()
+				void ViewContext::make_current ()
 				{
-					[m_graphicsView makeCurrentContext];
+					[_graphics_view makeCurrentContext];
 				}
 				
 				const char * getSymbolicError (GLenum error) {
@@ -85,9 +85,9 @@ namespace Dream
 					}
 				}
 				
-				void ViewContext::flushBuffers ()
+				void ViewContext::flush_buffers ()
 				{
-					[m_graphicsView flushBuffers];
+					[_graphics_view flushBuffers];
 				
 					GLenum error;
 					
@@ -97,13 +97,13 @@ namespace Dream
 			
 #pragma mark -
 			
-				void WindowContext::setupGraphicsView (PTR(Dictionary) config, CGRect frame)
+				void WindowContext::setup_graphics_view (PTR(Dictionary) config, CGRect frame)
 				{
-					if (config->get("Cocoa.View", m_graphicsView)) {
+					if (config->get("Cocoa.View", _graphics_view)) {
 						// Graphics view from configuration.
-						[m_graphicsView retain];
+						[_graphics_view retain];
 					} else {
-						m_graphicsView = [[DOpenGLView alloc] initWithFrame:frame];
+						_graphics_view = [[DOpenGLView alloc] initWithFrame:frame];
 					}
 
 					// Create the OpenGLES context:
@@ -111,10 +111,10 @@ namespace Dream
 					
 					ensure(graphicsContext != NULL);
 					
-					[m_graphicsView setContext:graphicsContext];
+					[_graphics_view setContext:graphicsContext];
 					[graphicsContext release];
 
-					this->makeCurrent();
+					this->make_current();
 					
 					glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 					glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -130,14 +130,14 @@ namespace Dream
 				
 				WindowContext::WindowContext (PTR(Dictionary) config)
 				{
-					m_window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+					_window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 					
 					CGRect frame = [[UIScreen mainScreen] applicationFrame];
-					setupGraphicsView(config, frame);
+					setup_graphics_view(config, frame);
 					
-					if (m_graphicsView) {
-						[m_graphicsView setDisplayContext:this];
-						[m_window addSubview:m_graphicsView];
+					if (_graphics_view) {
+						[_graphics_view setDisplayContext:this];
+						[_window addSubview:_graphics_view];
 					} else {
 						std::cerr << "Couldn't initialize graphics view!" << std::endl;
 					}
@@ -145,23 +145,23 @@ namespace Dream
 				
 				WindowContext::~WindowContext ()
 				{
-					if (m_window) {
-						[m_window release];
-						m_window = nil;
+					if (_window) {
+						[_window release];
+						_window = nil;
 					}
 				}
 			
 				void WindowContext::start ()
 				{
-					std::cerr << "Starting graphics context: " << m_graphicsView << " window: " << m_window << std::endl;
-					[m_window makeKeyAndVisible];
+					std::cerr << "Starting graphics context: " << _graphics_view << " window: " << _window << std::endl;
+					[_window makeKeyAndVisible];
 					ViewContext::start();
 				}
 				
 				void WindowContext::stop ()
 				{
 					ViewContext::stop();
-					[m_window resignKeyWindow];
+					[_window resignKeyWindow];
 				}
 				
 			}

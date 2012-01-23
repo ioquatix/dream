@@ -32,26 +32,26 @@ namespace Dream {
 			typedef Vector<D, NumericT> VectorT;
 			
 		protected:
-			Vector<D, NumericT> m_points[P];
+			Vector<D, NumericT> _points[P];
 		
 		public:			
 			VectorT center () const
 			{
-				VectorT total(m_points[0]);
+				VectorT total(_points[0]);
 				for (unsigned i = 1; i < P; i++)
-					total += m_points[i];
+					total += _points[i];
 				
 				return total / (NumericT)P;
 			}
 			
 			const VectorT & operator[] (unsigned i) const
 			{
-				return m_points[i];
+				return _points[i];
 			}
 			
 			VectorT & operator[] (unsigned i)
 			{
-				return m_points[i];
+				return _points[i];
 			}
 		};
 		

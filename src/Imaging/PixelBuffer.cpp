@@ -15,7 +15,7 @@
 namespace Dream {
 	namespace Imaging {
 		
-		unsigned dataTypeByteSize(ImageDataType type) {
+		unsigned data_typeByteSize(ImageDataType type) {
 			switch(type) {
 				case UBYTE:
 				case BYTE:
@@ -35,7 +35,7 @@ namespace Dream {
 			}
 		}
 		
-		unsigned packedPixelChannelCount (ImagePixelPacking type) {
+		unsigned packed_pixel_channel_count (ImagePixelPacking type) {
 			switch(type) {
 				case UBYTE_3_3_2:
 				case UBYTE_2_3_3_REV:
@@ -58,7 +58,7 @@ namespace Dream {
 			}
 		}
 		
-		unsigned pixelFormatChannelCount (ImagePixelFormat type) {
+		unsigned pixel_format_channel_count (ImagePixelFormat type) {
 			switch(type) {
 				case 1:
 				case RED:
@@ -88,44 +88,44 @@ namespace Dream {
 #pragma mark -
 #pragma mark class IPixelBuffer
 		
-		PixelT IPixelBuffer::readPixel (const Vector<3, unsigned> &at) {
-			const ByteT * src = this->pixelDataAt(at);
+		PixelT IPixelBuffer::read_pixel (const Vector<3, unsigned> &at) {
+			const ByteT * src = this->pixel_dataAt(at);
 			PixelT px = 0;
 			ByteT * dst = (ByteT*)&px;
-			memcpy(dst, src, this->bytesPerPixel());
+			memcpy(dst, src, this->bytes_per_pixel());
 			
 			return px;
 		}
 		
-		ImageDataType IPixelBuffer::pixelDataType () const
+		ImageDataType IPixelBuffer::pixel_dataType () const
 		{
 			return UBYTE; /* Suits most pixel formats */
 		}
 		
-		unsigned IPixelBuffer::bytesPerPixel () const {
+		unsigned IPixelBuffer::bytes_per_pixel () const {
 			unsigned n = 1;
 			ImageDataType pixfmt;
 			
-			if (isPackedFormat()) {
-				pixfmt = packedType();
+			if (is_packed_format()) {
+				pixfmt = packed_type();
 				// Packed formats only use one element (n = 1)
 			} else {
-				pixfmt = pixelDataType();
-				n = pixelFormatChannelCount(pixelFormat());
+				pixfmt = pixel_dataType();
+				n = pixel_format_channel_count(pixel_format());
 			}
 			
-			ensure((dataTypeByteSize(pixfmt) * n) > 0 && "bytesPerPixel is obviously incorrect!");
-			return dataTypeByteSize(pixfmt) * n;
+			ensure((data_typeByteSize(pixfmt) * n) > 0 && "bytes_per_pixel is obviously incorrect!");
+			return data_typeByteSize(pixfmt) * n;
 		}
 		
-		unsigned IPixelBuffer::channelCount () const {
-			return pixelFormatChannelCount (pixelFormat());
+		unsigned IPixelBuffer::channel_count () const {
+			return pixel_format_channel_count (pixel_format());
 		}
 		
 		// Components read from MSB to LSB
 		// (ie, host-ordered data formats rather than byte ordered formats).
-		bool IPixelBuffer::isByteOrderReversed () const {		
-			switch(pixelDataType()) {			
+		bool IPixelBuffer::is_byte_order_reversed () const {		
+			switch(pixel_dataType()) {			
 				case UBYTE_2_3_3_REV:
 				case USHORT_5_6_5_REV:
 				case USHORT_4_4_4_4_REV:
@@ -138,8 +138,8 @@ namespace Dream {
 			}		
 		}
 		
-		bool IPixelBuffer::isPackedFormat () const {
-			switch(pixelDataType()) {
+		bool IPixelBuffer::is_packed_format () const {
+			switch(pixel_dataType()) {
 				case UBYTE_3_3_2:
 				case USHORT_4_4_4_4:
 				case USHORT_5_5_5_1:
@@ -160,8 +160,8 @@ namespace Dream {
 			}
 		}
 		
-		ImageDataType IPixelBuffer::packedType () const {
-			switch(pixelDataType()) {
+		ImageDataType IPixelBuffer::packed_type () const {
+			switch(pixel_dataType()) {
 				case UBYTE_3_3_2:
 				case UBYTE_2_3_3_REV:
 					return UBYTE;
@@ -190,84 +190,84 @@ namespace Dream {
 		
 		void IMutablePixelBuffer::clear ()
 		{
-			ByteT * buffer = pixelData();
-			bzero(buffer, pixelDataLength());
+			ByteT * buffer = pixel_data();
+			bzero(buffer, pixel_dataLength());
 		}
 		
-		void IMutablePixelBuffer::writePixel (const Vector<3, unsigned> &at, const PixelT &px)
+		void IMutablePixelBuffer::write_pixel (const Vector<3, unsigned> &at, const PixelT &px)
 		{
-			ByteT * dst = this->pixelDataAt(at);
+			ByteT * dst = this->pixel_dataAt(at);
 			const ByteT * src = (const ByteT *)&px;
-			memcpy(dst, src, this->bytesPerPixel());
+			memcpy(dst, src, this->bytes_per_pixel());
 		}
 		
 		void IMutablePixelBuffer::zero (PixelT px)
 		{
-			unsigned bps = bytesPerPixel();
+			unsigned bps = bytes_per_pixel();
 			
-			ensure(pixelData() != NULL && "Cannot zero null buffer!");
+			ensure(pixel_data() != NULL && "Cannot zero null buffer!");
 			
 			if (px == 0) {
-				bzero(pixelData(), pixelDataLength());
+				bzero(pixel_data(), pixel_dataLength());
 			} else {
-				for (IndexT s = 0; s < pixelDataLength(); s += bps) {
-					write (px, pixelData() + s, bps);
+				for (IndexT s = 0; s < pixel_dataLength(); s += bps) {
+					write (px, pixel_data() + s, bps);
 				}
 			}
 		}
 		
-		// void writePixel (const Vector<3, unsigned> &at, const Vector<4, float> &input);
+		// void write_pixel (const Vector<3, unsigned> &at, const Vector<4, float> &input);
 		template <unsigned D, typename NumericT>
-		void IMutablePixelBuffer::writePixel (const Vector<3, unsigned> &at, const Vector<D, NumericT> &input)
+		void IMutablePixelBuffer::write_pixel (const Vector<3, unsigned> &at, const Vector<D, NumericT> &input)
 		{
-			ensure(!isPackedFormat() && "Packed pixel formats not supported for reading!");
-			ensure(D == this->channelCount());
+			ensure(!is_packed_format() && "Packed pixel formats not supported for reading!");
+			ensure(D == this->channel_count());
 			
-			unsigned from = pixelOffset(at);
-			unsigned subPixelSize = bytesPerPixel() / channelCount();
-			ensure(sizeof(NumericT) == subPixelSize);
+			unsigned from = pixel_offset(at);
+			unsigned sub_pixel_size = bytes_per_pixel() / channel_count();
+			ensure(sizeof(NumericT) == sub_pixel_size);
 			
 			for (unsigned i = 0; i < D; i += 1) {
-				writeDataAt(from + (i * bytesPerPixel()), input[i]);
+				write_data_at(from + (i * bytes_per_pixel()), input[i]);
 			}
 		}
 		
 		// Copy from buf to this
-		void IMutablePixelBuffer::copyPixelsFrom (const IPixelBuffer & buf, const Vector<3, unsigned> &from, const Vector<3, unsigned> &to, 
-												  const Vector<3, unsigned> &size, CopyFlags copyFlags) 
+		void IMutablePixelBuffer::copy_pixels_from (const IPixelBuffer & buf, const Vector<3, unsigned> &from, const Vector<3, unsigned> &to, 
+												  const Vector<3, unsigned> &size, CopyFlags copy_flags) 
 		{
-			ensure(!isPackedFormat() && "Packed pixel formats not supported for reading!");
-			ensure(this->channelCount() == buf.channelCount());
-			ensure(this->pixelDataType() == buf.pixelDataType());
+			ensure(!is_packed_format() && "Packed pixel formats not supported for reading!");
+			ensure(this->channel_count() == buf.channel_count());
+			ensure(this->pixel_dataType() == buf.pixel_dataType());
 			
 			//std::cout << from << " -> " << to << " : " << size << std::endl;
 			//std::cout << buf.size() << " -> " << this->size() << std::endl;
 			
-			ensure(from.lessThan(buf.size()));
-			ensure(to.lessThan(this->size()));
-			ensure((from+size).lessThanOrEqual(buf.size()));
+			ensure(from.less_than(buf.size()));
+			ensure(to.less_than(this->size()));
+			ensure((from+size).less_than_or_equal(buf.size()));
 			
 			//std::cout <<  (to+size) << ": " << this->size() << std::endl;
-			ensure((to+size).lessThanOrEqual(this->size()));
+			ensure((to+size).less_than_or_equal(this->size()));
 					
-			const unsigned pixelSize = this->bytesPerPixel();
+			const unsigned pixel_size = this->bytes_per_pixel();
 			Vector<3, unsigned> s, d;
 			
-			const ByteT * src = buf.pixelData();
-			ByteT * dst = this->pixelData();
+			const ByteT * src = buf.pixel_data();
+			ByteT * dst = this->pixel_data();
 			
 			for (unsigned z = 0; z < size[Z]; z += 1)
 				for (unsigned y = 0; y < size[Y]; y += 1) {
 					s[X] = 0; s[Y] = y; s[Z] = z;
 					d = s;
 					
-					if (copyFlags & CopyFlip) {
+					if (copy_flags & CopyFlip) {
 						s[Y] = (size[Y] - 1) - s[Y];
 						//std::cout << "Flipping row: " << y << " => " << c[Y] << std::endl;
 					}
 					
-					memcpy(dst + this->pixelOffset(to + d), src + buf.pixelOffset(from + s), pixelSize * size[X]);
-					//memcpy(this->pixelDataAt(to + d), buf.pixelDataAt(from + s), pixelSize * size[X]);
+					memcpy(dst + this->pixel_offset(to + d), src + buf.pixel_offset(from + s), pixel_size * size[X]);
+					//memcpy(this->pixel_dataAt(to + d), buf.pixel_dataAt(from + s), pixel_size * size[X]);
 				}
 		}
 		

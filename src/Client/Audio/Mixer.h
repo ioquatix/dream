@@ -35,11 +35,11 @@ namespace Dream
 			
 			class AudioError {
 			protected:
-				ALint m_errorNumber;
-				StringT m_message;
+				ALint _errorNumber;
+				StringT _message;
 			
 			public:
-				AudioError(ErrorNumberT errorNumber, StringT errorDescription, StringT errorTarget);
+				AudioError(ErrorNumberT error_number, StringT error_description, StringT error_target);
 				
 				StringT what () const;
 				
@@ -50,65 +50,65 @@ namespace Dream
 			class Source : public Object
 			{
 			protected:
-				ALuint m_sourceID;
-				REF(Sound) m_sound;
+				ALuint _sourceID;
+				REF(Sound) _sound;
 				
 			public:
 				Source ();
 				virtual ~Source ();
 				
-				void setParameter(ALenum parameter, float value);
+				void set_parameter(ALenum parameter, float value);
 				
-				void setPitch (float pitch);
-				void setGain (float gain);
-				void setPosition (const Vec3 &);
-				void setVelocity (const Vec3 &);
+				void set_pitch (float pitch);
+				void set_gain (float gain);
+				void set_position (const Vec3 &);
+				void set_velocity (const Vec3 &);
 				
 				float pitch ();
 				float gain ();
 				Vec3 position ();
 				Vec3 velocity ();
 				
-				ALint sampleOffset ();
-				TimeT timeOffset ();
-				IndexT byteOffset ();
+				ALint sample_offset ();
+				TimeT time_offset ();
+				IndexT byte_offset ();
 				
-				void setLocal ();
+				void set_local ();
 				
-				void setReferenceDistance (float dist);
+				void set_reference_distance (float dist);
 				
-				void setSound (ALuint bufferID);
-				void setSound (PTR(Sound) sound);
+				void set_sound (ALuint buffer_id);
+				void set_sound (PTR(Sound) sound);
 				
 				// Streaming buffers
-				void queueBuffers (ALuint * buffers, std::size_t count);
-				void unqueueBuffers (ALuint * buffers, std::size_t count);
+				void queue_buffers (ALuint * buffers, std::size_t count);
+				void unqueue_buffers (ALuint * buffers, std::size_t count);
 				
-				bool streamBuffers (IStreamable * stream);
+				bool stream_buffers (IStreamable * stream);
 				
-				ALint processedBufferCount ();
-				ALint queuedBufferCount ();
+				ALint processed_buffer_count ();
+				ALint queued_buffer_count ();
 				
-				void setLooping (bool);
+				void set_looping (bool);
 				
 				void play ();
 				void pause ();
 				void stop ();
 				
-				bool isPlaying () const;
+				bool is_playing () const;
 			};
 			
 			template <typename ValueT>
 			class LinearKnob : implements IKnob
 			{
 				protected:
-					REF(Source) m_source;
-					ALenum m_parameter;
-					ValueT m_begin, m_end;
+					REF(Source) _source;
+					ALenum _parameter;
+					ValueT _begin, _end;
 								
 				public:
 					LinearKnob (PTR(Source) source, ALenum parameter, ValueT begin, ValueT end)
-						: m_source(source), m_parameter(parameter), m_begin(begin), m_end(end)
+						: _source(source), _parameter(parameter), _begin(begin), _end(end)
 					{
 					
 					}
@@ -120,8 +120,8 @@ namespace Dream
 					
 					virtual void update (RealT time)
 					{
-						ValueT value = linearInterpolate(time, m_begin, m_end);
-						m_source->setParameter(m_parameter, value);
+						ValueT value = linear_interpolate(time, _begin, _end);
+						_source->set_parameter(_parameter, value);
 					}
 			};
 			
@@ -131,31 +131,31 @@ namespace Dream
 				virtual ~IStreamable ();
 			
 				// Return false if there are no more buffers.
-				virtual bool loadNextBuffer (PTR(Source) source, ALuint buffer) abstract;
+				virtual bool load_next_buffer (PTR(Source) source, ALuint buffer) abstract;
 				
-				virtual void bufferData(PTR(Source) source, ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq);
+				virtual void buffer_data(PTR(Source) source, ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq);
 			};
 			
 			class Mixer : public Object
 			{
 			protected:
-				ALCdevice * m_audioDevice;
-				ALCcontext * m_audioContext;
+				ALCdevice * _audio_device;
+				ALCcontext * _audio_context;
 				
 			public:
-				static REF(Mixer) sharedMixer ();
+				static REF(Mixer) shared_mixer ();
 				
 				Mixer ();
 				virtual ~Mixer ();
 				
-				void suspendProcessing ();
-				void resumeProcessing ();
+				void suspend_processing ();
+				void resume_processing ();
 				
-				REF(Source) createSource ();
+				REF(Source) create_source ();
 				
-				void setListenerPosition (const Vec3 &);
-				void setListenerVelocity (const Vec3 &);
-				void setListenerOrientation (const Vec3 & lookingAt, const Vec3 & up);
+				void set_listener_position (const Vec3 &);
+				void set_listener_velocity (const Vec3 &);
+				void set_listener_orientation (const Vec3 & looking_at, const Vec3 & up);
 			};
 			
 		}

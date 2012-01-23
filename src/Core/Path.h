@@ -35,36 +35,36 @@ namespace Dream
 			static const char SEPARATOR = '/';
 		
 		protected:
-			ComponentsT m_components;
+			ComponentsT _components;
 
 		public:
 			Path() {}
 			Path(const ComponentsT & components);
 
-			Path(const char * stringRep);
-			Path(const StringT & stringRep);
-			Path(const StringT & stringRep, const char separator);
+			Path(const char * string_rep);
+			Path(const StringT & string_rep);
+			Path(const StringT & string_rep, const char separator);
 			
-			bool empty () const { return m_components.size() == 0; }
+			bool empty () const { return _components.size() == 0; }
 			
-			StringT toLocalPath() const;
+			StringT to_local_path() const;
 
 			/// Does the path components begin with ""
-			bool isAbsolute() const;
+			bool is_absolute() const;
 			/// Returns an absolute path
-			Path toAbsolute();
+			Path to_absolute();
 
 			/// Does the path components end with ""
-			bool isDirectory() const;			
+			bool is_directory() const;			
 			/// Returns a path representing a directory (i.e. trailing slash)
-			Path toDirectory();
+			Path to_directory();
 			
-			const ComponentsT & components() const { return m_components; }
+			const ComponentsT & components() const { return _components; }
 			
 			// Remove "." and ".."
 			Path simplify() const;
 			
-			NameInfo splitFileName() const;
+			NameInfo split_file_name() const;
 			
 			/// Pop n components off the path
 			Path dirname (std::size_t n = 1) const;
@@ -82,21 +82,21 @@ namespace Dream
 			};
 			
 			// ** Local File Operations **
-			FileType fileStatus() const;
+			FileType file_status() const;
 			
 			// Does this exist?
-			bool exists() const { return fileStatus() != UNKNOWN; }
+			bool exists() const { return file_status() != UNKNOWN; }
 			
-			FileSizeT fileSize() const;
+			FileSizeT file_size() const;
 			
 			/// Removes a single file / directory
 			void remove () const;
 			
 			/// Rename a file to the new name
-			void move (const Path & newName) const;
+			void move (const Path & new_name) const;
 			
-			static Path temporaryFilePath ();
-			static Path currentWorkingDirectory ();
+			static Path temporary_file_path ();
+			static Path current_working_directory ();
 			
 			DirectoryListingT list (FileType filter) const;
 		};

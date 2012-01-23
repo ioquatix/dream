@@ -30,7 +30,7 @@ namespace Dream
 		class Quaternion
 		{
 		protected:
-			Vector<4, _NumericT> m_vector;
+			Vector<4, _NumericT> _vector;
 		public:
 			typedef _NumericT NumericT;
 			typedef Vector<4, _NumericT> Vec4T;
@@ -68,7 +68,7 @@ namespace Dream
 			Quaternion (const Vec3T & point);
 			
 			/// Get the rotation from a matrix
-			static Quaternion fromMatrix (const Mat44 & m);
+			static Quaternion from_matrix (const Mat44 & m);
 
 			/// Proxy function for convenience
 			const NumericT & operator[] (unsigned i) const;
@@ -79,7 +79,7 @@ namespace Dream
 			Vec3T rotate (const Vec3T &) const;
 
 			/// Multiplication function
-			Quaternion multiplyWith (const Quaternion & other) const;
+			Quaternion multiply_with (const Quaternion & other) const;
 
 			/// Convenience operator for rotate function.
 			Vec3T operator* (const Vec3T & other) const;
@@ -91,33 +91,33 @@ namespace Dream
 			Quaternion operator* (const Quaternion & q2) const;
 
 			/// Build a quaternion from an angle-axis rotation.
-			void setToAngleAxisRotation (const RealT & angle, const Vec3T & axis);
+			void set_to_angle_axis_rotation (const RealT & angle, const Vec3T & axis);
 
 			/// Calculate the angle of rotation.
-			NumericT rotationAngle () const;
+			NumericT rotation_angle () const;
 
 			/// Calculate the axis of rotation.
-			Vec3T rotationAxis () const;
+			Vec3T rotation_axis () const;
 
 			/// Return a matrix that represents the rotation.
-			MatrixT rotatingMatrix () const;
+			MatrixT rotating_matrix () const;
 
 			/// Return a quaternion that rotates from this rotation to another.
-			Quaternion rotationTo (const Quaternion & other) const;
+			Quaternion rotation_to (const Quaternion & other) const;
 
 			/// Conjugate the current quaternion in place.
 			void conjugate ();
 
 			/// Return the conjugated quaternion.
-			Quaternion conjugatedQuaternion () const;
+			Quaternion conjugated_quaternion () const;
 			
 			/// Extract axis information
-			Vec3T extractAxis (IndexT a) const;
+			Vec3T extract_axis (IndexT a) const;
 
 			Vector<4, NumericT> & vector ();
 			const Vector<4, NumericT> & vector () const;
 
-			static Quaternion sphericalLinearInterpolate (_NumericT t, const Quaternion & v0, const Quaternion & v1);
+			static Quaternion spherical_linear_interpolate (_NumericT t, const Quaternion & v0, const Quaternion & v1);
 		};
 
 		typedef Quaternion<RealT> Quat;

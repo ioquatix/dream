@@ -12,7 +12,7 @@ using namespace Dream::Client::Display;
 
 @implementation DOpenGLView
 
-@synthesize displayContext;
+@synthesize displayContext = _display_context;
 
 - (BOOL)acceptsFirstResponder
 {
@@ -21,7 +21,7 @@ using namespace Dream::Client::Display;
 
 - (void)reshape
 {
-	if (!displayContext) return;
+	if (!_display_context) return;
 	
 	using namespace Dream::Client::Display;
 	
@@ -29,7 +29,7 @@ using namespace Dream::Client::Display;
 	Vec2u newSize(frameSize.width, frameSize.height);
 	ResizeInput resizeInput(newSize);
 	
-	displayContext->process(resizeInput);
+	_display_context->process(resizeInput);
 }
 
 - (unsigned) buttonForEvent:(NSEvent *)event
@@ -75,33 +75,33 @@ using namespace Dream::Client::Display;
 	else
 		state = Released;
 	
-	bounds.setOrigin(Vec2(self.frame.origin.x, self.frame.origin.y));
-	bounds.setSizeFromOrigin(Vec2(self.frame.size.width, self.frame.size.height));
+	bounds.set_origin(Vec2(self.frame.origin.x, self.frame.origin.y));
+	bounds.set_size_from_origin(Vec2(self.frame.size.width, self.frame.size.height));
 	
 	Key key(DefaultMouse, button);
 	MotionInput motionInput(key, state, position, movement, bounds);
 	
-	return displayContext->process(motionInput);
+	return _display_context->process(motionInput);
 }
 
 - (BOOL) handleEvent:(NSEvent *)event
 {
 	//NSLog(@"Handling event: %@", event);
 
-	if (!displayContext) return false;
+	if (!_display_context) return false;
 	
 	if ([event type] == NSKeyDown) {
 		Key key(DefaultKeyboard, [[event characters] characterAtIndex:0]);
 		ButtonInput buttonInput(key, Pressed);
 		
 		// If the key is processed, don't pass it on.
-		return displayContext->process(buttonInput);
+		return _display_context->process(buttonInput);
 	} else if ([event type] == NSKeyUp) {
 		Key key(DefaultKeyboard, [[event characters] characterAtIndex:0]);
 		ButtonInput buttonInput(key, Released);
 		
 		// If the key is processed, don't pass it on.
-		return displayContext->process(buttonInput);
+		return _display_context->process(buttonInput);
 	} else {
 		switch ([event type]) {
 			case NSLeftMouseDown:

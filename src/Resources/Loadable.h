@@ -33,7 +33,7 @@ namespace Dream {
 		 
 		 In the case of files which index a set of resources, you should create a
 		 MyDataTypeLibrary which has a function:
-			REF(MyDataTypeFactory) findResource (StringT name);
+			REF(MyDataTypeFactory) find_resource (StringT name);
 		 This factory can then be used to create corresponding resources.
 		 */
 		
@@ -41,7 +41,7 @@ namespace Dream {
 
 		class LoadError : public std::exception {
 		protected:
-			StringT m_what;
+			StringT _what;
 		public:
 			LoadError (StringT what);
 			virtual ~LoadError () throw ();
@@ -52,15 +52,15 @@ namespace Dream {
 		class ILoadable : implements IObject 
 		{
 		public:
-			virtual void registerLoaderTypes (ILoader * loader) abstract;
-			virtual REF(Object) loadFromData (const PTR(IData) data, const ILoader * loader) abstract;
+			virtual void register_loader_types (ILoader * loader) abstract;
+			virtual REF(Object) load_from_data (const PTR(IData) data, const ILoader * loader) abstract;
 		};
 		
 		class ILoadableFromStream : implements ILoadable 
 		{
 		public:
-			virtual REF(Object) loadFromData (const PTR(IData) data, const ILoader * loader);
-			virtual REF(Object) loadFromStream (std::istream& input, const ILoader * loader) abstract;
+			virtual REF(Object) load_from_data (const PTR(IData) data, const ILoader * loader);
+			virtual REF(Object) load_from_stream (std::istream& input, const ILoader * loader) abstract;
 		};
 
 	}

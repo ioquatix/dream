@@ -21,7 +21,7 @@ namespace Dream
 		/// See http://eli.thegreenplace.net/2008/08/15/intersection-of-1d-segments/ for more information.
 		/// @returns true if segments overlapped, and the overlapping portion in <tt>overlap</tt>
 		template <typename NumericT>
-		bool segmentsIntersect (const Vector<2, NumericT> & s1, const Vector<2, NumericT> & s2, Vector<2, NumericT> & overlap)
+		bool segments_intersect (const Vector<2, NumericT> & s1, const Vector<2, NumericT> & s2, Vector<2, NumericT> & overlap)
 		{
 			if (s1[1] >= s2[0] && s2[1] >= s1[0])
 			{

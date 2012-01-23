@@ -22,8 +22,7 @@ namespace Dream {
 			}
 		
 			namespace Cocoa {
-				Application::Application(PTR(IApplicationDelegate) applicationDelegate)
-					: m_applicationDelegate(applicationDelegate)
+				Application::Application(PTR(IApplicationDelegate) applicationDelegate) : _application_delegate(applicationDelegate)
 				{
 				
 				}
@@ -33,7 +32,7 @@ namespace Dream {
 				
 				}
 				
-				NSString * applicationName()
+				NSString * application_name()
 				{
 					NSDictionary * dict;
 					NSString * appName = 0;
@@ -49,76 +48,73 @@ namespace Dream {
 					return appName;
 				}
 
-				void Application::createApplicationMenus()
-				{
-					NSString *appName;
-					NSString *title;
-					NSMenu *appleMenu;
-					NSMenu *windowMenu;
-					NSMenuItem *menuItem;
-					
+				void Application::create_application_menus()
+				{					
 					/* Create the main menu bar */
 					[NSApp setMainMenu:[[NSMenu alloc] init]];
 
 					/* Create the application menu */
-					appName = applicationName();
-					appleMenu = [[NSMenu alloc] initWithTitle:@""];
+					NSString * app_name = application_name();
+					NSMenu * apple_menu = [[NSMenu alloc] initWithTitle:@""];
+					
+					NSString * title;
+					NSMenuItem * menu_item;
 					
 					/* Add menu items */
-					title = [@"About " stringByAppendingString:appName];
-					[appleMenu addItemWithTitle:title action:@selector(orderFrontStandardAboutPanel:) keyEquivalent:@""];
+					title = [@"About " stringByAppendingString:app_name];
+					[apple_menu addItemWithTitle:title action:@selector(orderFrontStandardAboutPanel:) keyEquivalent:@""];
 
-					[appleMenu addItem:[NSMenuItem separatorItem]];
+					[apple_menu addItem:[NSMenuItem separatorItem]];
 
-					title = [@"Hide " stringByAppendingString:appName];
-					[appleMenu addItemWithTitle:title action:@selector(hide:) keyEquivalent:@"h"];
+					title = [@"Hide " stringByAppendingString:app_name];
+					[apple_menu addItemWithTitle:title action:@selector(hide:) keyEquivalent:@"h"];
 
-					menuItem = (NSMenuItem *)[appleMenu addItemWithTitle:@"Hide Others" action:@selector(hideOtherApplications:) keyEquivalent:@"h"];
-					[menuItem setKeyEquivalentModifierMask:(NSAlternateKeyMask|NSCommandKeyMask)];
+					menu_item = (NSMenuItem *)[apple_menu addItemWithTitle:@"Hide Others" action:@selector(hideOtherApplications:) keyEquivalent:@"h"];
+					[menu_item setKeyEquivalentModifierMask:(NSAlternateKeyMask|NSCommandKeyMask)];
 
-					[appleMenu addItemWithTitle:@"Show All" action:@selector(unhideAllApplications:) keyEquivalent:@""];
+					[apple_menu addItemWithTitle:@"Show All" action:@selector(unhideAllApplications:) keyEquivalent:@""];
 
-					[appleMenu addItem:[NSMenuItem separatorItem]];
+					[apple_menu addItem:[NSMenuItem separatorItem]];
 
-					title = [@"Quit " stringByAppendingString:appName];
-					[appleMenu addItemWithTitle:title action:@selector(terminate:) keyEquivalent:@"q"];
+					title = [@"Quit " stringByAppendingString:app_name];
+					[apple_menu addItemWithTitle:title action:@selector(terminate:) keyEquivalent:@"q"];
 					
 					/* Put menu into the menubar */
-					menuItem = [[NSMenuItem alloc] initWithTitle:@"" action:nil keyEquivalent:@""];
-					[menuItem setSubmenu:appleMenu];
-					[[NSApp mainMenu] addItem:menuItem];
-					[menuItem release];
+					menu_item = [[NSMenuItem alloc] initWithTitle:@"" action:nil keyEquivalent:@""];
+					[menu_item setSubmenu:apple_menu];
+					[[NSApp mainMenu] addItem:menu_item];
+					[menu_item release];
 
 					/* Tell the application object that this is now the application menu */
-					[NSApp performSelector:@selector(setAppleMenu:) withObject:appleMenu];
-					// [NSApp setAppleMenu:appleMenu];
-					[appleMenu release];
+					[NSApp performSelector:@selector(setAppleMenu:) withObject:apple_menu];
+					// [NSApp setAppleMenu:apple_menu];
+					[apple_menu release];
 
 					/* Create the window menu */
-					windowMenu = [[NSMenu alloc] initWithTitle:@"Window"];
+					NSMenu * window_menu = [[NSMenu alloc] initWithTitle:@"Window"];
 					
 					// FullScreen item
-					menuItem = [[NSMenuItem alloc] initWithTitle:@"Full Screen" action:@selector(toggleFullScreen:) keyEquivalent:@"f"];
-					[windowMenu addItem:menuItem];
-					[menuItem release];
+					menu_item = [[NSMenuItem alloc] initWithTitle:@"Full Screen" action:@selector(toggleFullScreen:) keyEquivalent:@"f"];
+					[window_menu addItem:menu_item];
+					[menu_item release];
 					
 					/* "Minimize" item */
-					menuItem = [[NSMenuItem alloc] initWithTitle:@"Minimize" action:@selector(performMiniaturize:) keyEquivalent:@"m"];
-					[windowMenu addItem:menuItem];
-					[menuItem release];
+					menu_item = [[NSMenuItem alloc] initWithTitle:@"Minimize" action:@selector(performMiniaturize:) keyEquivalent:@"m"];
+					[window_menu addItem:menu_item];
+					[menu_item release];
 					
 					/* Put menu into the menubar */
-					menuItem = [[NSMenuItem alloc] initWithTitle:@"Window" action:nil keyEquivalent:@""];
-					[menuItem setSubmenu:windowMenu];
-					[[NSApp mainMenu] addItem:menuItem];
-					[menuItem release];
+					menu_item = [[NSMenuItem alloc] initWithTitle:@"Window" action:nil keyEquivalent:@""];
+					[menu_item setSubmenu:window_menu];
+					[[NSApp mainMenu] addItem:menu_item];
+					[menu_item release];
 					
 					/* Tell the application object that this is now the window menu */
-					[NSApp setWindowsMenu:windowMenu];
-					[windowMenu release];
+					[NSApp setWindowsMenu:window_menu];
+					[window_menu release];
 				}
 
-				void Application::transformToForegroundApplication()
+				void Application::transform_to_foreground_application()
 				{
 					ProcessSerialNumber psn;
 					
@@ -130,7 +126,7 @@ namespace Dream {
 				
 				void Application::run()
 				{
-					transformToForegroundApplication();
+					transform_to_foreground_application();
 
 					[NSApplication sharedApplication];
 					
@@ -140,19 +136,19 @@ namespace Dream {
 					
 					[NSApp setDelegate:wrapper];
 
-					createApplicationMenus();
+					create_application_menus();
 										
 					[NSApp run];
 				}
 				
-				REF(IContext) Application::createContext (REF(Dictionary) config)
+				REF(IContext) Application::create_context(REF(Dictionary) config)
 				{
 					return new WindowContext(config);
 				}
 				
 				IApplicationDelegate * Application::delegate () const
 				{
-					return m_applicationDelegate.get();
+					return _application_delegate.get();
 				}
 			}
 		}

@@ -14,7 +14,7 @@ namespace Dream
 	{
 		namespace Graphics
 		{
-			void checkError ()
+			void check_error ()
 			{
 				GLenum error = GL_NO_ERROR;
 				

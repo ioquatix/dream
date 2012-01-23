@@ -191,7 +191,7 @@ namespace Dream
 			return sum;
 		}
 		
-		void Buffer::writeToFile (const Path & p)
+		void Buffer::write_to_file (const Path & p)
 		{
 			FileDescriptorT fd;
 			int result;
@@ -199,7 +199,7 @@ namespace Dream
 			// Open and create the output file
 			mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 			
-			fd = open(p.toLocalPath().c_str(), O_RDWR | O_CREAT | O_TRUNC, mode);
+			fd = open(p.to_local_path().c_str(), O_RDWR | O_CREAT | O_TRUNC, mode);
 			ensure(fd >= 0);
 			
 			// Seek to the end
@@ -254,11 +254,11 @@ namespace Dream
 			memset(begin() + offset, value, count);
 		}
 
-		void MutableBuffer::assign (const ByteT * otherBegin, const ByteT * otherEnd, IndexT offset)
+		void MutableBuffer::assign (const ByteT * other_begin, const ByteT * other_end, IndexT offset)
 		{
-			ensure((otherEnd - otherBegin) + offset <= size());
+			ensure((other_end - other_begin) + offset <= size());
 
-			memcpy(begin() + offset, otherBegin, otherEnd - otherBegin);
+			memcpy(begin() + offset, other_begin, other_end - other_begin);
 		}
 
 		void MutableBuffer::assign (const Buffer & other, IndexT offset)
@@ -266,9 +266,9 @@ namespace Dream
 			assign(other.begin(), other.end(), offset);
 		}
 
-		void MutableBuffer::assign (const Buffer & other, IndexT otherOffset, IndexT otherSize, IndexT offset)
+		void MutableBuffer::assign (const Buffer & other, IndexT other_offset, IndexT other_size, IndexT offset)
 		{
-			assign(other.begin() + otherOffset, other.begin() + otherOffset + otherSize, offset);
+			assign(other.begin() + other_offset, other.begin() + other_offset + other_size, offset);
 		}
 
 		void MutableBuffer::assign (const char * string, IndexT offset)
@@ -300,12 +300,12 @@ namespace Dream
 #pragma mark -
 #pragma mark class StaticBuffer
 
-		StaticBuffer StaticBuffer::forCString (const char * str, bool includeNullByte)
+		StaticBuffer StaticBuffer::for_cstring (const char * str, bool include_null_byte)
 		{
-			return StaticBuffer((const ByteT*)str, strlen(str) + (int)includeNullByte);
+			return StaticBuffer((const ByteT*)str, strlen(str) + (int)include_null_byte);
 		}
 		
-		StaticBuffer::StaticBuffer (const ByteT * buf, const IndexT & size) : m_size(size), m_buf(buf)
+		StaticBuffer::StaticBuffer (const ByteT * buf, const IndexT & size) : _size(size), _buf(buf)
 		{
 		}
 
@@ -315,45 +315,45 @@ namespace Dream
 
 		IndexT StaticBuffer::size () const
 		{
-			return m_size;
+			return _size;
 		}
 
 		const ByteT * StaticBuffer::begin () const
 		{
-			return m_buf;
+			return _buf;
 		}
 
 #pragma mark -
 #pragma mark class FileBuffer
 		
-		FileBuffer::FileBuffer (const Path & filePath)
+		FileBuffer::FileBuffer (const Path & file_path)
 		{
-			FileDescriptorT input = open(filePath.toLocalPath().c_str(), O_RDONLY);
+			FileDescriptorT input = open(file_path.to_local_path().c_str(), O_RDONLY);
 
 			if (input == -1)
 				perror(__PRETTY_FUNCTION__);
 			
 			ensure(input != -1);
 			
-			m_size = lseek(input, 0, SEEK_END);
+			_size = lseek(input, 0, SEEK_END);
 			
-			m_buf = mmap(0, m_size, PROT_READ, MAP_SHARED, input, 0);
-			ensure(m_buf != (ByteT *)-1);
+			_buf = mmap(0, _size, PROT_READ, MAP_SHARED, input, 0);
+			ensure(_buf != (ByteT *)-1);
 		}
 		
 		FileBuffer::~FileBuffer ()
 		{
-			munmap(m_buf, m_size);
+			munmap(_buf, _size);
 		}
 		
 		IndexT FileBuffer::size () const
 		{
-			return m_size;
+			return _size;
 		}
 		
 		const ByteT * FileBuffer::begin () const
 		{
-			return (const ByteT *)m_buf;
+			return (const ByteT *)_buf;
 		}
 		
 #pragma mark -
@@ -361,38 +361,38 @@ namespace Dream
 
 		void DynamicBuffer::allocate (IndexT size)
 		{
-			if (size != m_capacity)
+			if (size != _capacity)
 			{
-				m_buf = (ByteT*)realloc(m_buf, size);
-				ensure(m_buf != NULL);
+				_buf = (ByteT*)realloc(_buf, size);
+				ensure(_buf != NULL);
 
-				m_capacity = size;
+				_capacity = size;
 			}
 		}
 
 		void DynamicBuffer::deallocate ()
 		{
-			if (m_buf)
+			if (_buf)
 			{
-				free(m_buf);
-				m_buf = NULL;
-				m_size = 0;
-				m_capacity = 0;
+				free(_buf);
+				_buf = NULL;
+				_size = 0;
+				_capacity = 0;
 			}
 		}
 
-		DynamicBuffer::DynamicBuffer () : m_capacity (0), m_size (0), m_buf (NULL)
+		DynamicBuffer::DynamicBuffer () : _capacity (0), _size (0), _buf (NULL)
 		{
 		}
 
-		DynamicBuffer::DynamicBuffer (IndexT size, bool reserved) : m_buf (NULL)
+		DynamicBuffer::DynamicBuffer (IndexT size, bool reserved) : _buf (NULL)
 		{
 			allocate(size);
 			
 			if (reserved == false)
-				m_size = size;
+				_size = size;
 			else
-				m_size = 0;
+				_size = 0;
 		}
 
 		DynamicBuffer::~DynamicBuffer ()
@@ -402,12 +402,12 @@ namespace Dream
 
 		IndexT DynamicBuffer::capacity () const
 		{
-			return m_capacity;
+			return _capacity;
 		}
 
 		IndexT DynamicBuffer::size () const
 		{
-			return m_size;
+			return _size;
 		}
 
 		void DynamicBuffer::clear ()
@@ -422,28 +422,28 @@ namespace Dream
 
 		void DynamicBuffer::resize (IndexT size)
 		{
-			if (size > m_capacity)
+			if (size > _capacity)
 			{
 				allocate(size);
 			}
 
-			m_size = size;
+			_size = size;
 		}
 
 		ByteT * DynamicBuffer::begin ()
 		{
-			return m_buf;
+			return _buf;
 		}
 
 		const ByteT * DynamicBuffer::begin () const
 		{
-			return m_buf;
+			return _buf;
 		}
 
 #pragma mark -
 #pragma mark class PackedData
 
-		PackedBuffer::PackedBuffer (IndexT size) : m_size (size)
+		PackedBuffer::PackedBuffer (IndexT size) : _size (size)
 		{
 		}
 
@@ -462,7 +462,7 @@ namespace Dream
 			return (const ByteT*)this + sizeof(*this);
 		}
 
-		PackedBuffer * PackedBuffer::newBuffer (IndexT size)
+		PackedBuffer * PackedBuffer::new_buffer (IndexT size)
 		{
 			IndexT total = sizeof(PackedBuffer) + size;
 			void * data = malloc(total);
@@ -473,7 +473,7 @@ namespace Dream
 
 		IndexT PackedBuffer::size () const
 		{
-			return m_size;
+			return _size;
 		}
 
 		ByteT * PackedBuffer::begin ()
@@ -500,7 +500,7 @@ namespace Dream
 #ifdef ENABLE_TESTING
 		UNIT_TEST(BufferRead)
 		{
-			StaticBuffer buf = StaticBuffer::forCString("Bobby");
+			StaticBuffer buf = StaticBuffer::for_cstring("Bobby");
 			
 			uint8_t v;
 			buf.read(2, v);
@@ -511,7 +511,7 @@ namespace Dream
 		UNIT_TEST(DynamicBuffer)
 		{
 			const char * data = "Human resources are human first, and resources second.";
-			unsigned dataLength = strlen(data);
+			unsigned data_length = strlen(data);
 
 			testing("Construction");
 
@@ -528,15 +528,15 @@ namespace Dream
 
 			testing("Assigning Data");
 
-			IndexT prevCapacity = a.capacity();
-			a.resize(dataLength);
-			a.assign((const ByteT*)data, (const ByteT*)data + dataLength);
+			IndexT prev_capacity = a.capacity();
+			a.resize(data_length);
+			a.assign((const ByteT*)data, (const ByteT*)data + data_length);
 
 			// Performance check
-			check(a.capacity() == prevCapacity) << "Don't realloc if size is within capacity";
+			check(a.capacity() == prev_capacity) << "Don't realloc if size is within capacity";
 
-			b.resize(dataLength);
-			b.assign((const ByteT*)data, (const ByteT*)data + dataLength);
+			b.resize(data_length);
+			b.assign((const ByteT*)data, (const ByteT*)data + data_length);
 
 			check(a == b) << "Data and size is the same";
 			check(a[5] == data[5]) << "Data indexing is correct";
@@ -580,19 +580,19 @@ namespace Dream
 		UNIT_TEST(PackedBuffer)
 		{
 			const char * data = "Packed Buffer.";
-			unsigned dataLength = strlen(data);
+			unsigned data_length = strlen(data);
 
 			PackedBuffer * buffer;
 
 			testing("Construction");
 
-			buffer = PackedBuffer::newBuffer(dataLength);
+			buffer = PackedBuffer::new_buffer(data_length);
 			check(buffer != NULL) << "Buffer was created successfully";
 
 			testing("Assigning Data");
 
-			buffer->assign((const ByteT*)data, (const ByteT*)data + dataLength, 0);
-			check(buffer->size() == dataLength) << "Data size is consistent";
+			buffer->assign((const ByteT*)data, (const ByteT*)data + data_length, 0);
+			check(buffer->size() == data_length) << "Data size is consistent";
 
 			for (unsigned i = 0; i < buffer->size(); i += 1)
 				check((*buffer)[i] == data[i]) << "Data is correct";
@@ -600,35 +600,35 @@ namespace Dream
 		
 		UNIT_TEST(ReadingAndWritingBuffers)
 		{
-			Path tmpPath = Path::temporaryFilePath();
+			Path tmp_path = Path::temporary_file_path();
 			const char * data = "When the only tool you have is a hammer, you tend to treat everything as if it were a nail.";
-			unsigned dataLength = strlen(data);
+			unsigned data_length = strlen(data);
 			
 			testing("Writing");
 			
-			PackedBuffer * writeBuffer;
-			writeBuffer = PackedBuffer::newBuffer(dataLength);
+			PackedBuffer * write_buffer;
+			write_buffer = PackedBuffer::new_buffer(data_length);
 			
-			writeBuffer->assign((const ByteT*)data, (const ByteT*)data + dataLength, 0);
+			write_buffer->assign((const ByteT*)data, (const ByteT*)data + data_length, 0);
 			
-			writeBuffer->writeToFile(tmpPath);
+			write_buffer->write_to_file(tmp_path);
 			
 			testing("Reading");
-			FileBuffer readBuffer(tmpPath);
+			FileBuffer read_buffer(tmp_path);
 			
-			std::string writeString(writeBuffer->begin(), writeBuffer->end());
-			std::string readString(readBuffer.begin(), readBuffer.end());
+			std::string write_string(write_buffer->begin(), write_buffer->end());
+			std::string read_string(read_buffer.begin(), read_buffer.end());
 			
-			check(writeBuffer->size() == readBuffer.size()) << "Data size is consistent";
-			check(writeBuffer->checksum() == readBuffer.checksum()) << "Data is correct";
+			check(write_buffer->size() == read_buffer.size()) << "Data size is consistent";
+			check(write_buffer->checksum() == read_buffer.checksum()) << "Data is correct";
 			
-			check(writeString == readString) << "Data string is equal";
+			check(write_string == read_string) << "Data string is equal";
 			
-			writeBuffer->hexdump(std::cout);
-			readBuffer.hexdump(std::cout);
+			write_buffer->hexdump(std::cout);
+			read_buffer.hexdump(std::cout);
 			
 			// Remove the temporary file
-			tmpPath.remove();
+			tmp_path.remove();
 		}
 #endif
 	}

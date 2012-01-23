@@ -31,16 +31,16 @@ namespace Dream
 {
 	namespace Core
 	{
-		Path::FileType Path::fileStatus() const {
+		Path::FileType Path::file_status() const {
 			SystemError::reset();
 			
-			StringT path = toLocalPath();
-			struct stat fileInfo;
+			StringT path = to_local_path();
+			struct stat file_info;
 			
 			// Clear the structure.
-			memset(&fileInfo, 0, sizeof(fileInfo));
+			memset(&file_info, 0, sizeof(file_info));
 			
-			if (stat(path.c_str(), &fileInfo) != 0) {
+			if (stat(path.c_str(), &file_info) != 0) {
 				// If there was an error other than not found...
 				if (errno != ENOENT) {
 					SystemError::check(path);
@@ -50,51 +50,51 @@ namespace Dream
 				return UNKNOWN;
 			}
 			
-			//mode_t mode = fileInfo.st_mode & S_IFMT;
+			//mode_t mode = file_info.st_mode & S_IFMT;
 			
-			if (S_ISDIR(fileInfo.st_mode)) {
+			if (S_ISDIR(file_info.st_mode)) {
 				//std::cerr << path << " is directory" << std::endl;
 				return DIRECTORY;
 			}
 			
-			//std::cerr << path << " is storage : " << S_ISREG(fileInfo.st_mode) << std::endl;
+			//std::cerr << path << " is storage : " << S_ISREG(file_info.st_mode) << std::endl;
 			
 			// It isn't a directory so it must be some kind of storage.
 			return STORAGE;
 		}
 		
-		Path::FileSizeT Path::fileSize() const {
+		Path::FileSizeT Path::file_size() const {
 			SystemError::reset();
 			
-			StringT path = toLocalPath();
-			struct stat fileInfo;
+			StringT path = to_local_path();
+			struct stat file_info;
 			
-			memset(&fileInfo, 0, sizeof(fileInfo));
+			memset(&file_info, 0, sizeof(file_info));
 			
-			if (stat(path.c_str(), &fileInfo) != 0) {
+			if (stat(path.c_str(), &file_info) != 0) {
 				SystemError::check(path);
 			}
 			
-			return FileSizeT(fileInfo.st_blocks) * FileSizeT(fileInfo.st_blksize);
+			return FileSizeT(file_info.st_blocks) * FileSizeT(file_info.st_blksize);
 		}
 		
 		Path::DirectoryListingT Path::list (FileType filter) const {
 			DirectoryListingT entries;
-			StringT path = toLocalPath();
+			StringT path = to_local_path();
 			DIR * directory = opendir(path.c_str());
 			
 			struct dirent * entry = NULL;
-			int entryType = 0;
+			int entry_type = 0;
 			
 			if (filter == DIRECTORY)
-				entryType = DT_DIR;
+				entry_type = DT_DIR;
 			else if (filter == STORAGE)
-				entryType = DT_REG;
+				entry_type = DT_REG;
 						
 			while ((entry = readdir(directory)) != NULL) {
 				//std::cout << "Checking entry: " << entry->d_name << std::endl;
 				
-				if (entryType && (entryType != entry->d_type))
+				if (entry_type && (entry_type != entry->d_type))
 					continue;
 				
 				entries.push_back(entry->d_name);
@@ -106,25 +106,25 @@ namespace Dream
 		}
 		
 		void Path::remove () const {
-			StringT path = toLocalPath();
+			StringT path = to_local_path();
 			
 			if (::remove(path.c_str()) != 0)
 				perror(__PRETTY_FUNCTION__);
 		}
 		
-		void Path::move (const Path & newName) const {
-			StringT from = toLocalPath(), to = newName.toLocalPath();
+		void Path::move (const Path & new_name) const {
+			StringT from = to_local_path(), to = new_name.to_local_path();
 			if (rename(from.c_str(), to.c_str()) != 0)
 				perror(__PRETTY_FUNCTION__);
 		}
 		
-		Path Path::temporaryFilePath () {
+		Path Path::temporary_file_path () {
 			char * path = tmpnam(NULL);
 			
 			return Path(path);
 		}
 		
-		Path Path::currentWorkingDirectory () {
+		Path Path::current_working_directory () {
 			char buffer[MAXPATHLEN];
 			getcwd(buffer, MAXPATHLEN);
 			

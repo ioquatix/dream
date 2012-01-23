@@ -13,7 +13,7 @@ namespace Dream
 {
 	namespace Core
 	{		
-		inline IndexT sizeOfTypeIdentifier (TypeIdentifierT tid)
+		inline IndexT size_of_type_identifier (TypeIdentifierT tid)
 		{
 			return tid & 0x0F;
 		}
@@ -21,19 +21,19 @@ namespace Dream
 		/// Returns whether the key has a value in the dictionary.
 		bool Dictionary::key (const KeyT & key)
 		{
-			return m_values.find(key) != m_values.end();
+			return _values.find(key) != _values.end();
 		}
 		
-		void Dictionary::setValue (const KeyT & key, const Value & value)
+		void Dictionary::set_value (const KeyT & key, const Value & value)
 		{
-			m_values[key] = value;
+			_values[key] = value;
 		}
 		
-		const Value Dictionary::getValue (const KeyT & key) const
+		const Value Dictionary::get_value (const KeyT & key) const
 		{
-			ValuesT::const_iterator i = m_values.find(key);
+			ValuesT::const_iterator i = _values.find(key);
 			
-			if (i != m_values.end())
+			if (i != _values.end())
 				return i->second;
 			else
 				return Value();
@@ -41,27 +41,27 @@ namespace Dream
 		
 		void Dictionary::update (const PTR(Dictionary) other)
 		{
-			ValuesT values = other->m_values;
-			values.insert(m_values.begin(), m_values.end());
-			m_values.swap(values);
+			ValuesT values = other->_values;
+			values.insert(_values.begin(), _values.end());
+			_values.swap(values);
 		}
 		
 		void Dictionary::insert (const PTR(Dictionary) other)
 		{
-			m_values.insert(other->m_values.begin(), other->m_values.end());
+			_values.insert(other->_values.begin(), other->_values.end());
 		}
 		
 		REF(IData) Dictionary::serialize () const
 		{
 			Shared<DynamicBuffer> buffer(new DynamicBuffer);
 			
-			for (ValuesT::const_iterator i = m_values.begin(); i != m_values.end(); i++)
+			for (ValuesT::const_iterator i = _values.begin(); i != _values.end(); i++)
 			{
 				const KeyT & key = i->first;
 				const Value & value = i->second;
 				
-				TypeSerialization<TI_STRING>::appendToBuffer(*buffer, key);
-				value.appendToBuffer(*buffer);
+				TypeSerialization<TI_STRING>::append_to_buffer(*buffer, key);
+				value.append_to_buffer(*buffer);
 			}
 			
 			buffer->hexdump(std::cout);
@@ -76,14 +76,14 @@ namespace Dream
 			
 			while (offset < buffer->size())
 			{
-				KeyT key = TypeSerialization<TI_STRING>::readFromBuffer(*buffer, offset);
-				m_values[key] = Value::readFromBuffer(*buffer, offset);
+				KeyT key = TypeSerialization<TI_STRING>::read_from_buffer(*buffer, offset);
+				_values[key] = Value::read_from_buffer(*buffer, offset);
 			}
 		}
 		
 		void Dictionary::debug (std::ostream & out) const
 		{
-			for (ValuesT::const_iterator i = m_values.begin(); i != m_values.end(); i++)
+			for (ValuesT::const_iterator i = _values.begin(); i != _values.end(); i++)
 			{
 				const KeyT & key = i->first;
 				const Value & value = i->second;

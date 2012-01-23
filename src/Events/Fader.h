@@ -40,27 +40,27 @@ namespace Dream
 				typedef std::function<void (PTR(Fader) fader)> FinishCallbackT;
 			
 			protected:
-				Shared<IKnob> m_knob;
+				Shared<IKnob> _knob;
 
-				int m_count, m_steps;
-				TimeT m_increment;
+				int _count, _steps;
+				TimeT _increment;
 				
-				bool m_finished;
+				bool _finished;
 				
-				FinishCallbackT m_finishCallback;
+				FinishCallbackT _finish_callback;
 			
 			public:
 				Fader(Shared<IKnob> knob, int steps, TimeT increment);
 				virtual ~Fader ();
 				
 				void cancel ();
-				bool finished () { return m_finished; }
+				bool finished () { return _finished; }
 				
-				void setFinishCallback (FinishCallbackT finishCallback);
+				void set_finish_callback (FinishCallbackT finish_callback);
 				
 				virtual bool repeats () const;
-				virtual TimeT nextTimeout (const TimeT & lastTimeout, const TimeT & currentTime) const;
-				virtual void processEvents (Loop *, Event);
+				virtual TimeT next_timeout (const TimeT & last_timeout, const TimeT & current_time) const;
+				virtual void process_events (Loop *, Event);
 		};
 
 	}

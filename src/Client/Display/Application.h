@@ -27,11 +27,11 @@ namespace Dream {
 				public:
 					virtual ~IApplicationDelegate ();
 					
-					virtual void applicationDidFinishLaunching (IApplication * application);
-					virtual void applicationWillTerminate (IApplication * application);
+					virtual void application_did_finish_launching (IApplication * application);
+					virtual void application_will_terminate (IApplication * application);
 					
-					virtual void applicationWillEnterBackground (IApplication * application);
-					virtual void applicationDidEnterForeground (IApplication * application);
+					virtual void application_will_enter_background (IApplication * application);
+					virtual void application_did_enter_foreground (IApplication * application);
 			};
 			
 			class IApplication : implements IObject {
@@ -41,12 +41,12 @@ namespace Dream {
 					static void start (PTR(IApplicationDelegate) delegate);
 					
 					/// Create a display context for rendering.
-					virtual REF(IContext) createContext (REF(Dictionary) config) abstract;
+					virtual REF(IContext) create_context (REF(Dictionary) config) abstract;
 					
 					virtual IApplicationDelegate * delegate () const abstract;
 					
 					/// Helper for very basic apps.
-					static void runScene(PTR(IScene) scene, PTR(Dictionary) config);
+					static void run_scene(PTR(IScene) scene, PTR(Dictionary) config);
 			};
 			
 		}

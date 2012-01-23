@@ -27,10 +27,10 @@ namespace Dream
 {
 	namespace Core
 	{
-		Path::FileType Path::fileStatus() const {
+		Path::FileType Path::file_status() const {
 			NSAutoreleasePool * pool = [NSAutoreleasePool new];			
 
-			NSString * path = [[[NSString alloc] initWithUTF8String:toLocalPath().c_str()] autorelease];
+			NSString * path = [[[NSString alloc] initWithUTF8String:to_local_path().c_str()] autorelease];
 			BOOL isDir = NO;
 			BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir];
 			
@@ -47,18 +47,18 @@ namespace Dream
 			}
 		}
 		
-		Path::FileSizeT Path::fileSize() const {
+		Path::FileSizeT Path::file_size() const {
 			FileSizeT fileSize = 0;
 						
 			NSAutoreleasePool * pool = [NSAutoreleasePool new];			
 
 			NSError * error = nil;
-			NSString * path = [[[NSString alloc] initWithUTF8String:toLocalPath().c_str()] autorelease];
+			NSString * path = [[[NSString alloc] initWithUTF8String:to_local_path().c_str()] autorelease];
 			NSDictionary * attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error];
 			
 			if (error) {
 				//StringT domain, ErrorNumberT errorNumber, StringT errorDescription, StringT errorTarge
-				SystemError systemError(StringT([[error domain] UTF8String]), ErrorNumberT([error code]), StringT([[error description] UTF8String]), toLocalPath());
+				SystemError systemError(StringT([[error domain] UTF8String]), ErrorNumberT([error code]), StringT([[error description] UTF8String]), to_local_path());
 				
 				[pool release];
 				
@@ -76,7 +76,7 @@ namespace Dream
 			DirectoryListingT entries;
 
 			NSAutoreleasePool * pool = [NSAutoreleasePool new];			
-			NSString * path = [[NSString alloc] initWithUTF8String:toLocalPath().c_str()];
+			NSString * path = [[NSString alloc] initWithUTF8String:to_local_path().c_str()];
 			NSDirectoryEnumerator * directory = [[NSFileManager defaultManager] enumeratorAtPath:path];
 
 			[directory skipDescendents];
@@ -88,7 +88,7 @@ namespace Dream
 				if (filter) {
 					Path fullPath = *this + filename;
 					
-					if (fullPath.fileStatus() != filter)
+					if (fullPath.file_status() != filter)
 						continue;
 				}
 				
@@ -102,26 +102,26 @@ namespace Dream
 		}
 		
 		void Path::remove () const {
-			StringT path = toLocalPath();
+			StringT path = to_local_path();
 			
 			if (::remove(path.c_str()) != 0)
 				perror(__PRETTY_FUNCTION__);
 		}
 		
-		void Path::move (const Path & newName) const {
-			StringT from = toLocalPath(), to = newName.toLocalPath();
+		void Path::move (const Path & new_name) const {
+			StringT from = to_local_path(), to = new_name.to_local_path();
 			
 			if (rename(from.c_str(), to.c_str()) != 0)
 				perror(__PRETTY_FUNCTION__);
 		}
 		
-		Path Path::temporaryFilePath () {
+		Path Path::temporary_file_path() {
 			char * path = tmpnam(NULL);
 			
 			return Path(path);
 		}
 		
-		Path Path::currentWorkingDirectory () {
+		Path Path::current_working_directory() {
 			NSAutoreleasePool * pool = [NSAutoreleasePool new];			
 			Path path([[[NSFileManager defaultManager] currentDirectoryPath] UTF8String]);
 			[pool release];

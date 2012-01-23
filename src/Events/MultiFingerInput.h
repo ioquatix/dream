@@ -39,20 +39,20 @@ namespace Dream
 		{
 		protected:				
 			typedef std::map<FingerID, FingerTracking> FingersMap;
-			FingersMap m_fingers;
+			FingersMap _fingers;
 			
-			std::vector<ButtonT> m_freeButtons;
-			ButtonT m_top;
+			std::vector<ButtonT> _free_buttons;
+			ButtonT _top;
 
-			ButtonT allocateButton ();
-			void releaseButton(ButtonT);
+			ButtonT allocate_button ();
+			void release_button(ButtonT);
 			
 		public:
 			MultiFingerInput ();
 			
-			const FingerTracking & beginMotion (FingerID finger, Vec3 position);
-			const FingerTracking & updateMotion (FingerID finger, Vec3 position);
-			const FingerTracking finishMotion (FingerID finger, Vec3 position);
+			const FingerTracking & begin_motion (FingerID finger, Vec3 position);
+			const FingerTracking & update_motion (FingerID finger, Vec3 position);
+			const FingerTracking finish_motion (FingerID finger, Vec3 position);
 			
 		};
 		

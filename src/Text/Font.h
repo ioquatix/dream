@@ -22,14 +22,14 @@ namespace Dream
 		
 		class TypographyException : public std::exception {
 		protected:
-			int m_error;
+			int _error;
 			
 		public:
-			TypographyException (int error) : m_error(error) {
+			TypographyException (int error) : _error(error) {
 				
 			}
 			
-			const int & errorState () { return m_error; }
+			const int & error_state () { return _error; }
 		};
 		
 		namespace Detail {
@@ -38,18 +38,18 @@ namespace Dream
 		
 		class Font : public Object {
 		protected:
-			Detail::FontFace *m_face;
-			REF(IData) m_fontData;
+			Detail::FontFace *_face;
+			REF(IData) _font_data;
 			
-			Vector<2, unsigned> computeBoundingBox (const std::wstring & text) const;
+			Vector<2, unsigned> compute_bounding_box (const std::wstring & text) const;
 			
 		public:
 			class Loader : implements ILoadable {
 			public:
-				virtual void registerLoaderTypes (ILoader * loader);
+				virtual void register_loader_types (ILoader * loader);
 				
-				virtual REF(Object) initWithPath(const Path & p);
-				virtual REF(Object) loadFromData(const PTR(IData) data, const ILoader * loader);
+				virtual REF(Object) init_with_path(const Path & p);
+				virtual REF(Object) load_from_data(const PTR(IData) data, const ILoader * loader);
 			};
 			
 			Font (const Path &);
@@ -57,14 +57,14 @@ namespace Dream
 			
 			virtual ~Font ();
 			
-			Detail::FontFace * fontFace ();
-			const Detail::FontFace * fontFace () const;
+			Detail::FontFace * font_face ();
+			const Detail::FontFace * font_face () const;
 			
-			void setPixelSize (unsigned sz);
-			IndexT singleLineOffset ();
+			void set_pixel_size (unsigned sz);
+			IndexT single_line_offset ();
 			
-			REF(Image) renderText (const std::wstring & text);
-			REF(Image) renderText (const std::wstring & text, unsigned lineWidth);
+			REF(Image) render_text (const std::wstring & text);
+			REF(Image) render_text (const std::wstring & text, unsigned line_width);
 		};
 		
 	}

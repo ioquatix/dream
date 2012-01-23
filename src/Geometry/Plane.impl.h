@@ -16,36 +16,36 @@ namespace Dream
 	namespace Geometry
 	{
 		template <unsigned D, typename NumericT>
-		bool Plane<D, NumericT>::isParallel (const Plane<D, NumericT> & other) const
+		bool Plane<D, NumericT>::is_parallel (const Plane<D, NumericT> & other) const
 		{
-			return m_normal == other.m_normal || m_normal == (- other.m_normal);
+			return _normal == other._normal || _normal == (- other._normal);
 		}
 
 		template <unsigned D, typename NumericT>
-		bool Plane<D, NumericT>::intersectsWith (const Plane<D, NumericT> & other, Line<3, NumericT> & line) const
+		bool Plane<D, NumericT>::intersects_with (const Plane<D, NumericT> & other, Line<3, NumericT> & line) const
 		{
 			/* Planes are parallel? */
-			if (other.normal() == m_normal)
+			if (other.normal() == _normal)
 				return false;
 			
-			VectorT u = m_normal.cross(other.m_normal).normalize();
+			VectorT u = _normal.cross(other._normal).normalize();
 			
-			line.setDirection(u);
-			line.setPoint(- ((m_normal*other.m_distance) - (other.m_normal*m_distance)).cross(u) / u.length2());
+			line.set_direction(u);
+			line.set_point(- ((_normal*other._distance) - (other._normal*_distance)).cross(u) / u.length2());
 			
 			return true;	
 		}
 		
 		template <unsigned D, typename NumericT>
-		bool Plane<D, NumericT>::intersectsWith (const Line<3, NumericT> & line, VectorT & at) const
+		bool Plane<D, NumericT>::intersects_with (const Line<3, NumericT> & line, VectorT & at) const
 		{
-			NumericT d = m_normal.dot(line.direction());
+			NumericT d = _normal.dot(line.direction());
 			
 			/* Line and Plane are parallel? */
 			if (d == 0.0) return false;
 			
-            // This minus sign may need to be inside the (-m_normal)
-			NumericT r = -(m_normal.dot(line.point()) - m_distance);
+            // This minus sign may need to be inside the (-_normal)
+			NumericT r = -(_normal.dot(line.point()) - _distance);
 			NumericT t = r / d;
 			
 			at = line.point() + line.direction() * t;
@@ -54,9 +54,9 @@ namespace Dream
 		}
 		
 		template <unsigned D, typename NumericT>
-		IntersectionResult Plane<D, NumericT>::intersectsWith (const Sphere<D, NumericT> & sphere) const
+		IntersectionResult Plane<D, NumericT>::intersects_with (const Sphere<D, NumericT> & sphere) const
 		{
-			NumericT d = distanceToPoint(sphere.center());
+			NumericT d = distance_to_point(sphere.center());
 			
 			if (d > sphere.radius())
 				return NO_INTERSECTION;

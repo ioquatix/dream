@@ -20,11 +20,11 @@ namespace Dream {
 			{
 			}
 			
-			void IContextDelegate::renderFrameForTime (PTR(IContext) context, TimeT time)
+			void IContextDelegate::render_frame_for_time (PTR(IContext) context, TimeT time)
 			{
 			}
 			
-			void IContextDelegate::processInput (PTR(IContext) context, const Input & input)
+			void IContextDelegate::process_input (PTR(IContext) context, const Input & input)
 			{
 			}
 			
@@ -38,15 +38,15 @@ namespace Dream {
 			{
 			}
 
-			void Context::setDelegate(PTR(IContextDelegate) contextDelegate)
+			void Context::set_delegate(PTR(IContextDelegate) context_delegate)
 			{
-				m_contextDelegate = contextDelegate;
+				_context_delegate = context_delegate;
 			}
 			
 			bool Context::process(const Input & input)
 			{
-				if (m_contextDelegate) {
-					m_contextDelegate->processInput(this, input);
+				if (_context_delegate) {
+					_context_delegate->process_input(this, input);
 				
 					return true;
 				}
@@ -54,10 +54,10 @@ namespace Dream {
 				return false;
 			}
 			
-			void Context::renderFrameForTime (TimeT time)
+			void Context::render_frame_for_time (TimeT time)
 			{
-				if (m_contextDelegate) {
-					m_contextDelegate->renderFrameForTime(this, time);
+				if (_context_delegate) {
+					_context_delegate->render_frame_for_time(this, time);
 				}
 			}
 			

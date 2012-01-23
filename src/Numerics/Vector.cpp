@@ -62,7 +62,7 @@ namespace Dream
 
 			check(f4.sum() == 0.0f) << "Vector is zeroed";
 
-			f4.loadIdentity();
+			f4.load_identity();
 
 			check(f4.sum() == 4.0f) << "Vector is identity";
 
@@ -78,32 +78,32 @@ namespace Dream
 
 			testing("Geometric Comparisons");
 
-			check(vec(4, 5).lessThan(vec(6, 6))) << "Vector comparison correct";
-			check(!vec(4, 5).lessThan(vec(4, 4))) << "Vector comparison correct";
+			check(vec(4, 5).less_than(vec(6, 6))) << "Vector comparison correct";
+			check(!vec(4, 5).less_than(vec(4, 4))) << "Vector comparison correct";
 
-			check(vec(4, 5).lessThanOrEqual(vec(6, 6))) << "Vector comparison correct";
-			check(vec(4, 4).lessThanOrEqual(vec(4, 4))) << "Vector comparison correct";
-			check(!vec(4, 5).lessThanOrEqual(vec(4, 4))) << "Vector comparison correct";
+			check(vec(4, 5).less_than_or_equal(vec(6, 6))) << "Vector comparison correct";
+			check(vec(4, 4).less_than_or_equal(vec(4, 4))) << "Vector comparison correct";
+			check(!vec(4, 5).less_than_or_equal(vec(4, 4))) << "Vector comparison correct";
 
-			check(!vec(4, 5).greaterThan(vec(6, 6))) << "Vector comparison correct";
-			check(!vec(4, 5).greaterThan(vec(4, 4))) << "Vector comparison correct";
-			check(vec(5, 5).greaterThan(vec(4, 4))) << "Vector comparison correct";
+			check(!vec(4, 5).greater_than(vec(6, 6))) << "Vector comparison correct";
+			check(!vec(4, 5).greater_than(vec(4, 4))) << "Vector comparison correct";
+			check(vec(5, 5).greater_than(vec(4, 4))) << "Vector comparison correct";
 
-			check(!vec(4, 5).greaterThanOrEqual(vec(6, 6))) << "Vector comparison correct";
-			check(vec(4, 5).greaterThanOrEqual(vec(4, 4))) << "Vector comparison correct";
-			check(vec(4, 4).greaterThanOrEqual(vec(4, 4))) << "Vector comparison correct";
+			check(!vec(4, 5).greater_than_or_equal(vec(6, 6))) << "Vector comparison correct";
+			check(vec(4, 5).greater_than_or_equal(vec(4, 4))) << "Vector comparison correct";
+			check(vec(4, 4).greater_than_or_equal(vec(4, 4))) << "Vector comparison correct";
 		}
 
 		UNIT_TEST(VectorReflection)
 		{
 			// 0:Wall Normal, 1:I, 2:R
 			typedef std::tuple<Vec2, Vec2, Vec2> ReflectTestRecord;
-			std::vector<ReflectTestRecord> reflectionTests;
+			std::vector<ReflectTestRecord> reflection_tests;
 			
-			reflectionTests.push_back(std::make_tuple(Vec2(1.0, 0.0), Vec2(-1.0, -1.0), Vec2(1.0, -1.0)));
-			reflectionTests.push_back(std::make_tuple(Vec2(1.0, 0.0), Vec2(-1.0, 0.0), Vec2(1.0, 0.0)));
-			reflectionTests.push_back(std::make_tuple(Vec2(1.0, 1.0).normalize(), Vec2(-1.0, -1.0), Vec2(1.0, 1.0)));
-			reflectionTests.push_back(std::make_tuple(Vec2(1.0, 1.0).normalize(), Vec2(-1.0, 0.0), Vec2(0.0, 1.0)));
+			reflection_tests.push_back(std::make_tuple(Vec2(1.0, 0.0), Vec2(-1.0, -1.0), Vec2(1.0, -1.0)));
+			reflection_tests.push_back(std::make_tuple(Vec2(1.0, 0.0), Vec2(-1.0, 0.0), Vec2(1.0, 0.0)));
+			reflection_tests.push_back(std::make_tuple(Vec2(1.0, 1.0).normalize(), Vec2(-1.0, -1.0), Vec2(1.0, 1.0)));
+			reflection_tests.push_back(std::make_tuple(Vec2(1.0, 1.0).normalize(), Vec2(-1.0, 0.0), Vec2(0.0, 1.0)));
 				
 			/*
 				(Vec2(1.0, 0.0), Vec2(-0.417897, 0.908494), Vec2(0.417897, 0.908494))
@@ -116,7 +116,7 @@ namespace Dream
 			testing("Vector Reflection");
 
 			unsigned k = 0;
-			foreach (r, reflectionTests)
+			foreach (r, reflection_tests)
 			{
 				Vec2 c = std::get<1>(*r).reflect(std::get<0>(*r));
 

@@ -21,25 +21,25 @@ namespace Dream
 {
 	namespace Imaging
 	{
-		static void pngWriteToBuffer (png_structp pngWriter, png_bytep data, png_size_t length)
+		static void png_write_to_buffer (png_structp png_writer, png_bytep data, png_size_t length)
 		{
-			DynamicBuffer * buffer = (DynamicBuffer*)png_get_io_ptr(pngWriter);
+			DynamicBuffer * buffer = (DynamicBuffer*)png_get_io_ptr(png_writer);
 			
 			buffer->append(length, data);
 		}
 		
-		static void pngFlushBuffer (png_structp read_ptr)
+		static void png_flush_buffer (png_structp read_ptr)
 		{
 			
 		}
 		
-		static void pngError(png_structp png_ptr, png_const_charp msg) {
+		static void png_error(png_structp png_ptr, png_const_charp msg) {
 			throw std::runtime_error(msg);
 		}
 
-		int pngColorType (ImagePixelFormat pixelFormat)
+		int png_color_type (ImagePixelFormat pixel_format)
 		{
-			switch (pixelFormat) {
+			switch (pixel_format) {
 			case RED:
 			case GREEN:
 			case BLUE:
@@ -57,55 +57,55 @@ namespace Dream
 			return -1;
 		}
 		
-		REF(Core::IData) savePixelBufferAsPNG (IPixelBuffer * pixelBuffer)
+		REF(Core::IData) save_pixel_buffer_as_png (IPixelBuffer * pixel_buffer)
 		{
-			Vec3u size = pixelBuffer->size();
+			Vec3u size = pixel_buffer->size();
 		
-			ensure(!pixelBuffer->isPackedFormat());
+			ensure(!pixel_buffer->is_packed_format());
 			ensure(size[Z] == 1);
 			
-			Shared<DynamicBuffer> resultData(new DynamicBuffer);
+			Shared<DynamicBuffer> result_data(new DynamicBuffer);
 			
-			png_structp pngWriter = NULL;
-			png_infop pngInfo = NULL;
+			png_structp png_writer = NULL;
+			png_infop png_info = NULL;
 			std::vector<png_bytep> rows(size[HEIGHT]);
 			
 			for (IndexT y = 0; y < size[HEIGHT]; y += 1) {
-				rows[y] = (png_bytep)pixelBuffer->pixelDataAt(Vec3u(0, y, 0));
+				rows[y] = (png_bytep)pixel_buffer->pixel_dataAt(Vec3u(0, y, 0));
 			}
 			
 			try {
-				pngWriter = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, pngError, NULL);
-				ensure(pngWriter != NULL && "png_create_write_struct returned NULL!");
+				png_writer = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, png_error, NULL);
+				ensure(png_writer != NULL && "png_create_write_struct returned NULL!");
 				
-				pngInfo = png_create_info_struct(pngWriter);
-				ensure(pngInfo != NULL && "png_create_info_struct returned NULL!");
+				png_info = png_create_info_struct(png_writer);
+				ensure(png_info != NULL && "png_create_info_struct returned NULL!");
 				
-				png_set_write_fn(pngWriter, (void *)(resultData.get()), pngWriteToBuffer, pngFlushBuffer);
+				png_set_write_fn(png_writer, (void *)(result_data.get()), png_write_to_buffer, png_flush_buffer);
 				
-				int bitDepth = (pixelBuffer->bytesPerPixel() * 8) / pixelBuffer->channelCount();
-				int colorType = pngColorType(pixelBuffer->pixelFormat());
+				int bit_depth = (pixel_buffer->bytes_per_pixel() * 8) / pixel_buffer->channel_count();
+				int color_type = png_color_type(pixel_buffer->pixel_format());
 
-				png_set_IHDR(pngWriter, pngInfo, size[WIDTH], size[HEIGHT], bitDepth, colorType, NULL, NULL, NULL);
+				png_set_IHDR(png_writer, png_info, size[WIDTH], size[HEIGHT], bit_depth, color_type, NULL, NULL, NULL);
 				
-				png_write_info(pngWriter, pngInfo);
+				png_write_info(png_writer, png_info);
 				
-				png_write_image(pngWriter, (png_bytepp)&rows[0]);
+				png_write_image(png_writer, (png_bytepp)&rows[0]);
 				
 				// After you are finished writing the image, you should finish writing the file.
-				png_write_end(pngWriter, NULL);
+				png_write_end(png_writer, NULL);
 			} catch (std::exception & e) {
 				std::cerr << "PNG write error: " << e.what() << std::endl;
 			
-				if (pngWriter)
-					png_destroy_write_struct(&pngWriter, &pngInfo);
+				if (png_writer)
+					png_destroy_write_struct(&png_writer, &png_info);
 				
 				throw;
 			}
 			
-			png_destroy_write_struct(&pngWriter, &pngInfo);
+			png_destroy_write_struct(&png_writer, &png_info);
 			
-			return new BufferedData(resultData);
+			return new BufferedData(result_data);
 		}
 		
 		
@@ -115,12 +115,12 @@ namespace Dream
 #ifdef ENABLE_TESTING
 
 		UNIT_TEST(PixelBufferSaver) {
-			REF(IPixelBuffer) pixelBuffer = new Image(vec(100.0, 100.0, 1.0), RGB, UBYTE);
+			REF(IPixelBuffer) pixel_buffer = new Image(vec(100.0, 100.0, 1.0), RGB, UBYTE);
 			testing("PNG");
 			
-			REF(IData) pngData = savePixelBufferAsPNG(pixelBuffer.get());
+			REF(IData) png_data = save_pixel_buffer_as_png(pixel_buffer.get());
 			
-			pngData->buffer()->writeToFile("UnitTest.png");
+			png_data->buffer()->write_to_file("UnitTest.png");
 		}
 		
 #endif

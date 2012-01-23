@@ -22,7 +22,7 @@ namespace Dream
 #pragma mark LocalFileData
 
 		LocalFileData::LocalFileData (const Path & path)
-			: m_path(path)
+			: _path(path)
 		{
 			
 		}
@@ -34,23 +34,23 @@ namespace Dream
 		
 		Shared<Buffer> LocalFileData::buffer () const
 		{
-			if (!m_buffer) {
-				m_buffer = new FileBuffer(m_path);
+			if (!_buffer) {
+				_buffer = new FileBuffer(_path);
 			}
 			
-			return m_buffer;
+			return _buffer;
 		}
 		
-		Shared<std::istream> LocalFileData::inputStream () const
+		Shared<std::istream> LocalFileData::input_stream () const
 		{
-			std::ifstream * fileInputStream = new std::ifstream(m_path.toLocalPath().c_str(), std::ios::binary);
+			std::ifstream * file_input_stream = new std::ifstream(_path.to_local_path().c_str(), std::ios::binary);
 			
-			return Shared<std::istream>(fileInputStream);
+			return Shared<std::istream>(file_input_stream);
 		}
 		
 		std::size_t LocalFileData::size () const
 		{
-			return m_path.fileSize();
+			return _path.file_size();
 		}
 
 
@@ -58,7 +58,7 @@ namespace Dream
 #pragma mark BufferedData
 		
 		BufferedData::BufferedData (Shared<Buffer> buffer)
-			: m_buffer(buffer)
+			: _buffer(buffer)
 		{
 		
 		}
@@ -70,7 +70,7 @@ namespace Dream
 			
 			buffer->append(std::istreambuf_iterator<char>(stream), std::istreambuf_iterator<char>());
 			
-			m_buffer = buffer;
+			_buffer = buffer;
 		}
 		
 		BufferedData::~BufferedData ()
@@ -80,17 +80,17 @@ namespace Dream
 		
 		Shared<Buffer> BufferedData::buffer () const
 		{
-			return m_buffer;
+			return _buffer;
 		}
 		
-		Shared<std::istream> BufferedData::inputStream () const
+		Shared<std::istream> BufferedData::input_stream () const
 		{
-			return new BufferStream(*m_buffer);
+			return new BufferStream(*_buffer);
 		}
 		
 		std::size_t BufferedData::size () const
 		{
-			return m_buffer->size();
+			return _buffer->size();
 		}
 		
 #pragma mark -
@@ -103,7 +103,7 @@ namespace Dream
 
 			testing("Construction");
 
-			Shared<StaticBuffer> sb = new StaticBuffer(StaticBuffer::forCString(data, false));
+			Shared<StaticBuffer> sb = new StaticBuffer(StaticBuffer::for_cstring(data, false));
 			REF(IData) a = new BufferedData(sb);
 
 			check(a->buffer()->size() == strlen(data)) << "Data length is correct";

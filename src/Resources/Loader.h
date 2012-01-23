@@ -36,7 +36,7 @@ namespace Dream {
 	 REF(MyResourcesFactory) factory = loader->load <MyResourcesFactory> ("path/to/resource");
 	 </code>
 	 
-	 Factory classes should process the loaded data accordingly. A resource factory should provide a set of creation methods, such as <tt>createMyResource</tt>.
+	 Factory classes should process the loaded data accordingly. A resource factory should provide a set of creation methods, such as <tt>create_my_resource</tt>.
 	 This means that once a resource is loaded, the factory can be cached (i.e. the loaded data), and actual "resources" can be created as needed.
 	 
 	 It might be necessary to load data from more than one path. If this is the case, an AggregateLoader should be used. Generally, an application should have
@@ -48,7 +48,7 @@ namespace Dream {
 		using namespace Dream::Core;
 		
 		/// Default application resources path.
-		Path applicationWorkingPath();
+		Path application_working_path();
 		
 		StringT extension(const Path &s, bool dot);
 		
@@ -56,19 +56,19 @@ namespace Dream {
 		
 		class ILoader : implements IObject {
 		public:
-			virtual REF(Object) loadPath (const Path &res) const abstract;
+			virtual REF(Object) load_path (const Path &res) const abstract;
 			// This resource loader's current base path
-			virtual Path resourcePath () const abstract;
+			virtual Path resource_path () const abstract;
 			
 			/// Normalize a resource request
-			virtual Path pathForResource(Path) const abstract;
-			virtual Path pathForResource(StringT name, StringT ext, Path dir) const abstract;
-			virtual void resourcesForType(StringT ext, Path subdir, std::vector<Path> & paths) const abstract;
+			virtual Path path_for_resource(Path) const abstract;
+			virtual Path path_for_resource(StringT name, StringT ext, Path dir) const abstract;
+			virtual void resources_for_type(StringT ext, Path subdir, std::vector<Path> & paths) const abstract;
 			
 			/// Primary interface for loading resources
 			template <typename InterfaceT>
 			REF(InterfaceT) load (const Path &res) const {
-				REF(Object) ptr = loadPath(pathForResource(res));
+				REF(Object) ptr = load_path(path_for_resource(res));
 				
 				if (!ptr) std::cerr << "Resource failed to load: '" << res << "'" << std::endl;
 				
@@ -79,19 +79,19 @@ namespace Dream {
 				return result;
 			}
 			
-			virtual void preloadResource (const Path & path) abstract;
-			virtual void preloadResources (std::vector<Path> & paths) abstract;
+			virtual void preload_resource (const Path & path) abstract;
+			virtual void preload_resources (std::vector<Path> & paths) abstract;
 
-			virtual void setLoaderForExtension (PTR(ILoadable) loadable, StringT ext) abstract;
-			virtual PTR(ILoadable) loaderForExtension (StringT ext) const abstract;
-			virtual void addLoader(PTR(ILoadable) loader) abstract;
+			virtual void set_loader_for_extension (PTR(ILoadable) loadable, StringT ext) abstract;
+			virtual PTR(ILoadable) loader_for_extension (StringT ext) const abstract;
+			virtual void add_loader(PTR(ILoadable) loader) abstract;
 						
 			/// Load the raw data for a given path.
-			virtual REF(IData) fetchDataForPath (const Path & path) const abstract;
+			virtual REF(IData) fetch_data_for_path (const Path & path) const abstract;
 			
 			/// Useful for loading buffers of data.
-			REF(IData) dataForResource (const Path & resource) {
-				return fetchDataForPath(pathForResource(resource));
+			REF(IData) data_for_resource (const Path & resource) {
+				return fetch_data_for_path(path_for_resource(resource));
 			}
 		};
 		
@@ -100,17 +100,17 @@ namespace Dream {
 			// Mapping can be simple file extensions
 			// Such as "png" or "tga" or "shader"
 
-			LoadersT m_loaders;
+			LoadersT _loaders;
 			
-			Path m_currentPath;
+			Path _current_path;
 			
 			typedef std::map<Path, REF(IData)> CacheT;
-			mutable CacheT m_dataCache;
+			mutable CacheT _dataCache;
 			
 		public:
-			virtual void setLoaderForExtension (PTR(ILoadable) loadable, StringT ext);
-			virtual PTR(ILoadable) loaderForExtension (StringT ext) const;
-			virtual void addLoader(PTR(ILoadable) loader);
+			virtual void set_loader_for_extension (PTR(ILoadable) loadable, StringT ext);
+			virtual PTR(ILoadable) loader_for_extension (StringT ext) const;
+			virtual void add_loader(PTR(ILoadable) loader);
 			
 			Loader ();
 			Loader (Path);
@@ -118,26 +118,26 @@ namespace Dream {
 			virtual ~Loader ();
 			
 			// This resource loader's current base path
-			Path resourcePath () const { return m_currentPath; }
+			Path resource_path () const { return _current_path; }
 			
 			// Normalize a resource request
-			Path pathForResource(Path) const;
-			Path pathForResource(StringT name, StringT ext, Path dir) const;
+			Path path_for_resource(Path) const;
+			Path path_for_resource(StringT name, StringT ext, Path dir) const;
 			
 			// Load a path directly with no processing
-			virtual REF(Object) loadPath (const Path &res) const;
-			virtual REF(IData) fetchDataForPath (const Path & path) const;
+			virtual REF(Object) load_path (const Path &res) const;
+			virtual REF(IData) fetch_data_for_path (const Path & path) const;
 						
-			void resourcesForType(StringT ext, Path subdir, std::vector<Path> &paths) const;
+			void resources_for_type(StringT ext, Path subdir, std::vector<Path> &paths) const;
 
-			virtual void preloadResource (const Path & path);
-			virtual void preloadResources (std::vector<Path> & paths);
+			virtual void preload_resource (const Path & path);
+			virtual void preload_resources (std::vector<Path> & paths);
 		};
 		
 		/*
 		class AggregateLoader {
 		protected:
-			std::vector<Loader> m_loaders;
+			std::vector<Loader> _loaders;
 		public:
 			
 		};

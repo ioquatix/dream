@@ -25,7 +25,7 @@ namespace Dream {
 		};
 	
 		template <typename MeshT>
-		void generateCube(MeshT & mesh, const AlignedBox<3> & box)
+		void generate_cube(MeshT & mesh, const AlignedBox<3> & box)
 		{
 			const Vector<3, unsigned> K(IDENTITY, 2);			
 			const IndexT SIZE = sizeof(CUBE_3X2) / sizeof(IndexT);
@@ -34,16 +34,16 @@ namespace Dream {
 
 			for (IndexT c = 0; c < SIZE; c += 1) {
 				//std::cout << "c: " << c << " = "  << K.distribute(c) << std::endl;
-				Vector<3, bool> currentCorner(K.distribute(c));
+				Vector<3, bool> current_corner(K.distribute(c));
 
-				vertices[c] = box.corner(currentCorner);
+				vertices[c] = box.corner(current_corner);
 			}
 			
 			mesh.construct(std::vector<IndexT>(CUBE_3X2, CUBE_3X2 + SIZE), vertices);
 		}
 		
 		template <typename MeshT>
-		void generateCubeWithNormals(MeshT & mesh, const AlignedBox<3> & box)
+		void generate_cubeWithNormals(MeshT & mesh, const AlignedBox<3> & box)
 		{
 			const Vector<3, unsigned> K(IDENTITY, 2);
 			const IndexT SIZE = sizeof(CUBE_3X2) / sizeof(IndexT);
@@ -54,14 +54,14 @@ namespace Dream {
 			std::vector<Vec2> texcoords(SIZE);
 
 			for (IndexT c = 0; c < SIZE; c += 1) {
-				Vector<3, bool> currentCorner(K.distribute(CUBE_3X2[c]));
+				Vector<3, bool> current_corner(K.distribute(CUBE_3X2[c]));
 				
-				vertices[c] = box.corner(currentCorner);
+				vertices[c] = box.corner(current_corner);
 				indices.push_back(c);
 			}
 
 			for (IndexT c = 0; c < vertices.size(); c += 4) {
-				Vec3 normal = surfaceNormal(vertices[c], vertices[c+1], vertices[c+2]);
+				Vec3 normal = surface_normal(vertices[c], vertices[c+1], vertices[c+2]);
 				
 				normals[c+0] = normal;
 				normals[c+1] = normal;

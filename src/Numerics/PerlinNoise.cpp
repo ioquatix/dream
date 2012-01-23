@@ -17,25 +17,25 @@ namespace Dream {
 		PerlinNoise::PerlinNoise(unsigned seed) {
 			std::mt19937 rng(seed);
 			
-			std::uniform_int_distribution<int> byteDistribution(0, 256);
-			auto r256 = std::bind(byteDistribution, rng);
+			std::uniform_int_distribution<int> byte_distribution(0, 256);
+			auto r256 = std::bind(byte_distribution, rng);
 			
-			std::uniform_real_distribution<RealT> realDistribution(0.0, 1.0);
-			auto r01 = std::bind(realDistribution, rng);
+			std::uniform_real_distribution<RealT> real_distribution(0.0, 1.0);
+			auto r01 = std::bind(real_distribution, rng);
 						
-			for (IndexT i = 0; i < 256; ++i) m_indicies[i] = i;
+			for (IndexT i = 0; i < 256; ++i) _indicies[i] = i;
 			
 			/* Mix it up! */
 			for (IndexT i = 0; i < 256; ++i) {
 				IndexT w = r256() % 256;
 				/* Swap */
 				register unsigned char c;
-				c = m_indicies[w];
-				m_indicies[w] = m_indicies[i];
-				m_indicies[i] = c;
+				c = _indicies[w];
+				_indicies[w] = _indicies[i];
+				_indicies[i] = c;
 			}
 						
-			for (IndexT i = 0; i < 256; ++i) m_table[i] = (RealT)r01();
+			for (IndexT i = 0; i < 256; ++i) _table[i] = (RealT)r01();
 		}
 
 		RealT PerlinNoise::sample(const Vec3 &v) const {	
@@ -47,32 +47,32 @@ namespace Dream {
 			
 			/* Get noise at 8 lattice points */
 			for (IndexT lz = 0; lz < 2; ++ lz) {
-				d[0 + lz*4] = latticeNoise((IndexT)o[X], (IndexT)o[Y], (IndexT)o[Z] + lz);
-				d[1 + lz*4] = latticeNoise((IndexT)o[X], (IndexT)o[Y] + 1, (IndexT)o[Z] + lz);
-				d[2 + lz*4] = latticeNoise((IndexT)o[X] + 1, (IndexT)o[Y] + 1, (IndexT)o[Z] + lz);
-				d[3 + lz*4] = latticeNoise((IndexT)o[X] + 1, (IndexT)o[Y], (IndexT)o[Z] + lz);
+				d[0 + lz*4] = lattice_noise((IndexT)o[X], (IndexT)o[Y], (IndexT)o[Z] + lz);
+				d[1 + lz*4] = lattice_noise((IndexT)o[X], (IndexT)o[Y] + 1, (IndexT)o[Z] + lz);
+				d[2 + lz*4] = lattice_noise((IndexT)o[X] + 1, (IndexT)o[Y] + 1, (IndexT)o[Z] + lz);
+				d[3 + lz*4] = lattice_noise((IndexT)o[X] + 1, (IndexT)o[Y], (IndexT)o[Z] + lz);
 			}
 
 			RealT x0, x1, x2, x3, y0, y1;
 			t.frac();
 			
-			x0 = linearInterpolate(t[X], d[0], d[3]);
-			x1 = linearInterpolate(t[X], d[1], d[2]);
-			x2 = linearInterpolate(t[X], d[4], d[7]);
-			x3 = linearInterpolate(t[X], d[5], d[6]);
+			x0 = linear_interpolate(t[X], d[0], d[3]);
+			x1 = linear_interpolate(t[X], d[1], d[2]);
+			x2 = linear_interpolate(t[X], d[4], d[7]);
+			x3 = linear_interpolate(t[X], d[5], d[6]);
 			
-			y0 = linearInterpolate(t[Y], x0, x1);
-			y1 = linearInterpolate(t[Y], x2, x3);
+			y0 = linear_interpolate(t[Y], x0, x1);
+			y1 = linear_interpolate(t[Y], x2, x3);
 			
-			RealT result = linearInterpolate(t[Z], y0, y1);
+			RealT result = linear_interpolate(t[Z], y0, y1);
 			
 			return result;
 		}
 
-		RealT PerlinNoise::latticeNoise(IndexT i, IndexT j, IndexT k) const {
-		#define P(x) m_indicies[(x) & 255]
-			//std::cout << i << " " << j << " " << k << " = " << m_table[P(i + P(j + P(k)))] << std::endl;
-			return m_table[P(i + P(j + P(k)))];
+		RealT PerlinNoise::lattice_noise(IndexT i, IndexT j, IndexT k) const {
+		#define P(x) _indicies[(x) & 255]
+			//std::cout << i << " " << j << " " << k << " = " << _table[P(i + P(j + P(k)))] << std::endl;
+			return _table[P(i + P(j + P(k)))];
 			
 		#undef P
 		}

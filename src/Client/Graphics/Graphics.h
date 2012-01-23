@@ -40,7 +40,7 @@ namespace Dream
 			using namespace Dream::Numerics;
 			using namespace Dream::Client::Display;
 			
-			void checkError();
+			void check_error();
 		}
 	}
 }

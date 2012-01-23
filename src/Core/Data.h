@@ -29,7 +29,7 @@ namespace Dream
 			virtual Shared<Buffer> buffer () const abstract;
 			
 			/// Access the data as an input stream. The stream is unique (new stream returned each time).
-			virtual Shared<std::istream> inputStream () const abstract;
+			virtual Shared<std::istream> input_stream () const abstract;
 
 			/// Return the size of the input data if it is known.
 			virtual std::size_t size () const abstract;
@@ -38,22 +38,22 @@ namespace Dream
 		class LocalFileData : public Object, implements IData
 		{
 			protected:
-				Path m_path;
-				mutable Shared<Buffer> m_buffer;
+				Path _path;
+				mutable Shared<Buffer> _buffer;
 			
 			public:
 				LocalFileData (const Path & path);
 				virtual ~LocalFileData ();
 				
 				virtual Shared<Buffer> buffer () const;
-				virtual Shared<std::istream> inputStream () const;
+				virtual Shared<std::istream> input_stream () const;
 				
 				virtual std::size_t size () const;
 		};
 		
 		class BufferedData : public Object, implements IData {
 			protected:
-				Shared<Buffer> m_buffer;
+				Shared<Buffer> _buffer;
 			
 			public:
 				BufferedData (Shared<Buffer> buffer);
@@ -64,7 +64,7 @@ namespace Dream
 				virtual ~BufferedData ();
 				
 				virtual Shared<Buffer> buffer () const;
-				virtual Shared<std::istream> inputStream () const;	
+				virtual Shared<std::istream> input_stream () const;	
 				
 				virtual std::size_t size () const;
 		};

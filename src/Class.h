@@ -27,9 +27,9 @@ namespace Dream
 	};
 	
 	/// This function returns the offset of a member of a class.
-	///		memberOffset(VertexData::color)
+	///		member_offset(VertexData::color)
 	template<class T, typename U>
-	inline constexpr std::ptrdiff_t memberOffset(U T::* member)
+	inline constexpr std::ptrdiff_t member_offset(U T::* member)
 	{
 		return reinterpret_cast<std::ptrdiff_t>(&(reinterpret_cast<T const volatile*>(NULL)->*member));
 	}
@@ -43,7 +43,7 @@ namespace Dream
 	class IClassType {
 		public:
 			virtual ~IClassType();
-			virtual bool isClassOf(const PTR(IObject) other) abstract;
+			virtual bool is_class_of(const PTR(IObject) other) abstract;
 	};
 	
 	/**
@@ -56,7 +56,7 @@ namespace Dream
 			
 			//return typeid(ClassT) == typeid(other.get());
 			
-			virtual bool isClassOf(const PTR(IObject) other) {
+			virtual bool is_class_of(const PTR(IObject) other) {
 				return dynamic_cast<const ClassT*>(other.get()) != NULL;
 			}
 	};

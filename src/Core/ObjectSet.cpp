@@ -14,7 +14,7 @@ namespace Dream
 	namespace Core
 	{
 				
-		ObjectSet::ObjectID::ObjectID (ValueT & value, IdentT ID, ObjectSet * ctx) : m_value (value), m_ID (ID)
+		ObjectSet::ObjectID::ObjectID (ValueT & value, IdentT ID, ObjectSet * ctx) : _value (value), __id (ID)
 		{
 			
 		}
@@ -26,12 +26,12 @@ namespace Dream
 		
 		IdentT ObjectSet::ObjectID::identity ()
 		{
-			return m_ID;
+			return __id;
 		}
 		
 		ObjectSet::ValueT & ObjectSet::ObjectID::value ()
 		{
-			return m_value;
+			return _value;
 		}
 		
 		ObjectSet::ObjectSet ()
@@ -44,13 +44,13 @@ namespace Dream
 		
 		IndexT ObjectSet::size () const
 		{
-			return m_objects.size() - m_freeIndices.size();
+			return _objects.size() - _free_indices.size();
 		}
 		
 		// O(1)
 		ObjectSet::ObjectID ObjectSet::fetch (IdentT identity)
 		{
-			return ObjectID(m_objects[identity], identity, this);
+			return ObjectID(_objects[identity], identity, this);
 		}
 		
 		// O(1)
@@ -58,20 +58,20 @@ namespace Dream
 		{
 			IdentT identity;
 			
-			if (m_freeIndices.size() > 0)
+			if (_free_indices.size() > 0)
 			{
-				identity = m_freeIndices.front();
-				m_freeIndices.pop_front();
+				identity = _free_indices.front();
+				_free_indices.pop_front();
 				
-				m_objects[identity] = value;
+				_objects[identity] = value;
 			} 
 			else
 			{
-				identity = m_objects.size();
-				m_objects.push_back(value);
+				identity = _objects.size();
+				_objects.push_back(value);
 			}
 			
-			return ObjectID(m_objects[identity], identity, this);
+			return ObjectID(_objects[identity], identity, this);
 		}
 		
 		// O(1)
@@ -80,12 +80,12 @@ namespace Dream
 		// already been added to another ObjectSet.
 		ObjectSet::ObjectID ObjectSet::assign (ValueT value, IdentT identity)
 		{
-			if (identity >= m_objects.size())
+			if (identity >= _objects.size())
 			{
-				m_objects.resize(identity+1);
+				_objects.resize(identity+1);
 			}
 			
-			m_objects[identity] = value;
+			_objects[identity] = value;
 			
 			return ObjectID(value, identity, this);
 		}
@@ -93,10 +93,10 @@ namespace Dream
 		// O(1)
 		void ObjectSet::erase (IdentT identity)
 		{
-			m_objects[identity] = NULL;
-			m_freeIndices.push_back(identity);
+			_objects[identity] = NULL;
+			_free_indices.push_back(identity);
 			
-			//if (m_freeIndices.size() > (m_objects.size() / 2)) {
+			//if (_free_indices.size() > (_objects.size() / 2)) {
 			//	shrink();
 			//}
 		}
@@ -104,37 +104,37 @@ namespace Dream
 		void ObjectSet::erase (ObjectID & oid)
 		{
 			erase(oid.identity());
-			oid.m_value = NULL;
+			oid._value = NULL;
 		}
 		
-		ObjectSet::Iterator::Iterator(ObjectSet * ctx, IdentT index, Placement placement) : m_objectContext(ctx), m_index(index), m_placement(placement)
+		ObjectSet::Iterator::Iterator(ObjectSet * ctx, IdentT index, Placement placement) : _objectContext(ctx), _index(index), _placement(placement)
 		{
 		}
 		
-		ObjectSet::Iterator::Iterator(ObjectSet * ctx, Placement placement) : m_objectContext(ctx), m_index(-1), m_placement(placement)
+		ObjectSet::Iterator::Iterator(ObjectSet * ctx, Placement placement) : _objectContext(ctx), _index(-1), _placement(placement)
 		{
 		}
 		
 		void ObjectSet::Iterator::operator++ ()
 		{
-			if (m_placement == FORWARD)
-				moveForward();
-			else if (m_placement == REVERSE)
-				moveReverse();
+			if (_placement == FORWARD)
+				move_forward();
+			else if (_placement == REVERSE)
+				move_reverse();
 		}
 		
 		void ObjectSet::Iterator::operator-- ()
 		{
-			if (m_placement == FORWARD)
-				moveReverse();
-			else if (m_placement == REVERSE)
-				moveForward();
+			if (_placement == FORWARD)
+				move_reverse();
+			else if (_placement == REVERSE)
+				move_forward();
 		}
 		
 		ObjectSet::ObjectID ObjectSet::Iterator::operator* ()
 		{
-			if ((m_placement & END) == 0)
-				return m_objectContext->fetch(m_index);
+			if ((_placement & END) == 0)
+				return _objectContext->fetch(_index);
 			else
 			{
 				throw std::out_of_range("Trying to dereference the end iterator!");
@@ -143,12 +143,12 @@ namespace Dream
 		
 		bool ObjectSet::Iterator::operator== (const Iterator & other) const
 		{
-			std::cout << "This: " << m_placement << " Other: " << other.m_placement << std::endl;
-			if (m_placement & END)
+			std::cout << "This: " << _placement << " Other: " << other._placement << std::endl;
+			if (_placement & END)
 			{
-				return m_placement == other.m_placement;
+				return _placement == other._placement;
 			} else
-				return m_index == other.m_index;
+				return _index == other._index;
 		}
 		
 		bool ObjectSet::Iterator::operator!= (const Iterator & other) const
@@ -176,38 +176,38 @@ namespace Dream
 			return Iterator(this, Iterator::REVERSE_END);
 		}
 		
-		void ObjectSet::Iterator::moveForward ()
+		void ObjectSet::Iterator::move_forward ()
 		{
-			IndexT top = m_objectContext->m_objects.size () - 1;
+			IndexT top = _objectContext->_objects.size () - 1;
 			
 			do
 			{
-				if (m_index == top)
+				if (_index == top)
 				{
-					m_index = -1;
-					m_placement |= END;
+					_index = -1;
+					_placement |= END;
 					
 					return;
 				}
 				
-				m_index += 1;
-			} while (!m_objectContext->m_objects[m_index]);
+				_index += 1;
+			} while (!_objectContext->_objects[_index]);
 		}
 		
-		void ObjectSet::Iterator::moveReverse ()
+		void ObjectSet::Iterator::move_reverse ()
 		{
 			do
 			{
-				if (m_index == 0)
+				if (_index == 0)
 				{
-					m_index = -1;
-					m_placement |= END;
+					_index = -1;
+					_placement |= END;
 					
 					return;
 				}
 				
-				m_index -= 1;
-			} while (!m_objectContext->m_objects[m_index]);
+				_index -= 1;
+			} while (!_objectContext->_objects[_index]);
 		}
 
 #pragma mark -

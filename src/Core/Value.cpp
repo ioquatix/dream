@@ -16,12 +16,12 @@ namespace Dream
 #pragma mark -
 #pragma mark class ConversionError
 
-		ConversionError::ConversionError (const std::type_info & convertFrom, const std::type_info & convertTo) throw ()
+		ConversionError::ConversionError (const std::type_info & convert_from, const std::type_info & convert_to) throw ()
 		{
 			std::stringstream buf;
-			buf << "Could not convert from type " << convertFrom.name () << " to " << convertTo.name ();
+			buf << "Could not convert from type " << convert_from.name () << " to " << convert_to.name ();
 
-			m_what = buf.str ();
+			_what = buf.str ();
 		}
 
 		ConversionError::~ConversionError () throw ()
@@ -31,7 +31,7 @@ namespace Dream
 		/// Returns a C-style character string describing the general cause of the current error.
 		const char * ConversionError::what () const throw ()
 		{
-			return m_what.c_str();
+			return _what.c_str();
 		}
 
 #pragma mark -
@@ -73,14 +73,14 @@ namespace Dream
 
 		std::ostream & operator<< (std::ostream & outs, const ITypedValue & value)
 		{
-			value.writeToStream(outs);
+			value.write_to_stream(outs);
 
 			return outs;
 		}
 
 		std::istream & operator>> (std::istream & ins, ITypedValue & value)
 		{
-			value.readFromStream(ins);
+			value.read_from_stream(ins);
 		
 			return ins;
 		}
@@ -94,23 +94,23 @@ namespace Dream
 
 		void Value::clear ()
 		{
-			m_ptr.clear();
+			_ptr.clear();
 		}
 
 		bool Value::defined () const
 		{
-			return m_ptr;
+			return _ptr;
 		}
 
 		bool Value::undefined () const
 		{
-			return !m_ptr;
+			return !_ptr;
 		}
 
 		bool Value::operator== (const Value & other) const
 		{
 			// Are both null, or do both point to the same location?
-			if (m_ptr == other.m_ptr)
+			if (_ptr == other._ptr)
 				return true;
 
 			// Are either values undefined?
@@ -118,19 +118,19 @@ namespace Dream
 				return false;
 
 			// Compare the actual ITypedValues
-			return m_ptr.get()->equal(other.m_ptr.get());
+			return _ptr.get()->equal(other._ptr.get());
 		}
 
 		bool Value::operator== (const ITypedValue & other) const
 		{
 			if (undefined()) return false;
 
-			return m_ptr.get()->equal(&other);
+			return _ptr.get()->equal(&other);
 		}
 		
-		const ITypedValue * Value::typedValue () const
+		const ITypedValue * Value::typed_value () const
 		{
-			return m_ptr.get();
+			return _ptr.get();
 		}
 
 		std::ostream & operator<< (std::ostream & outs, const Value & value)
@@ -138,7 +138,7 @@ namespace Dream
 			if (value.undefined()) {
 				outs << "undefined";
 			} else {
-				outs << *(value.m_ptr);
+				outs << *(value._ptr);
 			}
 
 			return outs;
@@ -148,19 +148,19 @@ namespace Dream
 		{
 			if (value.undefined()) throw ValueUndefinedError();
 
-			ins >> *(value.m_ptr);
+			ins >> *(value._ptr);
 
 			return ins;
 		}
 		
-		Value Value::readFromBuffer (const Buffer & buf, IndexT & offset)
+		Value Value::read_from_buffer (const Buffer & buf, IndexT & offset)
 		{
-			TypeIdentifierT typeIdentifier;
+			TypeIdentifierT type_identifier;
 			
-			offset += buf.read(offset, typeIdentifier);
+			offset += buf.read(offset, type_identifier);
 			
-#define TI_CASE(index) case index: return Value(TypeSerialization<index>::readFromBuffer(buf, offset));
-			switch (typeIdentifier)
+#define TI_CASE(index) case index: return Value(TypeSerialization<index>::read_from_buffer(buf, offset));
+			switch (type_identifier)
 			{
 					TI_CASE(TI_UINT8)
 					TI_CASE(TI_INT8)
@@ -179,11 +179,11 @@ namespace Dream
 #undef TI_CASE
 		}
 		
-		void Value::appendToBuffer (ResizableBuffer & buf) const
+		void Value::append_to_buffer (ResizableBuffer & buf) const
 		{
 			if (undefined()) throw ValueUndefinedError();
 			
-			return m_ptr->appendToBuffer(buf);
+			return _ptr->append_to_buffer(buf);
 		}
 
 #pragma mark -
@@ -193,14 +193,14 @@ namespace Dream
 		UNIT_TEST(Value)
 		{
 			testing("Typed Value");
-			TypedValue<int> intValue (10);
+			TypedValue<int> int_value (10);
 
-			check(intValue.valueType() == typeid(5)) << "Typeinfo is same";
-			check(intValue.size() == sizeof(5)) << "Size is same";
+			check(int_value.value_type() == typeid(5)) << "Typeinfo is same";
+			check(int_value.size() == sizeof(5)) << "Size is same";
 
-			TypedValue<unsigned> unsignedValue (10);
-			ITypedValue * q1 = &intValue;
-			ITypedValue * q2 = &unsignedValue;
+			TypedValue<unsigned> unsigned_value (10);
+			ITypedValue * q1 = &int_value;
+			ITypedValue * q2 = &unsigned_value;
 
 			check(q1->extract<int>() == q2->extract<unsigned>()) << "Values are equal";
 
@@ -209,7 +209,7 @@ namespace Dream
 
 			check(q1->extract<int>() == q2->extract<unsigned>()) << "Values are equal";
 
-			bool exceptionThrown;
+			bool exception_thrown;
 
 			try
 			{
@@ -217,10 +217,10 @@ namespace Dream
 			}
 			catch (ConversionError & err)
 			{
-				exceptionThrown = true;
+				exception_thrown = true;
 			}
 
-			check(exceptionThrown) << "Exception thrown when type is not correct";
+			check(exception_thrown) << "Exception thrown when type is not correct";
 
 			testing("Generic Values");
 

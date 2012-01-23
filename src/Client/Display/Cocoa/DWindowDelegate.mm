@@ -11,18 +11,18 @@
 
 @implementation DWindowDelegate
 
-@synthesize inputHandler = _inputHandler, screenManager;
+@synthesize inputHandler = _input_handler, screenManager = _screen_manager;
 
 - (id)init {
     self = [super init];
     if (self) {
-		screenManager = [DScreenManager new];
+		_screen_manager = [DScreenManager new];
     }
     return self;
 }
 
 - (void)dealloc {
-    [screenManager release];
+    [_screen_manager release];
 	
     [super dealloc];
 }
@@ -31,10 +31,10 @@
 {
 	using namespace Dream::Client::Display;
 
-	if (_inputHandler) {
+	if (_input_handler) {
 		EventInput ipt(EventInput::EXIT);
 		
-		_inputHandler->process(ipt);				
+		_input_handler->process(ipt);				
 	}
 	
 	return NSTerminateCancel;
@@ -44,10 +44,10 @@
 {
 	using namespace Dream::Client::Display;
 	
-	if (_inputHandler) {
+	if (_input_handler) {
 		EventInput ipt(EventInput::EXIT);
 		
-		_inputHandler->process(ipt);
+		_input_handler->process(ipt);
 	}
 	
 	return NO;
@@ -56,17 +56,17 @@
 - (void) toggleFullScreen:(id)sender {
 	using namespace Dream::Client::Display;
 	
-	if (_inputHandler) {
-		NSView * contentView = [screenManager contentView];
+	if (_input_handler) {
+		NSView * contentView = [_screen_manager contentView];
 		
 		//NSSize oldSize = [contentView bounds].size;
 		
-		[screenManager toggleFullScreen:sender];
+		[_screen_manager toggleFullScreen:sender];
 		
 		NSSize newSize = [contentView bounds].size;
 		
 		ResizeInput resizeInput(Vec2u(newSize.width, newSize.height));		
-		_inputHandler->process(resizeInput);
+		_input_handler->process(resizeInput);
 	}
 }
 

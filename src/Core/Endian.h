@@ -23,12 +23,12 @@ namespace Dream
 		};
 
 #if defined(__LITTLE_ENDIAN__) || defined(i386)
-		inline Endian hostEndian ()
+		inline Endian host_endian ()
 		{
 			return LITTLE;
 		}
 #elif defined(__BIG_ENDIAN__) || defined(ppc)
-		inline Endian hostEndian ()
+		inline Endian host_endian ()
 		{
 			return BIG;
 		}
@@ -39,7 +39,7 @@ namespace Dream
 			return !(*(char * )( & x));
 		}
 
-		inline Endian hostEndian ()
+		inline Endian host_endian ()
 		{
 			if (_isBigEndian())
 				return BIG;
@@ -50,7 +50,7 @@ namespace Dream
 
 		/// Network order is big endian
 		/// Use this if you need to write something that deals specifically with network order.
-		inline Endian networkEndian ()
+		inline Endian network_endian ()
 		{
 			return BIG;
 		}
@@ -58,31 +58,31 @@ namespace Dream
 		/// The standard endian of any application linked with this binary.
 		/// X86 (Intel/AMD) is little endian. Platforms using this library will generally be little endian (X86). This will need little or no encoding/decoding
 		/// for the majority of platforms.
-		inline Endian libraryEndian ()
+		inline Endian library_endian ()
 		{
 			return LITTLE;
 		}
 
 		/// Decode a value in-place.
 		/// @code
-		/// uint32_t val = readInt(...);
-		/// endianDecode(val, libraryEndian(), hostEndian());
+		/// uint32_t val = read_int(...);
+		/// endian_decode(val, library_endian(), host_endian());
 		/// @endcode
 		template <typename BaseT>
-		inline void endianDecode (BaseT & value, Endian srcType, Endian dstType)
+		inline void endian_decode (BaseT & value, Endian src_type, Endian dst_type)
 		{
-			if (srcType != dstType)
+			if (src_type != dst_type)
 			{
 				BaseT copy;
-				orderCopy(value, copy, srcType, dstType);
+				order_copy(value, copy, src_type, dst_type);
 				value = copy;
 			}
 		}
 
 		// This interface can be used when reading data directly from memory.
-		inline void orderCopy (const unsigned char * src, unsigned char * dst, IndexT len, Endian srcType, Endian dstType)
+		inline void order_copy (const unsigned char * src, unsigned char * dst, IndexT len, Endian src_type, Endian dst_type)
 		{
-			if (srcType != dstType)
+			if (src_type != dst_type)
 			{
 				dst += len - 1;
 				for (int i = 0; i < len; i++)
@@ -95,27 +95,27 @@ namespace Dream
 		}
 
 		template <typename BaseT>
-		void orderCopy (const BaseT & _src, BaseT & _dst, Endian srcType, Endian dstType)
+		void order_copy (const BaseT & _src, BaseT & _dst, Endian src_type, Endian dst_type)
 		{
 			const unsigned char * src = (const unsigned char *) &_src;
 			unsigned char * dst = (unsigned char *) &_dst;
 
-			orderCopy(src, dst, sizeof(BaseT), srcType, dstType);
+			order_copy(src, dst, sizeof(BaseT), src_type, dst_type);
 		}
 
 		template <typename BaseT>
-		inline BaseT orderRead (const BaseT & _src, Endian srcType, Endian dstType)
+		inline BaseT order_read (const BaseT & _src, Endian src_type, Endian dst_type)
 		{
 			BaseT r;
-			orderCopy(_src, r, srcType, dstType);
+			order_copy(_src, r, src_type, dst_type);
 			return r;
 		}
 
 		template <typename BaseT>
-		inline void orderWrite (const BaseT & val, BaseT & dst, Endian srcType, Endian dstType)
+		inline void order_write (const BaseT & val, BaseT & dst, Endian src_type, Endian dst_type)
 		{
 			// for the time being this is the same as OrderRead
-			orderCopy(val, dst, srcType, dstType);
+			order_copy(val, dst, src_type, dst_type);
 		}
 		/**
 		 A simple primative type wrapper that allows simple access to endian-correct value.
@@ -141,14 +141,14 @@ namespace Dream
 			/// Will convert the internal value to host order.
 			inline operator BaseT () const
 			{
-				return orderRead(base, store_t, hostEndian());
+				return order_read(base, store_t, host_endian());
 			}
 
 			/// Implicit cast into the specified type.
 			/// Will convert the external value to the specified order
 			inline const BaseT & operator= (const BaseT & val)
 			{
-				orderWrite(val, base, hostEndian(), store_t);
+				order_write(val, base, host_endian(), store_t);
 				return val;
 			}
 		};

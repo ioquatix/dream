@@ -10,7 +10,7 @@
 #include "../Application.h"
 
 @interface DApplicationDelegate : NSObject {
-	Dream::Client::Display::IApplication * application;
+	Dream::Client::Display::IApplication * _application;
 }
 
 @property(nonatomic,assign) Dream::Client::Display::IApplication * application;

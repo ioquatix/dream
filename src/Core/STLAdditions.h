@@ -21,7 +21,7 @@ namespace Dream
 	
 		/// Provides an efficient way to erase elements from an unsorted std::vector
 		template <typename t>
-		bool eraseElementAtIndex (IndexT index, std::vector<t> & array)
+		bool erase_element_at_index (IndexT index, std::vector<t> & array)
 		{
 			if (array.size() == (index+1)) {
 				array.pop_back();

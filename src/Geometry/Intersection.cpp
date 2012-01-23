@@ -23,18 +23,18 @@ namespace Dream
 			
 			Vector<2, int> s1(0, 5), s2(2, 4), s3(3, 10), s4(-5, 10), s5(-10, -5), s6(5, 6), o;
 			
-			check(segmentsIntersect(s1, s2, o)) << "Segments overlap";
+			check(segments_intersect(s1, s2, o)) << "Segments overlap";
 			check(o == s2) << "Segment overlap is correct";
 			
-			check(!segmentsIntersect(s1, s5, o)) << "Segments don't overlap";
+			check(!segments_intersect(s1, s5, o)) << "Segments don't overlap";
 			
-			check(segmentsIntersect(s1, s3, o)) << "Segments overlap";
+			check(segments_intersect(s1, s3, o)) << "Segments overlap";
 			check(o == vec(3, 5)) << "Segment overlap is correct";
 			
-			check(segmentsIntersect(s1, s4, o)) << "Segments overlap";
+			check(segments_intersect(s1, s4, o)) << "Segments overlap";
 			check(o == s1) << "Segment overlap is correct";
 			
-			check(segmentsIntersect(s1, s6, o)) << "Segments overlap";
+			check(segments_intersect(s1, s6, o)) << "Segments overlap";
 			check(o == vec(5, 5)) << "Segment overlap is correct";
 		}
 #endif

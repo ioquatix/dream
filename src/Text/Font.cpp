@@ -24,7 +24,7 @@ namespace Dream
 		
 		const char * ft2_error_message(int code);
 		
-		FT_Library freetypeLibrary ()
+		FT_Library freetype_library ()
 		{
 			using namespace std;
 			static FT_Library library = NULL;
@@ -42,99 +42,99 @@ namespace Dream
 		
 		using namespace std;
 		
-		void Font::Loader::registerLoaderTypes (ILoader * loader) {
-			loader->setLoaderForExtension(this, "ttf");
-			loader->setLoaderForExtension(this, "dfont");
+		void Font::Loader::register_loader_types (ILoader * loader) {
+			loader->set_loader_for_extension(this, "ttf");
+			loader->set_loader_for_extension(this, "dfont");
 		}
 		
-		REF(Object) Font::Loader::initWithPath(const Path & p) {
+		REF(Object) Font::Loader::init_with_path(const Path & p) {
 			return new Font(p);
 		}
 		
-		REF(Object) Font::Loader::loadFromData(const PTR(IData) data, const ILoader * loader) {
+		REF(Object) Font::Loader::load_from_data(const PTR(IData) data, const ILoader * loader) {
 			return new Font(data);
 		}
 		
-		Font::Font (const Path & p) : m_face(NULL)
+		Font::Font (const Path & p) : _face(NULL)
 		{
 			FT_Face face;
-			FT_Error err = FT_New_Face(freetypeLibrary(), p.toLocalPath().c_str(), 0, &face);
+			FT_Error err = FT_New_Face(freetype_library(), p.to_local_path().c_str(), 0, &face);
 			
 			if (err) {
-				throw LoadError(StringT("Error loading freetype font (") + p.toLocalPath() + "): " + ft2_error_message(err));
+				throw LoadError(StringT("Error loading freetype font (") + p.to_local_path() + "): " + ft2_error_message(err));
 			} else {
-				m_face = new Detail::FontFace(face, ALPHA);
+				_face = new Detail::FontFace(face, ALPHA);
 			}
 			
-			setPixelSize(12);
+			set_pixel_size(12);
 		}
 		
-		Font::Font (const PTR(IData) data) : m_face(NULL)
+		Font::Font (const PTR(IData) data) : _face(NULL)
 		{
 			Shared<Buffer> buffer = data->buffer();
 			
 			FT_Face face;
-			FT_Error err = FT_New_Memory_Face(freetypeLibrary(), buffer->begin(), buffer->size(), 0, &face);
-			m_fontData = data;
+			FT_Error err = FT_New_Memory_Face(freetype_library(), buffer->begin(), buffer->size(), 0, &face);
+			_font_data = data;
 			
 			if (err) {
 				throw LoadError(StringT("Error loading freetype font:") + ft2_error_message(err));
 			} else {
-				m_face = new Detail::FontFace(face, ALPHA);
+				_face = new Detail::FontFace(face, ALPHA);
 			}
 			
-			setPixelSize(12);
+			set_pixel_size(12);
 		}
 		
 		Font::~Font ()
 		{
-			if (m_face) {
-				delete m_face;
-				m_face = NULL;
+			if (_face) {
+				delete _face;
+				_face = NULL;
 			}
 		}
 		
-		Detail::FontFace * Font::fontFace ()
+		Detail::FontFace * Font::font_face ()
 		{
-			return m_face;
+			return _face;
 		}
 		
-		const Detail::FontFace * Font::fontFace () const 
+		const Detail::FontFace * Font::font_face () const 
 		{
-			return m_face;
+			return _face;
 		}
 		
-		void Font::setPixelSize(unsigned sz)
+		void Font::set_pixel_size(unsigned sz)
 		{
-			ensure(m_face != NULL);
+			ensure(_face != NULL);
 			
-			FT_Error err = FT_Set_Pixel_Sizes(m_face->face(), sz, sz);
+			FT_Error err = FT_Set_Pixel_Sizes(_face->face(), sz, sz);
 			
 			ensure(err == 0);
 		}
 		
-		Vector<2, unsigned> Font::computeBoundingBox (const std::wstring &text) const
+		Vector<2, unsigned> Font::compute_bounding_box (const std::wstring &text) const
 		{
-			ensure(m_face != NULL);
+			ensure(_face != NULL);
 			
-			return m_face->processText(text, REF(Image)());
+			return _face->process_text(text, REF(Image)());
 		}
 		
-		REF(Image) Font::renderText (const std::wstring & text)
+		REF(Image) Font::render_text (const std::wstring & text)
 		{
-			ensure(m_face != NULL);
+			ensure(_face != NULL);
 			
-			REF(Image) img = new Image(computeBoundingBox(text) << 1U, m_face->pixelFormat(), UBYTE);
+			REF(Image) img = new Image(compute_bounding_box(text) << 1U, _face->pixel_format(), UBYTE);
 			img->zero();
 			
-			m_face->processText(text, img);
+			_face->process_text(text, img);
 			
 			return img;
 		}
 		
-		IndexT Font::singleLineOffset ()
+		IndexT Font::single_line_offset ()
 		{
-			return m_face->lineOffset();
+			return _face->line_offset();
 		}
 		
 		// uses a method described in fterrors.h to build an error translation function

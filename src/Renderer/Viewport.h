@@ -24,51 +24,51 @@ namespace Dream
 			Vec3 up;
 			
 			/// Calculate the object-space coordinates when given the window's viewport and a point in the viewport.
-			static ViewportEyeSpace convertFromViewportToObjectSpace (const Mat44 & projectionMatrix, const Mat44 & modelViewMatrix, 
+			static ViewportEyeSpace convert_from_viewport_to_object_space (const Mat44 & projection_matrix, const Mat44 & model_view_matrix, 
 																	  const AlignedBox<2> & viewport, const Vec2 & c);
 			
 			/// Calculate the object-space coordinates when given a projection-space coordinate on the near plane.
-			static ViewportEyeSpace convertFromProjectionSpaceToObjectSpace (const Mat44 & projectionMatrix, const Mat44 & modelViewMatrix, const Vec2 & n);
+			static ViewportEyeSpace convert_fromProjectionSpaceToObjectSpace (const Mat44 & projection_matrix, const Mat44 & model_view_matrix, const Vec2 & n);
 			
 			/// Calculate the object-space coordinate when given a projection-space coordinate. This function is not fast for many points, as it calculates
 			/// inverse matrices per call.
-			static Vec4 convertFromProjectionSpaceToObjectSpace (const Mat44 & projectionMatrix, const Mat44 & modelViewMatrix, const Vec3 & n);
+			static Vec4 convert_fromProjectionSpaceToObjectSpace (const Mat44 & projection_matrix, const Mat44 & model_view_matrix, const Vec3 & n);
 		};
 		
 		class IViewport : implements Object {
 			public:				
-				virtual Mat44 viewMatrix() const abstract;
-				virtual Mat44 projectionMatrix() const abstract;
+				virtual Mat44 view_matrix() const abstract;
+				virtual Mat44 projection_matrix() const abstract;
 				virtual AlignedBox<2> bounds() const abstract;
 				
 				Mat44 display_matrix() const {
-					return projectionMatrix() * viewMatrix();
+					return projection_matrix() * view_matrix();
 				}
 			
-				ViewportEyeSpace convertToObjectSpace(const Vec2 & point);
+				ViewportEyeSpace convert_toObjectSpace(const Vec2 & point);
 		};
 		
 		class Viewport : public Object, implements IViewport {
 		protected:
-			bool m_sizeChangedSinceLastUpdate;
-			AlignedBox<2> m_bounds;
+			bool _size_changed_since_last_update;
+			AlignedBox<2> _bounds;
 			
-			REF(ICamera) m_camera;
-			REF(IProjection) m_projection;
+			REF(ICamera) _camera;
+			REF(IProjection) _projection;
 			
 		public:
 			Viewport(PTR(ICamera) camera, PTR(IProjection) projection);
 			
-			void setBounds(AlignedBox<2> bounds);
+			void set_bounds(AlignedBox<2> bounds);
 			
 			REF(ICamera) camera() const;
-			void setCamera(REF(ICamera) camera);
+			void set_camera(REF(ICamera) camera);
 			
 			REF(IProjection) projection() const;
-			void setProjection(REF(IProjection) projection);
+			void set_projection(REF(IProjection) projection);
 			
-			virtual Mat44 viewMatrix() const;
-			virtual Mat44 projectionMatrix() const;
+			virtual Mat44 view_matrix() const;
+			virtual Mat44 projection_matrix() const;
 			virtual AlignedBox<2> bounds() const;
 		};
 	}

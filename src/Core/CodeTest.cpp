@@ -27,7 +27,7 @@ namespace Dream
 		
 #pragma mark -
 		
-		CodeTestRegistry * sharedCodeTestRegistry () {
+		CodeTestRegistry * shared_code_test_registry () {
 			static CodeTestRegistry * s_codeTestRegistry = NULL;
 			
 			if (!s_codeTestRegistry) {
@@ -41,128 +41,128 @@ namespace Dream
 		{
 		}
 		
-		void CodeTestRegistry::addTest (CodeTest * test)
+		void CodeTestRegistry::add_test (CodeTest * test)
 		{
-			m_codeTests.push_back(test);
+			_code_tests.push_back(test);
 		}
 
-		void CodeTestRegistry::_performAllTests ()
+		void CodeTestRegistry::_perform_all_tests ()
 		{
 			using namespace std;
 			
 			REF(CodeTest::Statistics) overall = new CodeTest::Statistics("Code Test Registry");
 			
-			foreach (test, m_codeTests)
+			foreach (test, _code_tests)
 			{
-				if ((*test)->m_name != "Thread Test") continue;
+				//if ((*test)->_name != "Thread Test") continue;
 				
-				(*test)->performTests ();
+				(*test)->perform_tests ();
 
-				REF(CodeTest::Statistics) stats = (*test)->overallStatistics();
+				REF(CodeTest::Statistics) stats = (*test)->overall_statistics();
 				*overall += *stats;
 			}
 
 			cout << endl << center(" Summary ", 60, '_') << endl;
-			overall->printSummary();
+			overall->print_summary();
 		}
 		
-		void CodeTestRegistry::performAllTests ()
+		void CodeTestRegistry::perform_all_tests ()
 		{
-			sharedCodeTestRegistry()->_performAllTests();
+			shared_code_test_registry()->_perform_all_tests();
 		}
 
-		CodeTest::CodeTest (std::string name) : m_name (name)
+		CodeTest::CodeTest (std::string name) : _name (name)
 		{
-			sharedCodeTestRegistry()->addTest(this);
+			shared_code_test_registry()->add_test(this);
 		}
 		
 		CodeTest::~CodeTest ()
 		{
 		}
 
-		void CodeTest::testing (std::string testName)
+		void CodeTest::testing (std::string test_name)
 		{
-			m_tests.push_back(new Statistics(testName));
+			_tests.push_back(new Statistics(test_name));
 		}
 
 		CodeTest::ErrorLogger CodeTest::check (bool condition)
 		{
 			if (condition == false) {
-				currentTest()->failTest();
+				current_test()->fail_test();
 				
 				std::cerr << "Test Failed: ";
 				
 				return ErrorLogger(true);
 			} else {
-				currentTest()->passTest();
+				current_test()->pass_test();
 				return ErrorLogger(false);
 			}
 		}
 
-		void CodeTest::performTests ()
+		void CodeTest::perform_tests ()
 		{
 			using namespace std;
-			cout << endl << center(" " + m_name + " ", 60, '=') << endl;
+			cout << endl << center(" " + _name + " ", 60, '=') << endl;
 
 			test();
 
-			printSummaries();
+			print_summaries();
 		}
 
-		CodeTest::Statistics::Statistics (std::string testName) : m_name (testName), m_failed (0), m_passed (0)
+		CodeTest::Statistics::Statistics (std::string test_name) : _name (test_name), _failed (0), _passed (0)
 		{
 		}
 
-		void CodeTest::Statistics::failTest ()
+		void CodeTest::Statistics::fail_test ()
 		{
-			m_failed += 1;
+			_failed += 1;
 		}
 
-		void CodeTest::Statistics::passTest ()
+		void CodeTest::Statistics::pass_test ()
 		{
-			m_passed += 1;
+			_passed += 1;
 		}
 
 		void CodeTest::Statistics::operator+= (const Statistics & other)
 		{
-			m_passed += other.m_passed;
-			m_failed += other.m_failed;
+			_passed += other._passed;
+			_failed += other._failed;
 		}
 
-		void CodeTest::Statistics::printSummary () const
+		void CodeTest::Statistics::print_summary () const
 		{
-			std::cout << "[" << m_name << "] " << m_passed << " Passed";
-			if (m_failed > 0)
-				std::cout << " " << m_failed << " Failed ";
+			std::cout << "[" << _name << "] " << _passed << " Passed";
+			if (_failed > 0)
+				std::cout << " " << _failed << " Failed ";
 
-			std::cout << " out of " << m_failed + m_passed << " total" << std::endl;
+			std::cout << " out of " << _failed + _passed << " total" << std::endl;
 		}
 		
 		CodeTest::ErrorLogger::ErrorLogger (bool error)
-			: m_error(error)
+			: _error(error)
 		{
 		
 		}
 		
 		CodeTest::ErrorLogger::~ErrorLogger ()
 		{
-			if (m_error)
+			if (_error)
 				std::cerr << std::endl;
 		}
 
-		PTR(CodeTest::Statistics) CodeTest::currentTest ()
+		PTR(CodeTest::Statistics) CodeTest::current_test ()
 		{
-			if (m_tests.size() == 0)
+			if (_tests.size() == 0)
 				testing ("Unnamed");
 
-			return m_tests.back();
+			return _tests.back();
 		}
 
-		REF(CodeTest::Statistics) CodeTest::overallStatistics ()
+		REF(CodeTest::Statistics) CodeTest::overall_statistics ()
 		{
-			REF(Statistics) overall = new Statistics(m_name);
+			REF(Statistics) overall = new Statistics(_name);
 
-			foreach(stats, m_tests)
+			foreach(stats, _tests)
 			{
 				*overall += **stats;
 			}
@@ -170,11 +170,11 @@ namespace Dream
 			return overall;
 		}
 
-		void CodeTest::printSummaries () const
+		void CodeTest::print_summaries () const
 		{
-			foreach (stats, m_tests)
+			foreach (stats, _tests)
 			{
-				(*stats)->printSummary();
+				(*stats)->print_summary();
 			}
 		}
 

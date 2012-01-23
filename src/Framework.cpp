@@ -11,17 +11,17 @@
 
 namespace Dream
 {
-	const char * buildDate ()
+	const char * build_date ()
 	{
 		return BUILD_DATE;
 	}
 	
-	const char * buildPlatform ()
+	const char * build_platform ()
 	{
 		return BUILD_PLATFORM;
 	}
 	
-	const char * buildRevision ()
+	const char * build_revision ()
 	{
 		return SCM_SHORT_ID;
 	}

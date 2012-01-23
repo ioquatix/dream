@@ -19,7 +19,7 @@ namespace Dream
 {
 	namespace Core
 	{
-		std::wstring convertStringToUTF16 (const std::string source)
+		std::wstring convert_string_to_utf16 (const std::string source)
 		{
 			std::wstring result;
 			
@@ -28,16 +28,16 @@ namespace Dream
 			return result;
 		}
 		
-		std::string trimmed (std::string const & str, char const * sepSet)
+		std::string trimmed (std::string const & str, char const * sep_set)
 		{
 			using namespace std;
 
-			string::size_type const first = str.find_first_not_of(sepSet);
+			string::size_type const first = str.find_first_not_of(sep_set);
 
 			if (first == string::npos)
 				return string();
 			else
-				return str.substr(first, str.find_last_not_of(sepSet) - first+1);
+				return str.substr(first, str.find_last_not_of(sep_set) - first+1);
 		}
 
 		std::string center (const std::string & str, unsigned width, char space)
@@ -61,7 +61,7 @@ namespace Dream
 		
 #pragma mark -
 
-		StringT::value_type convertToDigit(char c) {
+		StringT::value_type convert_toDigit(char c) {
 			StringT::value_type d = c - '0';
 			if (d < 10) {
 				return d;
@@ -76,7 +76,7 @@ namespace Dream
 			throw std::range_error("Could not convert character to digit - out of range!");
 		}
 		
-		char convertToChar(StringT::value_type d) {
+		char convert_toChar(StringT::value_type d) {
 			if (d < 10) {
 				return '0' + d;
 			} else if (d < 36) {
@@ -86,7 +86,7 @@ namespace Dream
 			throw std::range_error("Could not convert digit to character - out of range!"); 
 		}
 	
-		StringT unescapeString (const StringT & value) {
+		StringT unescape_string (const StringT & value) {
 			StringStreamT buffer;
 			
 			StringT::const_iterator i = value.begin(), end = value.end();
@@ -120,8 +120,8 @@ namespace Dream
 							continue;
 						case 'x':
 							if ((end - i) >= 2) {
-								StringT::value_type value = convertToDigit(*(++i)) << 4;
-								value |= convertToDigit(*(++i));
+								StringT::value_type value = convert_toDigit(*(++i)) << 4;
+								value |= convert_toDigit(*(++i));
 								buffer << (StringT::value_type)value;
 								continue;
 							} else {
@@ -140,7 +140,7 @@ namespace Dream
 			return buffer.str();
 		}
 		
-		StringT escapeString (const StringT & value) {
+		StringT escape_string (const StringT & value) {
 			StringStreamT buffer;
 			
 			StringT::const_iterator i = value.begin(), end = value.end();
@@ -175,7 +175,7 @@ namespace Dream
 		{
 			std::string s1("\xe6\x97\xa5\xd1\x88\xf0\x9d\x84\x9e");
 			
-			std::wstring result = convertStringToUTF16(s1);
+			std::wstring result = convert_string_to_utf16(s1);
 			
 			check(result.size() == 4) << "Converted string is correct length";
 			check(result[2] == 0xd834) << "Converted character is correct value";

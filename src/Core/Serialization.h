@@ -67,22 +67,22 @@ namespace Dream
 		public:
 			typedef typename TypeIdentifierValueTraits<Index>::TypeT TypeT;
 			
-			static TypeT readFromBuffer (const Buffer & buf, IndexT & offset)
+			static TypeT read_from_buffer (const Buffer & buf, IndexT & offset)
 			{
 				TypeT value;
 				offset += buf.read(offset, value);
-				return orderRead(value, libraryEndian(), hostEndian());
+				return order_read(value, library_endian(), host_endian());
 			}
 			
-			static void appendToBuffer (ResizableBuffer & buf, const TypeT & value)
+			static void append_to_buffer (ResizableBuffer & buf, const TypeT & value)
 			{
-				TypeT convertedValue = orderRead(value, hostEndian(), libraryEndian());
-				buf.append(sizeof(TypeT), (const ByteT *)&convertedValue);
+				TypeT converted_value = order_read(value, host_endian(), library_endian());
+				buf.append(sizeof(TypeT), (const ByteT *)&converted_value);
 			}
 			
-			//static void writeToBuffer (const ResizableBuffer & buf, IndexT & offset, const TypeT & value)
+			//static void write_to_buffer (const ResizableBuffer & buf, IndexT & offset, const TypeT & value)
 			//{
-			//	TypeT value = orderRead(value, hostEndian(), libraryEndian());
+			//	TypeT value = order_read(value, host_endian(), library_endian());
 			//	buf.write(offset, value);
 			//}
 		};
@@ -99,7 +99,7 @@ namespace Dream
 		public:	
 			typedef StringT TypeT;
 			
-			static TypeT readFromBuffer (const Buffer & buf, IndexT & offset)
+			static TypeT read_from_buffer (const Buffer & buf, IndexT & offset)
 			{
 				uint32_t length;
 				
@@ -112,7 +112,7 @@ namespace Dream
 				return value;
 			}
 			
-			static void appendToBuffer (ResizableBuffer & buf, const TypeT & value)
+			static void append_to_buffer (ResizableBuffer & buf, const TypeT & value)
 			{
 				buf.append((uint32_t)value.length());
 				buf.append(value.length(), (const ByteT *)value.data());

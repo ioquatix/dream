@@ -26,27 +26,27 @@ namespace Dream
 					class Loader : public Object, implements ILoadable
 					{
 						public:
-							virtual void registerLoaderTypes (ILoader * loader);
-							virtual REF(Object) loadFromData (const PTR(IData) data, const ILoader * loader);
+							virtual void register_loader_types (ILoader * loader);
+							virtual REF(Object) load_from_data (const PTR(IData) data, const ILoader * loader);
 					};
 				
 				protected:
-					REF(IData) m_data;
+					REF(IData) _data;
 					
-					ALenum m_format;
-					ALsizei m_frequency;
+					ALenum _format;
+					ALsizei _frequency;
 					
 				public:
 					OggResource (const PTR(IData) data);
 					virtual ~OggResource ();
 					
-					REF(Stream) createStream (PTR(Source) source);
+					REF(Stream) create_stream (PTR(Source) source);
 					
-					// Current implementation returns NULL. Use createStream or WAV files.
-					REF(Sound) createSound (PTR(Source) source);
+					// Current implementation returns NULL. Use create_stream or WAV files.
+					REF(Sound) create_sound (PTR(Source) source);
 					
 					//void debug();
-					static StringT errorString(int code);
+					static StringT error_string(int code);
 			};
 			
 		}

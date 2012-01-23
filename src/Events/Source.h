@@ -22,13 +22,13 @@ namespace Dream
 		class ISource : implements IObject
 		{
 			public:
-				virtual void processEvents (Loop *, Event) abstract;
+				virtual void process_events (Loop *, Event) abstract;
 		};
 		
 		class INotificationSource : implements ISource
 		{
 			public:
-				virtual void processEvents (Loop *, Event) abstract;
+				virtual void process_events (Loop *, Event) abstract;
 		};
 		
 		class NotificationSource : public Object, implements INotificationSource
@@ -36,24 +36,24 @@ namespace Dream
 			typedef std::function<void (Loop *, NotificationSource *, Event)> CallbackT;
 			
 			protected:
-				CallbackT m_callback;
+				CallbackT _callback;
 				
 			public:
 				/// This function is called from the main thread as soon as possible after notify() has been called.
-				virtual void processEvents (Loop *, Event);
+				virtual void process_events (Loop *, Event);
 				
 				/// @todo loop should really be weak?
 				NotificationSource (CallbackT callback);
 				virtual ~NotificationSource ();
 							
-				static REF(NotificationSource) stopLoopNotification ();
+				static REF(NotificationSource) stop_loop_notification ();
 		};
 		
 		class ITimerSource : implements ISource
 		{
 			public:
 				virtual bool repeats () const abstract;
-				virtual TimeT nextTimeout (const TimeT & lastTimeout, const TimeT & currentTime) const abstract;
+				virtual TimeT next_timeout (const TimeT & last_timeout, const TimeT & current_time) const abstract;
 		};
 		
 		class TimerSource : public Object, implements ITimerSource
@@ -61,9 +61,9 @@ namespace Dream
 			typedef std::function<void (Loop *, TimerSource *, Event)> CallbackT;
 
 			protected:
-				bool m_cancelled, m_repeats, m_strict;
-				TimeT m_duration;
-				CallbackT m_callback;
+				bool _cancelled, _repeats, _strict;
+				TimeT _duration;
+				CallbackT _callback;
 				
 			public:
 				/// A strict timer attempts to fire callbacks even if they are in the past.
@@ -71,10 +71,10 @@ namespace Dream
 				TimerSource (CallbackT callback, TimeT duration, bool repeats = false, bool strict = false);
 				~TimerSource ();
 				
-				virtual void processEvents (Loop *, Event);
+				virtual void process_events (Loop *, Event);
 				
 				virtual bool repeats () const;
-				virtual TimeT nextTimeout (const TimeT & lastTimeout, const TimeT & currentTime) const;
+				virtual TimeT next_timeout (const TimeT & last_timeout, const TimeT & current_time) const;
 				
 				void cancel ();
 		};
@@ -82,13 +82,13 @@ namespace Dream
 		class IFileDescriptorSource : implements ISource
 		{
 			public:
-				virtual FileDescriptorT fileDescriptor () const abstract;
+				virtual FileDescriptorT file_descriptor () const abstract;
 				
 				/// Helper functions
-				void setWillBlock (bool value);
-				bool willBlock ();
+				void set_will_block (bool value);
+				bool will_block ();
 				
-				static void debugFileDescriptorFlags (int fd);
+				static void debug_file_descriptor_flags (int fd);
 		};
 		
 		class FileDescriptorSource : public Object, implements IFileDescriptorSource
@@ -96,20 +96,20 @@ namespace Dream
 			typedef std::function<void (Loop *, FileDescriptorSource *, Event)> CallbackT;
 			
 			protected:
-				int m_fd;
-				CallbackT m_callback;
+				int _fd;
+				CallbackT _callback;
 				
 			public:
 				FileDescriptorSource(CallbackT callback, FileDescriptorT fd);
 				virtual ~FileDescriptorSource ();
 				
-				virtual FileDescriptorT fileDescriptor () const;
+				virtual FileDescriptorT file_descriptor () const;
 				
-				virtual void processEvents (Loop *, Event);
+				virtual void process_events (Loop *, Event);
 				
-				static REF(FileDescriptorSource) forStandardIn (CallbackT);
-				static REF(FileDescriptorSource) forStandardOut (CallbackT);
-				static REF(FileDescriptorSource) forStandardError (CallbackT);
+				static REF(FileDescriptorSource) for_standard_in (CallbackT);
+				static REF(FileDescriptorSource) for_standard_out (CallbackT);
+				static REF(FileDescriptorSource) for_standard_error (CallbackT);
 		};
 		
 		/* Internal class used for processing urgent notifications
@@ -118,16 +118,16 @@ namespace Dream
 		class NotificationPipeSource : public Object, implements IFileDescriptorSource
 		{
 			protected:
-				int m_filedes[2];
+				int _filedes[2];
 				
 			public:
 				NotificationPipeSource ();
 				virtual ~NotificationPipeSource	();
 				
-				void notifyEventLoop () const;
+				void notify_event_loop () const;
 				
-				virtual FileDescriptorT fileDescriptor () const;
-				virtual void processEvents (Loop *, Event);
+				virtual FileDescriptorT file_descriptor () const;
+				virtual void process_events (Loop *, Event);
 		};
 		
 	}

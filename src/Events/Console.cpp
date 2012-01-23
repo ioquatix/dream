@@ -24,17 +24,17 @@ namespace Dream
 		using namespace Core;
 		
 		class ConsolePipeRedirector : private NonCopyable {
-			Shared<std::thread> m_thread;
-			std::mutex m_setupMutex;
-			bool m_done;
+			Shared<std::thread> _thread;
+			std::mutex _setup_mutex;
+			bool _done;
 			
 		public:
-			ConsolePipeRedirector () : m_done(false)
+			ConsolePipeRedirector () : _done(false)
 			{
 				
 			}
 			
-			static void copyDataBetweenFileDescriptors (int input, int output)
+			static void copy_data_between_file_descriptors (int input, int output)
 			{
 				char buf[512];
 				
@@ -52,47 +52,47 @@ namespace Dream
 				}				
 			}
 			
-			void reopenStandardFileDescriptorsAsPipes ()
+			void reopen_standard_file_descriptors_as_pipes ()
 			{	
 				{
-					std::lock_guard<std::mutex> lock(m_setupMutex);
+					std::lock_guard<std::mutex> lock(_setup_mutex);
 				
-					if (m_done) return;
-					m_done = true;
+					if (_done) return;
+					_done = true;
 				}
 				
 				int result;
-				int stdinPipe[2];//, stdoutPipe[2], stderrPipe[2];
+				int stdin_pipe[2];//, stdout_pipe[2], stderr_pipe[2];
 				
 				// Create a new pipe for stdin data
-				result = pipe(stdinPipe);
-				if (result) perror("pipe(stdinPipe)");
+				result = pipe(stdin_pipe);
+				if (result) perror("pipe(stdin_pipe)");
 				// Copy the stdin device to a new fd
-				int stdinDevice = dup(STDIN_FILENO);
+				int stdin_device = dup(STDIN_FILENO);
 				
 				// Same again for stdout
-				//result = pipe(stdoutPipe);
-				//if (result) perror("pipe(stdoutPipe)");
-				//int stdoutDevice = dup(STDOUT_FILENO);
+				//result = pipe(stdout_pipe);
+				//if (result) perror("pipe(stdout_pipe)");
+				//int stdout_device = dup(STDOUT_FILENO);
 				
 				// Same again for stderr
-				//result = pipe(stderrPipe);
-				//if (result) perror("pipe(stderrPipe)");
-				//int stderrDevice = dup(STDERR_FILENO);
+				//result = pipe(stderr_pipe);
+				//if (result) perror("pipe(stderr_pipe)");
+				//int stderr_device = dup(STDERR_FILENO);
 				
 				// Copy the pipe endpoint into the standard place for in, out and err.
-				dup2(stdinPipe[0], STDIN_FILENO);
-				//dup2(stdoutPipe[1], STDOUT_FILENO);
-				//dup2(stderrPipe[1], STDERR_FILENO);
+				dup2(stdin_pipe[0], STDIN_FILENO);
+				//dup2(stdout_pipe[1], STDOUT_FILENO);
+				//dup2(stderr_pipe[1], STDERR_FILENO);
 								
 				// Spawn threads to handle reading and writing in a blocking fashion.
-				m_thread = new std::thread(copyDataBetweenFileDescriptors, stdinDevice, stdinPipe[1]);
-				//m_threads.create_thread(bind(copyDataBetweenFileDescriptors, stdoutPipe[0], stdoutDevice));
-				//m_threads.create_thread(bind(copyDataBetweenFileDescriptors, stderrPipe[0], stderrDevice));
+				_thread = new std::thread(copy_data_between_file_descriptors, stdin_device, stdin_pipe[1]);
+				//_threads.create_thread(bind(copy_data_between_file_descriptors, stdout_pipe[0], stdout_device));
+				//_threads.create_thread(bind(copy_data_between_file_descriptors, stderr_pipe[0], stderr_device));
 			}
 		};
 		
-		void reopenStandardFileDescriptorsAsPipes ()
+		void reopen_standard_file_descriptors_as_pipes ()
 		{
 			static ConsolePipeRedirector * s_redirector = NULL;
 			
@@ -100,7 +100,7 @@ namespace Dream
 				return;
 			
 			s_redirector = new ConsolePipeRedirector;
-			s_redirector->reopenStandardFileDescriptorsAsPipes();
+			s_redirector->reopen_standard_file_descriptors_as_pipes();
 		}
 	}
 }

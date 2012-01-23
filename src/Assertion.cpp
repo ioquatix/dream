@@ -15,26 +15,26 @@
 // For testing
 #include "Core/CodeTest.h"
 
-void assertionFailure() {
+void assertion_failure() {
 	return;
 }
 
 namespace Dream
 {
 	AssertionError::AssertionError (const char * expression, const char * file, unsigned line) throw ()
-	: m_expression (expression), m_file (file), m_line (line)
+	: _expression (expression), _file (file), _line (line)
 	{
 		using namespace std;
 
 		try
 		{
 			stringstream s;
-			s << m_file << ":" << m_line << " assertion failed: " << m_expression;
-			m_what = s.str ();
+			s << _file << ":" << _line << " assertion failed: " << _expression;
+			_what = s.str ();
 		}
 		catch (...)
 		{
-			m_what = "Could not format assertion text!";
+			_what = "Could not format assertion text!";
 		}
 	}
 
@@ -44,14 +44,14 @@ namespace Dream
 
 	const char * AssertionError::what () const throw ()
 	{
-		return m_what.c_str();
+		return _what.c_str();
 	}
 
-	void AssertionError::assertHandler (bool condition, const char * expression, const char * file, unsigned line)
+	void AssertionError::assert_handler (bool condition, const char * expression, const char * file, unsigned line)
 	{
 		if (!condition)
 		{
-			assertionFailure();
+			assertion_failure();
 			
 			throw AssertionError(expression, file, line);
 		}
@@ -63,33 +63,33 @@ namespace Dream
 #ifdef ENABLE_TESTING
 	UNIT_TEST(Assertion)
 	{
-		bool exceptionThrown;
+		bool exception_thrown;
 
 		testing("Ensure");
 
-		exceptionThrown = false;
+		exception_thrown = false;
 		try
 		{
 			ensure(1 == 0);
 		}
 		catch (AssertionError & err)
 		{
-			exceptionThrown = true;
+			exception_thrown = true;
 		}
 
-		check(exceptionThrown) << "Ensure threw exception";
+		check(exception_thrown) << "Ensure threw exception";
 
-		exceptionThrown = false;
+		exception_thrown = false;
 		try
 		{
 			ensure(1 == 1);
 		}
 		catch (AssertionError & err)
 		{
-			exceptionThrown = true;
+			exception_thrown = true;
 		}
 
-		check(!exceptionThrown) << "Ensure didn't throw exception";
+		check(!exception_thrown) << "Ensure didn't throw exception";
 	}
 #endif
 }

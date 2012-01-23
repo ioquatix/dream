@@ -14,7 +14,7 @@ namespace Dream
 	namespace Numerics
 	{
 		template <typename _NumericT>
-		Quaternion<_NumericT> Quaternion<_NumericT>::sphericalLinearInterpolate (_NumericT t, const Quaternion<_NumericT> & q0,
+		Quaternion<_NumericT> Quaternion<_NumericT>::spherical_linear_interpolate (_NumericT t, const Quaternion<_NumericT> & q0,
 																				   const Quaternion<_NumericT> & q1)
 		{
 			// v0 and v1 should be unit length or else
@@ -54,36 +54,36 @@ namespace Dream
 		template <typename _NumericT>
 		Quaternion<_NumericT>::Quaternion (const Identity &)
 		{
-			m_vector.zero();
-			m_vector[W] = 1;
+			_vector.zero();
+			_vector[W] = 1;
 		}
 
 		template <typename _NumericT>
 		Quaternion<_NumericT>::Quaternion (const Vec4T & other)
 		{
-			m_vector.set(other);
+			_vector.set(other);
 		}
 
 		template <typename _NumericT>
 		Quaternion<_NumericT>::Quaternion (const _NumericT & angle, const Vec3T & axis)
 		{
-			setToAngleAxisRotation(angle, axis);
+			set_to_angle_axis_rotation(angle, axis);
 		}
 
 		template <typename _NumericT>
 		Quaternion<_NumericT>::Quaternion (const Vec3T & point)
 		{
-			m_vector.set(point);
-			m_vector[W] = 0;
+			_vector.set(point);
+			_vector[W] = 0;
 		}
 
 		template <typename _NumericT>
 		Quaternion<_NumericT>::Quaternion (const Vec3T & from, const Vec3T & to, _NumericT factor)
 		{
 			Vec3T axis = from.cross(to).normalize();
-			RealT angle = from.angleBetween(to) * factor;
+			RealT angle = from.angle_between(to) * factor;
 
-			setToAngleAxisRotation(angle, axis);
+			set_to_angle_axis_rotation(angle, axis);
 		}
 		
 		// Rotation from A to B
@@ -91,13 +91,13 @@ namespace Dream
 		Quaternion<_NumericT>::Quaternion (const Vec3T & from, const Vec3T & to)
 		{
 			Vec3T axis = from.cross(to).normalize();
-			RealT angle = from.angleBetween(to);
+			RealT angle = from.angle_between(to);
 
-			setToAngleAxisRotation(angle, axis);
+			set_to_angle_axis_rotation(angle, axis);
 		}
 		
 		template <typename _NumericT>
-		Quaternion<_NumericT> Quaternion<_NumericT>::fromMatrix (const Mat44 & m) {
+		Quaternion<_NumericT> Quaternion<_NumericT>::from_matrix (const Mat44 & m) {
 			RealT w = Math::sqrt(1 + m.at(0) + m.at(5) + m.at(10)) / 2.0;
 
 			Vec4 e;						
@@ -106,32 +106,32 @@ namespace Dream
 			e[Z] = (m.at(1) - m.at(4)) / (4 * w);
 			e[W] = w;
 
-			return Quaternion(e.normalizedVector(1));
+			return Quaternion(e.normalized_vector(1));
 		}
 
 		template <typename _NumericT>
 		const _NumericT & Quaternion<_NumericT>::operator[] (unsigned i) const
 		{
-			return m_vector[i];
+			return _vector[i];
 		}
 
 		template <typename _NumericT>
 		_NumericT & Quaternion<_NumericT>::operator[] (unsigned i)
 		{
-			return m_vector[i];
+			return _vector[i];
 		}
 
 		template <typename _NumericT>
 		typename Quaternion<_NumericT>::Vec3T Quaternion<_NumericT>::rotate (const Vec3T & pt) const
 		{
-			Quaternion conj = this->conjugatedQuaternion();
+			Quaternion conj = this->conjugated_quaternion();
 			Quaternion qpt(pt);
 
 			Quaternion r1 = (*this) * qpt;
 			Quaternion r2 = r1 * conj;
 
 			// Remove w component
-			return r2.m_vector.reduce();
+			return r2._vector.reduce();
 		}
 
 		template <typename _NumericT>
@@ -141,7 +141,7 @@ namespace Dream
 		}
 
 		template <typename _NumericT>
-		Quaternion<_NumericT> Quaternion<_NumericT>::multiplyWith (const Quaternion<_NumericT> & q1) const
+		Quaternion<_NumericT> Quaternion<_NumericT>::multiply_with (const Quaternion<_NumericT> & q1) const
 		{
 			const Quaternion & q2 = *this;
 
@@ -158,8 +158,8 @@ namespace Dream
 		template <typename _NumericT>
 		Quaternion<_NumericT> & Quaternion<_NumericT>::operator*= (const Quaternion & q2)
 		{
-			Quaternion r = multiplyWith(q2);
-			m_vector = r.m_vector;
+			Quaternion r = multiply_with(q2);
+			_vector = r._vector;
 
 			return *this;
 		}
@@ -167,32 +167,32 @@ namespace Dream
 		template <typename _NumericT>
 		Quaternion<_NumericT> Quaternion<_NumericT>::operator* (const Quaternion & q2) const
 		{
-			return multiplyWith(q2);
+			return multiply_with(q2);
 		}
 
 		template <typename _NumericT>
 		Quaternion<_NumericT> & Quaternion<_NumericT>::operator= (const Vec4T & other)
 		{
-			m_vector.set(other);
+			_vector.set(other);
 
 			return *this;
 		}
 
 		template <typename _NumericT>
-		typename Quaternion<_NumericT>::Vec3T Quaternion<_NumericT>::rotationAxis () const
+		typename Quaternion<_NumericT>::Vec3T Quaternion<_NumericT>::rotation_axis () const
 		{
-			return m_vector.reduce().normalize();
+			return _vector.reduce().normalize();
 		}
 
 		template <typename _NumericT>
-		typename Quaternion<_NumericT>::MatrixT Quaternion<_NumericT>::rotatingMatrix () const
+		typename Quaternion<_NumericT>::MatrixT Quaternion<_NumericT>::rotating_matrix () const
 		{
 			Matrix<4, 4, NumericT> matrix(IDENTITY);
 
-			ensure (Numerics::equalWithinTolerance(m_vector.length2(), (NumericT)1.0)
-					&& "Quaternion.rotatingMatrix magnitude must be 1");
+			ensure (Numerics::equal_within_tolerance(_vector.length2(), (NumericT)1.0)
+					&& "Quaternion.rotating_matrix magnitude must be 1");
 
-			NumericT x = m_vector[X], y = m_vector[Y], z = m_vector[Z], w = m_vector[W];
+			NumericT x = _vector[X], y = _vector[Y], z = _vector[Z], w = _vector[W];
 
 			matrix.at(0, 0) = 1 - 2 * (y*y + z*z);
 			matrix.at(1, 0) =	  2 * (x*y - w*z);
@@ -210,7 +210,7 @@ namespace Dream
 		}
 		
 		template <typename _NumericT>
-		typename Quaternion<_NumericT>::Vec3T Quaternion<_NumericT>::extractAxis (IndexT a) const
+		typename Quaternion<_NumericT>::Vec3T Quaternion<_NumericT>::extract_axis (IndexT a) const
 		{
 			Vec3T result;
 			
@@ -222,45 +222,45 @@ namespace Dream
 				result = Vec3(0, 0, 1);
 			}
 			
-			return rotatingMatrix() * result;
+			return rotating_matrix() * result;
 		}
 
 #ifdef OPENGL_SUPPORT
 		template <typename _NumericT>
 		void Quaternion<_NumericT>::glRotate () const
 		{
-			Vec3T axis = rotationAxis().normalize();
+			Vec3T axis = rotation_axis().normalize();
 
-			//std::cout << "Rotation angle: " << rotationAngle() << " axis: " << axis << std::endl;
-			glRotatef(rotationAngle() * RADIANS_TO_DEGREES, axis[X], axis[Y], axis[Z]);
+			//std::cout << "Rotation angle: " << rotation_angle() << " axis: " << axis << std::endl;
+			glRotatef(rotation_angle() * RADIANS_TO_DEGREES, axis[X], axis[Y], axis[Z]);
 		}
 #endif
 
 		template <typename _NumericT>
-		void Quaternion<_NumericT>::setToAngleAxisRotation (const RealT & angle, const Vec3T & axis)
+		void Quaternion<_NumericT>::set_to_angle_axis_rotation (const RealT & angle, const Vec3T & axis)
 		{
-			m_vector.set(axis);
-			m_vector *= Math::sin(angle / 2.0);
+			_vector.set(axis);
+			_vector *= Math::sin(angle / 2.0);
 
-			m_vector[W] = Math::cos(angle / 2.0);
+			_vector[W] = Math::cos(angle / 2.0);
 		}
 
 		template <typename _NumericT>
-		_NumericT Quaternion<_NumericT>::rotationAngle () const
+		_NumericT Quaternion<_NumericT>::rotation_angle () const
 		{
-			return Number<NumericT>::acos(m_vector[W]) * 2;
+			return Number<NumericT>::acos(_vector[W]) * 2;
 		}
 
 		template <typename _NumericT>
 		void Quaternion<_NumericT>::conjugate ()
 		{
-			m_vector[X] *= -1;
-			m_vector[Y] *= -1;
-			m_vector[Z] *= -1;
+			_vector[X] *= -1;
+			_vector[Y] *= -1;
+			_vector[Z] *= -1;
 		}
 
 		template <typename _NumericT>
-		Quaternion<_NumericT> Quaternion<_NumericT>::conjugatedQuaternion () const
+		Quaternion<_NumericT> Quaternion<_NumericT>::conjugated_quaternion () const
 		{
 			Quaternion result(*this);
 			result.conjugate();
@@ -268,21 +268,21 @@ namespace Dream
 		}
 
 		template <typename _NumericT>
-		Quaternion<_NumericT> Quaternion<_NumericT>::rotationTo (const Quaternion & other) const
+		Quaternion<_NumericT> Quaternion<_NumericT>::rotation_to (const Quaternion & other) const
 		{
-			return this->conjugatedQuaternion() * other;
+			return this->conjugated_quaternion() * other;
 		}
 
 		template <typename _NumericT>
 		Vector<4, _NumericT> & Quaternion<_NumericT>::vector ()
 		{
-			return m_vector;
+			return _vector;
 		}
 
 		template <typename _NumericT>
 		const Vector<4, _NumericT> & Quaternion<_NumericT>::vector () const
 		{
-			return m_vector;
+			return _vector;
 		}
 
 		template class Quaternion<float>;
@@ -298,10 +298,10 @@ namespace Dream
 			
 			// Angle axis
 			Quat q(R90, vec(1.0, 0.0, 0.0));
-			Mat44 m = Mat44::rotatingMatrix(R90, vec(1.0, 0.0, 0.0));
+			Mat44 m = Mat44::rotating_matrix(R90, vec(1.0, 0.0, 0.0));
 
-			check(q.rotationAxis().equivalent(Vec3(1.0, 0.0, 0.0))) << "Rotation axis is correct";
-			check(equivalent((RealT)R90, (RealT)q.rotationAngle())) << "Rotation angle is correct";
+			check(q.rotation_axis().equivalent(Vec3(1.0, 0.0, 0.0))) << "Rotation axis is correct";
+			check(equivalent((RealT)R90, (RealT)q.rotation_angle())) << "Rotation angle is correct";
 
 			testing("Multiplication");
 
@@ -314,9 +314,9 @@ namespace Dream
 
 			check(r1.equivalent(r2)) << "Represented rotation is same";
 			
-			Quat a(R90, Vec3(1, 0, 0).normalizedVector());
-			Quat b(R90, Vec3(0, 1, 0).normalizedVector());
-			Quat c = a.rotationTo(b);
+			Quat a(R90, Vec3(1, 0, 0).normalized_vector());
+			Quat b(R90, Vec3(0, 1, 0).normalized_vector());
+			Quat c = a.rotation_to(b);
 			
 			check((a * c).vector().equivalent(b.vector())) << "Rotations are equivalent";
 
@@ -324,24 +324,24 @@ namespace Dream
 
 			Quat identity(IDENTITY);
 
-			check(identity.extractAxis(X).equivalent(Vec3(1, 0, 0))) << "X axis is correct";
-			check(identity.extractAxis(Y).equivalent(Vec3(0, 1, 0))) << "Y axis is correct";
-			check(identity.extractAxis(Z).equivalent(Vec3(0, 0, 1))) << "Z axis is correct";
+			check(identity.extract_axis(X).equivalent(Vec3(1, 0, 0))) << "X axis is correct";
+			check(identity.extract_axis(Y).equivalent(Vec3(0, 1, 0))) << "Y axis is correct";
+			check(identity.extract_axis(Z).equivalent(Vec3(0, 0, 1))) << "Z axis is correct";
 
-			check(a.extractAxis(X).equivalent(Vec3(1, 0, 0))) << "X axis is correct";
-			check(a.extractAxis(Y).equivalent(Vec3(0, 0, 1))) << "Y axis is correct";
-			check(a.extractAxis(Z).equivalent(Vec3(0, -1, 0))) << "Z axis is correct";
+			check(a.extract_axis(X).equivalent(Vec3(1, 0, 0))) << "X axis is correct";
+			check(a.extract_axis(Y).equivalent(Vec3(0, 0, 1))) << "Y axis is correct";
+			check(a.extract_axis(Z).equivalent(Vec3(0, -1, 0))) << "Z axis is correct";
 			
 			testing("Rotation Matrix");
 			
-			Quat d(R360 * 0.34, Vec3(0.52, 0.1, -0.9).normalizedVector());
+			Quat d(R360 * 0.34, Vec3(0.52, 0.1, -0.9).normalized_vector());
 			Vec3 va(1, 0, 0), vb(0, 1, 0), vc(0, 0, 1);
 			
-			Mat44 t = d.rotatingMatrix();
+			Mat44 t = d.rotating_matrix();
 
-			check(d.extractAxis(X).equivalent(t * va)) << "X axis is correct";
-			check(d.extractAxis(Y).equivalent(t * vb)) << "Y axis is correct";
-			check(d.extractAxis(Z).equivalent(t * vc)) << "Z axis is correct";
+			check(d.extract_axis(X).equivalent(t * va)) << "X axis is correct";
+			check(d.extract_axis(Y).equivalent(t * vb)) << "Y axis is correct";
+			check(d.extract_axis(Z).equivalent(t * vc)) << "Z axis is correct";
 			
 			// Transformation by matrix and transformation by multiplication is not correct
 			// check((d * va).equivalent(t * va)) << "X rotation is correct";

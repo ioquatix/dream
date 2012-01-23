@@ -20,26 +20,26 @@ Note that setting the view non-opaque will only work if the EAGL surface has an 
 */
 @interface EAGLView : UIView {
     /* The pixel dimensions of the backbuffer */
-	BOOL resizeBuffers;
-    GLint backingWidth;
-    GLint backingHeight;
+	BOOL _resize_buffers;
+    GLint _backing_width;
+    GLint _backing_height;
     
-    EAGLContext *context;
+    EAGLContext * _context;
     
     /* OpenGL names for the renderbuffer and framebuffers used to render to this view */
-	GLuint defaultFramebuffer, colorRenderbuffer;
+	GLuint _default_framebuffer, _color_renderbuffer;
     
-    /* OpenGL name for the depth buffer that is attached to viewFramebuffer, if it exists (0 if it does not exist) */
-    GLuint depthRenderbuffer;
+    /* OpenGL name for the depth buffer that is attached to view_framebuffer, if it exists (0 if it does not exist) */
+    GLuint _depth_renderbuffer;
 	
 	// The display link and associated render thread.
-	NSThread * renderThread;
-	NSConditionLock * renderThreadLock;
+	NSThread * _render_thread;
+	NSConditionLock * _render_thread_lock;
 }
 
-@property (nonatomic, retain) EAGLContext *context;
+@property (nonatomic, retain) EAGLContext * context;
 
-// Internally used to setup the view - called during object construction for both initWithFrame: and initWithCoder:
+// Internally used to setup the view - called during object construction for both init_with_frame: and init_with_coder:
 - (void) setup;
 
 - (void) makeCurrentContext;

@@ -11,8 +11,8 @@
 
 namespace Dream {
 	namespace Resources {
-		Path applicationWorkingPath () {
-			return Path::currentWorkingDirectory();
+		Path application_working_path () {
+			return Path::current_working_directory();
 		}
 	}
 }

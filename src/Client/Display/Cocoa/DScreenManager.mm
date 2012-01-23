@@ -10,7 +10,7 @@
 
 @implementation DScreenManager
 
-@synthesize partialScreenWindow, fullScreenWindow;
+@synthesize partialScreenWindow = _partial_screen_window, fullScreenWindow = _full_screen_window;
 @dynamic mainScreen, fullScreen, contentView;
 
 - (id)init
@@ -29,25 +29,25 @@
 }
 
 - (NSView*)contentView {
-	if (fullScreenWindow) {
-		return [fullScreenWindow contentView];
+	if (_full_screen_window) {
+		return [_full_screen_window contentView];
 	} else {
-		return [partialScreenWindow contentView];
+		return [_partial_screen_window contentView];
 	}
 }
 
 - (NSScreen*) mainScreen {
-	return [[mainScreen retain] autorelease];
+	return [[_main_screen retain] autorelease];
 }
 
-- (void) setMainScreen:(NSScreen *)_mainScreen {
+- (void) setMainScreen:(NSScreen *)main_screen {
 	// If both nil or both the same pointer - object is identical
-	if (mainScreen == _mainScreen) {
+	if (_main_screen == main_screen) {
 		return;
 	}
 	
-	[mainScreen release];
-	mainScreen = [_mainScreen retain];
+	[_main_screen release];
+	_main_screen = [main_screen retain];
 	
 	// Cycle full screen because the screen may have changed - this could perhaps be improved to reduce mode switching, etc.
 	if ([self fullScreen]) {
@@ -57,7 +57,7 @@
 }
 
 - (BOOL) fullScreen {
-	if (fullScreenWindow) {
+	if (_full_screen_window) {
 		return YES;
 	} else {
 		return NO;
@@ -65,22 +65,22 @@
 }
 
 - (void) setFullScreen:(BOOL)fullScreen {
-	if (fullScreen && fullScreenWindow == nil) {
+	if (fullScreen && _full_screen_window == nil) {
 		// If we requested full screen and there is no full screenw window, we need to acquire it.
 		[self acquireFullScreen:[self currentScreen]];
-	} else if (!fullScreen && fullScreenWindow != nil) {
+	} else if (!fullScreen && _full_screen_window != nil) {
 		[self releaseFullScreen];
 	}
 }
 
-// Returns the current screen depending on the location of partialScreenWindow,
-// or fullScreenWindow, depending on which is currently visible.
+// Returns the current screen depending on the location of _partial_screen_window,
+// or _full_screen_window, depending on which is currently visible.
 - (NSScreen*) currentScreen {
-	if (partialScreenWindow) {
-		if (fullScreenWindow) {
-			return [fullScreenWindow deepestScreen];
+	if (_partial_screen_window) {
+		if (_full_screen_window) {
+			return [_full_screen_window deepestScreen];
 		} else {
-			return [partialScreenWindow deepestScreen];
+			return [_partial_screen_window deepestScreen];
 		}
 	} else {
 		return [NSScreen mainScreen];
@@ -89,51 +89,51 @@
 
 - (void) acquireFullScreen: (NSScreen*)screen {
 	// If the full screen window is already allocated, we are done.
-	if (fullScreenWindow) return;
+	if (_full_screen_window) return;
 	
 	NSRect frame = [screen frame];
 	
 	// Instantiate new borderless window:
-	fullScreenWindow = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:YES];
+	_full_screen_window = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:YES];
 	
-	if (fullScreenWindow != nil) {
+	if (_full_screen_window != nil) {
 		// Close the existing partial window:
-		[partialScreenWindow setAcceptsMouseMovedEvents:NO];
-		[partialScreenWindow setReleasedWhenClosed:NO];
-		[partialScreenWindow close];
+		[_partial_screen_window setAcceptsMouseMovedEvents:NO];
+		[_partial_screen_window setReleasedWhenClosed:NO];
+		[_partial_screen_window close];
 
-		// Set the options for our new fullscreen window, we retrieve some details from partialScreenWindow:
-		[fullScreenWindow setTitle:[partialScreenWindow title]];
-		[fullScreenWindow setOpaque:YES];
-		[fullScreenWindow setReleasedWhenClosed:YES];
-		[fullScreenWindow setAcceptsMouseMovedEvents:YES];
-		[fullScreenWindow setBackgroundColor:[NSColor blackColor]];
+		// Set the options for our new fullscreen window, we retrieve some details from _partial_screen_window:
+		[_full_screen_window setTitle:[_partial_screen_window title]];
+		[_full_screen_window setOpaque:YES];
+		[_full_screen_window setReleasedWhenClosed:YES];
+		[_full_screen_window setAcceptsMouseMovedEvents:YES];
+		[_full_screen_window setBackgroundColor:[NSColor blackColor]];
 		
-		[fullScreenWindow setLevel:NSMainMenuWindowLevel+1];
+		[_full_screen_window setLevel:NSMainMenuWindowLevel+1];
 		
 		// The order of this operation might cause flickering - need to test?
-		[fullScreenWindow setContentView:[partialScreenWindow contentView]];
+		[_full_screen_window setContentView:[_partial_screen_window contentView]];
 		
-		[fullScreenWindow makeKeyAndOrderFront:self];
-		[fullScreenWindow makeFirstResponder:[fullScreenWindow contentView]];
+		[_full_screen_window makeKeyAndOrderFront:self];
+		[_full_screen_window makeFirstResponder:[_full_screen_window contentView]];
 	} else {
 		NSLog(@"Error: could not allocate fullscreen window!");
 	}
 }
 
 - (void) releaseFullScreen {
-	if (!fullScreenWindow) return;
+	if (!_full_screen_window) return;
 	
-	[partialScreenWindow setAcceptsMouseMovedEvents:YES];
+	[_partial_screen_window setAcceptsMouseMovedEvents:YES];
 	
-	[fullScreenWindow setReleasedWhenClosed:NO];
-	[fullScreenWindow close];
+	[_full_screen_window setReleasedWhenClosed:NO];
+	[_full_screen_window close];
 	
-	[partialScreenWindow setContentView:[fullScreenWindow contentView]];
-	[partialScreenWindow makeKeyAndOrderFront:self];
+	[_partial_screen_window setContentView:[_full_screen_window contentView]];
+	[_partial_screen_window makeKeyAndOrderFront:self];
 	
-	[fullScreenWindow release];
-	fullScreenWindow = nil;
+	[_full_screen_window release];
+	_full_screen_window = nil;
 }
 
 - (IBAction) toggleFullScreen:(id)sender {

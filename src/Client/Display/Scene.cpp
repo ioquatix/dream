@@ -27,34 +27,34 @@ namespace Dream
 	{
 		namespace Display
 		{
-			void ISceneManager::renderFrameForTime (TimeT time)
+			void ISceneManager::render_frame_for_time (TimeT time)
 			{
-				REF(IScene) s = currentScene();
+				REF(IScene) s = current_scene();
 				
 				if (s) 
-					s->renderFrameForTime(time);
+					s->render_frame_for_time(time);
 			}
 			
 	#pragma mark -
 			
-			REF(Resources::ILoader) SceneManager::defaultResourceLoader ()
+			REF(Resources::ILoader) SceneManager::default_resource_loader ()
 			{
 				REF(Resources::Loader) loader = new Resources::Loader;
 				
-				loader->addLoader(new Imaging::Image::Loader);
-				loader->addLoader(new Client::Audio::Sound::Loader);
-				loader->addLoader(new Client::Audio::OggResource::Loader);
-				loader->addLoader(new Text::Font::Loader);
+				loader->add_loader(new Imaging::Image::Loader);
+				loader->add_loader(new Client::Audio::Sound::Loader);
+				loader->add_loader(new Client::Audio::OggResource::Loader);
+				loader->add_loader(new Text::Font::Loader);
 				
 				return loader;
 			}
 			
-			SceneManager::SceneManager (REF(IContext) displayContext, REF(Loop) eventLoop, REF(ILoader) resourceLoader)
-				: m_displayContext(displayContext), m_eventLoop(eventLoop), m_resourceLoader(resourceLoader), m_currentSceneIsFinished(true)
+			SceneManager::SceneManager (REF(IContext) display_context, REF(Loop) event_loop, REF(ILoader) resource_loader)
+				: _display_context(display_context), _event_loop(event_loop), _resource_loader(resource_loader), _current_sceneIsFinished(true)
 			{
-				m_displayContext->setDelegate(this);
+				_display_context->set_delegate(this);
 				
-				m_stopwatch.start();
+				_stopwatch.start();
 			}
 			
 			SceneManager::~SceneManager ()
@@ -62,159 +62,159 @@ namespace Dream
 				
 			}
 			
-			void SceneManager::pushScene (REF(IScene) scene)
+			void SceneManager::push_scene (REF(IScene) scene)
 			{
 				// Save the current scene on top of the queue.
-				if (m_currentScene)
-					m_scenes.push_front(m_currentScene);
+				if (_current_scene)
+					_scenes.push_front(_current_scene);
 				
 				
-				replaceScene(scene);
+				replace_scene(scene);
 			}
 			
-			void SceneManager::replaceScene (REF(IScene) scene)
+			void SceneManager::replace_scene (REF(IScene) scene)
 			{
-				m_scenes.push_front(scene);
+				_scenes.push_front(scene);
 				
 				// Clear the current scene. Any attempt to render will load up the first scene.
-				m_currentScene = NULL;
+				_current_scene = NULL;
 			}
 			
-			void SceneManager::appendScene (REF(IScene) scene)
+			void SceneManager::append_scene (REF(IScene) scene)
 			{
-				m_scenes.push_back(scene);
+				_scenes.push_back(scene);
 			}
 			
-			REF(IScene) SceneManager::currentScene ()
+			REF(IScene) SceneManager::current_scene ()
 			{
-				if (m_currentScene)
-					return m_currentScene;
+				if (_current_scene)
+					return _current_scene;
 				else
-					return VoidScene::sharedInstance();
+					return VoidScene::shared_instance();
 			}
 			
-			REF(IContext) SceneManager::displayContext ()
+			REF(IContext) SceneManager::display_context ()
 			{
-				return m_displayContext;
+				return _display_context;
 			}
 			
-			REF(Loop) SceneManager::eventLoop ()
+			REF(Loop) SceneManager::event_loop ()
 			{
-				return m_eventLoop;
+				return _event_loop;
 			}
 			
-			REF(ILoader) SceneManager::resourceLoader ()
+			REF(ILoader) SceneManager::resource_loader ()
 			{
-				return m_resourceLoader;
+				return _resource_loader;
 			}
 			
-			void SceneManager::currentSceneIsFinished ()
+			void SceneManager::current_scene_is_finished ()
 			{
-				m_currentSceneIsFinished = true;
+				_current_sceneIsFinished = true;
 			}
 			
-			void SceneManager::updateCurrentScene ()
+			void SceneManager::update_current_scene ()
 			{
-				m_currentSceneIsFinished = false;
+				_current_sceneIsFinished = false;
 				
-				REF(IScene) s = provideNextScene();
+				REF(IScene) s = provide_next_scene();
 				
-				if (m_currentScene) {
-					m_currentScene->willRevokeCurrent(this);
+				if (_current_scene) {
+					_current_scene->will_revoke_current(this);
 				}
 				
 				if (s) {
-					m_currentScene = s;
-					m_currentScene->willBecomeCurrent(this);
-					m_currentScene->didBecomeCurrent();
+					_current_scene = s;
+					_current_scene->will_become_current(this);
+					_current_scene->did_become_current();
 				} else {
-					m_finishedCallback(this);
-					m_currentScene = NULL;
+					_finished_callback(this);
+					_current_scene = NULL;
 				}
 			}
 			
-			REF(IScene) SceneManager::provideNextScene ()
+			REF(IScene) SceneManager::provide_next_scene ()
 			{
 				REF(IScene) s;
 				
-				if (!m_scenes.empty()) {
-					s = m_scenes.front();
-					m_scenes.pop_front();
+				if (!_scenes.empty()) {
+					s = _scenes.front();
+					_scenes.pop_front();
 				}
 				
 				return s;
 			}
 			
-			void SceneManager::renderFrameForTime(PTR(IContext) context, TimeT time)
+			void SceneManager::render_frame_for_time(PTR(IContext) context, TimeT time)
 			{
-				context->makeCurrent();
+				context->make_current();
 				
-				m_stats.beginTimer(m_stopwatch.time());
+				_stats.begin_timer(_stopwatch.time());
 
-				if (!m_currentScene || m_currentSceneIsFinished)
-					updateCurrentScene();
+				if (!_current_scene || _current_sceneIsFinished)
+					update_current_scene();
 				
-				ISceneManager::renderFrameForTime(time);
+				ISceneManager::render_frame_for_time(time);
 								
-				m_stats.update(m_stopwatch.time());
+				_stats.update(_stopwatch.time());
 				
-				if (m_stats.updateCount() > (60 * 20))
+				if (_stats.update_count() > (60 * 20))
 				{
-					std::cerr << "FPS: " << m_stats.updatesPerSecond() << std::endl;
-					m_stats.reset();
+					std::cerr << "FPS: " << _stats.updates_per_second() << std::endl;
+					_stats.reset();
 				}
 				
-				context->flushBuffers();
+				context->flush_buffers();
 			}
 			
-			void SceneManager::processInput (PTR(IContext) context, const Input & input)
+			void SceneManager::process_input (PTR(IContext) context, const Input & input)
 			{
 				if (!process(input)) {				
 					// Add the event to the thread-safe queue.
-					m_inputQueue.process(input);
+					_input_queue.process(input);
 				}
 			}
 			
-			void SceneManager::processPendingEvents (IInputHandler * handler)
+			void SceneManager::process_pending_events (IInputHandler * handler)
 			{
 				// Remove a block of events from the input queue and pass to the handler for processing.
-				m_inputQueue.dequeue(handler);
+				_input_queue.dequeue(handler);
 			}
 			
 			bool SceneManager::event (const Display::EventInput & ipt)
 			{
 				if (ipt.event() == EventInput::EXIT)
-					eventLoop()->stop();
+					event_loop()->stop();
 				
 				return false;
 			}
 			
-			void SceneManager::setFinishedCallback (FinishedCallbackT callback)
+			void SceneManager::set_finished_callback (FinishedCallbackT callback)
 			{
-				m_finishedCallback = callback;
+				_finished_callback = callback;
 			}
 			
 #pragma mark -
 			
-			void ILayer::renderFrameForTime (IScene * scene, TimeT time) {
+			void ILayer::render_frame_for_time (IScene * scene, TimeT time) {
 			
 			}
 			
-			void ILayer::didBecomeCurrent (ISceneManager * manager, IScene * scene) {
+			void ILayer::did_become_current (ISceneManager * manager, IScene * scene) {
 			
 			}
 			
-			void ILayer::willRevokeCurrent (ISceneManager * manager, IScene * scene) {
+			void ILayer::will_revoke_current (ISceneManager * manager, IScene * scene) {
 			
 			}
 
 #pragma mark -
 
-			void Group::renderFrameForTime (IScene * scene, TimeT time)
+			void Group::render_frame_for_time (IScene * scene, TimeT time)
 			{
-				for (ChildrenT::iterator i = m_children.begin(); i != m_children.end(); i++)
+				for (ChildrenT::iterator i = _children.begin(); i != _children.end(); i++)
 				{
-					(*i)->renderFrameForTime(scene, time);
+					(*i)->render_frame_for_time(scene, time);
 				}
 			}
 			
@@ -222,7 +222,7 @@ namespace Dream
 			{
 				bool result = false;
 				
-				for (ChildrenT::iterator i = m_children.begin(); i != m_children.end(); i++)
+				for (ChildrenT::iterator i = _children.begin(); i != _children.end(); i++)
 				{
 					result |= (*i)->process(input);
 				}
@@ -232,45 +232,45 @@ namespace Dream
 				return result;
 			}
 			
-			void Group::didBecomeCurrent (ISceneManager * manager, IScene * scene)
+			void Group::did_become_current (ISceneManager * manager, IScene * scene)
 			{
-				for (ChildrenT::iterator i = m_children.begin(); i != m_children.end(); i++)
+				for (ChildrenT::iterator i = _children.begin(); i != _children.end(); i++)
 				{
-					(*i)->didBecomeCurrent(manager, scene);
+					(*i)->did_become_current(manager, scene);
 				}
 			}
 			
-			void Group::willRevokeCurrent (ISceneManager * manager, IScene * scene)
+			void Group::will_revoke_current (ISceneManager * manager, IScene * scene)
 			{
-				for (ChildrenT::iterator i = m_children.begin(); i != m_children.end(); i++)
+				for (ChildrenT::iterator i = _children.begin(); i != _children.end(); i++)
 				{
-					(*i)->willRevokeCurrent(manager, scene);
+					(*i)->will_revoke_current(manager, scene);
 				}
 			}
 			
 			void Group::add(PTR(ILayer) child)
 			{
-				m_children.push_back(child);
+				_children.push_back(child);
 			}
 			
 			void Group::remove(PTR(ILayer) child)
 			{
-				//m_children.erase(child);
-				ChildrenT::iterator pos = std::find(m_children.begin(), m_children.end(), child);
+				//_children.erase(child);
+				ChildrenT::iterator pos = std::find(_children.begin(), _children.end(), child);
 				
-				if (pos != m_children.end()) {
-					m_children.erase(pos);
+				if (pos != _children.end()) {
+					_children.erase(pos);
 				}
 			}
 			
-			void Group::removeAll ()
+			void Group::remove_all ()
 			{
-				m_children.resize(0);
+				_children.resize(0);
 			}
 			
 #pragma mark -
 			
-			Scene::Scene () : m_sceneManager(NULL), m_firstFrame(true), m_startTime(0), m_currentTime(0)
+			Scene::Scene () : _sceneManager(NULL), _first_frame(true), _startTime(0), _current_time(0)
 			{
 				
 			}
@@ -282,47 +282,47 @@ namespace Dream
 			
 			ISceneManager * Scene::manager ()
 			{
-				return m_sceneManager;
+				return _sceneManager;
 			}
 			
-			ILoader * Scene::resourceLoader ()
+			ILoader * Scene::resource_loader ()
 			{
-				return m_sceneManager->resourceLoader().get();
+				return _sceneManager->resource_loader().get();
 			}
 			
-			void Scene::willBecomeCurrent(ISceneManager * sceneManager)
+			void Scene::will_become_current(ISceneManager * scene_manager)
 			{
-				m_sceneManager = sceneManager;
-				m_firstFrame = true;
+				_sceneManager = scene_manager;
+				_first_frame = true;
 			}
 			
-			void Scene::didBecomeCurrent() {
-				Display::ResizeInput initialSize(m_sceneManager->displayContext()->size());
-				process(initialSize);
+			void Scene::did_become_current() {
+				Display::ResizeInput initial_size(_sceneManager->display_context()->size());
+				process(initial_size);
 				
-				Group::didBecomeCurrent(m_sceneManager, this);
+				Group::did_become_current(_sceneManager, this);
 			}
 			
-			void Scene::willRevokeCurrent(ISceneManager * sceneManager)
+			void Scene::will_revoke_current(ISceneManager * scene_manager)
 			{
-				m_sceneManager = NULL;
+				_sceneManager = NULL;
 			}
 			
-			void Scene::renderFrameForTime (TimeT time)
+			void Scene::render_frame_for_time (TimeT time)
 			{
-				if (m_firstFrame) {
-					m_startTime = time;
-					m_firstFrame = false;
+				if (_first_frame) {
+					_startTime = time;
+					_first_frame = false;
 				}
 				
-				m_currentTime = time;
+				_current_time = time;
 				
-				Group::renderFrameForTime(this, time);
+				Group::render_frame_for_time(this, time);
 			}
 			
-			TimeT Scene::currentTime () const
+			TimeT Scene::current_time () const
 			{
-				return m_currentTime - m_startTime;
+				return _current_time - _startTime;
 			}
 			
 	#pragma mark -
@@ -342,12 +342,12 @@ namespace Dream
 				return true;
 			}
 			
-			void VoidScene::renderFrameForTime (TimeT time)
+			void VoidScene::render_frame_for_time (TimeT time)
 			{
 				
 			}
 			
-			REF(VoidScene) VoidScene::sharedInstance ()
+			REF(VoidScene) VoidScene::shared_instance ()
 			{
 				static REF(VoidScene) s_voidSceneSharedInstance;
 				

@@ -14,7 +14,7 @@
 #include <exception>
 
 /// Similar to assert, however will throw an AssertionError on failure.
-#define ensure(e) ::Dream::AssertionError::assertHandler(e, #e, __FILE__, __LINE__)
+#define ensure(e) ::Dream::AssertionError::assert_handler(e, #e, __FILE__, __LINE__)
 
 /// Similar to ensure, but works statically, e.g. on consts, template arguments, etc.
 #define static_ensure(e) ::Dream::StaticAssertion<(e) != 0>::failed()
@@ -27,16 +27,16 @@ namespace Dream
 	 Use the ensure() macro in your code:
 
 	 @code
-	 ensure(myCondition)
+	 ensure(my_condition)
 	 @endcode
 	 */
 	class AssertionError : public std::exception
 	{
-		const char * m_expression;
-		const char * m_file;
-		unsigned m_line;
+		const char * _expression;
+		const char * _file;
+		unsigned _line;
 
-		std::string m_what;
+		std::string _what;
 	public:
 		AssertionError (const char * expression, const char * file, unsigned line) throw ();
 		virtual ~AssertionError () throw ();
@@ -45,7 +45,7 @@ namespace Dream
 		virtual const char * what () const throw ();
 
 		/// The ensure() macro calls this function to handle throwing the actual exception.
-		static void assertHandler (bool condition, const char * expression, const char * file, unsigned line);
+		static void assert_handler (bool condition, const char * expression, const char * file, unsigned line);
 	};
 	
 	/// Simple static assertion implementation

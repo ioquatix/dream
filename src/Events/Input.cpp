@@ -15,13 +15,13 @@ namespace Dream
 	{
 	
 		Input::Input ()
-			: m_time(systemTime())
+			: _time(system_time())
 		{
 		
 		}
 		
 		Input::Input (const Input & other)
-			: m_time(other.m_time)
+			: _time(other._time)
 		{
 		
 		}
@@ -44,13 +44,13 @@ namespace Dream
 #pragma mark -
 		
 		EventInput::EventInput(EventName event)
-			: m_event(event)
+			: _event(event)
 		{
 		
 		}
 		
 		EventInput::EventInput (const EventInput & other)
-			: Input(other), m_event(other.m_event)
+			: Input(other), _event(other._event)
 		{
 			
 		}
@@ -67,19 +67,19 @@ namespace Dream
 		
 		EventInput::EventName EventInput::event () const
 		{
-			return m_event;
+			return _event;
 		}
 		
 #pragma mark -
 		
 		ButtonInput::ButtonInput(const Key &e, const StateT &s) 
-			: m_key(e), m_state(s) 
+			: _key(e), _state(s) 
 		{
 		
 		}
 		
 		ButtonInput::ButtonInput(const ButtonInput & other)
-			: Input(other), m_key(other.m_key), m_state(other.m_state)
+			: Input(other), _key(other._key), _state(other._state)
 		{
 		
 		}
@@ -96,15 +96,15 @@ namespace Dream
 #pragma mark -
 		
 		MotionInput::MotionInput(const Key &key, const StateT &state, const Vec3 &position, const Vec3 &motion, const AlignedBox<2> & bounds) 
-			: m_key(key), m_state(state), m_motion(motion), m_bounds(bounds)
+			: _key(key), _state(state), _motion(motion), _bounds(bounds)
 		{
-			// We ensure that m_position is within the coordinate system provided by bounds
+			// We ensure that _position is within the coordinate system provided by bounds
 			// Normally this is the origin, but a Viewport may provide a different coordinate system.
-			m_position = position - (bounds.min() << 0.0);
+			_position = position - (bounds.min() << 0.0);
 		}
 		
 		MotionInput::MotionInput(const MotionInput & other)
-			: Input(other), m_key(other.m_key), m_state(other.m_state), m_position(other.m_position), m_motion(other.m_motion), m_bounds(other.m_bounds)
+			: Input(other), _key(other._key), _state(other._state), _position(other._position), _motion(other._motion), _bounds(other._bounds)
 		{
 		
 		}
@@ -117,20 +117,20 @@ namespace Dream
 		
 		}
 		
-		MotionInput MotionInput::inputByRefiningBounds(const AlignedBox<2> & updatedBounds) {
-			return MotionInput(m_key, m_state, m_position, m_motion, updatedBounds);
+		MotionInput MotionInput::input_by_refining_bounds(const AlignedBox<2> & updated_bounds) {
+			return MotionInput(_key, _state, _position, _motion, updated_bounds);
 		}
 		
 #pragma mark -
 		
-		ResizeInput::ResizeInput (const Vec2u & newSize)
-			: m_newSize(newSize)
+		ResizeInput::ResizeInput (const Vec2u & new_size)
+			: _new_size(new_size)
 		{
 			
 		}
 		
 		ResizeInput::ResizeInput(const ResizeInput & other)
-			: Input(other), m_newSize(other.m_newSize)
+			: Input(other), _new_size(other._new_size)
 		{
 		
 		}
@@ -147,7 +147,7 @@ namespace Dream
 		
 		InputQueue::~InputQueue ()
 		{
-			std::vector<Input*> * items = m_queue.fetch();
+			std::vector<Input*> * items = _queue.fetch();
 			
 			foreach(input, *items) {
 				delete *input;
@@ -156,35 +156,35 @@ namespace Dream
 		
 		bool InputQueue::resize(const ResizeInput & input)
 		{
-			m_queue.add(new ResizeInput(input));
+			_queue.add(new ResizeInput(input));
 			
 			return true;
 		}
 		
 		bool InputQueue::button(const ButtonInput & input)
 		{
-			m_queue.add(new ButtonInput(input));
+			_queue.add(new ButtonInput(input));
 			
 			return true;
 		}
 		
 		bool InputQueue::motion(const MotionInput & input)
 		{
-			m_queue.add(new MotionInput(input));
+			_queue.add(new MotionInput(input));
 		
 			return true;
 		}
 		
 		bool InputQueue::event(const EventInput & input)
 		{
-			m_queue.add(new EventInput(input));
+			_queue.add(new EventInput(input));
 			
 			return true;
 		}
 		
 		void InputQueue::dequeue (IInputHandler * handler)
 		{
-			std::vector<Input*> * items = m_queue.fetch();
+			std::vector<Input*> * items = _queue.fetch();
 			
 			foreach(input, *items) {
 				handler->process(**input);

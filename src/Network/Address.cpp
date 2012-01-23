@@ -13,26 +13,26 @@
 
 namespace Dream {
 	namespace Network {
-		AddressResolutionError::AddressResolutionError (const std::string & what, int errorCode) : std::runtime_error(what), m_errorCode(errorCode)
+		AddressResolutionError::AddressResolutionError (const std::string & what, int error_code) : std::runtime_error(what), _error_code(error_code)
 		{
 		}
 		
-		int AddressResolutionError::errorCode ()
+		int AddressResolutionError::error_code ()
 		{
-			return m_errorCode;
+			return _error_code;
 		}
 		
 		// Currently unused and untested
-		Address addressForSocket (int s, bool remote)
+		Address address_for_socket (int s, bool remote)
 		{
 			addrinfo ai;
 			sockaddr_storage ss;
 			socklen_t len;
 			int result;
-			SocketType socketType;
+			SocketType socket_type;
 			
-			len = sizeof(socketType);
-			result = getsockopt(s, SOL_SOCKET, SO_TYPE, &socketType, &len);
+			len = sizeof(socket_type);
+			result = getsockopt(s, SOL_SOCKET, SO_TYPE, &socket_type, &len);
 			if (result == -1) perror(__PRETTY_FUNCTION__);
 			
 			len = sizeof(ss);
@@ -43,7 +43,7 @@ namespace Dream {
 			
 			if (result == -1) perror(__PRETTY_FUNCTION__);
 			
-			ai.ai_socktype = socketType;
+			ai.ai_socktype = socket_type;
 			ai.ai_addr = (sockaddr*)&ss;
 			ai.ai_addrlen = len;
 			ai.ai_family = ss.ss_family;
@@ -56,112 +56,112 @@ namespace Dream {
 		}
 				
 		Address::Address() {
-			m_addressData.ss_family = 0;
+			_address_data.ss_family = 0;
 			
 			/*zero the address info */
-			m_protocol = 0;
-			m_protocolFamily = 0;
-			m_socketType = 0;
+			_protocol = 0;
+			_protocol_family = 0;
+			_socket_type = 0;
 			
-			m_addressDataSize = 0;
+			_address_dataSize = 0;
 		}
 		
 		Address::Address (const Address & copy, sockaddr * sa, IndexT size)
 		{
-			copyFromAddress(copy);
-			setAddressData(sa, size);
+			copy_from_address(copy);
+			set_address_data(sa, size);
 		}
 		
 		Address::Address (const addrinfo * ai) {
-			copyFromAddressInfo(ai);
+			copy_from_addressInfo(ai);
 		}
 		
-		void Address::copyFromAddress (const Address & na) {
+		void Address::copy_from_address (const Address & na) {
 			// Copy local values
-			this->m_protocol = na.m_protocol;
-			this->m_protocolFamily = na.m_protocolFamily;
-			this->m_socketType = na.m_socketType;
+			this->_protocol = na._protocol;
+			this->_protocol_family = na._protocol_family;
+			this->_socket_type = na._socket_type;
 		}
 		
 		Address::Address (const Address & na) {
-			copyFromAddress(na);
-			setAddressData(na.addressData(), na.addressDataSize());
+			copy_from_address(na);
+			set_address_data(na.address_data(), na.address_dataSize());
 		}
 		
 		Address & Address::operator= (const Address & na) {
-			copyFromAddress(na);
-			setAddressData(na.addressData(), na.addressDataSize());
+			copy_from_address(na);
+			set_address_data(na.address_data(), na.address_dataSize());
 			
 			return *this;
 		}
 		
-		IndexT Address::addressDataSize () const
+		IndexT Address::address_dataSize () const
 		{
-			return m_addressDataSize;
+			return _address_dataSize;
 		}
 		
-		sockaddr * Address::addressData ()
+		sockaddr * Address::address_data ()
 		{
-			return (sockaddr*)&m_addressData;
+			return (sockaddr*)&_address_data;
 		}
 		
-		const sockaddr * Address::addressData () const 
+		const sockaddr * Address::address_data () const 
 		{
-			return (const sockaddr*)&m_addressData;
+			return (const sockaddr*)&_address_data;
 		}
 		
-		AddressFamily Address::addressFamily () const
+		AddressFamily Address::address_family () const
 		{
-			return m_addressData.ss_family;
+			return _address_data.ss_family;
 		}
 		
-		ProtocolFamily Address::protocolFamily () const
+		ProtocolFamily Address::protocol_family () const
 		{
-			return m_protocolFamily;
+			return _protocol_family;
 		}
 		
-		SocketType Address::socketType () const 
+		SocketType Address::socket_type () const 
 		{
-			return m_socketType;
+			return _socket_type;
 		}
 		
-		SocketProtocol Address::socketProtocol () const
+		SocketProtocol Address::socket_protocol () const
 		{
-			return m_protocol;
+			return _protocol;
 		}
 		
-		void Address::setAddressData(const sockaddr * sa, IndexT size) {
+		void Address::set_address_data(const sockaddr * sa, IndexT size) {
 			ensure(sa != NULL); // wtf?
-			ensure(size <= sizeof(m_addressData));
+			ensure(size <= sizeof(_address_data));
 			
-			memcpy (&m_addressData, sa, size);
-			m_addressDataSize = size;
+			memcpy (&_address_data, sa, size);
+			_address_dataSize = size;
 		}
 		
-		bool Address::isValid () const
+		bool Address::is_valid () const
 		{
-			return m_addressData.ss_family != 0;
+			return _address_data.ss_family != 0;
 		}
 		
-		void Address::copyFromAddressInfo (const addrinfo * ai) {
+		void Address::copy_from_addressInfo (const addrinfo * ai) {
 			ensure(ai != NULL);
 			
-			setAddressData(ai->ai_addr, ai->ai_addrlen);
+			set_address_data(ai->ai_addr, ai->ai_addrlen);
 			
-			this->m_protocol = ai->ai_protocol;
-			this->m_protocolFamily = ai->ai_family;
-			this->m_socketType = ai->ai_socktype;
+			this->_protocol = ai->ai_protocol;
+			this->_protocol_family = ai->ai_family;
+			this->_socket_type = ai->ai_socktype;
 		}
 		
-		const char * Address::addressFamilyName() const {
-			return addressFamilyName(addressFamily());
+		const char * Address::address_familyName() const {
+			return address_familyName(address_family());
 		}
 		
-		const char * Address::socketTypeName() const {
-			return socketTypeName(socketType());
+		const char * Address::socket_typeName() const {
+			return socket_typeName(socket_type());
 		}
 		
-		SocketType Address::socketTypeForString(const std::string & s) {
+		SocketType Address::socket_typeForString(const std::string & s) {
 			if (s == "tcp" || s == "STREAM") {
 				return SOCK_STREAM;
 			} else if (s == "udp" || s == "DGRAM") {
@@ -173,11 +173,11 @@ namespace Dream {
 			return 0;
 		}
 		
-		AddressesT Address::addressesForURI(const URI & uri, SocketType socketType) {
-			return addressesForName(uri.hostname().c_str(), uri.service().c_str(), socketType);
+		AddressesT Address::addresses_for_uri(const URI & uri, SocketType socket_type) {
+			return addresses_for_name(uri.hostname().c_str(), uri.service().c_str(), socket_type);
 		}
 		
-		const char * Address::socketTypeName(SocketType st) {
+		const char * Address::socket_typeName(SocketType st) {
 			switch (st) {
 				case SOCK_STREAM:
 					return "STREAM";
@@ -194,7 +194,7 @@ namespace Dream {
 			}
 		}
 		
-		const char * Address::addressFamilyName(AddressFamily af) {
+		const char * Address::address_familyName(AddressFamily af) {
 			switch (af) {
 #ifdef AF_8022
 				case AF_8022:		return "802.2";
@@ -237,7 +237,7 @@ namespace Dream {
 			}
 		}
 		
-		AddressesT Address::addressesForName(const char * host, const char * service, addrinfo * hints) {
+		AddressesT Address::addresses_for_name(const char * host, const char * service, addrinfo * hints) {
 			struct addrinfo *res, *res0;
 			int error;
 			AddressesT addrs;
@@ -265,65 +265,65 @@ namespace Dream {
 			return addrs;
 		}
 		
-		AddressesT Address::addressesForName(const char * host, const char * service, SocketType sockType) {
+		AddressesT Address::addresses_for_name(const char * host, const char * service, SocketType sock_type) {
 			struct addrinfo hints;
 			
 			memset (&hints, 0, sizeof(hints));
 			
-			hints.ai_socktype = sockType;
+			hints.ai_socktype = sock_type;
 			hints.ai_family = AF_UNSPEC;
 			
-			AddressesT addrs = addressesForName(host, service, &hints);
+			AddressesT addrs = addresses_for_name(host, service, &hints);
 			
 			return addrs;
 		}
 		
-		int Address::nameInfoForAddress(std::string * name, std::string * service, int flags) const {
+		int Address::name_infoForAddress(std::string * name, std::string * service, int flags) const {
 			int err;
-			char _nameBuf[NI_MAXHOST];
-			char _serviceBuf[NI_MAXSERV];
+			char _name_buf[NI_MAXHOST];
+			char _service_buf[NI_MAXSERV];
 			
-			char *nameBuf = _nameBuf, *serviceBuf = _serviceBuf;
+			char *name_buf = _name_buf, *service_buf = _service_buf;
 			
-			int nameBufSz = NI_MAXHOST, serviceBufSz = NI_MAXSERV;
+			int name_bufSz = NI_MAXHOST, service_buf_sz = NI_MAXSERV;
 			
 			if (name == NULL) {
-				nameBuf = NULL;
-				nameBufSz = 0;
+				name_buf = NULL;
+				name_bufSz = 0;
 			}
 			
 			if (service == NULL) {
-				serviceBuf = NULL;
-				serviceBufSz = 0;
+				service_buf = NULL;
+				service_buf_sz = 0;
 			}
 			
 			/* getnameinfo() case. NI_NUMERICHOST avoids DNS lookup. */
-			err = getnameinfo(addressData(), addressDataSize(), nameBuf, nameBufSz, serviceBuf, serviceBufSz, flags);
+			err = getnameinfo(address_data(), address_dataSize(), name_buf, name_bufSz, service_buf, service_buf_sz, flags);
 			
 			if (err != 0) return err;
 			
-			if (nameBuf)
-				*name = std::string(nameBuf);
+			if (name_buf)
+				*name = std::string(name_buf);
 			
-			if (serviceBuf)
-				*service = std::string(serviceBuf);
+			if (service_buf)
+				*service = std::string(service_buf);
 			
 			/* no error */
 			return 0;
 		}
 		
-		std::string Address::socketProtocolName () const {
+		std::string Address::socket_protocol_name () const {
 			protoent *ent;
-			ent = getprotobynumber(m_protocol);
+			ent = getprotobynumber(_protocol);
 			
 			return ent->p_name;
 		};
 		
-		PortNumber Address::portNumber () const {
-			std::string portString;
+		PortNumber Address::port_number () const {
+			std::string port_string;
 			PortNumber port = 0;
 			
-			int err = nameInfoForAddress(NULL, &portString, NI_NUMERICSERV);
+			int err = name_infoForAddress(NULL, &port_string, NI_NUMERICSERV);
 			
 			if (err) {
 				perror(gai_strerror(err));
@@ -331,37 +331,19 @@ namespace Dream {
 				throw AddressResolutionError(__PRETTY_FUNCTION__, err);
 			}
 			
-			std::stringstream str(portString);
+			std::stringstream str(port_string);
 			str >> port;
 			
 			return port;
 		}
 		
-		std::string Address::serviceName () const {
-			std::string portString;
+		std::string Address::service_name () const {
+			std::string port_string;
 			
-			int err = nameInfoForAddress(NULL, &portString, NI_NAMEREQD);
-			
-			if (err == EAI_NONAME) {
-				err = nameInfoForAddress(NULL, &portString, NI_NUMERICSERV);
-			}
-			
-			if (err) {
-				perror(gai_strerror(err));
-				
-				throw AddressResolutionError(__PRETTY_FUNCTION__, err);
-			}
-			
-			return portString;
-		}
-		
-		std::string Address::canonicalName () const {
-			std::string hostString;
-			
-			int err = nameInfoForAddress(&hostString, NULL, NI_NAMEREQD);
+			int err = name_infoForAddress(NULL, &port_string, NI_NAMEREQD);
 			
 			if (err == EAI_NONAME) {
-				err = nameInfoForAddress(&hostString, NULL, NI_NUMERICHOST);
+				err = name_infoForAddress(NULL, &port_string, NI_NUMERICSERV);
 			}
 			
 			if (err) {
@@ -370,13 +352,17 @@ namespace Dream {
 				throw AddressResolutionError(__PRETTY_FUNCTION__, err);
 			}
 			
-			return hostString;
+			return port_string;
 		}
 		
-		std::string Address::canonicalNumericName () const {
-			std::string hostString;
+		std::string Address::canonical_name () const {
+			std::string host_string;
 			
-			int err = nameInfoForAddress(&hostString, NULL, NI_NUMERICHOST);
+			int err = name_infoForAddress(&host_string, NULL, NI_NAMEREQD);
+			
+			if (err == EAI_NONAME) {
+				err = name_infoForAddress(&host_string, NULL, NI_NUMERICHOST);
+			}
 			
 			if (err) {
 				perror(gai_strerror(err));
@@ -384,10 +370,24 @@ namespace Dream {
 				throw AddressResolutionError(__PRETTY_FUNCTION__, err);
 			}
 			
-			return hostString;
+			return host_string;
 		}
 		
-		AddressesT Address::interfaceAddressesForService(const char * service, SocketType sockType) {
+		std::string Address::canonical_numeric_name () const {
+			std::string host_string;
+			
+			int err = name_infoForAddress(&host_string, NULL, NI_NUMERICHOST);
+			
+			if (err) {
+				perror(gai_strerror(err));
+				
+				throw AddressResolutionError(__PRETTY_FUNCTION__, err);
+			}
+			
+			return host_string;
+		}
+		
+		AddressesT Address::interface_addresses_for_service(const char * service, SocketType sock_type) {
 			struct addrinfo hints;
 			
 			memset(&hints, 0, sizeof(hints));
@@ -395,29 +395,29 @@ namespace Dream {
 			// set-up hints structure
 			hints.ai_family = AF_UNSPEC;
 			hints.ai_flags = AI_PASSIVE; /* listening address */
-			hints.ai_socktype = sockType;
+			hints.ai_socktype = sock_type;
 			
-			return addressesForName(NULL, service, &hints);
+			return addresses_for_name(NULL, service, &hints);
 		}
 		
-		AddressesT Address::interfaceAddressesForPort(PortNumber port, SocketType sockType) {
+		AddressesT Address::interface_addresses_for_port(PortNumber port, SocketType sock_type) {
 			std::stringstream s;
 			
 			s << port;
 			
-			return interfaceAddressesForService(s.str().c_str(), sockType);
+			return interface_addresses_for_service(s.str().c_str(), sock_type);
 		}
 		
 		std::string Address::description () const {
 			std::stringstream s;
 			
-			if (addressFamily() == AF_INET6) {
-				s << "[" << canonicalName() << "]:";
+			if (address_family() == AF_INET6) {
+				s << "[" << canonical_name() << "]:";
 			} else {
-				s << canonicalName() << ":";
+				s << canonical_name() << ":";
 			}
 			
-			s << portNumber();
+			s << port_number();
 			
 			return s.str();
 		}
@@ -427,7 +427,7 @@ namespace Dream {
 		
 #ifdef ENABLE_TESTING
 		
-		void debugAddresses (const char * desc, const AddressesT & addresses)
+		void debug_addresses (const char * desc, const AddressesT & addresses)
 		{
 			using namespace std;
 			
@@ -442,38 +442,38 @@ namespace Dream {
 		UNIT_TEST(Address) {
 			testing("Construction");
 			
-			AddressesT addrs1 = Address::interfaceAddressesForPort(1024, SOCK_STREAM);
+			AddressesT addrs1 = Address::interface_addresses_for_port(1024, SOCK_STREAM);
 			check(addrs1.size() > 0) << "Interface addresses available";
-			debugAddresses("interfaceAddressesForPort(1024, SOCK_STREAM)", addrs1);
+			debug_addresses("interface_addresses_for_port(1024, SOCK_STREAM)", addrs1);
 			
-			bool foundIPv4AddressFamily;
+			bool found_ipv4AddressFamily;
 			foreach(a, addrs1)
 			{
-				if (a->addressFamily() == AF_INET)
-					foundIPv4AddressFamily = true;
+				if (a->address_family() == AF_INET)
+					found_ipv4AddressFamily = true;
 			}
 			
-			check(foundIPv4AddressFamily) << "IPv4 address was present";
+			check(found_ipv4AddressFamily) << "IPv4 address was present";
 			
-			bool exceptionThrown = false;
+			bool exception_thrown = false;
 			try
 			{
-				Address::addressesForName("localhost", "ThisServiceDoesNotExist", SOCK_STREAM);
+				Address::addresses_for_name("localhost", "ThisServiceDoesNotExist", SOCK_STREAM);
 			}
 			catch (AddressResolutionError & ex)
 			{
-				exceptionThrown = true;
+				exception_thrown = true;
 			}
 			
-			check(exceptionThrown) << "Address resolution failed";
+			check(exception_thrown) << "Address resolution failed";
 			
-			AddressesT addrs2 = Address::addressesForName("localhost", "http", SOCK_STREAM);
+			AddressesT addrs2 = Address::addresses_for_name("localhost", "http", SOCK_STREAM);
 			check(addrs2.size() > 0) << "Host addresses available";
-			debugAddresses("addressesForName(localhost, IMAP, SOCK_STREAM)", addrs2);
+			debug_addresses("addresses_for_name(localhost, IMAP, SOCK_STREAM)", addrs2);
 			
-			AddressesT addrs3 = Address::addressesForURI(Core::URI("http://localhost"));
+			AddressesT addrs3 = Address::addresses_for_uri(Core::URI("http://localhost"));
 			check(addrs3.size() > 0) << "Host addresses available";
-			debugAddresses("addressesForURI(http://localhost)", addrs3);
+			debug_addresses("addresses_for_uri(http://localhost)", addrs3);
 		}
 		
 #endif

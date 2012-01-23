@@ -20,13 +20,13 @@ namespace Dream {
 	protected:
 			typedef Vector<D, NumericT> VectorT;
 			
-			NumericT m_distance;
-			VectorT m_normal;
+			NumericT _distance;
+			VectorT _normal;
 			
-			void convertFromPointNormalForm (const VectorT & point, const VectorT & normal)
+			void convert_fromPointNormalForm (const VectorT & point, const VectorT & normal)
 			{
-				m_normal = normal;
-				m_distance = (-normal).dot(point);
+				_normal = normal;
+				_distance = (-normal).dot(point);
 			}
 	public:
 			Plane ()
@@ -36,48 +36,48 @@ namespace Dream {
 			/// Point is a point on the plain, and direction is the normal
 			Plane (const Line<D, NumericT> & line)
 			{
-				convertFromPointNormalForm(line.point(), line.direction());
+				convert_fromPointNormalForm(line.point(), line.direction());
 			}
 			
 			Plane (const VectorT & point, const VectorT & normal)
 			{
-				convertFromPointNormalForm(point, normal);
+				convert_fromPointNormalForm(point, normal);
 			}
 			
-			Plane (const NumericT & d, const VectorT & n) : m_distance(d), m_normal(n)
+			Plane (const NumericT & d, const VectorT & n) : _distance(d), _normal(n)
 			{
 			}
 			
-			const RealT & distance() const { return m_distance; }
-			const VectorT & normal() const { return m_normal; }
+			const RealT & distance() const { return _distance; }
+			const VectorT & normal() const { return _normal; }
 			
-			void setDistance(const RealT & r) { m_distance = r; }
-			void setNormal(const VectorT & n) { m_normal = n; }
+			void set_distance(const RealT & r) { _distance = r; }
+			void set_normal(const VectorT & n) { _normal = n; }
 
-			bool isParallel(const Plane & other) const;
+			bool is_parallel(const Plane & other) const;
 			
-			bool intersectsWith (const Plane & plane, Line<3, NumericT> & line) const;
-			bool intersectsWith (const Line<3, NumericT> & line, VectorT & at) const;
+			bool intersects_with (const Plane & plane, Line<3, NumericT> & line) const;
+			bool intersects_with (const Line<3, NumericT> & line, VectorT & at) const;
 			
 			/// Finds the closed point on a plane to another point
-			VectorT closestPoint (const VectorT & point) const
+			VectorT closest_point (const VectorT & point) const
 			{
 				Vec3 at;
 				
-				intersectsWith(Line<3,NumericT>(point, m_normal), at);
+				intersects_with(Line<3,NumericT>(point, _normal), at);
 				
 				return at;	
 			}
 			
-			IntersectionResult intersectsWith (const Sphere<D, NumericT> & sphere) const;
+			IntersectionResult intersects_with (const Sphere<D, NumericT> & sphere) const;
 			
 			/// Can be used to test sphere intersection
-			NumericT distanceToPoint (const VectorT &at) const
+			NumericT distance_to_point (const VectorT &at) const
 			{
 				/* Because the normal is normalized, it will always be 1.0, however it is possible to generalize
 				 this algorithm for planes of the form ax+by+cz+d */
 				
-				return (m_normal.dot(at) + m_distance) /* / m_normal.length()*/;	
+				return (_normal.dot(at) + _distance) /* / _normal.length()*/;	
 			}
 		};
 		

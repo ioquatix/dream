@@ -13,7 +13,7 @@ namespace Dream
 	namespace Renderer
 	{
 
-		ViewportEyeSpace ViewportEyeSpace::convertFromViewportToObjectSpace (const Mat44 & projectionMatrix, const Mat44 & modelViewMatrix, 
+		ViewportEyeSpace ViewportEyeSpace::convert_from_viewport_to_object_space (const Mat44 & projection_matrix, const Mat44 & model_view_matrix, 
 																   const AlignedBox<2> & viewport, const Vec2 & c)
 		{
 			// Reverse the viewport transformation
@@ -23,25 +23,25 @@ namespace Dream
 			n[X] = ((c[X] - viewport.origin()[X]) / viewport.size()[X]) * 2.0 - 1.0;
 			n[Y] = ((c[Y] - viewport.origin()[Y]) / viewport.size()[Y]) * 2.0 - 1.0;
 			
-			return convertFromProjectionSpaceToObjectSpace (projectionMatrix, modelViewMatrix, n);
+			return convert_fromProjectionSpaceToObjectSpace (projection_matrix, model_view_matrix, n);
 		}
 		
-		ViewportEyeSpace ViewportEyeSpace::convertFromProjectionSpaceToObjectSpace (const Mat44 & projectionMatrix, const Mat44 & modelViewMatrix, const Vec2 & _n)
+		ViewportEyeSpace ViewportEyeSpace::convert_fromProjectionSpaceToObjectSpace (const Mat44 & projection_matrix, const Mat44 & model_view_matrix, const Vec2 & _n)
 		{
 			// Reverse the viewport transformation from normalized device coordinates back into object space
 			Vec3 n = _n << -1;
 			
 			ViewportEyeSpace result;
 			
-			Mat44 inverseModelView(modelViewMatrix.inverseMatrix());
-			Mat44 inverseProjection(projectionMatrix.inverseMatrix());
+			Mat44 inverse_model_view(model_view_matrix.inverse_matrix());
+			Mat44 inverse_projection(projection_matrix.inverse_matrix());
 			
-			result.origin = Vec3(inverseModelView.at(3,0), inverseModelView.at(3,1), inverseModelView.at(3,2));
+			result.origin = Vec3(inverse_model_view.at(3,0), inverse_model_view.at(3,1), inverse_model_view.at(3,2));
 
-			Vec4 p1 = (inverseModelView * (inverseProjection * (n << 1.0)));
+			Vec4 p1 = (inverse_model_view * (inverse_projection * (n << 1.0)));
 			
 			n[Z] = 1;
-			Vec4 p2 = (inverseModelView * (inverseProjection * (n << 1.0)));
+			Vec4 p2 = (inverse_model_view * (inverse_projection * (n << 1.0)));
 							
 			p1 /= p1[W];
 			p2 /= p2[W];
@@ -49,65 +49,65 @@ namespace Dream
 			result.forward = Line<3>(p1.reduce(), (p2 - p1).reduce().normalize());
 			
 			// Calculate up direction
-			Vec3 eyeUp(0.0, 1.0, 0.0);
+			Vec3 eye_up(0.0, 1.0, 0.0);
 			// Can't remember why we set these elements to zero...?
-			//inverseModelView.at(3,0) = inverseModelView.at(3,1) = inverseModelView.at(3,2) = 0.0;
-			//inverseModelView.at(0,3) = inverseModelView.at(1,3) = inverseModelView.at(2,3) = 0.0;
-			result.up = inverseModelView * eyeUp;
+			//inverse_model_view.at(3,0) = inverse_model_view.at(3,1) = inverse_model_view.at(3,2) = 0.0;
+			//inverse_model_view.at(0,3) = inverse_model_view.at(1,3) = inverse_model_view.at(2,3) = 0.0;
+			result.up = inverse_model_view * eye_up;
 			
 			return result;
 		}
 		
-		Vec4 ViewportEyeSpace::convertFromProjectionSpaceToObjectSpace (const Mat44 & projectionMatrix, const Mat44 & modelViewMatrix, const Vec3 & n)
+		Vec4 ViewportEyeSpace::convert_fromProjectionSpaceToObjectSpace (const Mat44 & projection_matrix, const Mat44 & model_view_matrix, const Vec3 & n)
 		{
-			Mat44 inverseModelView(modelViewMatrix.inverseMatrix());
-			Mat44 inverseProjection(projectionMatrix.inverseMatrix());
+			Mat44 inverse_model_view(model_view_matrix.inverse_matrix());
+			Mat44 inverse_projection(projection_matrix.inverse_matrix());
 			
-			return (inverseModelView * (inverseProjection * (n << 1.0)));
+			return (inverse_model_view * (inverse_projection * (n << 1.0)));
 		}
 		
 #pragma mark -
 
-		ViewportEyeSpace IViewport::convertToObjectSpace(const Vec2 & point) {
-			return ViewportEyeSpace::convertFromViewportToObjectSpace(projectionMatrix(), viewMatrix(), bounds(), point);
+		ViewportEyeSpace IViewport::convert_toObjectSpace(const Vec2 & point) {
+			return ViewportEyeSpace::convert_from_viewport_to_object_space(projection_matrix(), view_matrix(), bounds(), point);
 		}
 		
 #pragma mark -
 		
-		Viewport::Viewport(PTR(ICamera) camera, PTR(IProjection) projection) : m_bounds(ZERO, ZERO), m_camera(camera), m_projection(projection) {
+		Viewport::Viewport(PTR(ICamera) camera, PTR(IProjection) projection) : _bounds(ZERO, ZERO), _camera(camera), _projection(projection) {
 			
 		}
 		
-		void Viewport::setBounds(AlignedBox<2> bounds) {
-			m_bounds = bounds;
+		void Viewport::set_bounds(AlignedBox<2> bounds) {
+			_bounds = bounds;
 		}
 		
 		REF(ICamera) Viewport::camera() const {
-			return m_camera;
+			return _camera;
 		}
 		
-		void Viewport::setCamera(REF(ICamera) camera) {
-			m_camera = camera;
+		void Viewport::set_camera(REF(ICamera) camera) {
+			_camera = camera;
 		}
 		
 		REF(IProjection) Viewport::projection() const {
-			return m_projection;
+			return _projection;
 		}
 		
-		void Viewport::setProjection(REF(IProjection) projection) {
-			m_projection = projection;
+		void Viewport::set_projection(REF(IProjection) projection) {
+			_projection = projection;
 		}
 		
-		Mat44 Viewport::viewMatrix() const {
-			return m_camera->viewMatrix();
+		Mat44 Viewport::view_matrix() const {
+			return _camera->view_matrix();
 		}
 		
-		Mat44 Viewport::projectionMatrix() const {
-			return m_projection->projectionMatrixForViewport(*this);
+		Mat44 Viewport::projection_matrix() const {
+			return _projection->projection_matrix_for_viewport(*this);
 		}
 		
 		AlignedBox<2> Viewport::bounds() const {
-			return m_bounds;
+			return _bounds;
 		}
 		
 	}

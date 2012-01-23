@@ -17,12 +17,12 @@ namespace Dream {
 		/// Measured in seconds
 		typedef double TimeT;
 		
-		TimeT systemTime ();
+		TimeT system_time ();
 		void sleep (const TimeT & s);
 		
 		class Timer {
 		protected:
-			mutable TimeT m_last, m_total;
+			mutable TimeT _last, _total;
 			
 		public:			
 			Timer ();
@@ -35,10 +35,10 @@ namespace Dream {
 		// Counts up
 		class Stopwatch {
 		protected:		
-			mutable TimeT m_total;
-			mutable Timer m_timer;
+			mutable TimeT _total;
+			mutable Timer _timer;
 			
-			bool m_running;
+			bool _running;
 			
 		public:
 			Stopwatch ();
@@ -49,7 +49,7 @@ namespace Dream {
 			
 			bool running () const 
 			{
-				return m_running;
+				return _running;
 			}
 			
 			void start ();
@@ -60,7 +60,7 @@ namespace Dream {
 		class EggTimer : public Stopwatch
 		{			
 		protected:
-			TimeT m_duration;
+			TimeT _duration;
 			
 		public:
 			EggTimer (TimeT duration);
@@ -70,7 +70,7 @@ namespace Dream {
 			bool finished () const;
 			
 			/// This function returns the time remaining, which may be negative if the Stopwatch has gone past the timeout.
-			TimeT remainingTime () const;
+			TimeT remaining_time () const;
 		};
 		
 #pragma mark -
@@ -78,35 +78,35 @@ namespace Dream {
 		
 		class TimerStatistics {
 		private:
-			bool m_performReset;
-			TimeT m_lastTime;
+			bool _perform_reset;
+			TimeT _last_time;
 			
-			TimeT m_duration;
+			TimeT _duration;
 						
-			TimeT m_min, m_max;
+			TimeT _min, _max;
 			
-			unsigned long m_count;
+			unsigned long _count;
 			
 		public:
 			TimerStatistics ();
 			
-			TimeT averageDuration () const;
-			TimeT updatesPerSecond () const;
+			TimeT average_duration () const;
+			TimeT updates_per_second () const;
 			
-			const TimeT & minimumDuration () const { return m_min; }
-			const TimeT & maximumDuration () const { return m_max; }
+			const TimeT & minimum_duration () const { return _min; }
+			const TimeT & maximum_duration () const { return _max; }
 			
-			const TimeT & totalDuration () const { return m_duration; }
-			const unsigned long & updateCount () const { return m_count; }
+			const TimeT & total_duration () const { return _duration; }
+			const unsigned long & update_count () const { return _count; }
 			
 			/// Reset current statistics, but maintains overall average statistics, such as min and max.
 			void reset ();
 			
 			/// Optionally call this method to only take into consideration time between now and when update() is called.
-			void beginTimer (const TimeT & startTime);
+			void begin_timer (const TimeT & start_time);
 			
 			/// Update a single iteration of a timer, and collect statistics about how long it took to execute since the last call to update().
-			void update (const TimeT & currentTime);
+			void update (const TimeT & current_time);
 		};
 		
 #pragma mark -
@@ -116,31 +116,31 @@ namespace Dream {
 		class TimedSystem
 		{
 		protected:
-			TimeT m_lastTime;
+			TimeT _last_time;
 			
 		public:
-			TimedSystem () : m_lastTime(-1)
+			TimedSystem () : _last_time(-1)
 			{
 				
 			}
 			
 			void increment (TimeT dt)
 			{
-				if (m_lastTime == -1) m_lastTime = 0;
-				update(m_lastTime + dt);
+				if (_last_time == -1) _last_time = 0;
+				update(_last_time + dt);
 			}
 			
 			void update (TimeT time)
 			{
-				if (m_lastTime == -1) m_lastTime = time;
-				TimeT dt = time - m_lastTime;
-				m_lastTime = time;
+				if (_last_time == -1) _last_time = time;
+				TimeT dt = time - _last_time;
+				_last_time = time;
 
-				static_cast<DerivedT*>(this)->updateForDuration(m_lastTime, time, dt);				
+				static_cast<DerivedT*>(this)->update_for_duration(_last_time, time, dt);				
 			}
 			
-			const TimeT & currentTime () {
-				return m_lastTime;
+			const TimeT & current_time () {
+				return _last_time;
 			}
 		};
 		

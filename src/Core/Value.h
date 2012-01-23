@@ -22,9 +22,9 @@ namespace Dream
 		 */
 		class ConversionError : public std::exception
 		{
-			StringT m_what;
+			StringT _what;
 		public:
-			ConversionError (const std::type_info & convertFrom, const std::type_info & convertTo) throw ();
+			ConversionError (const std::type_info & convert_from, const std::type_info & convert_to) throw ();
 			virtual ~ConversionError () throw ();
 
 			/// Returns a C-style character string describing the general cause of the current error.
@@ -66,14 +66,14 @@ namespace Dream
 				return equal(&other);
 			}
 			
-			virtual const std::type_info & valueType () const abstract;
+			virtual const std::type_info & value_type () const abstract;
 			
 			/// Compares two values
 			/// @returns True if the TypedValue objects are of the same type and contained value.			
 			virtual bool equal (const ITypedValue *) const abstract;
 
-			virtual void writeToStream (std::ostream &) const abstract;
-			virtual void readFromStream (std::istream &) abstract;
+			virtual void write_to_stream (std::ostream &) const abstract;
+			virtual void read_from_stream (std::istream &) abstract;
 
 			/// Attempts to extract the contained value as the given type.
 			/// @returns true if the value was extracted
@@ -91,46 +91,46 @@ namespace Dream
 			void set (const ValueT &);
 			
 			/// A bit like typeinfo, but only works for specific primitive types and returns well-defined values.
-			virtual TypeIdentifierT typeIndex () const abstract;
+			virtual TypeIdentifierT type_index () const abstract;
 			
 			/// Returns a pointer to the value storage.
-			virtual const ByteT * valueData () const abstract;
+			virtual const ByteT * value_data () const abstract;
 			
 			/// Append the value to a buffer.
-			virtual void appendToBuffer (ResizableBuffer & buf) const abstract;
+			virtual void append_to_buffer (ResizableBuffer & buf) const abstract;
 		};
 
 		/// Stream helper for printing and converting types to strings
-		/// @sa ITypedValue::writeToStream
+		/// @sa ITypedValue::write_to_stream
 		std::ostream & operator<< (std::ostream &, const ITypedValue &);
 		std::istream & operator>> (std::istream &, const ITypedValue &);
 
 		template <unsigned TypeIdentifier>
 		struct TypedValueSerializer {
 			template <typename ValueT>
-			void readFromStream (std::istream & stream, ValueT & value)
+			void read_from_stream (std::istream & stream, ValueT & value)
 			{
 				stream >> value;
 			}
 		
 			template <typename ValueT>
-			void appendToBuffer (ResizableBuffer & buf, ValueT & value) const
+			void append_to_buffer (ResizableBuffer & buf, ValueT & value) const
 			{
 				buf.append((TypeIdentifierT)TypeIdentifier);
-				TypeSerialization<TypeIdentifier>::appendToBuffer(buf, value);
+				TypeSerialization<TypeIdentifier>::append_to_buffer(buf, value);
 			}
 		};
 		
 		template <>
 		struct TypedValueSerializer<0> {
 			template <typename ValueT>
-			void readFromStream (std::istream & stream, ValueT & value)
+			void read_from_stream (std::istream & stream, ValueT & value)
 			{
 				throw SerializationError();
 			}
 
 			template <typename ValueT>
-			void appendToBuffer (ResizableBuffer & buf, ValueT & value) const
+			void append_to_buffer (ResizableBuffer & buf, ValueT & value) const
 			{
 				throw SerializationError();
 			}
@@ -147,7 +147,7 @@ namespace Dream
 		class TypedValue : implements ITypedValue, protected TypedValueSerializer<TypeIdentifierTypeTraits<ValueT>::TypeIdentifierValue>
 		{
 		protected:
-			ValueT m_value;
+			ValueT _value;
 			typedef TypedValueSerializer<TypeIdentifierTypeTraits<ValueT>::TypeIdentifierValue> TypedValueSerializerT;
 
 		public:
@@ -158,19 +158,19 @@ namespace Dream
 			/// Construct with supplied value
 			TypedValue (const ValueT & v)
 			{
-				m_value = v;
+				_value = v;
 			}
 
 			virtual ~TypedValue ()
 			{
 			}
 			
-			virtual TypeIdentifierT typeIndex () const
+			virtual TypeIdentifierT type_index () const
 			{
 				return TypeIdentifierTypeTraits<ValueT>::TypeIdentifierValue;
 			}
 			
-			virtual const std::type_info & valueType () const
+			virtual const std::type_info & value_type () const
 			{
 				return typeid(ValueT);
 			}
@@ -180,47 +180,47 @@ namespace Dream
 				return sizeof(ValueT);
 			}
 			
-			const ByteT * valueData () const
+			const ByteT * value_data () const
 			{
-				return (const ByteT *)&m_value;
+				return (const ByteT *)&_value;
 			}
 
 			/// Retrieve non-const value reference.
 			ValueT & value ()
 			{
-				return m_value;
+				return _value;
 			}
 
 			/// Retrieve const value reference.
 			const ValueT & value () const
 			{
-				return m_value;
+				return _value;
 			}
 
 			virtual bool equal (const ITypedValue * other) const
 			{
 				typedef TypedValue<ValueT> TypedValueT;
-				const TypedValueT * otherTypedValue = dynamic_cast<const TypedValueT *>(other);
+				const TypedValueT * other_typed_value = dynamic_cast<const TypedValueT *>(other);
 
-				if (otherTypedValue != NULL)
-					return this->value() == otherTypedValue->value();
+				if (other_typed_value != NULL)
+					return this->value() == other_typed_value->value();
 				else
 					return false;
 			}
 
-			virtual void writeToStream (std::ostream & stream) const
+			virtual void write_to_stream (std::ostream & stream) const
 			{
-				stream << m_value;
+				stream << _value;
 			}
 			
-			virtual void readFromStream (std::istream & stream)
+			virtual void read_from_stream (std::istream & stream)
 			{
-				TypedValueSerializerT::readFromStream(stream, m_value);
+				TypedValueSerializerT::read_from_stream(stream, _value);
 			}
 			
-			virtual void appendToBuffer (ResizableBuffer & buf) const
+			virtual void append_to_buffer (ResizableBuffer & buf) const
 			{
-				TypedValueSerializerT::appendToBuffer(buf, m_value);
+				TypedValueSerializerT::append_to_buffer(buf, _value);
 			}
 		};
 
@@ -248,7 +248,7 @@ namespace Dream
 			}
 			else 
 			{
-				throw ConversionError(valueType(), typeid(ValueT));
+				throw ConversionError(value_type(), typeid(ValueT));
 			}
 		}
 
@@ -263,7 +263,7 @@ namespace Dream
 				v->value() = value;
 			} else
 			{
-				throw ConversionError(valueType(), typeid(ValueT));
+				throw ConversionError(value_type(), typeid(ValueT));
 			}
 		}
 
@@ -273,7 +273,7 @@ namespace Dream
 		 */
 		class Value
 		{
-			REF(ITypedValue) m_ptr;
+			REF(ITypedValue) _ptr;
 			
 		public:
 			/// Construct an undefined value.
@@ -281,11 +281,11 @@ namespace Dream
 
 			/// Construct an object from a particular value.
 			template <typename ValueT>
-			explicit Value (const ValueT & value) : m_ptr (new TypedValue<ValueT> (value))
+			explicit Value (const ValueT & value) : _ptr (new TypedValue<ValueT> (value))
 			{
 			}
 			
-			explicit Value (const char * value) : m_ptr (new TypedValue<StringT> (StringT(value)))
+			explicit Value (const char * value) : _ptr (new TypedValue<StringT> (StringT(value)))
 			{
 			}
 
@@ -306,7 +306,7 @@ namespace Dream
 			{
 				if (defined())
 				{
-					return m_ptr->extract<ValueT>(value);
+					return _ptr->extract<ValueT>(value);
 				}
 
 				return false;
@@ -321,14 +321,14 @@ namespace Dream
 				if (undefined())
 					throw ValueUndefinedError();
 
-				return m_ptr->extract<ValueT>();
+				return _ptr->extract<ValueT>();
 			}
 
 			/// Changes the internal value to something else. Updates the type information.
 			template <typename ValueT>
 			void set (const ValueT & value)
 			{
-				m_ptr = new TypedValue<ValueT>(value);
+				_ptr = new TypedValue<ValueT>(value);
 			}
 
 			/// Check whether this value is equal to another value
@@ -341,18 +341,18 @@ namespace Dream
 			friend std::ostream & operator<< (std::ostream &, const Value &);
 			friend std::istream & operator>> (std::istream &, Value &);
 			
-			const ITypedValue * typedValue () const;
+			const ITypedValue * typed_value () const;
 			
-			static Value readFromBuffer (const Buffer & buf, IndexT & offset);
-			void appendToBuffer (ResizableBuffer & buf) const;
+			static Value read_from_buffer (const Buffer & buf, IndexT & offset);
+			void append_to_buffer (ResizableBuffer & buf) const;
 		};
 
 		/// Stream helper for printing and converting values to strings
-		/// @sa ITypedValue::writeToStream
+		/// @sa ITypedValue::write_to_stream
 		std::ostream & operator<< (std::ostream &, const Value &);
 
 		/// Stream helper for reading and converting strings to values
-		/// @sa ITypedValue::readFromStream
+		/// @sa ITypedValue::read_from_stream
 		std::istream & operator>> (std::istream &, Value &);
 		
 	}

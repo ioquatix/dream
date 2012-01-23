@@ -40,17 +40,17 @@ namespace Dream
 		 */
 		class CodeTestRegistry
 		{
-			std::list<CodeTest *> m_codeTests;
-			void addTest (CodeTest *);
+			std::list<CodeTest *> _code_tests;
+			void add_test (CodeTest *);
 
-			void _performAllTests ();
+			void _perform_all_tests ();
 
 			friend class CodeTest;
 		public:
 			CodeTestRegistry ();
 
 			/// Run all registered unit tests.
-			static void performAllTests ();
+			static void perform_all_tests ();
 		};
 
 		/** A class that represents a single unit test.
@@ -74,29 +74,29 @@ namespace Dream
 		class CodeTest
 		{
 		public:
-			std::string m_name;
+			std::string _name;
 
 			class Statistics : public SharedObject {
 			protected:
-				int m_failed;
-				int m_passed;
-				std::string m_name;
+				int _failed;
+				int _passed;
+				std::string _name;
 
 			public:
-				Statistics (std::string testName);
-				void failTest ();
-				void passTest ();
-				void printSummary () const;
+				Statistics (std::string test_name);
+				void fail_test ();
+				void pass_test ();
+				void print_summary () const;
 
 				void operator+= (const Statistics & other);
 			};
 			
-			std::list<REF(Statistics)> m_tests;
+			std::list<REF(Statistics)> _tests;
 
-			PTR(Statistics) currentTest ();
-			REF(Statistics) overallStatistics ();
+			PTR(Statistics) current_test ();
+			REF(Statistics) overall_statistics ();
 
-			void printSummaries () const;
+			void print_summaries () const;
 
 		protected:
 			/// The actual function which is overridden to do the test.
@@ -108,16 +108,16 @@ namespace Dream
 			virtual ~CodeTest ();
 
 			/// Used to indicate the next set of assertions are testing a particular feature or functionality.
-			void testing (std::string testName);
+			void testing (std::string test_name);
 			
 			/// A helper function to perform the test and print out statistics.
-			virtual void performTests ();
+			virtual void perform_tests ();
 			
 			/// Logs errors that occur when performing unit tests
 			class ErrorLogger
 			{
 				protected:
-					bool m_error;
+					bool _error;
 				
 				public:
 					ErrorLogger (bool error);
@@ -126,7 +126,7 @@ namespace Dream
 					template <typename AnyT>
 					ErrorLogger& operator<< (const AnyT & fragment)
 					{
-						if (m_error)
+						if (_error)
 							std::cerr << fragment;
 						
 						return *this;

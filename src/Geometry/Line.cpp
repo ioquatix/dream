@@ -24,25 +24,25 @@ namespace Dream {
 			Line3 b(Vec3(10, 5, 3), Vec3(5, 2, -8).normalize());
 			
 			RealT ta, tb;
-			check(a.intersectsWith(b, ta, tb)) << "Intersection exists";
+			check(a.intersects_with(b, ta, tb)) << "Intersection exists";
 			
 			Line2 c(Vec2(0, 0), Vec2(1, 1).normalize());
 			Line2 d(Vec2(1, 0), Vec2(-1, 1).normalize());
 			
-			check(c.intersectsWith(d, ta, tb)) << "Intersection exists";
-			check(c.pointAtTime(ta).equivalent(Vec2(0.5, 0.5))) << "Intersection at correct point";
+			check(c.intersects_with(d, ta, tb)) << "Intersection exists";
+			check(c.point_at_time(ta).equivalent(Vec2(0.5, 0.5))) << "Intersection at correct point";
 			
 			testing("Transformations");
 			
 			Vec3 norm(0, 0, 1);
 			Vec3 v1(10, 0, 0);
-			a.setPoint(Vec3(10, 0, 0));
-			a.setDirection(Vec3(1, 0, 0));
+			a.set_point(Vec3(10, 0, 0));
+			a.set_direction(Vec3(1, 0, 0));
 			
-			b.setPoint(Vec3(ZERO));
-			b.setDirection(Vec3(-1, 0, 0));
+			b.set_point(Vec3(ZERO));
+			b.set_direction(Vec3(-1, 0, 0));
 			
-			Mat44 mat = a.transformationToMateWithLine(b, norm);
+			Mat44 mat = a.transformation_to_mate_with_line(b, norm);
 			Vec3 r = mat * v1;
 			
 			check(r.equivalent(Vec3(ZERO))) << "Transformed vertex is correct";
@@ -52,10 +52,10 @@ namespace Dream {
 			
 			check(r.equivalent(Vec3(-10, 0, 0))) << "Transformed vertex is correct";
 			
-			//void rotate (const VectorT & rotationNormal, const NumericRealT & angle);
-			//LineT rotatedLine (const VectorT & rotationNormal, const NumericRealT & angle) const;
+			//void rotate (const VectorT & rotation_normal, const NumericRealT & angle);
+			//LineT rotated_line (const VectorT & rotation_normal, const NumericRealT & angle) const;
 			
-			Line3 q = a.rotatedLine(norm, R90);
+			Line3 q = a.rotated_line(norm, R90);
 			
 			check(q.direction().equivalent(Vec3(0, -1, 0))) << "Rotated line is correct";
 		}
@@ -68,7 +68,7 @@ namespace Dream {
 			check(a.offset().length2() == (10 * 10) * 3) << "Line is correct length";
 			
 			LineSegment3 d(ZERO);
-			check(d.isDegenerate()) << "Line segment is degenerate";
+			check(d.is_degenerate()) << "Line segment is degenerate";
 			
 			Line3 la(IDENTITY, 1);
 			LineSegment3 e(la, 10, 30);
@@ -80,11 +80,11 @@ namespace Dream {
 			LineSegment3 b(Vec3(0, 10, 0), Vec3(10, 0, 10));
 						
 			RealT ta, tb;
-			check(a.intersectsWith(b, ta, tb)) << "Line segments intersect";
-			check(a.pointAtTime(ta).equivalent(Vec3(5, 5, 5))) << "Intersection point is correct";
+			check(a.intersects_with(b, ta, tb)) << "Line segments intersect";
+			check(a.point_at_time(ta).equivalent(Vec3(5, 5, 5))) << "Intersection point is correct";
 			
 			LineSegment3 c(Vec3(ZERO), Vec3(IDENTITY, 10.1));
-			check(!a.intersectsWith(c, ta, tb)) << "Line segments don't intersect";
+			check(!a.intersects_with(c, ta, tb)) << "Line segments don't intersect";
 		}
 #endif		
 	}

@@ -19,14 +19,14 @@ namespace Dream
 			typedef const StringT::value_type * IteratorT;
 			
 			struct Authority {
-				IteratorT userInfoBegin, userInfoEnd;
-				IteratorT hostBegin, hostEnd;
-				IteratorT portBegin, portEnd;
+				IteratorT user_infoBegin, user_infoEnd;
+				IteratorT host_begin, host_end;
+				IteratorT port_begin, port_end;
 			};
 			
 			struct Hierarchy {
-				IteratorT authorityBegin, authorityEnd;
-				IteratorT pathBegin, pathEnd;
+				IteratorT authority_begin, authority_end;
+				IteratorT path_begin, path_end;
 				
 				Authority authority;
 			};
@@ -34,10 +34,10 @@ namespace Dream
 			struct Components {
 				bool complete;
 								
-				IteratorT schemeBegin, schemeEnd;
-				IteratorT hierarchyBegin, hierarchyEnd;
-				IteratorT queryBegin, queryEnd;
-				IteratorT fragmentBegin, fragmentEnd;
+				IteratorT scheme_begin, scheme_end;
+				IteratorT hierarchy_begin, hierarchy_end;
+				IteratorT query_begin, query_end;
+				IteratorT fragment_begin, fragment_end;
 				
 				Hierarchy hierarchy;
 				
@@ -53,7 +53,7 @@ namespace Dream
 				
 				typedef bool(*PredicateT)(IteratorT i);
 				
-				static IteratorT parsePredicate(PredicateT predicate, IteratorT begin, IteratorT end) {
+				static IteratorT parse_predicate(PredicateT predicate, IteratorT begin, IteratorT end) {
 					while (begin != end && predicate(begin))
 						++begin;
 					
@@ -62,7 +62,7 @@ namespace Dream
 								
 				typedef IteratorT (*ParserT)(IteratorT begin, IteratorT end);
 				
-				static IteratorT parseString(ParserT parser, IteratorT begin, IteratorT end) {
+				static IteratorT parse_string(ParserT parser, IteratorT begin, IteratorT end) {
 					while (begin != end) {
 						IteratorT next = parser(begin, end);
 						
@@ -79,7 +79,7 @@ namespace Dream
 				}
 				
 				// Constant should be null-terminated.
-				static IteratorT parseConstant(const char * constant, IteratorT begin, IteratorT end) {
+				static IteratorT parse_constant(const char * constant, IteratorT begin, IteratorT end) {
 					IteratorT current = begin;
 					
 					while (current != end) {
@@ -95,20 +95,20 @@ namespace Dream
 					return begin;
 				}
 				
-				static bool isNumeric(IteratorT i) {
+				static bool is_numeric(IteratorT i) {
 					return (*i >= '0' && *i <= '9');
 				}
 				
-				static bool isAlpha(IteratorT i) {
+				static bool is_alpha(IteratorT i) {
 					return (*i >= 'a' && *i <= 'z') || (*i >= 'A' && *i <= 'Z');
 				}
 				
-				static bool isAlphaNumeric(IteratorT i) {
-					return isNumeric(i) || isAlpha(i);
+				static bool is_alphaNumeric(IteratorT i) {
+					return is_numeric(i) || is_alpha(i);
 				}
 				
-				static bool isHex(IteratorT i) {
-					return isNumeric(i) || (*i >= 'a' && *i <= 'f') || (*i >= 'A' && *i <= 'F');
+				static bool is_hex(IteratorT i) {
+					return is_numeric(i) || (*i >= 'a' && *i <= 'f') || (*i >= 'A' && *i <= 'F');
 				}
 				
 				/* ======================================== */
@@ -116,32 +116,32 @@ namespace Dream
 				/* ======================================== */
 				
 				//   unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
-				static bool isUnreserved(IteratorT i) {
-					return isAlphaNumeric(i) || *i == '-' || *i == '.' || *i == '_' || *i == '~';
+				static bool is_unreserved(IteratorT i) {
+					return is_alphaNumeric(i) || *i == '-' || *i == '.' || *i == '_' || *i == '~';
 				}
 				
 				//   gen-delims    = ":" / "/" / "?" / "#" / "[" / "]" / "@"
-				//static bool isGenDelimiter(IteratorT i) {
+				//static bool is_gen_delimiter(IteratorT i) {
 				//	return *i == ':' || *i == '/' || *i == '?' || *i == '#' || *i == '[' || *i == ']' || *i == '@';
 				//}
 				
 				//   sub-delims    = "!" / "$" / "&" / "'" / "(" / ")" / "*" / "+" / "," / ";" / "="
-				static bool isSubDelimiter(IteratorT i) {
+				static bool is_sub_delimiter(IteratorT i) {
 					return *i == '!' || *i == '$' || *i == '&' || *i == '\'' || *i == '(' || *i == ')' || *i == '*' || *i == '+' || *i == ',' || *i == ';' || *i == '=';
 				}
 				
 				//   reserved      = gen-delims / sub-delims
-				//static bool isReserved(IteratorT i) {
-				//	return isGenDelimiter(i) || isSubDelimiter(i);
+				//static bool is_reserved(IteratorT i) {
+				//	return is_gen_delimiter(i) || is_sub_delimiter(i);
 				//}
 				
 				//   pct-encoded   = "%" HEXDIG HEXDIG
-				static IteratorT parsePercentEncoded(IteratorT begin, IteratorT end) {
+				static IteratorT parse_percent_encoded(IteratorT begin, IteratorT end) {
 					if (count(begin, end) < 3) {
 						return begin;
 					}
 					
-					if (*begin == '%' && isHex(begin+1) && isHex(begin+2)) {
+					if (*begin == '%' && is_hex(begin+1) && is_hex(begin+2)) {
 						return begin + 3;
 					} else {
 						return begin;
@@ -149,35 +149,35 @@ namespace Dream
 				}
 				
 				//   pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
-				static bool isPathCharacter(IteratorT i) {
+				static bool is_path_character(IteratorT i) {
 					return *i == ':' || *i == '@';
 				}
 				
-				static IteratorT parsePathCharacter(IteratorT begin, IteratorT end) {
+				static IteratorT parse_path_character(IteratorT begin, IteratorT end) {
 					// We coalesce the parsing into one step and parse as much as possible each time.
 					// This isn't strictly following the standard, but it shouldn't be any different in practice.
 					IteratorT next = begin;
 					
-					next = parsePredicate(isUnreserved, next, end);
-					next = parseString(parsePercentEncoded, next, end);
-					next = parsePredicate(isSubDelimiter, next, end);
-					next = parsePredicate(isPathCharacter, next, end);
+					next = parse_predicate(is_unreserved, next, end);
+					next = parse_string(parse_percent_encoded, next, end);
+					next = parse_predicate(is_sub_delimiter, next, end);
+					next = parse_predicate(is_path_character, next, end);
 					
 					return next;
 				}
 				
 				//   userinfo      = *( unreserved / pct-encoded / sub-delims / ":" )
-				static bool isUserInfoCharacter(IteratorT i) {
+				static bool is_user_info_character(IteratorT i) {
 					return *i == ':';
 				}
 				
-				static IteratorT parseUserInfoCharacter(IteratorT begin, IteratorT end) {
+				static IteratorT parse_user_info_character(IteratorT begin, IteratorT end) {
 					IteratorT next = begin;
 					
-					next = parsePredicate(isUnreserved, next, end);
-					next = parseString(parsePercentEncoded, next, end);
-					next = parsePredicate(isSubDelimiter, next, end);
-					next = parsePredicate(isUserInfoCharacter, next, end);
+					next = parse_predicate(is_unreserved, next, end);
+					next = parse_string(parse_percent_encoded, next, end);
+					next = parse_predicate(is_sub_delimiter, next, end);
+					next = parse_predicate(is_user_info_character, next, end);
 					
 					return next;
 				}
@@ -187,74 +187,74 @@ namespace Dream
 				//   IPvFuture     = "v" 1*HEXDIG "." 1*( unreserved / sub-delims / ":" )
 				//   IPv4address   = dec-octet "." dec-octet "." dec-octet "." dec-octet
 				//   reg-name      = *( unreserved / pct-encoded / sub-delims )
-				static IteratorT parseHostCharacter(IteratorT begin, IteratorT end) {
+				static IteratorT parse_hostCharacter(IteratorT begin, IteratorT end) {
 					IteratorT next = begin;
 					
-					next = parsePredicate(isUnreserved, next, end);
-					next = parseString(parsePercentEncoded, next, end);
-					next = parsePredicate(isSubDelimiter, next, end);
+					next = parse_predicate(is_unreserved, next, end);
+					next = parse_string(parse_percent_encoded, next, end);
+					next = parse_predicate(is_sub_delimiter, next, end);
 					
 					return next;
 				}
 				
-				static IteratorT parseHost(IteratorT begin, IteratorT end) {
+				static IteratorT parse_host(IteratorT begin, IteratorT end) {
 					// For convenience we shortcut this parsing for now.
-					return parseString(parseHostCharacter, begin, end);
+					return parse_string(parse_hostCharacter, begin, end);
 				}
 				
 				//   authority     = [ userinfo "@" ] host [ ":" port ]
 				//   port          = *DIGIT
-				static IteratorT parseAuthority(IteratorT begin, IteratorT end, Authority & authority) {
-					IteratorT userInfoBegin = begin;
-					IteratorT userInfoEnd = parseString(parseUserInfoCharacter, begin, end);
+				static IteratorT parse_authority(IteratorT begin, IteratorT end, Authority & authority) {
+					IteratorT user_infoBegin = begin;
+					IteratorT user_infoEnd = parse_string(parse_user_info_character, begin, end);
 					
-					IteratorT hostBegin = parseConstant("@", userInfoEnd, end);
-					if (hostBegin != userInfoEnd) {
+					IteratorT host_begin = parse_constant("@", user_infoEnd, end);
+					if (host_begin != user_infoEnd) {
 						// Valid user info was found:
-						authority.userInfoBegin = userInfoBegin;
-						authority.userInfoEnd = userInfoEnd;
+						authority.user_infoBegin = user_infoBegin;
+						authority.user_infoEnd = user_infoEnd;
 					}
 					
-					IteratorT hostEnd = parseHost(hostBegin, end);
+					IteratorT host_end = parse_host(host_begin, end);
 					
-					if (hostEnd == hostBegin) {
+					if (host_end == host_begin) {
 						// We can't continue as host is required.
-						return hostEnd;
+						return host_end;
 					}
 					
-					authority.hostBegin = hostBegin;
-					authority.hostEnd = hostEnd;
+					authority.host_begin = host_begin;
+					authority.host_end = host_end;
 					
-					IteratorT portBegin = parseConstant(":", hostEnd, end);
+					IteratorT port_begin = parse_constant(":", host_end, end);
 					
-					if (portBegin != hostEnd) {
-						IteratorT portEnd = parsePredicate(isNumeric, portBegin, end);
+					if (port_begin != host_end) {
+						IteratorT port_end = parse_predicate(is_numeric, port_begin, end);
 						
-						authority.portBegin = portBegin;
-						authority.portEnd = portEnd;
+						authority.port_begin = port_begin;
+						authority.port_end = port_end;
 						
-						return portEnd;
+						return port_end;
 					} else {
-						return hostEnd;
+						return host_end;
 					}
 				}
 				
-				static IteratorT parsePath(IteratorT begin, IteratorT end) {
+				static IteratorT parse_path(IteratorT begin, IteratorT end) {
 					// This is optional, and signifies an absolute path.
-					IteratorT absoluteBegin = parseConstant("/", begin, end);
+					IteratorT absolute_begin = parse_constant("/", begin, end);
 					
-					IteratorT current = parseString(parsePathCharacter, absoluteBegin, end);
+					IteratorT current = parse_string(parse_path_character, absolute_begin, end);
 					
 					if (current == begin)
 						return begin;
 					
 					while (current != end) {
-						IteratorT next = parseConstant("/", current, end);
+						IteratorT next = parse_constant("/", current, end);
 						
 						if (next == current)
 							return current;
 						
-						current = parseString(parsePathCharacter, next, end);
+						current = parse_string(parse_path_character, next, end);
 					}
 					
 					return current;
@@ -271,67 +271,67 @@ namespace Dream
 				//   segment-nz-nc = 1*( unreserved / pct-encoded / sub-delims / "@" )
 				//                   ; non-zero-length segment without any colon ":"
 				
-				static IteratorT parseHierarchy(IteratorT begin, IteratorT end, Hierarchy & hierarchy) {
+				static IteratorT parse_hierarchy(IteratorT begin, IteratorT end, Hierarchy & hierarchy) {
 					// (//([^/?#]*))?
-					IteratorT authorityBegin = parseConstant("//", begin, end);
-					IteratorT authorityEnd = authorityBegin;
+					IteratorT authority_begin = parse_constant("//", begin, end);
+					IteratorT authority_end = authority_begin;
 					
-					if (authorityBegin != begin) {
-						authorityEnd = parseAuthority(authorityBegin, end, hierarchy.authority);
+					if (authority_begin != begin) {
+						authority_end = parse_authority(authority_begin, end, hierarchy.authority);
 						
-						hierarchy.authorityBegin = authorityBegin;
-						hierarchy.authorityEnd = authorityEnd;
+						hierarchy.authority_begin = authority_begin;
+						hierarchy.authority_end = authority_end;
 					}
 					
 					// ([^?#]*)
-					hierarchy.pathBegin = authorityEnd;
-					hierarchy.pathEnd = parsePath(hierarchy.pathBegin, end);
+					hierarchy.path_begin = authority_end;
+					hierarchy.path_end = parse_path(hierarchy.path_begin, end);
 					
-					return hierarchy.pathEnd;
+					return hierarchy.path_end;
 				}
 				
 				//   scheme        = ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
-				static bool isSchemeCharacter(IteratorT i) {
-					return isAlphaNumeric(i) || *i == '+' || *i == '-' || *i == '.';
+				static bool is_scheme_character(IteratorT i) {
+					return is_alphaNumeric(i) || *i == '+' || *i == '-' || *i == '.';
 				}
 				
-				static IteratorT parseScheme(IteratorT begin, IteratorT end) {
-					IteratorT next = parsePredicate(isAlpha, begin, end);
+				static IteratorT parse_scheme(IteratorT begin, IteratorT end) {
+					IteratorT next = parse_predicate(is_alpha, begin, end);
 					
 					if (next == begin) {
 						return begin;
 					}
 					
-					next = parsePredicate(isSchemeCharacter, next, end);
-					IteratorT schemeEnd = parseConstant(":", next, end);
+					next = parse_predicate(is_scheme_character, next, end);
+					IteratorT scheme_end = parse_constant(":", next, end);
 					
-					if (schemeEnd == next) {
+					if (scheme_end == next) {
 						return begin;
 					} else {
-						return schemeEnd;
+						return scheme_end;
 					}
 				}
 				
 				//   fragment      = *( pchar / "/" / "?" )
 				//   query         = *( pchar / "/" / "?" )
-				static bool isMetaCharacter(IteratorT i) {
+				static bool is_meta_character(IteratorT i) {
 					return *i == '/' || *i == '?';
 				}
 				
-				static IteratorT parseMetaCharacter(IteratorT begin, IteratorT end) {
+				static IteratorT parse_meta_character(IteratorT begin, IteratorT end) {
 					IteratorT next = begin;
 					
-					next = parsePathCharacter(next, end);
-					next = parsePredicate(isMetaCharacter, next, end);
+					next = parse_path_character(next, end);
+					next = parse_predicate(is_meta_character, next, end);
 					
 					return next;
 				}
 				
-				static IteratorT parseMeta(const char * prefix, IteratorT begin, IteratorT end) {
-					IteratorT next = parseConstant(prefix, begin, end);
+				static IteratorT parse_meta(const char * prefix, IteratorT begin, IteratorT end) {
+					IteratorT next = parse_constant(prefix, begin, end);
 					
 					if (next != begin) {
-						return parseString(parseMetaCharacter, next, end);
+						return parse_string(parse_meta_character, next, end);
 					} else {
 						return begin;
 					}
@@ -342,153 +342,153 @@ namespace Dream
 				//    12            3  4          5       6  7        8 9
 				static IteratorT parse(IteratorT begin, IteratorT end, Components & components) {
 					// (([^:/?#]+):)?
-					IteratorT schemeBegin = begin;
-					IteratorT schemeEnd = parseScheme(schemeBegin, end);
+					IteratorT scheme_begin = begin;
+					IteratorT scheme_end = parse_scheme(scheme_begin, end);
 					
-					if (schemeEnd != schemeBegin) {
-						components.schemeBegin = schemeBegin;
-						components.schemeEnd = schemeEnd - 1;	
+					if (scheme_end != scheme_begin) {
+						components.scheme_begin = scheme_begin;
+						components.scheme_end = scheme_end - 1;	
 					}
 					
-					IteratorT hierarchyBegin = parseConstant(":", schemeEnd, end);
-					IteratorT hierarchyEnd = parseHierarchy(hierarchyBegin, end, components.hierarchy);
+					IteratorT hierarchy_begin = parse_constant(":", scheme_end, end);
+					IteratorT hierarchy_end = parse_hierarchy(hierarchy_begin, end, components.hierarchy);
 					
-					if (hierarchyEnd == hierarchyBegin) {
-						return hierarchyBegin;
+					if (hierarchy_end == hierarchy_begin) {
+						return hierarchy_begin;
 					}
 					
-					components.hierarchyBegin = hierarchyBegin;
-					components.hierarchyEnd = hierarchyEnd;
+					components.hierarchy_begin = hierarchy_begin;
+					components.hierarchy_end = hierarchy_end;
 					
-					IteratorT queryBegin = hierarchyEnd;
-					IteratorT queryEnd = parseMeta("?", queryBegin, end);
+					IteratorT query_begin = hierarchy_end;
+					IteratorT query_end = parse_meta("?", query_begin, end);
 					
-					if (queryEnd != queryBegin) {
-						components.queryBegin = queryBegin;
-						components.queryEnd = queryEnd;
+					if (query_end != query_begin) {
+						components.query_begin = query_begin;
+						components.query_end = query_end;
 					}
 					
-					IteratorT fragmentBegin = queryEnd;
-					IteratorT fragmentEnd = parseMeta("#", fragmentBegin, end);
+					IteratorT fragment_begin = query_end;
+					IteratorT fragment_end = parse_meta("#", fragment_begin, end);
 					
-					if (fragmentEnd != fragmentBegin) {
-						components.fragmentBegin = fragmentBegin;
-						components.fragmentEnd = fragmentEnd;
+					if (fragment_end != fragment_begin) {
+						components.fragment_begin = fragment_begin;
+						components.fragment_end = fragment_end;
 					}
 					
 					components.complete = true;
 					
-					return fragmentEnd;
+					return fragment_end;
 				}
 			}
 		};
 		
 		URI::InvalidFormatError::InvalidFormatError(const StringT & url, std::size_t offset)
-		: m_url(url), m_offset(offset)
+		: _url(url), _offset(offset)
 		{
 			StringStreamT buffer;
 			
-			buffer << "Invalid URI(offset=" << m_offset << "): " << m_url;
+			buffer << "Invalid URI(offset=" << _offset << "): " << _url;
 			
-			m_message = buffer.str();
+			_message = buffer.str();
 		}
 		
 		const char * URI::InvalidFormatError::what() const noexcept
 		{
-			return m_message.c_str();
+			return _message.c_str();
 		}
 		
-		URI::URI(const StringT & s) : m_url(s)
+		URI::URI(const StringT & s) : _url(s)
 		{
 			URIImpl::Components components;
 			
-			URIImpl::IteratorT end = URIImpl::Parser::parse(m_url.data(), m_url.data() + m_url.size(), components);
+			URIImpl::IteratorT end = URIImpl::Parser::parse(_url.data(), _url.data() + _url.size(), components);
 			
 			if (!components.complete) {
-				throw InvalidFormatError(m_url, end - m_url.data());
+				throw InvalidFormatError(_url, end - _url.data());
 			}
 			
-			if (components.schemeBegin != NULL) {
-				m_scheme = StringT(components.schemeBegin, components.schemeEnd);				
+			if (components.scheme_begin != NULL) {
+				_scheme = StringT(components.scheme_begin, components.scheme_end);				
 			}
 
-			if (components.hierarchyBegin != NULL) {
-				if (components.hierarchy.authorityBegin != NULL) {
-					m_authority = StringT(components.hierarchy.authorityBegin, components.hierarchy.authorityEnd);
+			if (components.hierarchy_begin != NULL) {
+				if (components.hierarchy.authority_begin != NULL) {
+					_authority = StringT(components.hierarchy.authority_begin, components.hierarchy.authority_end);
 					
-					if (components.hierarchy.authority.userInfoBegin != NULL) {
-						StringT userInfo(components.hierarchy.authority.userInfoBegin, components.hierarchy.authority.userInfoEnd);
-						split(userInfo, ':', std::back_inserter(m_userInfo));
+					if (components.hierarchy.authority.user_infoBegin != NULL) {
+						StringT user_info(components.hierarchy.authority.user_infoBegin, components.hierarchy.authority.user_infoEnd);
+						split(user_info, ':', std::back_inserter(_user_info));
 					}
 					
-					if (components.hierarchy.authority.hostBegin != NULL) {
-						m_hostname = StringT(components.hierarchy.authority.hostBegin, components.hierarchy.authority.hostEnd);
+					if (components.hierarchy.authority.host_begin != NULL) {
+						_hostname = StringT(components.hierarchy.authority.host_begin, components.hierarchy.authority.host_end);
 					}
 					
-					if (components.hierarchy.authority.portBegin != NULL) {
-						m_port = std::stoul(StringT(components.hierarchy.authority.portBegin, components.hierarchy.authority.portEnd));
+					if (components.hierarchy.authority.port_begin != NULL) {
+						_port = std::stoul(StringT(components.hierarchy.authority.port_begin, components.hierarchy.authority.port_end));
 					}
 				}
 				
-				if (components.hierarchy.pathBegin != NULL) {
-					m_path = StringT(components.hierarchy.pathBegin, components.hierarchy.pathEnd);
+				if (components.hierarchy.path_begin != NULL) {
+					_path = StringT(components.hierarchy.path_begin, components.hierarchy.path_end);
 				}
 			}
 			
-			if (components.queryBegin != NULL) {
-				m_query = StringT(components.queryBegin, components.queryEnd);
+			if (components.query_begin != NULL) {
+				_query = StringT(components.query_begin, components.query_end);
 			}
 			
-			if (components.fragmentBegin != NULL) {
-				m_fragment = StringT(components.fragmentBegin, components.fragmentEnd);
+			if (components.fragment_begin != NULL) {
+				_fragment = StringT(components.fragment_begin, components.fragment_end);
 			}
 		}
 
 		URI::URI (const StringT & scheme, const Path & path)
-		: m_scheme(scheme), m_path(path.toLocalPath())
+		: _scheme(scheme), _path(path.to_local_path())
 		{
 			
 		}
 
 		const StringT & URI::scheme () const
 		{
-			return m_scheme;
+			return _scheme;
 		}
 		
 		const StringT & URI::authority () const
 		{
-			return m_authority;
+			return _authority;
 		}
 		
 		const StringT & URI::path () const
 		{
-			return m_path;
+			return _path;
 		}
 		
 		const StringT & URI::query () const
 		{
-			return m_query;
+			return _query;
 		}
 		
 		const StringT & URI::fragment () const
 		{
-			return m_fragment;
+			return _fragment;
 		}
 
 		const StringT & URI::hostname () const
 		{
-			return m_hostname;
+			return _hostname;
 		}
 		
-		const std::vector<StringT> & URI::userInfo () const
+		const std::vector<StringT> & URI::user_info () const
 		{
-			return m_userInfo;
+			return _user_info;
 		}
 		
 		StringT URI::username () const
 		{
-			if (m_userInfo.size() >= 1) {
-				return m_userInfo[0];
+			if (_user_info.size() >= 1) {
+				return _user_info[0];
 			} else {
 				return "";
 			}
@@ -496,8 +496,8 @@ namespace Dream
 		
 		StringT URI::password () const
 		{
-			if (m_userInfo.size() >= 2) {
-				return m_userInfo[1];
+			if (_user_info.size() >= 2) {
+				return _user_info[1];
 			} else {
 				return "";
 			}
@@ -505,27 +505,27 @@ namespace Dream
 		
 		unsigned URI::port () const
 		{
-			return m_port;
+			return _port;
 		}
 		
 		StringT URI::service () const
 		{
-			if (m_port) {
+			if (_port) {
 				StringStreamT buffer;
-				buffer << m_port;
+				buffer << _port;
 				
 				return buffer.str();
 			} else {
-				return m_scheme;
+				return _scheme;
 			}
 		}
 		
-		bool URI::isAbsolute () const
+		bool URI::is_absolute () const
 		{
-			return m_path[0] == '/';
+			return _path[0] == '/';
 		}
 
-		bool URI::isFilePath ()
+		bool URI::is_file_path ()
 		{
 			return scheme() == "file";
 		}

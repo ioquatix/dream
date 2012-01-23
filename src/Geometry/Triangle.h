@@ -24,9 +24,9 @@ namespace Dream {
 			Vector<D, NumericT> normal () const;
 			
 			/// @todo Improve method of intersection test as per URI in cpp.
-			IntersectionResult intersectsWith (const Line<3, NumericT> & line, Vector<D, NumericT> & at) const;
+			IntersectionResult intersects_with (const Line<3, NumericT> & line, Vector<D, NumericT> & at) const;
 			
-			AlignedBox<D, NumericT> boundingBox ();
+			AlignedBox<D, NumericT> bounding_box ();
 		};
 		
 		typedef Triangle<3, RealT> Triangle3;

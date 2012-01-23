@@ -13,7 +13,7 @@
 
 namespace Dream {
 	namespace Core {
-		TimeT systemTime () {
+		TimeT system_time () {
 			return CVGetCurrentHostTime() / CVGetHostClockFrequency();
 		}
 	}

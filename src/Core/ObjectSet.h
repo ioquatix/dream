@@ -28,8 +28,8 @@ namespace Dream
 		{
 		public:
 			// Returns an identical shallow copy of this stateful object.
-			virtual REF(IStateful) duplicateState () abstract;
-			virtual REF(IData) serializeState () abstract;
+			virtual REF(IStateful) duplicate_state () abstract;
+			virtual REF(IData) serialize_state () abstract;
 			
 		};
 */
@@ -43,8 +43,8 @@ namespace Dream
 			class ObjectID
 			{
 			protected:
-				ValueT & m_value;
-				IdentT m_ID;
+				ValueT & _value;
+				IdentT __id;
 				
 				friend class ObjectSet;
 				
@@ -58,8 +58,8 @@ namespace Dream
 			};
 			
 		protected:
-			std::vector<ValueT> m_objects;
-			std::list<IdentT> m_freeIndices;
+			std::vector<ValueT> _objects;
+			std::list<IdentT> _free_indices;
 			
 		public:
 			ObjectSet ();
@@ -97,15 +97,15 @@ namespace Dream
 					REVERSE_END = REVERSE | END
 				};
 				
-				ObjectSet * m_objectContext;
-				IdentT m_index;
-				unsigned m_placement;
+				ObjectSet * _objectContext;
+				IdentT _index;
+				unsigned _placement;
 				
 				Iterator(ObjectSet * ctx, IdentT index, Placement placement);
 				Iterator(ObjectSet * ctx, Placement placement);
 				
-				void moveForward ();
-				void moveReverse ();
+				void move_forward ();
+				void move_reverse ();
 				
 			public:
 				void operator++ ();

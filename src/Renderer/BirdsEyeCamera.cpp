@@ -15,12 +15,12 @@ namespace Dream
 	{
 					
 		BirdsEyeCamera::BirdsEyeCamera ()
-			: m_up(0.0, 0.0, 1.0), m_right(1.0, 0.0, 0.0), m_center(ZERO), m_multiplier(IDENTITY, 1)
+			: _up(0.0, 0.0, 1.0), _right(1.0, 0.0, 0.0), _center(ZERO), _multiplier(IDENTITY, 1)
 		{
-			m_distance = 100;
-			m_azimuth = R45;
-			m_incidence = R45;
-			m_twist = 0;
+			_distance = 100;
+			_azimuth = R45;
+			_incidence = R45;
+			_twist = 0;
 			
 			regenerate();
 		}
@@ -30,21 +30,21 @@ namespace Dream
 		}
 		
 		void BirdsEyeCamera::regenerate () {
-			m_back = m_up.cross(m_right);
-			m_right = - m_up.cross(m_back);
+			_back = _up.cross(_right);
+			_right = - _up.cross(_back);
 		}
 		
-		Mat44 BirdsEyeCamera::viewMatrix () const
+		Mat44 BirdsEyeCamera::view_matrix () const
 		{
 			Vec3 glUp(0.0, 1.0, 0.0), glRight(1.0, 0.0, 0.0), glIn(0.0, 0.0, -1.0);
-			Vec3 far = m_back * m_distance;
+			Vec3 far = _back * _distance;
 			
-			Mat44 m = Mat44::rotatingMatrix(glUp, m_up, m_back);
-			m = m.translatedMatrix(far);
-			m = m.rotatedMatrix(-m_incidence, m_right);
-			m = m.rotatedMatrix(-m_azimuth, m_up);
-			m = m.translatedMatrix(-m_center);				
-			m = m.rotatedMatrix(m_twist, m_up);
+			Mat44 m = Mat44::rotating_matrix(glUp, _up, _back);
+			m = m.translated_matrix(far);
+			m = m.rotated_matrix(-_incidence, _right);
+			m = m.rotated_matrix(-_azimuth, _up);
+			m = m.translated_matrix(-_center);				
+			m = m.rotated_matrix(_twist, _up);
 			
 			return m;
 		}
@@ -56,8 +56,8 @@ namespace Dream
 		bool BirdsEyeCamera::motion(const MotionInput & input) {
 			const Vec3 & d = input.motion();
 
-			if (input.buttonPressedOrDragged(MouseLeftButton)) {
-				RealT k = -1.0, i = Math::mod(m_incidence, R360);
+			if (input.button_pressedOrDragged(MouseLeftButton)) {
+				RealT k = -1.0, i = Math::mod(_incidence, R360);
 				
 				if (i < 0) i += R360;
 				
@@ -67,18 +67,18 @@ namespace Dream
 				
 				// Find the relative position of the mouse, if it is in the lower half,
 				// reverse the rotation.
-				Vec2 relative = input.bounds().relativeOffsetOf(input.currentPosition().reduce());
+				Vec2 relative = input.bounds().relative_offset_of(input.current_position().reduce());
 				
 				// If mouse button is in lower half of view:
 				if (relative[Y] < 0.5)
 					k *= -1.0;
 					
-				m_azimuth += (k * d[X] * m_multiplier[X] * (R90 / 90));
-				m_incidence += (d[Y] * m_multiplier[Y] * (R90 / 90));
+				_azimuth += (k * d[X] * _multiplier[X] * (R90 / 90));
+				_incidence += (d[Y] * _multiplier[Y] * (R90 / 90));
 				
 				return true;
 			} else if (input.key().button() == MouseScroll) {
-				m_distance += (d[Y] * m_multiplier[Z]);
+				_distance += (d[Y] * _multiplier[Z]);
 				
 				return true;
 			} else {
@@ -86,60 +86,60 @@ namespace Dream
 			}
 		}
 		
-		void BirdsEyeCamera::setMultiplier (const Vec3 &m) {
-			m_multiplier = m;
+		void BirdsEyeCamera::set_multiplier (const Vec3 &m) {
+			_multiplier = m;
 		}
 		
 		const Vec3 &BirdsEyeCamera::multiplier () {
-			return m_multiplier;
+			return _multiplier;
 		}
 		
-		void BirdsEyeCamera::setCenter (const Vec3 &newCenter) {
-			m_center = newCenter;
+		void BirdsEyeCamera::set_center (const Vec3 &new_center) {
+			_center = new_center;
 		}
 		
-		void BirdsEyeCamera::setUp (const Vec3 &up) {
-			if (m_up != up) {
-				m_up = up;
+		void BirdsEyeCamera::set_up (const Vec3 &up) {
+			if (_up != up) {
+				_up = up;
 				/* Regenerate Cache */
 				regenerate();
 			}
 		}
 		
-		void BirdsEyeCamera::setRight (const Vec3 &right) {
-			if (m_right != right) {
-				m_right = right;
+		void BirdsEyeCamera::set_right (const Vec3 &right) {
+			if (_right != right) {
+				_right = right;
 				/* Regenerate Cache */
 				regenerate();
 			}
 		}
 		
-		void BirdsEyeCamera::setDistance (const RealT& amnt, bool relative) {
+		void BirdsEyeCamera::set_distance (const RealT& amnt, bool relative) {
 			if (relative)
-				m_distance += amnt;
+				_distance += amnt;
 			else
-				m_distance = amnt;
+				_distance = amnt;
 		}
 		
-		void BirdsEyeCamera::setTwist (const RealT& amnt, bool relative) {
+		void BirdsEyeCamera::set_twist (const RealT& amnt, bool relative) {
 			if (relative)
-				m_twist += amnt;
+				_twist += amnt;
 			else
-				m_twist = amnt;
+				_twist = amnt;
 		}
 		
-		void BirdsEyeCamera::setAzimuth (const RealT& amnt, bool relative) {
+		void BirdsEyeCamera::set_azimuth (const RealT& amnt, bool relative) {
 			if (relative)
-				m_azimuth += amnt;
+				_azimuth += amnt;
 			else
-				m_azimuth = amnt;
+				_azimuth = amnt;
 		}
 		
-		void BirdsEyeCamera::setIncidence (const RealT &amnt, bool relative) {
+		void BirdsEyeCamera::set_incidence (const RealT &amnt, bool relative) {
 			if (relative)
-				m_incidence += amnt;
+				_incidence += amnt;
 			else
-				m_incidence = amnt;
+				_incidence = amnt;
 		}
 	}
 	

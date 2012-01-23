@@ -25,9 +25,9 @@ namespace Dream {
 
 					std::cout << "Dream Framework. Copyright © 2006-2011 Samuel Williams. All Rights Reserved." << std::endl;
 					std::cout << "For more information visit http://www.oriontransfer.co.nz/research/dream" << std::endl;
-					std::cout << "Build Revision: " << buildRevision() << std::endl;
-					std::cout << "Compiled at: " << buildDate() << std::endl;
-					std::cout << "Compiled on: " << buildPlatform() << std::endl;
+					std::cout << "Build Revision: " << build_revision() << std::endl;
+					std::cout << "Compiled at: " << build_date() << std::endl;
+					std::cout << "Compiled on: " << build_platform() << std::endl;
 				}
 			}
 			
@@ -37,21 +37,21 @@ namespace Dream {
 			{
 			}
 					
-			void IApplicationDelegate::applicationDidFinishLaunching (IApplication * application)
+			void IApplicationDelegate::application_did_finish_launching (IApplication * application)
 			{
 				_showStartupMessagesIfNeeded();
 			}
 			
-			void IApplicationDelegate::applicationWillTerminate (IApplication * application)
+			void IApplicationDelegate::application_will_terminate (IApplication * application)
 			{
 			}
 			
-			void IApplicationDelegate::applicationWillEnterBackground (IApplication * application)
+			void IApplicationDelegate::application_will_enter_background (IApplication * application)
 			{
 			
 			}
 			
-			void IApplicationDelegate::applicationDidEnterForeground (IApplication * application)
+			void IApplicationDelegate::application_did_enter_foreground (IApplication * application)
 			{
 			
 			}
@@ -70,71 +70,71 @@ namespace Dream {
 					virtual ~ApplicationDelegate();
 					
 				protected:
-					REF(IScene) m_scene;
-					REF(Dictionary) m_config;
-					REF(Context) m_context;
-					REF(Events::Thread) m_thread;
-					REF(SceneManager) m_sceneManager;
+					REF(IScene) _scene;
+					REF(Dictionary) _config;
+					REF(Context) _context;
+					REF(Events::Thread) _thread;
+					REF(SceneManager) _sceneManager;
 					
-					virtual void applicationDidFinishLaunching (IApplication * application);
+					virtual void application_did_finish_launching (IApplication * application);
 					
-					virtual void applicationWillEnterBackground (IApplication * application);
-					virtual void applicationDidEnterForeground (IApplication * application);
+					virtual void application_will_enter_background (IApplication * application);
+					virtual void application_did_enter_foreground (IApplication * application);
 			};
 
 			ApplicationDelegate::ApplicationDelegate(PTR(IScene) scene, PTR(Dictionary) config)
-				: m_scene(scene), m_config(config)
+				: _scene(scene), _config(config)
 			{
 			
 			}
 			
 			ApplicationDelegate::~ApplicationDelegate()
 			{
-				m_context->stop();
-				m_thread->stop();
+				_context->stop();
+				_thread->stop();
 			}
 			
-			void ApplicationDelegate::applicationDidFinishLaunching (IApplication * application)
+			void ApplicationDelegate::application_did_finish_launching (IApplication * application)
 			{
-				m_context = application->createContext(m_config);
+				_context = application->create_context(_config);
 				
-				m_thread = new Events::Thread;
-				REF(ILoader) loader = SceneManager::defaultResourceLoader();
+				_thread = new Events::Thread;
+				REF(ILoader) loader = SceneManager::default_resource_loader();
 				
-				m_sceneManager = new SceneManager(m_context, m_thread->loop(), loader);
-				m_sceneManager->pushScene(m_scene);
+				_sceneManager = new SceneManager(_context, _thread->loop(), loader);
+				_sceneManager->push_scene(_scene);
 				
-				m_thread->start();
-				m_context->start();
+				_thread->start();
+				_context->start();
 			}
 			
-			void ApplicationDelegate::applicationWillEnterBackground (IApplication * application)
+			void ApplicationDelegate::application_will_enter_background (IApplication * application)
 			{
 				std::cerr << "Application entering background..." << std::endl;
 				
-				EventInput suspendEvent(EventInput::PAUSE);
-				m_sceneManager->processInput(m_context, suspendEvent);
+				EventInput suspend_event(EventInput::PAUSE);
+				_sceneManager->process_input(_context, suspend_event);
 				
-				//m_context->stop();
-				//m_thread->stop();
+				//_context->stop();
+				//_thread->stop();
 			}
 			
-			void ApplicationDelegate::applicationDidEnterForeground (IApplication * application)
+			void ApplicationDelegate::application_did_enter_foreground (IApplication * application)
 			{
 				std::cerr << "Application entering foreground..." << std::endl;
 				
-				//m_thread->start();
-				//m_context->start();
+				//_thread->start();
+				//_context->start();
 				
-				EventInput resumeEvent(EventInput::RESUME);
-				m_sceneManager->processInput(m_context, resumeEvent);
+				EventInput resume_event(EventInput::RESUME);
+				_sceneManager->process_input(_context, resume_event);
 			}
 			
-			void IApplication::runScene(PTR(IScene) scene, PTR(Dictionary) config)
+			void IApplication::run_scene(PTR(IScene) scene, PTR(Dictionary) config)
 			{
-				REF(ApplicationDelegate) applicationDelegate = new ApplicationDelegate(scene, config);
+				REF(ApplicationDelegate) application_delegate = new ApplicationDelegate(scene, config);
 				
-				IApplication::start(applicationDelegate);
+				IApplication::start(application_delegate);
 			}
 			
 		}

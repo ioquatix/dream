@@ -58,9 +58,9 @@ namespace Dream {
 			LUMINANCE_ALPHA = 0x190A
 		};
 			
-		unsigned dataTypeByteSize(ImageDataType type);
-		unsigned packedPixelChannelCount (ImagePixelPacking type);
-		unsigned pixelFormatChannelCount (ImagePixelFormat type);
+		unsigned data_typeByteSize(ImageDataType type);
+		unsigned packed_pixel_channel_count (ImagePixelPacking type);
+		unsigned pixel_format_channel_count (ImagePixelFormat type);
 		
 		// This type is guaranteed to be big enough to hold even RGBA16.
 		// This is useful when you want a generic representation of a pixel
@@ -78,64 +78,64 @@ namespace Dream {
 				LUMINANCE = 5
 			};
 						
-			virtual ImagePixelFormat pixelFormat () const abstract; // eg GL_RGBA
-			virtual ImageDataType pixelDataType () const; // eg GL_UNSIGNED_BYTE
+			virtual ImagePixelFormat pixel_format () const abstract; // eg GL_RGBA
+			virtual ImageDataType pixel_dataType () const; // eg GL_UNSIGNED_BYTE
 			
-			unsigned pixelDataLength () const { return size().product() * bytesPerPixel(); }
+			unsigned pixel_dataLength () const { return size().product() * bytes_per_pixel(); }
 			
 			// Returns the equivalent pixel type, ie GL_UNSIGNED_INT_8_8_8_8 -> GL_UNSIGNED_INT
-			ImageDataType packedType () const;
-			unsigned channelCount () const;
+			ImageDataType packed_type () const;
+			unsigned channel_count () const;
 			
-			bool isPackedFormat () const;
-			bool isByteOrderReversed () const;
+			bool is_packed_format () const;
+			bool is_byte_order_reversed () const;
 			
-			unsigned bytesPerPixel () const;
+			unsigned bytes_per_pixel () const;
 			
 			// Helper: Returns the maximum value of an individual pixel
-			PixelT maxPixelSize () const {
-				return ((PixelT)1 << (bytesPerPixel() * 8)) - 1;
+			PixelT max_pixel_size () const {
+				return ((PixelT)1 << (bytes_per_pixel() * 8)) - 1;
 			}
 					
 			virtual Vector<3, unsigned> size () const abstract;
 			
 			// Data accessors
-			virtual const ByteT * pixelData () const abstract;
+			virtual const ByteT * pixel_data () const abstract;
 			
-			// Get the number of bytes to index into pixelData
-			unsigned pixelOffset (const Vector<3, unsigned> &at) const {
+			// Get the number of bytes to index into pixel_data
+			unsigned pixel_offset (const Vector<3, unsigned> &at) const {
 				unsigned offset = at[X] + (at[Y] * size()[X]) + (at[Z] * size()[X] * size()[Y]);
-				return offset * bytesPerPixel();
+				return offset * bytes_per_pixel();
 			}
 			
 			// pixbuf->at(vec<unsigned>(43, 12));
-			const ByteT* pixelDataAt (const Vector<3, unsigned> &at) const {
-				return pixelData() + pixelOffset(at);
+			const ByteT* pixel_dataAt (const Vector<3, unsigned> &at) const {
+				return pixel_data() + pixel_offset(at);
 			}
 			
 			// Helper to read pixel data
 			// This may convert between the pixbuf format and the output pixel
-			// void readPixel (const Vector<3, unsigned> &at, Vector<4, float> &output) const;
+			// void read_pixel (const Vector<3, unsigned> &at, Vector<4, float> &output) const;
 			template <typename data_t>
-			void readDataAt (const unsigned &idx, data_t &val) {
-				const ByteT *data = pixelData();
+			void read_data_at (const unsigned &idx, data_t &val) {
+				const ByteT *data = pixel_data();
 				
 				val = *(data_t*)(&data[idx]);
 			}
 			
 			// This does not do _any_ sanity checking what-so-ever.
 			template <unsigned D, typename NumericT>
-			void readPixel (const Vector<3, unsigned> &at, Vector<D, NumericT> &output) const {
-				ensure(!isPackedFormat() && "Packed pixel formats not supported for reading!");
+			void read_pixel (const Vector<3, unsigned> &at, Vector<D, NumericT> &output) const {
+				ensure(!is_packed_format() && "Packed pixel formats not supported for reading!");
 				
-				unsigned from = pixelOffset(at);
+				unsigned from = pixel_offset(at);
 				
 				for (unsigned i = 0; i < D; i += 1) {
-					readDataAt(from + (i * bytesPerPixel()), output[i]);
+					read_data_at(from + (i * bytes_per_pixel()), output[i]);
 				}
 			}
 			
-			PixelT readPixel (const Vector<3, unsigned> &at);
+			PixelT read_pixel (const Vector<3, unsigned> &at);
 		};
 		
 		enum CopyFlags {
@@ -148,20 +148,20 @@ namespace Dream {
 		class IMutablePixelBuffer : implements IPixelBuffer
 		{
 		public:			
-			virtual ByteT * pixelData () abstract;
-			using IPixelBuffer::pixelData;
+			virtual ByteT * pixel_data () abstract;
+			using IPixelBuffer::pixel_data;
 			
 			void zero (PixelT px = 0);
 			
-			ByteT* pixelDataAt (const Vector<3, unsigned> &at)
+			ByteT* pixel_dataAt (const Vector<3, unsigned> &at)
 			{
-				return pixelData() + pixelOffset(at);
+				return pixel_data() + pixel_offset(at);
 			}
 			
 			template <typename data_t>
-			void writeDataAt (const unsigned &idx, const data_t &val)
+			void write_data_at (const unsigned &idx, const data_t &val)
 			{
-				ByteT *data = pixelData();
+				ByteT *data = pixel_data();
 				
 				*(data_t*)(&data[idx]) = val;
 			}
@@ -169,18 +169,18 @@ namespace Dream {
 			/// Set all bytes to zero.
 			void clear ();
 
-			// void writePixel (const Vector<3, unsigned> &at, const Vector<4, float> &input);
+			// void write_pixel (const Vector<3, unsigned> &at, const Vector<4, float> &input);
 			template <unsigned D, typename NumericT>
-			void writePixel (const Vector<3, unsigned> &at, const Vector<D, NumericT> &input);
+			void write_pixel (const Vector<3, unsigned> &at, const Vector<D, NumericT> &input);
 			
-			void writePixel (const Vector<3, unsigned> &at, const PixelT &px);
+			void write_pixel (const Vector<3, unsigned> &at, const PixelT &px);
 			
 			// Copy from buf to this
-			void copyPixelsFrom(const IPixelBuffer& buf, const Vector<3, unsigned> &from, const Vector<3, unsigned> &to, const Vector<3, unsigned> &size, CopyFlags copyFlags = CopyNormal);
+			void copy_pixels_from(const IPixelBuffer& buf, const Vector<3, unsigned> &from, const Vector<3, unsigned> &to, const Vector<3, unsigned> &size, CopyFlags copy_flags = CopyNormal);
 			
-			void copyPixelsFrom(const IPixelBuffer& buf, const Vector<3, unsigned> &to, CopyFlags copyFlags = CopyNormal)
+			void copy_pixels_from(const IPixelBuffer& buf, const Vector<3, unsigned> &to, CopyFlags copy_flags = CopyNormal)
 			{
-				copyPixelsFrom(buf, vec<unsigned>(0, 0, 0), to, buf.size(), copyFlags);
+				copy_pixels_from(buf, vec<unsigned>(0, 0, 0), to, buf.size(), copy_flags);
 			}
 		};
 		

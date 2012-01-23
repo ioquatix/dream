@@ -37,17 +37,17 @@ namespace Dream
 		/// @returns READ_EVENT if file is open READ ONLY.
 		/// @returns WRITE_EVENT if file is open WRITE ONLY.
 		/// @returns READ_EVENT|WRITE_EVENT if file is READ/WRITE.
-		int eventsForFileDescriptor (int fd)
+		int events_for_file_descriptor (int fd)
 		{
 			if (fd == STDIN_FILENO) return READ_READY;
 			if (fd == STDOUT_FILENO || fd == STDERR_FILENO) return WRITE_READY;
 			
-			int fileMode = fcntl(fd, F_GETFL) & O_ACCMODE;
+			int file_mode = fcntl(fd, F_GETFL) & O_ACCMODE;
 			int events;
 			
-			ensure(fileMode != -1);
+			ensure(file_mode != -1);
 			
-			switch(fileMode)
+			switch(file_mode)
 			{
 				case O_RDONLY:
 					events = READ_READY;
@@ -73,39 +73,39 @@ namespace Dream
 		class KQueueFileDescriptorMonitor : public Object, implements IFileDescriptorMonitor
 		{
 		protected:
-			FileDescriptorT m_kqueue;
-			std::set<FileDescriptorT> m_removedFileDescriptors;
+			FileDescriptorT _kqueue;
+			std::set<FileDescriptorT> _removed_file_descriptors;
 			
-			FileDescriptorHandlesT m_fileDescriptorHandles;
+			FileDescriptorHandlesT _file_descriptor_handles;
 			
 		public:
 			KQueueFileDescriptorMonitor ();
 			virtual ~KQueueFileDescriptorMonitor ();
 			
-			virtual void addSource (PTR(IFileDescriptorSource) source);
-			virtual void removeSource (PTR(IFileDescriptorSource) source);
+			virtual void add_source (PTR(IFileDescriptorSource) source);
+			virtual void remove_source (PTR(IFileDescriptorSource) source);
 			
-			virtual int sourceCount () const;
+			virtual int source_count () const;
 			
-			virtual int waitForEvents (TimeT timeout, Loop * loop);
+			virtual int wait_for_events (TimeT timeout, Loop * loop);
 		};
 				
 		KQueueFileDescriptorMonitor::KQueueFileDescriptorMonitor ()
 		{
-			m_kqueue = kqueue();
+			_kqueue = kqueue();
 		}
 
 		KQueueFileDescriptorMonitor::~KQueueFileDescriptorMonitor ()
 		{
-			close(m_kqueue);
+			close(_kqueue);
 		}
 		
-		void KQueueFileDescriptorMonitor::addSource (PTR(IFileDescriptorSource) source)
+		void KQueueFileDescriptorMonitor::add_source (PTR(IFileDescriptorSource) source)
 		{
-			FileDescriptorT fd = source->fileDescriptor();
-			m_fileDescriptorHandles.insert(source);
+			FileDescriptorT fd = source->file_descriptor();
+			_file_descriptor_handles.insert(source);
 			
-			int mode = eventsForFileDescriptor(fd);
+			int mode = events_for_file_descriptor(fd);
 			
 			struct kevent change[2];
 			int c = 0;
@@ -116,25 +116,25 @@ namespace Dream
 			if (mode & WRITE_READY)
 				EV_SET(&change[c++], fd, EVFILT_WRITE, EV_ADD, 0, 0, (void*)source.get());
 					
-			int result = kevent(m_kqueue, change, c, NULL, 0, NULL);
+			int result = kevent(_kqueue, change, c, NULL, 0, NULL);
 					
 			if (result == -1)
 				perror(__PRETTY_FUNCTION__);
 		}
 		
-		int KQueueFileDescriptorMonitor::sourceCount () const
+		int KQueueFileDescriptorMonitor::source_count () const
 		{
-			return m_fileDescriptorHandles.size();
+			return _file_descriptor_handles.size();
 		}
 		
-		void KQueueFileDescriptorMonitor::removeSource (PTR(IFileDescriptorSource) source)
+		void KQueueFileDescriptorMonitor::remove_source (PTR(IFileDescriptorSource) source)
 		{
-			FileDescriptorT fd = source->fileDescriptor();
+			FileDescriptorT fd = source->file_descriptor();
 			
 			struct kevent change[2];
 			int c = 0;
 			
-			int mode = eventsForFileDescriptor(fd);
+			int mode = events_for_file_descriptor(fd);
 			
 			if (mode & READ_READY)
 				EV_SET(&change[c++], fd, EVFILT_READ, EV_DELETE, 0, 0, 0);
@@ -142,37 +142,37 @@ namespace Dream
 			if (mode & WRITE_READY)
 				EV_SET(&change[c++], fd, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
 				
-			int result = kevent(m_kqueue, change, c, NULL, 0, NULL);
+			int result = kevent(_kqueue, change, c, NULL, 0, NULL);
 				
 			if (result == -1)
 				perror(__PRETTY_FUNCTION__);
 					
-			m_removedFileDescriptors.insert(fd);
-			m_fileDescriptorHandles.erase(source);
+			_removed_file_descriptors.insert(fd);
+			_file_descriptor_handles.erase(source);
 		}
 		
-		int KQueueFileDescriptorMonitor::waitForEvents (TimeT timeout, Loop * loop)
+		int KQueueFileDescriptorMonitor::wait_for_events (TimeT timeout, Loop * loop)
 		{
 			const unsigned KQUEUE_SIZE = 32;
 			int count;
 			
 			struct kevent events[KQUEUE_SIZE];
-			timespec keventTimeout;
+			timespec kevent_timeout;
 			
-			m_removedFileDescriptors.clear();
+			_removed_file_descriptors.clear();
 			
 			if (timeout > 0.0) {
-				keventTimeout.tv_sec = timeout;
-				keventTimeout.tv_nsec = (timeout - keventTimeout.tv_sec) * 1000000000;
+				kevent_timeout.tv_sec = timeout;
+				kevent_timeout.tv_nsec = (timeout - kevent_timeout.tv_sec) * 1000000000;
 			} else {
-				keventTimeout.tv_sec = 0;
-				keventTimeout.tv_nsec = 0;
+				kevent_timeout.tv_sec = 0;
+				kevent_timeout.tv_nsec = 0;
 			}
 
 			if (timeout < 0)
-				count = kevent(m_kqueue, NULL, 0, events, KQUEUE_SIZE, NULL);
+				count = kevent(_kqueue, NULL, 0, events, KQUEUE_SIZE, NULL);
 			else
-				count = kevent(m_kqueue, NULL, 0, events, KQUEUE_SIZE, &keventTimeout);
+				count = kevent(_kqueue, NULL, 0, events, KQUEUE_SIZE, &kevent_timeout);
 			
 			if (count == -1) {
 				perror(__PRETTY_FUNCTION__);
@@ -182,29 +182,29 @@ namespace Dream
 					//std::cerr << this << " event[" << i << "] for fd: " << events[i].ident << " filter: " << events[i].filter << std::endl;
 					
 					// Discard events for descriptors which have already been removed
-					if (m_removedFileDescriptors.find(events[i].ident) != m_removedFileDescriptors.end())
+					if (_removed_file_descriptors.find(events[i].ident) != _removed_file_descriptors.end())
 						continue;
 					
 					IFileDescriptorSource * s = (IFileDescriptorSource *)events[i].udata;
 					
 					if(events[i].flags & EV_ERROR)
 					{
-						std::cerr << "Error processing fd: " << s->fileDescriptor() << std::endl;
+						std::cerr << "Error processing fd: " << s->file_descriptor() << std::endl;
 					}
 					
 					try {
 						if (events[i].filter == EVFILT_READ)
-							s->processEvents(loop, READ_READY);
+							s->process_events(loop, READ_READY);
 						
 						if (events[i].filter == EVFILT_WRITE)
-							s->processEvents(loop, WRITE_READY);
+							s->process_events(loop, WRITE_READY);
 					} catch (FileDescriptorClosed & ex) {
-						removeSource(s);
+						remove_source(s);
 					} catch (std::runtime_error & ex) {
 						std::cerr << "Exception thrown by runloop " << this << ": " << ex.what() << std::endl;
-						std::cerr << "Removing file descriptor " << s->fileDescriptor() << " ..." << std::endl;
+						std::cerr << "Removing file descriptor " << s->file_descriptor() << " ..." << std::endl;
 						
-						removeSource(s);
+						remove_source(s);
 					}
 				}
 			}
@@ -217,22 +217,22 @@ namespace Dream
 		class PollFileDescriptorMonitor : public Object, implements IFileDescriptorMonitor
 		{
 		protected:
-			// Used to provide O(1) delete time within processEvents handler
-			bool m_deleteCurrentFileDescriptorHandle;
-			REF(IFileDescriptorSource) m_currentFileDescriptorSource;
+			// Used to provide O(1) delete time within process_events handler
+			bool _delete_current_file_descriptor_handle;
+			REF(IFileDescriptorSource) _current_file_descriptor_source;
 			
-			FileDescriptorHandlesT m_fileDescriptorHandles;
+			FileDescriptorHandlesT _file_descriptor_handles;
 			
 		public:
 			PollFileDescriptorMonitor ();
 			virtual ~PollFileDescriptorMonitor ();
 			
-			virtual void addSource (PTR(IFileDescriptorSource) source);
-			virtual void removeSource (PTR(IFileDescriptorSource) source);
+			virtual void add_source (PTR(IFileDescriptorSource) source);
+			virtual void remove_source (PTR(IFileDescriptorSource) source);
 			
-			virtual int sourceCount () const;
+			virtual int source_count () const;
 			
-			virtual int waitForEvents (TimeT timeout, Loop * loop);
+			virtual int wait_for_events (TimeT timeout, Loop * loop);
 		};
 		
 		PollFileDescriptorMonitor::PollFileDescriptorMonitor ()
@@ -243,26 +243,26 @@ namespace Dream
 		{	
 		}
 		
-		void PollFileDescriptorMonitor::addSource (PTR(IFileDescriptorSource) source)
+		void PollFileDescriptorMonitor::add_source (PTR(IFileDescriptorSource) source)
 		{
-			m_fileDescriptorHandles.insert(source);
+			_file_descriptor_handles.insert(source);
 		}
 		
-		void PollFileDescriptorMonitor::removeSource (PTR(IFileDescriptorSource) source)
+		void PollFileDescriptorMonitor::remove_source (PTR(IFileDescriptorSource) source)
 		{
-			if (m_currentFileDescriptorSource == source) {
-				m_deleteCurrentFileDescriptorHandle = true;
+			if (_current_file_descriptor_source == source) {
+				_delete_current_file_descriptor_handle = true;
 			} else {
-				m_fileDescriptorHandles.erase(source);
+				_file_descriptor_handles.erase(source);
 			}
 		}
 		
-		int PollFileDescriptorMonitor::sourceCount () const
+		int PollFileDescriptorMonitor::source_count () const
 		{
-			return m_fileDescriptorHandles.size();
+			return _file_descriptor_handles.size();
 		}
 		
-		int PollFileDescriptorMonitor::waitForEvents (TimeT timeout, Loop * loop)
+		int PollFileDescriptorMonitor::wait_for_events (TimeT timeout, Loop * loop)
 		{
 			// Number of events which have been processed
 			int count;
@@ -270,19 +270,19 @@ namespace Dream
 			std::vector<FileDescriptorHandlesT::iterator> handles;
 			std::vector<struct pollfd> pollfds;
 			
-			handles.reserve(m_fileDescriptorHandles.size());
-			pollfds.reserve(m_fileDescriptorHandles.size());
+			handles.reserve(_file_descriptor_handles.size());
+			pollfds.reserve(_file_descriptor_handles.size());
 			
-			for(FileDescriptorHandlesT::iterator i = m_fileDescriptorHandles.begin(); i != m_fileDescriptorHandles.end(); i++) {
+			for(FileDescriptorHandlesT::iterator i = _file_descriptor_handles.begin(); i != _file_descriptor_handles.end(); i++) {
 				struct pollfd pfd;
 				
-				pfd.fd = (*i)->fileDescriptor();
+				pfd.fd = (*i)->file_descriptor();
 				pfd.events = POLLIN|POLLOUT;
 				
 				handles.push_back(i);
 				pollfds.push_back(pfd);
 				
-				//std::cerr << "Monitoring " << (*i)->className() << " fd: " << (*i)->fileDescriptor() << std::endl;
+				//std::cerr << "Monitoring " << (*i)->class_name() << " fd: " << (*i)->file_descriptor() << std::endl;
 			}
 			
 			int result = 0;
@@ -305,7 +305,7 @@ namespace Dream
 				perror("poll");
 			}
 			
-			m_deleteCurrentFileDescriptorHandle = false;
+			_delete_current_file_descriptor_handle = false;
 			
 			if (result > 0) {
 				for (unsigned i = 0; i < pollfds.size(); i += 1) {					
@@ -323,21 +323,21 @@ namespace Dream
 					if (e == 0) continue;
 					
 					count += 1;
-					m_currentFileDescriptorSource = *(handles[i]);
+					_current_file_descriptor_source = *(handles[i]);
 					
 					try {
-						m_currentFileDescriptorSource->processEvents(loop, Event(e));
+						_current_file_descriptor_source->process_events(loop, Event(e));
 					} catch (std::runtime_error & ex) {
 						//std::cerr << "Exception thrown by runloop " << this << ": " << ex.what() << std::endl;
-						//std::cerr << "Removing file descriptor " << m_currentFileDescriptorSource->fileDescriptor() << " ..." << std::endl;
+						//std::cerr << "Removing file descriptor " << _current_file_descriptor_source->file_descriptor() << " ..." << std::endl;
 						
-						m_deleteCurrentFileDescriptorHandle = true;
+						_delete_current_file_descriptor_handle = true;
 					}
 					
-					if (m_deleteCurrentFileDescriptorHandle) {
+					if (_delete_current_file_descriptor_handle) {
 						// O(1) delete time if deleting current handle
-						m_fileDescriptorHandles.erase(handles[i]);
-						m_deleteCurrentFileDescriptorHandle = false;
+						_file_descriptor_handles.erase(handles[i]);
+						_delete_current_file_descriptor_handle = false;
 					}	
 				}
 			}
@@ -348,42 +348,42 @@ namespace Dream
 #pragma mark -
 #pragma mark class Loop
 				
-		Loop::Loop () : m_stopWhenIdle(true), m_rateLimit(20)
+		Loop::Loop () : _stop_when_idle(true), _rate_limit(20)
 		{
 			// Setup file descriptor monitor
-			m_fileDescriptorMonitor = new KQueueFileDescriptorMonitor;
+			_file_descriptor_monitor = new KQueueFileDescriptorMonitor;
 			
 			// Setup timers
-			m_stopwatch.start();
+			_stopwatch.start();
 			
 			// Make sure stdin is a pipe
-			reopenStandardFileDescriptorsAsPipes();
+			reopen_standard_file_descriptors_as_pipes();
 			
 			// Create and open an urgent notification pipe
-			m_urgentNotificationPipe = new NotificationPipeSource;
-			monitor(m_urgentNotificationPipe);
+			_urgent_notification_pipe = new NotificationPipeSource;
+			monitor(_urgent_notification_pipe);
 		}
 		
 		Loop::~Loop ()
 		{
 			// Remove the internal urgent notification pipe
 			//std::cerr << "Stop monitoring urgent notification pipe..." << std::endl;
-			//stopMonitoringFileDescriptor(m_urgentNotificationPipe);
+			//stop_monitoring_file_descriptor(_urgent_notification_pipe);
 			
-			//foreach(REF(IFileDescriptorSource) source, m_fileDescriptorHandles)
+			//foreach(REF(IFileDescriptorSource) source, _file_descriptor_handles)
 			//{
-			//	std::cerr << "FD Still Scheduled: " << source->className() << source->fileDescriptor() << std::endl;
+			//	std::cerr << "FD Still Scheduled: " << source->class_name() << source->file_descriptor() << std::endl;
 			//}
 		}
 		
-		void Loop::setStopWhenIdle (bool stopWhenIdle)
+		void Loop::set_stop_when_idle (bool stop_when_idle)
 		{
-			m_stopWhenIdle = stopWhenIdle;
+			_stop_when_idle = stop_when_idle;
 		}
 		
 		const Stopwatch & Loop::stopwatch () const
 		{
-			return m_stopwatch;
+			return _stopwatch;
 		}
 		
 #pragma mark -
@@ -392,17 +392,17 @@ namespace Dream
 		class ScheduleTimerNotificationSource : public Object, implements INotificationSource
 		{
 			protected:
-				REF(ITimerSource) m_timerSource;
+				REF(ITimerSource) _timer_source;
 			
 			public:
-				ScheduleTimerNotificationSource(REF(ITimerSource) timerSource);
+				ScheduleTimerNotificationSource(REF(ITimerSource) timer_source);
 				virtual ~ScheduleTimerNotificationSource ();
 				
-				virtual void processEvents (Loop * eventLoop, Event event);
+				virtual void process_events (Loop * event_loop, Event event);
 		};
 		
-		ScheduleTimerNotificationSource::ScheduleTimerNotificationSource(REF(ITimerSource) timerSource)
-			: m_timerSource(timerSource)
+		ScheduleTimerNotificationSource::ScheduleTimerNotificationSource(REF(ITimerSource) timer_source)
+			: _timer_source(timer_source)
 		{
 			
 		}
@@ -412,96 +412,96 @@ namespace Dream
 		
 		}
 		
-		void ScheduleTimerNotificationSource::processEvents (Loop * eventLoop, Event event)
+		void ScheduleTimerNotificationSource::process_events (Loop * event_loop, Event event)
 		{
 			// Add the timer into the run-loop.
 			if (event == NOTIFICATION)
-				eventLoop->scheduleTimer(m_timerSource);
+				event_loop->schedule_timer(_timer_source);
 		}
 		
-		void Loop::scheduleTimer (REF(ITimerSource) source)
+		void Loop::schedule_timer (REF(ITimerSource) source)
 		{			
-			if (std::this_thread::get_id() == m_currentThread) {
+			if (std::this_thread::get_id() == _current_thread) {
 				TimerHandle th;
 				
-				TimeT currentTime = m_stopwatch.time();
-				th.timeout = source->nextTimeout(currentTime, currentTime);
+				TimeT current_time = _stopwatch.time();
+				th.timeout = source->next_timeout(current_time, current_time);
 				
 				th.source = source;
 				
-				m_timerHandles.push(th);
+				_timerHandles.push(th);
 			} else {
 				// Add the timer via a notification which is passed across the thread.
 				REF(ScheduleTimerNotificationSource) note = new ScheduleTimerNotificationSource(source);
-				this->postNotification(note);
+				this->post_notification(note);
 			}
 		}
 		
 #pragma mark -
 		
-		void Loop::postNotification (REF(INotificationSource) note, bool urgent)
+		void Loop::post_notification (REF(INotificationSource) note, bool urgent)
 		{
 			// Lock the event loop notification queue
 			// Add note to the end of the queue
 			// Interrupt event loop thread if urgent
 			
-			if (std::this_thread::get_id() == m_currentThread) {
-				note->processEvents(this, NOTIFICATION);
+			if (std::this_thread::get_id() == _current_thread) {
+				note->process_events(this, NOTIFICATION);
 			} else {
 				{
 					// Enqueue the notification to be processed
-					std::lock_guard<std::mutex> lock(m_notifications.lock);
-					m_notifications.sources.push(note);
+					std::lock_guard<std::mutex> lock(_notifications.lock);
+					_notifications.sources.push(note);
 				}
 				
 				if (urgent) {
 					// Interrupt event loop thread so that it processes notifications more quickly
-					m_urgentNotificationPipe->notifyEventLoop();
+					_urgent_notification_pipe->notify_event_loop();
 				}	
 			}
 		}
 			
 		void Loop::monitor (PTR(IFileDescriptorSource) source)
 		{
-			ensure(source->fileDescriptor() != -1);
+			ensure(source->file_descriptor() != -1);
 			//std::cerr << this << " monitoring fd: " << fd << std::endl;
-			//IFileDescriptorSource::debugFileDescriptorFlags(fd);
+			//IFileDescriptorSource::debug_file_descriptor_flags(fd);
 			
-			m_fileDescriptorMonitor->addSource(source);
+			_file_descriptor_monitor->add_source(source);
 		}
 		
-		void Loop::stopMonitoringFileDescriptor (PTR(IFileDescriptorSource) source)
+		void Loop::stop_monitoring_file_descriptor (PTR(IFileDescriptorSource) source)
 		{
-			ensure(source->fileDescriptor() != -1);
+			ensure(source->file_descriptor() != -1);
 			
 			//std::cerr << this << " removing fd: " << fd << std::endl;
-			//IFileDescriptorSource::debugFileDescriptorFlags(fd);
+			//IFileDescriptorSource::debug_file_descriptor_flags(fd);
 		
-			m_fileDescriptorMonitor->removeSource(source);
+			_file_descriptor_monitor->remove_source(source);
 		}
 		
 		/// If there is a timeout, returns true and the timeout in s.
 		/// If there isn't a timeout, returns false and -1 in s.
-		bool Loop::nextTimeout (TimeT & s)
+		bool Loop::next_timeout (TimeT & s)
 		{
-			if (m_timerHandles.empty()) {
+			if (_timerHandles.empty()) {
 				s = -1;
 				return false;
 			} else {
-				s = m_timerHandles.top().timeout - m_stopwatch.time();
+				s = _timerHandles.top().timeout - _stopwatch.time();
 				return true;
 			}
 		}
 		
 		void Loop::stop ()
 		{
-			if (std::this_thread::get_id() != m_currentThread)
+			if (std::this_thread::get_id() != _current_thread)
 			{
-				postNotification(NotificationSource::stopLoopNotification(), true);	
+				post_notification(NotificationSource::stop_loop_notification(), true);	
 			}
 			else
 			{
-				m_running = false;	
+				_running = false;	
 			}
 		}
 		
@@ -516,70 +516,70 @@ namespace Dream
 			std::swap(sources, processing);
 		}
 		
-		void Loop::processNotifications ()
+		void Loop::process_notifications ()
 		{		
 			// Escape quickly - if this is not thread-safe, we still shouldn't have a problem unless
 			// the data-structure itself gets corrupt, but this shouldn't be possible because empty() is const.
 			// If we get a false positive, we still check below by locking the structure properly.
-			if (m_notifications.sources.empty())
+			if (_notifications.sources.empty())
 				return;
 						
 			{
-				std::lock_guard<std::mutex> lock(m_notifications.lock);
+				std::lock_guard<std::mutex> lock(_notifications.lock);
 				
 				// Grab all pending notifications
-				m_notifications.swap();
+				_notifications.swap();
 			}
 			
-			unsigned rate = m_rateLimit;
+			unsigned rate = _rate_limit;
 			
-			while (!m_notifications.processing.empty()  && (rate-- || m_rateLimit == 0))
+			while (!_notifications.processing.empty()  && (rate-- || _rate_limit == 0))
 			{
-				REF(INotificationSource) note = m_notifications.processing.front();
-				m_notifications.processing.pop();
+				REF(INotificationSource) note = _notifications.processing.front();
+				_notifications.processing.pop();
 				
-				note->processEvents(this, NOTIFICATION);
+				note->process_events(this, NOTIFICATION);
 			}
 			
-			if (rate == 0 && m_rateLimit != 0) {
-				std::cerr << "Warning: Notifications were rate limited! " << m_notifications.processing.size() << " rescheduled notification(s)!" << std::endl;
+			if (rate == 0 && _rate_limit != 0) {
+				std::cerr << "Warning: Notifications were rate limited! " << _notifications.processing.size() << " rescheduled notification(s)!" << std::endl;
 				
-				while (!m_notifications.processing.empty())
+				while (!_notifications.processing.empty())
 				{
-					REF(INotificationSource) note = m_notifications.processing.front();
-					m_notifications.processing.pop();
+					REF(INotificationSource) note = _notifications.processing.front();
+					_notifications.processing.pop();
 					
-					postNotification(note, false);
+					post_notification(note, false);
 				}
 				
 			}
 		}
 		
-		TimeT Loop::processTimers ()
+		TimeT Loop::process_timers ()
 		{
 			TimeT timeout;
-			unsigned rate = m_rateLimit;
+			unsigned rate = _rate_limit;
 			
 			// It is the case that (we have a timeout) AND (we are within the rate limit OR we are not rate limiting)
-			while(nextTimeout(timeout) && timeout <= 0.0 && (rate-- || m_rateLimit == 0))
+			while(next_timeout(timeout) && timeout <= 0.0 && (rate-- || _rate_limit == 0))
 			{
 				// Check if the timeout is late.
 				//if (timeout < -0.1)
 				//	std::cerr << "Timeout was late: " << timeout << std::endl;
 				
-				TimerHandle th = m_timerHandles.top();
-				m_timerHandles.pop();
+				TimerHandle th = _timerHandles.top();
+				_timerHandles.pop();
 				
-				th.source->processEvents(this, TIMEOUT);
+				th.source->process_events(this, TIMEOUT);
 				
 				if (th.source->repeats()) {
 					// Calculate the next time to schedule.
-					th.timeout = th.source->nextTimeout(th.timeout, m_stopwatch.time());
-					m_timerHandles.push(th);
+					th.timeout = th.source->next_timeout(th.timeout, _stopwatch.time());
+					_timerHandles.push(th);
 				}
 			}
 			
-			if (rate == 0 && m_rateLimit != 0)
+			if (rate == 0 && _rate_limit != 0)
 				std::cerr << "Warning: Timers were rate limited" << std::endl;
 			
 			// There are timeouts that should have run, but didn't.
@@ -589,82 +589,82 @@ namespace Dream
 			return timeout;
 		}
 		
-		void Loop::processFileDescriptors (TimeT timeout)
+		void Loop::process_file_descriptors (TimeT timeout)
 		{
 			// Timeout is now the amount of time we have to process other events until another timeout will need to fire.
-			if (m_fileDescriptorMonitor->sourceCount())
-				m_fileDescriptorMonitor->waitForEvents(timeout, this);
+			if (_file_descriptor_monitor->source_count())
+				_file_descriptor_monitor->wait_for_events(timeout, this);
 			else if (timeout > 0.0)
 				Core::sleep(timeout);
 		}
 		
-		void Loop::runOneIteration (bool useTimerTimeout, TimeT timeout)
+		void Loop::run_one_iteration (bool use_timer_timeout, TimeT timeout)
 		{
-			TimeT timeUntilNextTimerEvent = processTimers();
+			TimeT time_until_next_timer_event = process_timers();
 			
 			// Process notifications before waiting for IO... [optional - reduce notification latency]
-			processNotifications();
+			process_notifications();
 			
-			// We have 1 "hidden" source: m_urgentNotificationPipe..
-			if (m_stopWhenIdle && m_fileDescriptorMonitor->sourceCount() == 1 && m_timerHandles.size() == 0)
+			// We have 1 "hidden" source: _urgent_notification_pipe..
+			if (_stop_when_idle && _file_descriptor_monitor->source_count() == 1 && _timerHandles.size() == 0)
 				stop();
 			
 			// A timer may have stopped the runloop. We should check here before we possibly block indefinitely.
-			if (m_running == false)
+			if (_running == false)
 				return;
 			
 			// If the timeout specified was too big, we set it till the time the next event will occur, so that this function (will/should) be called again
 			// shortly and process the timeout as appropriate.
-			if (useTimerTimeout || timeout > timeUntilNextTimerEvent)
-				timeout = timeUntilNextTimerEvent;
+			if (use_timer_timeout || timeout > time_until_next_timer_event)
+				timeout = time_until_next_timer_event;
 			
-			processFileDescriptors(timeout);
+			process_file_descriptors(timeout);
 			
 			// Process any outstanding notifications after IO... [required]
-			processNotifications();
+			process_notifications();
 		}
 		
-		void Loop::runOnce (bool block)
+		void Loop::run_once (bool block)
 		{
-			m_running = true;
-			m_currentThread = std::this_thread::get_id();
+			_running = true;
+			_current_thread = std::this_thread::get_id();
 			
-			runOneIteration(false, block ? -1 : 0);
+			run_one_iteration(false, block ? -1 : 0);
 			
-			m_running = false;
+			_running = false;
 		}
 		
-		void Loop::runForever ()
+		void Loop::run_forever ()
 		{			
 			//std::cerr << "Entering runloop " << std::flush;
-			m_running = true;
-			m_currentThread = std::this_thread::get_id();
+			_running = true;
+			_current_thread = std::this_thread::get_id();
 			//std::cerr << "..." << std::endl;
 			
-			while(m_running)
+			while(_running)
 			{
-				runOneIteration(true);
+				run_one_iteration(true);
 			}
 		}
 		
-		TimeT Loop::runUntilTimeout (TimeT timeout)
+		TimeT Loop::run_until_timeout (TimeT timeout)
 		{
 			ensure(timeout > 0);
 			
 			using Core::EggTimer;
 			
-			m_running = true;
-			m_currentThread = std::this_thread::get_id();
+			_running = true;
+			_current_thread = std::this_thread::get_id();
 			
 			EggTimer timer(timeout);
 			
 			timer.start();
-			while(m_running && (timeout = timer.remainingTime()) > 0)
+			while(_running && (timeout = timer.remaining_time()) > 0)
 			{
-				runOneIteration(false, timeout);
+				run_one_iteration(false, timeout);
 			}
 			
-			return timer.remainingTime();
+			return timer.remaining_time();
 		}
 		
 #pragma mark -
@@ -672,23 +672,23 @@ namespace Dream
 		
 #ifdef ENABLE_TESTING
 		int ticks;
-		void tickerCallback (Loop * eventLoop, TimerSource * ts, Event event)
+		void ticker_callback (Loop * event_loop, TimerSource * ts, Event event)
 		{
 			if (ticks < 100)
 				ticks += 1;
 		}
 		
-		void timeoutCallback (Loop * rl, TimerSource *, Event event)
+		void timeout_callback (Loop * rl, TimerSource *, Event event)
 		{
 			std::cout << "Timeout callback @ " << rl->stopwatch().time() << std::endl;
 		}
 		
-		static void stopCallback (Loop * eventLoop, TimerSource *, Event event)
+		static void stop_callback (Loop * event_loop, TimerSource *, Event event)
 		{
-			eventLoop->stop();
+			event_loop->stop();
 		}
 		
-		void stdinCallback (Loop * rl, FileDescriptorSource *, Event event)
+		void stdin_callback (Loop * rl, FileDescriptorSource *, Event event)
 		{
 			std::cout << "Stdin events: " << event << std::endl;
 			
@@ -704,47 +704,47 @@ namespace Dream
 		{
 			testing("Timer Sources");
 			
-			REF(Loop) eventLoop = new Loop;
+			REF(Loop) event_loop = new Loop;
 			
 			ticks = 0;
 			
-			eventLoop->scheduleTimer(new TimerSource(stopCallback, 1.1));
-			eventLoop->scheduleTimer(new TimerSource(tickerCallback, 0.01, true));
+			event_loop->schedule_timer(new TimerSource(stop_callback, 1.1));
+			event_loop->schedule_timer(new TimerSource(ticker_callback, 0.01, true));
 			
-			eventLoop->monitor(FileDescriptorSource::forStandardIn(stdinCallback));
+			event_loop->monitor(FileDescriptorSource::for_standard_in(stdin_callback));
 			
-			eventLoop->runForever ();
+			event_loop->run_forever ();
 			
 			check(ticks == 100) << "Ticker callback called correctly";
 			
-			eventLoop = new Loop;
+			event_loop = new Loop;
 			
 			ticks = 0;
 			
-			eventLoop->scheduleTimer(new TimerSource(tickerCallback, 0.1, true));
+			event_loop->schedule_timer(new TimerSource(ticker_callback, 0.1, true));
 			
-			eventLoop->runUntilTimeout(1.01);
+			event_loop->run_until_timeout(1.01);
 			
 			check(ticks == 10) << "Ticker callback called correctly within specified timeout";
 		}
 		
 		int notified;
-		static void sendNotificationAfterDelay (REF(Loop) eventLoop, REF(INotificationSource) note)
+		static void send_notification_after_delay (REF(Loop) event_loop, REF(INotificationSource) note)
 		{
 			int count = 0;
 			while (count < 10)
 			{
 				Core::sleep(0.1);
-				eventLoop->postNotification(note);
+				event_loop->post_notification(note);
 				
 				count += 1;
 			}
 			
-			//eventLoop->postNotification(note);
+			//event_loop->post_notification(note);
 		}
 		
 		
-		static void notificationReceived (Loop * rl, NotificationSource * note, Event event)
+		static void notification_received (Loop * rl, NotificationSource * note, Event event)
 		{
 			notified += 1;
 			
@@ -756,55 +756,55 @@ namespace Dream
 		{
 			testing("Notification Sources");
 			
-			REF(Loop) eventLoop = new Loop;
-			REF(NotificationSource) note = new NotificationSource(notificationReceived);
+			REF(Loop) event_loop = new Loop;
+			REF(NotificationSource) note = new NotificationSource(notification_received);
 			
 			// Fail the test after 5 seconds if we are not notified.
-			eventLoop->scheduleTimer(new TimerSource(stopCallback, 2));
+			event_loop->schedule_timer(new TimerSource(stop_callback, 2));
 			
 			notified = 0;
 			
-			std::thread notificationThread(std::bind(sendNotificationAfterDelay, eventLoop, note));
+			std::thread notification_thread(std::bind(send_notification_after_delay, event_loop, note));
 			
-			eventLoop->runForever();
+			event_loop->run_forever();
 			
-			notificationThread.join();
+			notification_thread.join();
 			
 			check(notified == 10) << "Notification occurred";
 		}
 		
-		static void sendStopAfterDelay (REF(Loop) eventLoop)
+		static void send_stop_after_delay (REF(Loop) event_loop)
 		{
 			Core::sleep(0.5);
-			eventLoop->stop();
+			event_loop->stop();
 		}
 		
-		static bool timerStopped;
-		static void markAndStopCallback (Loop * eventLoop, TimerSource *, Event event)
+		static bool timer_stopped;
+		static void mark_and_stop_callback (Loop * event_loop, TimerSource *, Event event)
 		{
-			timerStopped = true;
-			eventLoop->stop();
+			timer_stopped = true;
+			event_loop->stop();
 		}
 		
 		UNIT_TEST(EventLoopStop)
 		{
 			testing("Stopping from another thread");
 			
-			timerStopped = false;
+			timer_stopped = false;
 			
-			REF(Loop) eventLoop = new Loop;
-			eventLoop->setStopWhenIdle(false);
+			REF(Loop) event_loop = new Loop;
+			event_loop->set_stop_when_idle(false);
 			
-			eventLoop->scheduleTimer(new TimerSource(markAndStopCallback, 1.0));
+			event_loop->schedule_timer(new TimerSource(mark_and_stop_callback, 1.0));
 			
-			std::thread stopThread(std::bind(sendStopAfterDelay, eventLoop));
+			std::thread stop_thread(std::bind(send_stop_after_delay, event_loop));
 			
 			// Will be stopped after 2 seconds from the above thread
-			eventLoop->runForever();
+			event_loop->run_forever();
 			
-			stopThread.join();
+			stop_thread.join();
 			
-			check(!timerStopped) << "Thread stopped runloop";
+			check(!timer_stopped) << "Thread stopped runloop";
 		}
 		
 #endif

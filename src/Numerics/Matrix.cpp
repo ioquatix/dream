@@ -13,19 +13,19 @@ namespace Dream
 {
 	namespace Numerics
 	{
-		Mat44 rotation (const RealT & radians, const Vec3 & aroundNormal, const Vec3 & aroundPoint)
+		Mat44 rotation (const RealT & radians, const Vec3 & around_normal, const Vec3 & around_point)
 		{
-			return Mat44::rotatingMatrix(radians, aroundNormal, aroundPoint);
+			return Mat44::rotating_matrix(radians, around_normal, around_point);
 		}
 
-		Mat44 rotation (const RealT & radians, const Vec3 & aroundNormal)
+		Mat44 rotation (const RealT & radians, const Vec3 & around_normal)
 		{
-			return Mat44::rotatingMatrix(radians, aroundNormal);
+			return Mat44::rotating_matrix(radians, around_normal);
 		}
 
-		Mat44 rotation (const Vec3 & fromUnitVector, const Vec3 & toUnitVector, const Vec3 & aroundNormal)
+		Mat44 rotation (const Vec3 & from_unit_vector, const Vec3 & to_unit_vector, const Vec3 & around_normal)
 		{
-			return Mat44::rotatingMatrix(fromUnitVector, toUnitVector, aroundNormal);
+			return Mat44::rotating_matrix(from_unit_vector, to_unit_vector, around_normal);
 		}
 
 #pragma mark -
@@ -38,7 +38,7 @@ namespace Dream
 			Mat44 a, b, c;
 			Mat44 I(IDENTITY);
 
-			a.loadTestPattern();
+			a.load_test_pattern();
 
 			check(a == a * I) << "Matricies are equivalent after multiplication by identity";
 			check(I * a == a) << "Matricies are equivalent after multiplication by identity";
@@ -63,12 +63,12 @@ namespace Dream
 			testing("Vector Assignment");
 					
 			Mat44 a(ZERO);
-			Mat44 matIdent(IDENTITY);
-			Vec4 vecIdent(IDENTITY);
+			Mat44 mat_ident(IDENTITY);
+			Vec4 vec_ident(IDENTITY);
 			
-			a.set(0, 0, vecIdent, 5);
+			a.set(0, 0, vec_ident, 5);
 			
-			check(a == matIdent) << "Vector was copied correctly";
+			check(a == mat_ident) << "Vector was copied correctly";
 			
 			Vec4 c1(0, 1, 2, 3), c2(4, 5, 6, 7), c3(8, 10, 12, 14), c4(9, 11, 13, 15);
 			a.zero();
@@ -78,10 +78,10 @@ namespace Dream
 			a.set(2, 0, c3, 2);
 			a.set(2, 1, c4, 2);
 			
-			Mat44 testPattern;
-			testPattern.loadTestPattern();
+			Mat44 test_pattern;
+			test_pattern.load_test_pattern();
 			
-			check(a == testPattern) << "Vector was copied correctly";
+			check(a == test_pattern) << "Vector was copied correctly";
 		}
 #endif
 	}

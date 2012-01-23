@@ -30,18 +30,18 @@ namespace Dream {
 	AllocationsT s_allocations;
 	double s_refCountBumps = 0;
 	
-	void markStaticAllocation (void * object) {
+	void mark_static_allocation (void * object) {
 		s_allocations[object] = STATIC;
 	}
 	#endif
 
-	SharedObject::SharedObject () : m_count(0) {
+	SharedObject::SharedObject () : _count(0) {
 		#ifdef TRACK_ALLOCATIONS
 		s_allocations[this] = ALLOCATED;
 		#endif
 	}
 
-	SharedObject::SharedObject (const SharedObject & other) : m_count(0) {
+	SharedObject::SharedObject (const SharedObject & other) : _count(0) {
 		
 	}
 			
@@ -56,23 +56,23 @@ namespace Dream {
 	}
 	
 	void SharedObject::retain () const {
-		// std::cout << "Reference Increment @ " << this << " -> " << (m_count+1) << std::endl;
+		// std::cout << "Reference Increment @ " << this << " -> " << (_count+1) << std::endl;
 
 		#ifdef TRACK_ALLOCATIONS
 		s_refCountBumps += 1;
 		#endif
 
-		OSAtomicIncrement32(&m_count);
+		OSAtomicIncrement32(&_count);
 	}
 	
 	bool SharedObject::release () const {
-		// std::cout << "Reference Decrement @ " << this << " -> " << (m_count-1) << std::endl;
+		// std::cout << "Reference Decrement @ " << this << " -> " << (_count-1) << std::endl;
 		
 		#ifdef TRACK_ALLOCATIONS
 		s_refCountBumps += 1;
 		#endif
 		
-		int32_t count = OSAtomicDecrement32(&m_count);
+		int32_t count = OSAtomicDecrement32(&_count);
 
 		if (count == 0) {
 			deallocate();
@@ -92,22 +92,22 @@ namespace Dream {
 		delete this;
 	}
 	
-	int32_t SharedObject::referenceCount () const {
-		return m_count;
+	int32_t SharedObject::reference_count () const {
+		return _count;
 	}
 	
-	void debugAllocations () {
+	void debug_allocations () {
 		#ifdef TRACK_ALLOCATIONS
-		int totalAllocations = 0;
+		int total_allocations = 0;
 		
 		for (AllocationsT::iterator i = s_allocations.begin(); i != s_allocations.end(); ++i) {
 			if (i->second == ALLOCATED)
 				std::cerr << "\t" << i->first << " has not been freed!" << std::endl;
 			
-			totalAllocations += 1;
+			total_allocations += 1;
 		}
 		
-		std::cerr << "Total Allocations: " << totalAllocations << std::endl;
+		std::cerr << "Total Allocations: " << total_allocations << std::endl;
 		std::cerr << "Ref Count Bumps: " << s_refCountBumps << std::endl;
 		#endif
 	}

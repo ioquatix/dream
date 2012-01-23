@@ -20,63 +20,63 @@ namespace Dream {
 		
 		
 		const MessageHeader * Message::header () const {
-			ensure(headerComplete());
+			ensure(header_complete());
 			
-			return (const MessageHeader*)m_packet.begin();
+			return (const MessageHeader*)_packet.begin();
 		}
 		
 		MessageHeader * Message::header () {
-			ensure(headerComplete());
+			ensure(header_complete());
 			
-			return (MessageHeader*)&(m_packet[0]);
+			return (MessageHeader*)&(_packet[0]);
 		}
 		
-		uint32_t Message::headerLength () const {
+		uint32_t Message::header_length () const {
 			return sizeof(MessageHeader);
 		}
 		
-		uint32_t Message::dataLength () const {
-			return m_packet.size() - headerLength();
+		uint32_t Message::data_length () const {
+			return _packet.size() - header_length();
 		}
 		
-		// These xxxComplete methods are typically used for building messages
+		// These xxx_complete methods are typically used for building messages
 		// from incoming data..
-		bool Message::headerComplete () const {
-			return m_packet.size() >= headerLength();
+		bool Message::header_complete () const {
+			return _packet.size() >= header_length();
 		}
 		
-		bool Message::dataComplete () const {
-			return headerComplete() && m_packet.size() == (headerLength() + header()->length);
+		bool Message::data_complete () const {
+			return header_complete() && _packet.size() == (header_length() + header()->length);
 		}
 		
 		const BufferT & Message::packet () const {
-			return m_packet;
+			return _packet;
 		}
 		
 		BufferT & Message::packet () {
-			return m_packet;
+			return _packet;
 		}
 		
-		void Message::resetHeader () {
+		void Message::reset_header () {
 			// Allocate space for header...
-			if (m_packet.size() < headerLength()) {
-				m_packet.resize(headerLength());
+			if (_packet.size() < header_length()) {
+				_packet.resize(header_length());
 			}
 			
 			MessageHeader * h = header();
 			
-			h->length = dataLength();
-			h->ptype = 0;
+			h->length = data_length();
+			h->packet_type = 0;
 		}
 		
-		void Message::updateSize () {
-			ensure(m_packet.size() >= headerLength());
+		void Message::update_size () {
+			ensure(_packet.size() >= header_length());
 			
-			header()->length = dataLength();
+			header()->length = data_length();
 		}
 		
-		bool Message::isValid () const {
-			return headerComplete() && dataComplete();
+		bool Message::is_valid () const {
+			return header_complete() && data_complete();
 		}
 		
 #pragma mark -
@@ -91,42 +91,42 @@ namespace Dream {
 		}
 		
 		void MessageSender::reset () {
-			m_message = NULL;
-			m_offset = 0;
+			_message = NULL;
+			_offset = 0;
 		}
 		
 		void MessageSender::reset (REF(Message) msg) {
-			ensure(msg->isValid());
+			ensure(msg->is_valid());
 			
-			m_message = msg;
-			m_offset = 0;
+			_message = msg;
+			_offset = 0;
 		}
 		
-		bool MessageSender::hasMessageToSend () const {
-			return (bool)m_message;
+		bool MessageSender::has_message_to_send () const {
+			return (bool)_message;
 		}
 		
-		bool MessageSender::transmissionComplete () const {		
-			return m_offset == m_message->packet().size();
+		bool MessageSender::transmission_complete () const {		
+			return _offset == _message->packet().size();
 		}
 		
-		bool MessageSender::sendViaSocket(ClientSocket * socket) {
-			ensure(hasMessageToSend());
-			ensure(socket->isValid());
+		bool MessageSender::send_via_socket(ClientSocket * socket) {
+			ensure(has_message_to_send());
+			ensure(socket->is_valid());
 			
-			BufferT &packet = m_message->packet();
+			BufferT &packet = _message->packet();
 			
-			m_offset += socket->send(packet, m_offset);
+			_offset += socket->send(packet, _offset);
 			
 			/*
-			 if (!transmissionComplete()) {
-			 std::cerr << "Warning: Partial transmission of " << m_offset << " bytes out of " << m_message->packet().size() << std::endl;
+			 if (!transmission_complete()) {
+			 std::cerr << "Warning: Partial transmission of " << _offset << " bytes out of " << _message->packet().size() << std::endl;
 			 } else {
-			 std::cerr << "Complete transmission of " << m_offset << " bytes." << std::endl;
+			 std::cerr << "Complete transmission of " << _offset << " bytes." << std::endl;
 			 }
 			 */
 			
-			return transmissionComplete();
+			return transmission_complete();
 		}
 		
 #pragma mark -
@@ -137,30 +137,30 @@ namespace Dream {
 		}
 		
 		void MessageReceiver::reset () {
-			m_message = new Message;
+			_message = new Message;
 		}
 		
 		REF(Message) MessageReceiver::message () {
-			return m_message;
+			return _message;
 		}
 		
-		bool MessageReceiver::receiveFromSocket (ClientSocket * socket) {
+		bool MessageReceiver::receive_from_socket (ClientSocket * socket) {
 			IndexT sz = 1;
 			
 			// Read as much data as possible:
-			while (sz > 0 && !m_message->dataComplete()) {
-				if (!m_message->headerComplete()) {
-					m_message->packet().reserve(m_message->headerLength());
+			while (sz > 0 && !_message->data_complete()) {
+				if (!_message->header_complete()) {
+					_message->packet().reserve(_message->header_length());
 					
-					sz = socket->recv(m_message->packet());
-				} else if (!m_message->dataComplete()) {
-					m_message->packet().reserve(m_message->headerLength() + m_message->header()->length);
+					sz = socket->recv(_message->packet());
+				} else if (!_message->data_complete()) {
+					_message->packet().reserve(_message->header_length() + _message->header()->length);
 					
-					sz = socket->recv(m_message->packet());
+					sz = socket->recv(_message->packet());
 				}
 			}
 			
-			return m_message->dataComplete();
+			return _message->data_complete();
 		}
 		
 #pragma mark -
@@ -181,71 +181,81 @@ namespace Dream {
 			
 		}
 		
-		void MessageClientSocket::flushSendQueue () {
-			m_sendq = QueueT();
+		void MessageClientSocket::flush_send_queue () {
+			_sendq = QueueT();
 		}
 		
-		void MessageClientSocket::flushReceiveQueue () {
-			m_recvq = QueueT();
+		void MessageClientSocket::flush_receive_queue () {
+			_recvq = QueueT();
 		}
 		
-		bool MessageClientSocket::hasMessagesToSend () {
-			return m_sender.hasMessageToSend() || m_sendq.size() > 0;
+		bool MessageClientSocket::has_messages_to_send () {
+			return _sender.has_message_to_send() || _sendq.size() > 0;
 		}
 		
-		void MessageClientSocket::sendMessage (REF(Message) msg) {
-			m_sendq.push(msg);
+		void MessageClientSocket::send_message (REF(Message) msg) {
+			_sendq.push(msg);
 		}
 		
-		MessageClientSocket::QueueT & MessageClientSocket::receivedMessages ()
+		MessageClientSocket::QueueT & MessageClientSocket::received_messages ()
 		{
-			return m_recvq;
+			return _recvq;
 		}
 		
-		const MessageClientSocket::QueueT & MessageClientSocket::receivedMessages () const
+		const MessageClientSocket::QueueT & MessageClientSocket::received_messages () const
 		{
-			return m_recvq;
+			return _recvq;
 		}
 		
-		bool MessageClientSocket::updateReceiver () {
+		REF(Message) MessageClientSocket::pop() {
+			if (_recvq.size()) {
+				REF(Message) front = _recvq.front();
+				_recvq.pop();
+				return front;
+			} else {
+				return NULL;
+			}
+		}
+		
+		bool MessageClientSocket::update_receiver () {
 			//std::cout << __PRETTY_FUNCTION__ << std::endl;
 			// Default state is no message, so we read data
-			if (m_receiver.receiveFromSocket(this)) {
+			if (_receiver.receive_from_socket(this)) {
 				// We have received a complete message, put it on the receive queue.
-				m_recvq.push(m_receiver.message());
+				_recvq.push(_receiver.message());
 				
 				// Reset the message receiver.
-				m_receiver.reset();
+				_receiver.reset();
 				
-				if (messageReceivedCallback)
-					messageReceivedCallback(this);
+				if (message_received_callback)
+					message_received_callback(this);
 				
 				return true;
 			}
 			
-			//std::cout << this << " has " << m_receiver.message()->packet().size() << " bytes in buffers" << std::endl;
+			//std::cout << this << " has " << _receiver.message()->packet().size() << " bytes in buffers" << std::endl;
 			
 			return false;
 		}
 		
-		void MessageClientSocket::updateSender () {
+		void MessageClientSocket::update_sender () {
 			// Do we have a message to send?
-			if (!m_sender.hasMessageToSend()) {
+			if (!_sender.has_message_to_send()) {
 				// No, no messages currently sending.
-				if (m_sendq.size() > 0) {
+				if (_sendq.size() > 0) {
 					//std::cout << __PRETTY_FUNCTION__ << ": Pushing message.." << std::endl;
 					// A message is queued to be sent, so lets start sending it.
-					m_sender.reset(m_sendq.front());
-					m_sendq.pop();
+					_sender.reset(_sendq.front());
+					_sendq.pop();
 				}
 			}  
 			
-			if (m_sender.hasMessageToSend()) {
+			if (_sender.has_message_to_send()) {
 				// We are currently sending a message
-				if (m_sender.sendViaSocket(this)) {
+				if (_sender.send_via_socket(this)) {
 					//std::cout << __PRETTY_FUNCTION__ << ": Message sent successfully.." << std::endl;
 					// Message has beeen sent completely
-					m_sender.reset();
+					_sender.reset();
 				} else {
 					//std::cout << __PRETTY_FUNCTION__ << ": Message partially sent.." << std::endl;
 					// Some part of message remains...
@@ -254,12 +264,12 @@ namespace Dream {
 			}
 		}
 		
-		void MessageClientSocket::processEvents(Events::Loop * eventLoop, Events::Event events) {
+		void MessageClientSocket::process_events(Events::Loop * event_loop, Events::Event events) {
 			if (Events::READ_READY & events)
-				updateReceiver();
+				update_receiver();
 			
 			if (Events::WRITE_READY & events)
-				updateSender();
+				update_sender();
 		}
 		
 #pragma mark -
@@ -278,8 +288,8 @@ namespace Dream {
 			
 			REF(Message) m1(new Message);
 			
-			m1->resetHeader();
-			m1->header()->ptype = 0xDEAD;
+			m1->reset_header();
+			m1->header()->packet_type = 0xDEAD;
 			
 			MsgTest body;
 			body.a = 5;
@@ -287,12 +297,12 @@ namespace Dream {
 			body.c = body.a + body.b;
 			
 			m1->insert(body);
-			m1->updateSize();
+			m1->update_size();
 			
-			check(m1->dataLength() == sizeof(MsgTest)) << "Body is correct size";
+			check(m1->data_length() == sizeof(MsgTest)) << "Body is correct size";
 			
-			check(m1->headerComplete()) << "Header is complete";
-			check(m1->dataComplete()) << "Data is complete";
+			check(m1->header_complete()) << "Header is complete";
+			check(m1->data_complete()) << "Data is complete";
 		}
 		
 #endif

@@ -27,12 +27,12 @@ namespace Dream {
 		 */
 		class Socket : public Object, implements Events::IFileDescriptorSource {
 		protected:
-			SocketHandleT m_socket;
+			SocketHandleT _socket;
 			
 			// Already connected socket
 			Socket (SocketHandleT s);
-			void openSocket (const Address & address);
-			void openSocket (AddressFamily af, SocketType st, SocketProtocol sp = 0);
+			void open_socket (const Address & address);
+			void open_socket (AddressFamily af, SocketType st, SocketProtocol sp = 0);
 			
 		public:
 			/// Initialize an invalid socket. An invalid client socket needs to be connected before it can be used.
@@ -44,15 +44,15 @@ namespace Dream {
 			virtual ~Socket ();
 			
 			/// Check whether an underlying socket handle is allocated.
-			bool isValid () const;
+			bool is_valid () const;
 			
 			/// Check if the underlying socket is connected to a remote peer using getpeername.
-			bool isConnected () const;
+			bool is_connected () const;
 			
 			/// Shutdown the read end of the socket.
-			void shutdownRead();
+			void shutdown_read();
 			/// Shutdown the write end of the socket.
-			void shutdownWrite();
+			void shutdown_write();
 			/// Shutdown either end of the socket, or both.
 			void shutdown(int mode = SHUT_RDWR);
 			
@@ -61,7 +61,7 @@ namespace Dream {
 			void close ();
 			
 			/// Return any errors that have occurred on the socket.
-			int socketSpecificError () const;
+			int socket_specific_error () const;
 			
 			/// Write data to the socket.
 			IndexT send (const Core::Buffer & buf, IndexT offset = 0, int flags = 0);
@@ -73,10 +73,10 @@ namespace Dream {
 			IndexT recv (Core::ResizableBuffer & buf, int flags = 0);
 
 			/// The internal file descriptor handle for the socket.
-			virtual FileDescriptorT fileDescriptor () const;
+			virtual FileDescriptorT file_descriptor () const;
 			
 			/// Set the TCP NO DELAY option for the socket, if it is available.
-			void setNoDelayMode (bool mode);
+			void set_no_delay_mode (bool mode);
 		};
 		
 		/** A socket that can be bound to a local address and accept connections.
@@ -84,33 +84,33 @@ namespace Dream {
 		 */
 		class ServerSocket : public Socket {
 		protected:
-			Address m_boundAddress;
+			Address _bound_address;
 			
 			/// Bind to the given address.
-			bool bind (const Address & address, bool reuseAddress = true);
+			bool bind (const Address & address, bool reuse_address = true);
 			/// Listen for n incoming connections.
 			void listen (unsigned n);
 			/// Reuse the address if some other older socket was bound to it.
-			void setReuseAddress (bool enabled);
+			void set_reuse_address (bool enabled);
 			
 		public:
 			/// Create a socket that is bound to the supplied address.
-			/// @sa Address::interfaceAddressesForPort
-			ServerSocket (const Address &serverAddress, unsigned listenCount = 1000);
+			/// @sa Address::interface_addresses_for_port
+			ServerSocket (const Address &server_address, unsigned listen_count = 1000);
 			virtual ~ServerSocket ();
 			
 			/// Accept an incoming connection request. These details are then supplied to a ClientSocket to create a working connection.
 			bool accept (SocketHandleT & h, Address & na);
 			
 			/// Returns the address the socket is bound to.
-			const Address & boundAddress () const;
+			const Address & bound_address () const;
 			
-			/// Fire of events. Generally handled via connectionCallback.
-			/// @sa connectionCallback
-			virtual void processEvents (Events::Loop *, Events::Event);
+			/// Fire of events. Generally handled via connection_callback.
+			/// @sa connection_callback
+			virtual void process_events (Events::Loop *, Events::Event);
 			
 			/// Delegate function to handle incoming connections.
-			std::function<void (Events::Loop *, ServerSocket *, const SocketHandleT & h, const Address & na)> connectionCallback;
+			std::function<void (Events::Loop *, ServerSocket *, const SocketHandleT & h, const Address & na)> connection_callback;
 		};
 		
 		/** A ClientSocket represents either the server-side or client-side endpoint of a connection.
@@ -119,7 +119,7 @@ namespace Dream {
 		 */
 		class ClientSocket : public Socket {
 		protected:
-			Address m_remoteAddress;
+			Address _remote_address;
 			
 		public:
 			/// Construct a client socket from an incoming connection from the given address.
@@ -133,7 +133,7 @@ namespace Dream {
 			virtual ~ClientSocket ();
 			
 			/// The remote address that this socket is connected to.
-			const Address & remoteAddress () const;
+			const Address & remote_address () const;
 			
 			/// Connect to a single address.
 			/// @returns true if successfully connected.
@@ -144,7 +144,7 @@ namespace Dream {
 			bool connect (const AddressesT & addresses);
 			
 			/// Handle incoming events for the socket.
-			virtual void processEvents (Events::Loop *, Events::Event);
+			virtual void process_events (Events::Loop *, Events::Event);
 		};
 		
 	}

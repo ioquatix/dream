@@ -22,26 +22,26 @@ namespace Dream
 		class URI
 		{
 		private:
-			StringT m_url;
+			StringT _url;
 			
 			/// According to RFC3986.
-			StringT m_scheme, m_authority, m_path, m_query, m_fragment;
+			StringT _scheme, _authority, _path, _query, _fragment;
 			
 			/// Standard parts of the authority
-			StringT m_hostname;
-			unsigned m_port;
+			StringT _hostname;
+			unsigned _port;
 			
 			/// Other parts that may or may not be defined:
-			std::vector<StringT> m_userInfo;
+			std::vector<StringT> _user_info;
 			
 		public:
 			
 			class InvalidFormatError : std::exception {
 			protected:
-				StringT m_url;
-				std::size_t m_offset;
+				StringT _url;
+				std::size_t _offset;
 				
-				StringT m_message;
+				StringT _message;
 				
 			public:
 				InvalidFormatError(const StringT & url, std::size_t offset);
@@ -74,7 +74,7 @@ namespace Dream
 			const StringT & hostname () const;
 
 			/// A list of user info items, normally username, password.
-			const std::vector<StringT> & userInfo () const;
+			const std::vector<StringT> & user_info () const;
 			StringT username () const;
 			StringT password () const;
 
@@ -85,10 +85,10 @@ namespace Dream
 			StringT service () const;
 			
 			/// Whether or not the URI was relative or absolute.
-			bool isAbsolute () const;
+			bool is_absolute () const;
 			
 			/// True if the URI represents a file path. The path is local and accessible via path().
-			bool isFilePath ();
+			bool is_file_path ();
 		};
 	}
 }

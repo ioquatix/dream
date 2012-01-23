@@ -37,54 +37,54 @@ namespace Dream
 		
 		class TextBlock {
 		protected:
-			Vector<2,unsigned> m_extents;
-			unsigned m_lineWidth;
-			std::vector<TextLine*> m_lines;
+			Vector<2,unsigned> _extents;
+			unsigned _lineWidth;
+			std::vector<TextLine*> _lines;
 			
-			Vector<2,unsigned> m_horizontalPadding;
-			Vector<2,unsigned> m_verticalPadding;
+			Vector<2,unsigned> _horizontal_padding;
+			Vector<2,unsigned> _vertical_padding;
 			
-			TextDirection m_charDir, m_lineDir;
+			TextDirection _char_dir, _lineDir;
 			
 			// Freetype
-			bool m_kerning;
-			Detail::FontFace * m_face;
+			bool _kerning;
+			Detail::FontFace * _face;
 			
 			friend class TextLine;
 			
-			void compositeCharacters(REF(IMutablePixelBuffer) pbuf, CharacterBoxes * boxes);
+			void composite_characters(REF(IMutablePixelBuffer) pbuf, CharacterBoxes * boxes);
 			
 		public:
 			TextBlock (Detail::FontFace * font);
 			virtual ~TextBlock ();
 			
-			//Vector<2,unsigned> pixelSize (wchar_t c) const;
+			//Vector<2,unsigned> pixel_size (wchar_t c) const;
 			
-			void setTextDirection (TextDirection charDir, TextDirection lineDir);
+			void set_textDirection (TextDirection char_dir, TextDirection line_dir);
 			
-			bool isHorizontal () const;
-			bool isVertical () const;
+			bool is_horizontal () const;
+			bool is_vertical () const;
 			
-			Vector<2, unsigned> textOrigin ();
+			Vector<2, unsigned> text_origin ();
 			
-			void setKerning (bool enabled);
-			bool kerningEnabled ();
+			void set_kerning (bool enabled);
+			bool kerning_enabled ();
 			
-			void setLineWidth (const unsigned &w);
-			bool isLineWidthFixed () const;
-			unsigned lineWidth () const;
+			void set_line_width (const unsigned &w);
+			bool is_line_width_fixed () const;
+			unsigned line_width () const;
 			
-			void compositeToImage (REF(IMutablePixelBuffer) img);
+			void composite_to_image (REF(IMutablePixelBuffer) img);
 			
 			void clear ();
-			TextLine * lastLine ();
+			TextLine * last_line ();
 			
 			// We must normalize input to have \n line endings
-			void addText (const std::wstring &str);
-			void setText (const std::wstring &str);
+			void add_text (const std::wstring &str);
+			void set_text (const std::wstring &str);
 			std::wstring text () const;
 			
-			Vector<2,unsigned> calculateSize () const;
+			Vector<2,unsigned> calculate_size () const;
 			
 			void render (REF(IMutablePixelBuffer) pbuf, CharacterBoxes * boxes = NULL);
 		};
@@ -92,24 +92,24 @@ namespace Dream
 		class TextLineRenderer;
 		
 		class TextLine {
-			TextBlock * m_block;
+			TextBlock * _block;
 
-			unsigned m_width;			
-			std::wstring m_chars;
+			unsigned _width;			
+			std::wstring _chars;
 			
-			TextLineRenderer * m_renderer;
+			TextLineRenderer * _renderer;
 			
 		public:
 			TextLine (TextBlock * b);
 			virtual ~TextLine ();
 			
-			const std::wstring & text () const { return m_chars; }
-			unsigned width () const { return m_width; }
+			const std::wstring & text () const { return _chars; }
+			unsigned width () const { return _width; }
 			
-			bool canAddCharacter (wchar_t c) const;
+			bool can_add_character (wchar_t c) const;
 			
-			bool addCharacter (wchar_t c);
-			void compositeToImage (REF(IMutablePixelBuffer) img, Vector<2,unsigned> pen, CharacterBoxes * boxes = NULL);
+			bool add_character (wchar_t c);
+			void composite_to_image (REF(IMutablePixelBuffer) img, Vector<2,unsigned> pen, CharacterBoxes * boxes = NULL);
 		};
 		
 	}

@@ -71,10 +71,10 @@ namespace Dream
 		const double D2R = (M_PI / 180.0);
 	
 		/// If the supplied value is a power of two, it is returned, otherwise the next highest power of 2 is calculated and returned.
-		uint32_t nextHighestPowerOf2 (uint32_t);
+		uint32_t next_highest_power_of2 (uint32_t);
 
 		/// Checks if an unsigned int is a power of 2.
-		bool isPowerOf2 (uint32_t);
+		bool is_power_of2 (uint32_t);
 
 		enum
 		{
@@ -84,12 +84,12 @@ namespace Dream
 		/// Checks the equivalence of two doubles.
 		/// As double is not a precise type, ulps specifies the exact distance between permutations that is acceptable. Be aware, that as numbers get closer to
 		/// zero, the distance between fixed permutations gets smaller.
-		bool equalWithinTolerance (const double & a, const double & b, const unsigned & ulps = DEFAULT_ULPS);
+		bool equal_within_tolerance (const double & a, const double & b, const unsigned & ulps = DEFAULT_ULPS);
 
 		/// Checks the equivalence of two floats.
 		/// As float is not a precise type, ulps specifies the exact distance between permutations that is acceptable. Be aware, that as numbers get closer to
 		/// zero, the distance between fixed permutations gets smaller.
-		bool equalWithinTolerance (const float & a, const float & b, const unsigned & ulps = DEFAULT_ULPS);
+		bool equal_within_tolerance (const float & a, const float & b, const unsigned & ulps = DEFAULT_ULPS);
 
 		/// Equivalence of floating point numbers.
 		/// This function is not "accurate" in the sense that it considers only about 5 decimal places at best. But it provides a robust and reliable method to

@@ -19,14 +19,14 @@ namespace Dream
 		/// @todo Add tests for these functions.
 		/// Linear interpolate between two values
 		template <typename InterpolateT, typename AnyT>
-		inline AnyT linearInterpolate (const InterpolateT & t, const AnyT & a, const AnyT & b)
+		inline AnyT linear_interpolate (const InterpolateT & t, const AnyT & a, const AnyT & b)
 		{
 			return (a * (1.0 - t)) + (b * t);
 		}
 
 		/// Cosine interpolate between two values
 		template <typename InterpolateT, typename AnyT>
-		inline AnyT cosineInterpolate (const InterpolateT & t, const AnyT & a, const AnyT & b)
+		inline AnyT cosine_interpolate (const InterpolateT & t, const AnyT & a, const AnyT & b)
 		{
 			RealT f = (1.0 - cos(t * M_PI)) * 0.5;
 
@@ -35,7 +35,7 @@ namespace Dream
 
 		/// Cubic interpolate between four values
 		template <typename InterpolateT, typename AnyT>
-		inline AnyT cubicInterpolate (const InterpolateT & t, const AnyT & a, const AnyT & b, const AnyT & c, const AnyT & d)
+		inline AnyT cubic_interpolate (const InterpolateT & t, const AnyT & a, const AnyT & b, const AnyT & c, const AnyT & d)
 		{
 			AnyT p = (d - c) - (a - b);
 			AnyT q = (a - b) - p;
@@ -53,7 +53,7 @@ namespace Dream
 		 negative towards the other
 		 */
 		template <typename InterpolateT, typename AnyT>
-		inline AnyT hermitePolynomial (const InterpolateT & t, const AnyT & p0, const AnyT & m0, const AnyT & p1, const AnyT & m1)
+		inline AnyT hermite_polynomial (const InterpolateT & t, const AnyT & p0, const AnyT & m0, const AnyT & p1, const AnyT & m1)
 		{
 			RealT t3 = t*t*t, t2 = t*t;
 

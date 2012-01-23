@@ -24,7 +24,7 @@ namespace Dream
 		public:				
 			virtual ~ICamera ();
 			
-			virtual Mat44 viewMatrix() const abstract;
+			virtual Mat44 view_matrix() const abstract;
 		};			
 	}
 }

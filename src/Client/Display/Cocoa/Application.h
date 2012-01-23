@@ -18,10 +18,10 @@ namespace Dream {
 			
 				class Application : public Object, implements IApplication {
 					protected:
-						REF(IApplicationDelegate) m_applicationDelegate;
+						REF(IApplicationDelegate) _application_delegate;
 						
-						void createApplicationMenus();
-						void transformToForegroundApplication();
+						void create_application_menus();
+						void transform_to_foreground_application();
 						
 					public:
 						Application(PTR(IApplicationDelegate) delegate);
@@ -29,7 +29,7 @@ namespace Dream {
 						
 						void run();
 						
-						virtual REF(IContext) createContext (REF(Dictionary) config);
+						virtual REF(IContext) create_context (REF(Dictionary) config);
 						
 						virtual IApplicationDelegate * delegate () const;
 				};

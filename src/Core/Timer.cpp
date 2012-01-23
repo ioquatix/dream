@@ -37,21 +37,21 @@ namespace Dream {
 		}
 		
 		void Timer::reset () {
-			this->m_last = systemTime();
-			this->m_total = 0.0;
+			this->_last = system_time();
+			this->_total = 0.0;
 		}
 		
 		TimeT Timer::time () const {
-			TimeT current = systemTime();
-			this->m_total += current - this->m_last;
-			this->m_last = current;
-			return this->m_total;
+			TimeT current = system_time();
+			this->_total += current - this->_last;
+			this->_last = current;
+			return this->_total;
 		}
 		
 #pragma mark -
 #pragma mark Stopwatch Implementation
 				
-		Stopwatch::Stopwatch () : m_total(0), m_running(false) {
+		Stopwatch::Stopwatch () : _total(0), _running(false) {
 			
 		}
 		
@@ -60,41 +60,41 @@ namespace Dream {
 		}
 		
 		void Stopwatch::start () {
-			if (!m_running) {
-				m_running = true;
+			if (!_running) {
+				_running = true;
 				
-				m_timer.reset();
+				_timer.reset();
 			}
 		}
 		
 		void Stopwatch::pause () {
-			if (m_running) {
-				m_running = false;
+			if (_running) {
+				_running = false;
 				
-				m_total += m_timer.time();
+				_total += _timer.time();
 				/* Must call start to restart timer */
 			}
 		}
 		
 		void Stopwatch::reset () {
-			m_running = false;
-			m_total = 0;
+			_running = false;
+			_total = 0;
 		}
 		
 		TimeT Stopwatch::time () const {
-			if (m_running)
+			if (_running)
 			{
-				m_total += m_timer.time();
-				m_timer.reset();
+				_total += _timer.time();
+				_timer.reset();
 			}
 			
-			return m_total;
+			return _total;
 		}
 		
 #pragma mark -
 #pragma mark EggTimer Implementation
 
-		EggTimer::EggTimer (TimeT duration) : m_duration(duration)
+		EggTimer::EggTimer (TimeT duration) : _duration(duration)
 		{
 			
 		}
@@ -106,12 +106,12 @@ namespace Dream {
 		
 		bool EggTimer::finished () const
 		{
-			return time() >= m_duration;
+			return time() >= _duration;
 		}
 		
-		TimeT EggTimer::remainingTime () const
+		TimeT EggTimer::remaining_time () const
 		{
-			return m_duration - time();
+			return _duration - time();
 		}
 		
 #pragma mark -
@@ -119,55 +119,55 @@ namespace Dream {
 		
 		using namespace Dream::Numerics;
 		
-		TimerStatistics::TimerStatistics () : m_duration(0), m_min(std::numeric_limits<RealT>::max()), m_max(0), m_count(0) 
+		TimerStatistics::TimerStatistics () : _duration(0), _min(std::numeric_limits<RealT>::max()), _max(0), _count(0) 
 		{
 			
 		}	
 		
-		TimeT TimerStatistics::averageDuration () const
+		TimeT TimerStatistics::average_duration () const
 		{
-			if (m_count == 0) return 0;
+			if (_count == 0) return 0;
 			
-			return m_duration / m_count;
+			return _duration / _count;
 		}
 		
-		TimeT TimerStatistics::updatesPerSecond () const
+		TimeT TimerStatistics::updates_per_second () const
 		{
-			if (m_duration == 0) return 0;
+			if (_duration == 0) return 0;
 			
-			return m_count / m_duration;
+			return _count / _duration;
 		}
 		
 		void TimerStatistics::reset ()
 		{
-			m_performReset = true;
+			_perform_reset = true;
 		}
 		
-		void TimerStatistics::beginTimer (const TimeT & startTime)
+		void TimerStatistics::begin_timer (const TimeT & start_time)
 		{
-			m_lastTime = startTime;
+			_last_time = start_time;
 		}
 		
-		void TimerStatistics::update (const TimeT & currentTime)
+		void TimerStatistics::update (const TimeT & current_time)
 		{
-			m_min = std::min(m_min, currentTime - m_lastTime);
-			m_max = std::max(m_max, currentTime - m_lastTime);
+			_min = std::min(_min, current_time - _last_time);
+			_max = std::max(_max, current_time - _last_time);
 			
-			if (m_performReset) {
-				m_performReset = false;
+			if (_perform_reset) {
+				_perform_reset = false;
 				
-				if (m_count > 0) {
-					m_duration = m_duration / m_count;
-					m_count = 1; // We count last frame average plus this frame
+				if (_count > 0) {
+					_duration = _duration / _count;
+					_count = 1; // We count last frame average plus this frame
 				} else {
-					m_duration = 0;
+					_duration = 0;
 				}
 			}
 			
-			m_duration += currentTime - m_lastTime;
-			m_count += 1;
+			_duration += current_time - _last_time;
+			_count += 1;
 			
-			m_lastTime = currentTime;
+			_last_time = current_time;
 		}		
 		
 	}

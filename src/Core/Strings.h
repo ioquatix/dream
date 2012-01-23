@@ -24,9 +24,9 @@ namespace Dream
 		typedef std::stringstream StringStreamT;
 		
 		/// Converts UTF8 to UTF16
-		std::wstring convertStringToUTF16 (const std::string source);
+		std::wstring convert_string_to_utf16 (const std::string source);
 
-		std::string trimmed (std::string const & str, char const * sepSet);
+		std::string trimmed (std::string const & str, char const * sep_set);
 
 		std::string center (const std::string & str, unsigned width, char space);
 		
@@ -45,8 +45,8 @@ namespace Dream
 			} while (next != StringT::npos);
 		}
 		
-		StringT unescapeString (const StringT &);
-		StringT escapeString (const StringT &);
+		StringT unescape_string (const StringT &);
+		StringT escape_string (const StringT &);
 		
 	}
 }

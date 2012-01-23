@@ -13,7 +13,7 @@
 namespace Dream {
 	namespace Geometry {
 
-		unsigned Quadrants::indexForPartition(const Vec2 &point, const Vec2 &center) {
+		unsigned Quadrants::index_for_partition(const Vec2 &point, const Vec2 &center) {
 			if (point[Y] < center[Y]) {
 				if (point[X] < center[X])
 					return 0;
@@ -27,7 +27,7 @@ namespace Dream {
 			}
 		}
 		
-		Vec2 Quadrants::normalOriginForPartitionIndex(const IndexT &i) {
+		Vec2 Quadrants::normal_origin_for_partition_index(const IndexT &i) {
 			ensure(i < Q && "Invalid partition index!");
 			
 			switch (i) {
@@ -46,11 +46,11 @@ namespace Dream {
 			return ZERO;
 		}
 		
-		Vec2 Quadrants::offsetOriginForPartitionIndex(const IndexT &i) {
-			return ((normalOriginForPartitionIndex(i) + 0.25) * 2.0) - 0.5;
+		Vec2 Quadrants::offset_origin_for_partition_index(const IndexT &i) {
+			return ((normal_origin_for_partition_index(i) + 0.25) * 2.0) - 0.5;
 		}
 		
-		Quadrants::PartitionLocation Quadrants::locationForDirection (const Direction &dir) {
+		Quadrants::PartitionLocation Quadrants::location_for_direction (const Direction &dir) {
 			switch (dir) {
 			case (BOTTOM | LEFT):
 				return BottomLeft;
@@ -69,7 +69,7 @@ namespace Dream {
 			return BottomLeft;			
 		}
 		
-		unsigned Octants::indexForPartition(const Vec3 &point, const Vec3 &center) {
+		unsigned Octants::index_for_partition(const Vec3 &point, const Vec3 &center) {
 			unsigned v = point[Z] < center[Z] ? 0 : 4;
 			
 			if (point[Y] < center[Y]) {
@@ -85,7 +85,7 @@ namespace Dream {
 			}
 		}
 		
-		Vec3 Octants::normalOriginForPartitionIndex(const IndexT &i) {			
+		Vec3 Octants::normal_origin_for_partition_index(const IndexT &i) {			
 			switch (i) {
 			case 0:
 				return Vec3 (0.0, 0.0, 0.0);
@@ -110,11 +110,11 @@ namespace Dream {
 			return ZERO;
 		}
 		
-		Vec3 Octants::offsetOriginForPartitionIndex(const IndexT &i) {
-			return ((normalOriginForPartitionIndex(i) + 0.25) * 2.0) - 0.5;
+		Vec3 Octants::offset_origin_for_partition_index(const IndexT &i) {
+			return ((normal_origin_for_partition_index(i) + 0.25) * 2.0) - 0.5;
 		}
 		
-		Octants::PartitionLocation Octants::locationForDirection (const Direction &dir) {
+		Octants::PartitionLocation Octants::location_for_direction (const Direction &dir) {
 			switch (dir) {
 			case (BOTTOM | LEFT | NEAR):
 				return BottomLeftNear;

@@ -20,43 +20,43 @@ namespace Dream
 		
 		class TextBuffer : public Object {
 		protected:
-			REF(Font) m_font;
-			REF(Image) m_image;
-			std::wstring m_imageText;
+			REF(Font) _font;
+			REF(Image) _image;
+			std::wstring _image_text;
 			
-			std::wstring m_text;
-			bool m_textUpdated;
+			std::wstring _text;
+			bool _text_updated;
 			
-			bool m_useStaticSize;
-			Vector<2, unsigned> m_size;
+			bool _use_static_size;
+			Vector<2, unsigned> _size;
 			
 		public:
 			TextBuffer (REF(Font) font);
 			virtual ~TextBuffer ();
 			
-			void setText (const std::string & text);
-			void setText (const std::wstring & text);
+			void set_text (const std::string & text);
+			void set_text (const std::wstring & text);
 
 			template <typename StringT>
-			void appendText (const StringT & text)
+			void append_text (const StringT & text)
 			{
-				setText(m_text + convertStringToUTF16(text));
+				set_text(_text + convert_string_to_utf16(text));
 			}
 			
 			template <typename StringT>
-			void appendLine (const StringT & str)
+			void append_line (const StringT & str)
 			{
-				appendText(str);
-				appendText("\n");
+				append_text(str);
+				append_text("\n");
 			}
 			
-			void insertCharacterAtOffset (unsigned offset, unsigned character);
-			unsigned offsetForPoint (const Vec2u offset);
+			void insert_character_at_offset (unsigned offset, unsigned character);
+			unsigned offset_for_point (const Vec2u offset);
 			
-			void setStaticSize (Vector<2, unsigned> size);
-			void setDynamicSize ();
+			void set_static_size (Vector<2, unsigned> size);
+			void set_dynamic_size ();
 			
-			REF(IPixelBuffer) renderText (bool & regenerated);
+			REF(IPixelBuffer) render_text (bool & regenerated);
 		};
 		
 	}

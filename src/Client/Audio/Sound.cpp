@@ -15,20 +15,20 @@ namespace Dream
 	{
 		namespace Audio
 		{
-			void Sound::Loader::registerLoaderTypes (ILoader * loader)
+			void Sound::Loader::register_loader_types (ILoader * loader)
 			{
-				loader->setLoaderForExtension(this, "wav");
+				loader->set_loader_for_extension(this, "wav");
 			}
 			
-			ALenum dataFormat (ALint channelCount, ALint bitsPerSample)
+			ALenum data_format (ALint channel_count, ALint bits_per_sample)
 			{
-				if (channelCount == 1 && bitsPerSample == 8)
+				if (channel_count == 1 && bits_per_sample == 8)
 					return AL_FORMAT_MONO8;
-				else if (channelCount == 1 && bitsPerSample == 16)
+				else if (channel_count == 1 && bits_per_sample == 16)
 					return AL_FORMAT_MONO16;
-				else if (channelCount == 2 && bitsPerSample == 8)
+				else if (channel_count == 2 && bits_per_sample == 8)
 					return AL_FORMAT_STEREO8;
-				else if (channelCount == 2 && bitsPerSample == 16)
+				else if (channel_count == 2 && bits_per_sample == 16)
 					return AL_FORMAT_STEREO16;
 				else
 					return 0;
@@ -36,12 +36,12 @@ namespace Dream
 			
 			typedef REF(Sound)(*DecoderT)(const Buffer *, ALint, ALint, ALfloat);
 			
-			REF(Sound) decodeLinearCodec (const Buffer * buf, ALint channelCount, ALint bitsPerSample, ALfloat sampleFrequency)
+			REF(Sound) decode_linear_codec (const Buffer * buf, ALint channel_count, ALint bits_per_sample, ALfloat sample_frequency)
 			{
-				return new Sound(dataFormat(channelCount, bitsPerSample), sampleFrequency, buf);
+				return new Sound(data_format(channel_count, bits_per_sample), sample_frequency, buf);
 			}
 			
-			REF(Sound) decodePCM8SCodec (const Buffer * buf, ALint channelCount, ALint bitsPerSample, ALfloat sampleFrequency)
+			REF(Sound) decode_pcm8SCodec (const Buffer * buf, ALint channel_count, ALint bits_per_sample, ALfloat sample_frequency)
 			{
 				DynamicBuffer copy;
 				copy.assign(*buf);
@@ -52,14 +52,14 @@ namespace Dream
 				for (i = 0; i < copy.size(); i++)
 					d[i] += (int8_t) 128;
 				
-				return new Sound(dataFormat(channelCount, bitsPerSample), sampleFrequency, &copy);
+				return new Sound(data_format(channel_count, bits_per_sample), sample_frequency, &copy);
 			}
 			
 			const Endian PCM16Endian = LITTLE;
-			REF(Sound) decodePCM16Codec (const Buffer * buf, ALint channelCount, ALint bitsPerSample, ALfloat sampleFrequency)
+			REF(Sound) decode_pcm16Codec (const Buffer * buf, ALint channel_count, ALint bits_per_sample, ALfloat sample_frequency)
 			{
-				if (hostEndian() == PCM16Endian) {
-					return new Sound(dataFormat(channelCount, bitsPerSample), sampleFrequency, buf);
+				if (host_endian() == PCM16Endian) {
+					return new Sound(data_format(channel_count, bits_per_sample), sample_frequency, buf);
 				} else {
 					DynamicBuffer copy(buf->size(), true);
 					
@@ -70,101 +70,101 @@ namespace Dream
 						copy.append(sample);
 					}
 					
-					return new Sound(dataFormat(channelCount, bitsPerSample), sampleFrequency, &copy);
+					return new Sound(data_format(channel_count, bits_per_sample), sample_frequency, &copy);
 				}
 			}
 						
-			REF(Sound) loadWaveData (const PTR(IData) data)
+			REF(Sound) load_wave_data (const PTR(IData) data)
 			{				
 				DecoderT decoder = NULL;
 				Shared<Buffer> buffer = data->buffer();
 				
 				IndexT i = 4;
 				
-				uint32_t chunkLength;
+				uint32_t chunk_length;
 				int32_t magic;
-				i += buffer->read(i, chunkLength, LITTLE);
+				i += buffer->read(i, chunk_length, LITTLE);
 				i += buffer->read(i, magic, BIG);
 				
 				if (magic != 'WAVE')
 					throw LoadError("Could not load WAV data");
 				
-				bool foundHeader;
-				uint16_t audioFormat, channelCount, blockAlign, bitsPerSample;
-				uint32_t sampleFrequency, byteRate;
+				bool found_header;
+				uint16_t audio_format, channel_count, block_align, bits_per_sample;
+				uint32_t sample_frequency, byte_rate;
 				
 				while (i < buffer->size())
 				{
 					i += buffer->read(i, magic, BIG);
-					i += buffer->read(i, chunkLength, LITTLE);
+					i += buffer->read(i, chunk_length, LITTLE);
 					
 					if (magic == 'fmt ')
 					{
 						// Decode header
-						foundHeader = true;
+						found_header = true;
 						
-						i += buffer->read(i, audioFormat, LITTLE);
-						i += buffer->read(i, channelCount, LITTLE);
-						i += buffer->read(i, sampleFrequency, LITTLE);
-						i += buffer->read(i, byteRate, LITTLE);
-						i += buffer->read(i, blockAlign, LITTLE);
-						i += buffer->read(i, bitsPerSample, LITTLE);
+						i += buffer->read(i, audio_format, LITTLE);
+						i += buffer->read(i, channel_count, LITTLE);
+						i += buffer->read(i, sample_frequency, LITTLE);
+						i += buffer->read(i, byte_rate, LITTLE);
+						i += buffer->read(i, block_align, LITTLE);
+						i += buffer->read(i, bits_per_sample, LITTLE);
 												
-						i += chunkLength - 16;
+						i += chunk_length - 16;
 						
-						if (audioFormat == 1) {
-							if (bitsPerSample == 8)
+						if (audio_format == 1) {
+							if (bits_per_sample == 8)
 								// Copy samples verbatim.
-								decoder = decodeLinearCodec;
+								decoder = decode_linear_codec;
 							else
 								// Use PCM16 decoder - will pass through if endian doesn't need to be converted.
-								decoder = decodePCM16Codec;
-						} else if (audioFormat == 7) {
-							//bitsPerSample *= 2;
-							//decoder = decodeULawCodec;
+								decoder = decode_pcm16Codec;
+						} else if (audio_format == 7) {
+							//bits_per_sample *= 2;
+							//decoder = decode_ulaw_codec;
 							throw LoadError("Unsupported WAV encoding (ULaw)");
 						} else {
 							throw LoadError("Unsupported WAV encoding (Unknown)");
 						}
 					} else if (magic == 'data') {						
-						if (!foundHeader)
+						if (!found_header)
 							throw LoadError("Corrupt or truncated data");
 						
-						StaticBuffer sampleData(&(*buffer)[i], chunkLength);
+						StaticBuffer sample_data(&(*buffer)[i], chunk_length);
 						
 						ensure(decoder != NULL);
-						return decoder(&sampleData, channelCount, bitsPerSample, sampleFrequency);
+						return decoder(&sample_data, channel_count, bits_per_sample, sample_frequency);
 					} else {
 						// Unknown header
-						i += chunkLength;
+						i += chunk_length;
 					}
 				}
 				
 				throw LoadError("Corrupt or truncated data");
 			}
 						
-			REF(Object) Sound::Loader::loadFromData (const PTR(IData) data, const ILoader * loader)
+			REF(Object) Sound::Loader::load_from_data (const PTR(IData) data, const ILoader * loader)
 			{
 				Shared<Buffer> buffer = data->buffer();
 				
 				Mimetype mt = buffer->mimetype();
 				
 				if (mt == AUDIO_XWAV) {
-					return loadWaveData(data);
+					return load_wave_data(data);
 				} else {
 					throw LoadError("Could not load audio data");
 				}
 			}
 			
-			Sound::Sound (ALenum format, ALsizei frequency, const Buffer * samples) : m_format(format), m_frequency(frequency)
+			Sound::Sound (ALenum format, ALsizei frequency, const Buffer * samples) : _format(format), _frequency(frequency)
 			{
-				alGenBuffers(1, &m_bufferID);
-			    alBufferData(m_bufferID, m_format, samples->begin(), samples->size(), m_frequency);
+				alGenBuffers(1, &_buffer_id);
+			    alBufferData(_buffer_id, _format, samples->begin(), samples->size(), _frequency);
 			}
 			
 			Sound::~Sound ()
 			{
-				alDeleteBuffers(1, &m_bufferID);
+				alDeleteBuffers(1, &_buffer_id);
 			}
 		}
 	}

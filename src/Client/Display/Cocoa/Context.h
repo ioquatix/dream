@@ -33,21 +33,21 @@ namespace Dream
 				class ViewContext : public Context
 				{
 					protected:
-						NSOpenGLView * m_graphicsView;
+						NSOpenGLView * _graphics_view;
 						
 						// Display link callback
-						static CVReturn displayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* now, const CVTimeStamp* outputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext);
-						CVReturn displayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* now, const CVTimeStamp* outputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut);
+						static CVReturn display_link_callback(CVDisplayLinkRef display_link, const CVTimeStamp* now, const CVTimeStamp* output_time, CVOptionFlags flags_in, CVOptionFlags* flags_out, void* display_link_context);
+						CVReturn display_link_callback(CVDisplayLinkRef display_link, const CVTimeStamp* now, const CVTimeStamp* output_time, CVOptionFlags flags_in, CVOptionFlags* flags_out);
 						
 						// Display link state for managing rendering thread
-						CVDisplayLinkRef m_displayLink;
-						void setupDisplayLink ();
+						CVDisplayLinkRef _display_link;
+						void setup_display_link ();
 						
-						// Need to manually set m_graphicsView and call setupDisplayLink()
+						// Need to manually set _graphics_view and call setup_display_link()
 						ViewContext ();
 						
 					public:
-						ViewContext (NSOpenGLView * graphicsView);
+						ViewContext (NSOpenGLView * graphics_view);
 						virtual ~ViewContext ();
 						
 						virtual void start ();
@@ -55,18 +55,18 @@ namespace Dream
 						
 						virtual Vec2u size ();
 						
-						virtual void makeCurrent ();
-						virtual void flushBuffers ();
+						virtual void make_current ();
+						virtual void flush_buffers ();
 				};
 				
 				/// This context manages a window which can be used to display content.
 				class WindowContext : public ViewContext {
 					protected:
-						NSWindow * m_window;
-						DWindowDelegate * m_windowDelegate;
+						NSWindow * _window;
+						DWindowDelegate * _window_delegate;
 					
 						// Setup the graphics view
-						void setupGraphicsView (PTR(Dictionary) config, NSRect frame);
+						void setup_graphics_view (PTR(Dictionary) config, NSRect frame);
 											
 					public:
 						WindowContext (PTR(Dictionary) config);

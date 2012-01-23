@@ -19,33 +19,33 @@ namespace Dream
 		const unsigned int ERROR_DESCRIPTION_LENGTH = 1024;
 	
 		SystemError::SystemError(StringT message)
-			: m_message(message)
+			: _message(message)
 		{
 
 		}
 		
-		SystemError::SystemError(StringT domain, ErrorNumberT errorNumber, StringT errorDescription, StringT errorTarget)
+		SystemError::SystemError(StringT domain, ErrorNumberT error_number, StringT error_description, StringT error_target)
 		{
 			StringStreamT f;
 		
-			f << domain << " Error #" << errorNumber << ": " << errorDescription << "(" << errorTarget << ")";
+			f << domain << " Error #" << error_number << ": " << error_description << "(" << error_target << ")";
 			
-			m_message = f.str();
+			_message = f.str();
 		}
 		
 		StringT SystemError::what () const
 		{
-			return m_message;
+			return _message;
 		}
 
 		void SystemError::check (StringT what)
 		{
 			if (errno != 0) {
 				// Get the system error message.
-				char errorDescription[ERROR_DESCRIPTION_LENGTH];
-				strerror_r(errno, errorDescription, ERROR_DESCRIPTION_LENGTH);
+				char error_description[ERROR_DESCRIPTION_LENGTH];
+				strerror_r(errno, error_description, ERROR_DESCRIPTION_LENGTH);
 				
-				throw SystemError("System", errno, errorDescription, what);
+				throw SystemError("System", errno, error_description, what);
 			}
 		}
 	

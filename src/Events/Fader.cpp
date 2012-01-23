@@ -22,7 +22,7 @@ namespace Dream
 		
 		
 		Fader::Fader(Shared<IKnob> knob, int steps, TimeT increment)
-			: m_knob(knob), m_count(0), m_steps(steps), m_increment(increment), m_finished(false)
+			: _knob(knob), _count(0), _steps(steps), _increment(increment), _finished(false)
 		{
 		
 		}
@@ -32,40 +32,40 @@ namespace Dream
 		
 		}
 		
-		void Fader::setFinishCallback (FinishCallbackT finishCallback)
+		void Fader::set_finish_callback (FinishCallbackT finish_callback)
 		{
-			m_finishCallback = finishCallback;
+			_finish_callback = finish_callback;
 		}
 		
 		void Fader::cancel ()
 		{
-			m_finished = true;
+			_finished = true;
 		}
 		
 		bool Fader::repeats () const
 		{
-			if (m_finished) return false;
+			if (_finished) return false;
 			
-			return m_count < m_steps;
+			return _count < _steps;
 		}
 		
-		TimeT Fader::nextTimeout (const TimeT & lastTimeout, const TimeT & currentTime) const
+		TimeT Fader::next_timeout (const TimeT & last_timeout, const TimeT & current_time) const
 		{
-			return lastTimeout + m_increment;
+			return last_timeout + _increment;
 		}
 		
-		void Fader::processEvents (Loop *, Event event)
+		void Fader::process_events (Loop *, Event event)
 		{
 			if (event == TIMEOUT) {
-				m_count += 1;
+				_count += 1;
 				
-				RealT time = RealT(m_count) / RealT(m_steps);
+				RealT time = RealT(_count) / RealT(_steps);
 				
-				m_knob->update(time);
+				_knob->update(time);
 				
-				if (m_count == m_steps && m_finishCallback) {
-					m_finished = true;
-					m_finishCallback(this);
+				if (_count == _steps && _finish_callback) {
+					_finished = true;
+					_finish_callback(this);
 				}
 			}
 		}

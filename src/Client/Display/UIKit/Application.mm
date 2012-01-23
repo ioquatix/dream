@@ -24,7 +24,7 @@ namespace Dream {
 		
 			namespace UIKit {				
 				Application::Application(PTR(IApplicationDelegate) applicationDelegate)
-					: m_applicationDelegate(applicationDelegate)
+					: _application_delegate(applicationDelegate)
 				{
 				
 				}
@@ -39,14 +39,14 @@ namespace Dream {
 					[DApplicationDelegate startWithApplication:this];
 				}
 				
-				REF(IContext) Application::createContext (REF(Dictionary) config)
+				REF(IContext) Application::create_context (REF(Dictionary) config)
 				{
 					return new WindowContext(config);
 				}
 				
 				IApplicationDelegate * Application::delegate () const
 				{
-					return m_applicationDelegate.get();
+					return _application_delegate.get();
 				}
 			}
 		}

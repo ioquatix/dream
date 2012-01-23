@@ -25,11 +25,11 @@ namespace Dream
 			check(Number<int>::clamp(-10, -5, 5) == -5) << "Number clamped at bottom";
 			check(Number<int>::clamp(2, -5, 5) == 2) << "Number not clamped";
 
-			check(Number<float>::clampTop(25, 20) == 20) << "Number clamped at top";
-			check(Number<float>::clampTop(15, 20) == 15) << "Number not clamped";
+			check(Number<float>::clamp_top(25, 20) == 20) << "Number clamped at top";
+			check(Number<float>::clamp_top(15, 20) == 15) << "Number not clamped";
 
-			check(Number<unsigned>::clampBottom(15, 20) == 20) << "Number clamped at top";
-			check(Number<unsigned>::clampBottom(25, 20) == 25) << "Number not clamped";
+			check(Number<unsigned>::clamp_bottom(15, 20) == 20) << "Number clamped at top";
+			check(Number<unsigned>::clamp_bottom(25, 20) == 25) << "Number not clamped";
 
 			testing("Min and Max");
 

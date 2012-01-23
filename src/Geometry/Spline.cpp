@@ -24,7 +24,7 @@ namespace Dream {
 		}
 
 		template <unsigned D>
-		Vector<D> ISpline<D>::tangentAtTime(RealT t) const {
+		Vector<D> ISpline<D>::tangent_at_time(RealT t) const {
 			// TODO: Need to write a better function !!
 			const RealT f = 0.001;
 			RealT t1 = Math::wrap(t-f, 1.0), t2 = Math::wrap(t+f, 1.0);
@@ -32,26 +32,26 @@ namespace Dream {
 			ensure(t1 >= 0.0 && t1 <= 1.0);
 			ensure(t2 >= 0.0 && t2 <= 1.0);
 			
-			return (pointAtTime(t2) - pointAtTime(t1)).normalize();
+			return (point_at_time(t2) - point_at_time(t1)).normalize();
 		}
 		
 		template <>
-		Vec3 ISpline<3>::normalAtTime(RealT t) const {
-			Vec3 tg = tangentAtTime(t);
-			Vec3 pt = pointAtTime(t);
+		Vec3 ISpline<3>::normal_at_time(RealT t) const {
+			Vec3 tg = tangent_at_time(t);
+			Vec3 pt = point_at_time(t);
 			
 			Vec4 tg4 = tg << 0.0;
 			Vec4 orth (0.0, 0.0, 0.0, 1.0);
-			Vec4 ori = (tangentAtTime(t-0.2) - tangentAtTime(t+0.2)) << 1.0;
+			Vec4 ori = (tangent_at_time(t-0.2) - tangent_at_time(t+0.2)) << 1.0;
 				
-			Vec4 res (crossProduct(tg4, orth, ori));
+			Vec4 res (cross_product(tg4, orth, ori));
 			
 			return res.reduce().normalize();
 		}
 		
 		template <>
-		Vec2 ISpline<2>::normalAtTime(RealT t) const {
-			Vec2 tg = tangentAtTime(t);
+		Vec2 ISpline<2>::normal_at_time(RealT t) const {
+			Vec2 tg = tangent_at_time(t);
 			
 			Vec3 tg3 = tg << 0.0;
 			Vec3 orth (0.0, 0.0, 1.0);
@@ -60,7 +60,7 @@ namespace Dream {
 		}
 		
 		template <unsigned D>
-		std::vector<RealT> ISpline<D>::nominalTimes () const {
+		std::vector<RealT> ISpline<D>::nominal_times () const {
 			RealT d = (RealT)1.0 / this->segments();
 			std::vector<RealT> times;
 			
@@ -71,26 +71,26 @@ namespace Dream {
 		}
 		
 		template <unsigned D>
-		std::vector<RealT> ISpline<D>::divideAndAppend(int n, RealT res) const {
+		std::vector<RealT> ISpline<D>::divide_and_append(int n, RealT res) const {
 			// Entry point for the function below.
 			// The higher res is, the more detail will be present.
 			std::vector<RealT> times;
 			
-			divideAndAppend(0.0, 1.0, n, 1.0 - (1.0 / res), true, times);
+			divide_and_append(0.0, 1.0, n, 1.0 - (1.0 / res), true, times);
 			
 			return times;
 		}
 		
 		template <unsigned D>
-		void ISpline<D>::divideAndAppend(RealT t, RealT d, int n, RealT res2, bool first, std::vector<RealT> &times) const {
+		void ISpline<D>::divide_and_append(RealT t, RealT d, int n, RealT res2, bool first, std::vector<RealT> &times) const {
 			RealT hd = d / 2.0;
 			
-			Vector<D> t1(tangentAtTime(t)), t2(tangentAtTime(t+d));
+			Vector<D> t1(tangent_at_time(t)), t2(tangent_at_time(t+d));
 			
 			bool divide = n > 0 || (t1.dot(t2) < res2 && n > -10) /* Sanity check */;
 			
 			// First point of segment
-			if (divide) divideAndAppend(t, hd, n - 1, res2, true & first, times);
+			if (divide) divide_and_append(t, hd, n - 1, res2, true & first, times);
 			
 			if (!divide) {
 				if (first) times.push_back(t);
@@ -99,32 +99,32 @@ namespace Dream {
 			}
 			
 			// Last point of segment
-			if (divide) divideAndAppend(t + hd, hd, n - 1, res2, false, times);
+			if (divide) divide_and_append(t + hd, hd, n - 1, res2, false, times);
 		}
 		
 		template <unsigned D>
-		std::vector<RealT> ISpline<D>::timesAtResolution(RealT resolution, unsigned divisions) const {
+		std::vector<RealT> ISpline<D>::times_at_resolution(RealT resolution, unsigned divisions) const {
 			// We must divide at least once per point.
 			int d = (int)Math::ceil(Math::sqrt(this->points().size()) + 1);
 			divisions = (unsigned)Math::max(d, divisions);
 			
-			return divideAndAppend(divisions, resolution);
+			return divide_and_append(divisions, resolution);
 		}
 		
 		template <unsigned D>
 		unsigned ISpline<D>::segments () const {
 			// The number of segments between points
-			return this->segmentPoints().size() - 1;
+			return this->segment_points().size() - 1;
 		}
 
 		template <unsigned D>
-		unsigned ISpline<D>::startingPoint(RealT t) const {
+		unsigned ISpline<D>::starting_point(RealT t) const {
 			// The starting point for a given t in [0.0, 1.0]
 			return (unsigned)Math::floor(this->segments() * t);
 		}
 		
 		template <unsigned D>
-		RealT ISpline<D>::fractionalComponent(RealT t) const {
+		RealT ISpline<D>::fractional_component(RealT t) const {
 			// The fractional component (ie, in [0.0, 1.0]) of a particular segment.
 			RealT m = this->segments() * t;
 			return m - Math::floor(m);	
@@ -137,9 +137,9 @@ namespace Dream {
 #pragma mark SplineWithNormal
 
 		template <unsigned D>
-		SplineWithNormal<D>::SplineWithNormal(const SplineT * spline, const SplineT * normalSpline) :
-			m_spline(spline),
-			m_normalSpline(normalSpline)
+		SplineWithNormal<D>::SplineWithNormal(const SplineT * spline, const SplineT * normal_spline) :
+			_spline(spline),
+			_normal_spline(normal_spline)
 		{
 			
 		}
@@ -150,21 +150,21 @@ namespace Dream {
 		}
 
 		template <unsigned D>
-		Vector<D> SplineWithNormal<D>::pointAtTime(RealT t) const {
-			return m_spline->pointAtTime(t);
+		Vector<D> SplineWithNormal<D>::point_at_time(RealT t) const {
+			return _spline->point_at_time(t);
 		}
 		
 		template <unsigned D>
-		Vector<D> SplineWithNormal<D>::tangentAtTime(RealT t) const {
-			return m_spline->tangentAtTime(t);
+		Vector<D> SplineWithNormal<D>::tangent_at_time(RealT t) const {
+			return _spline->tangent_at_time(t);
 		}
 		
 		template <unsigned D>
-		Vector<D> SplineWithNormal<D>::normalAtTime(RealT t) const {
+		Vector<D> SplineWithNormal<D>::normal_at_time(RealT t) const {
 			// We will assume we don't need to normalize this result, but
 			// that could be dangerous.
-			Vector<D> n1 ((m_normalSpline->pointAtTime(t) - m_spline->pointAtTime(t)).normalize());
-			Vector<D> t1 (m_spline->tangentAtTime(t));
+			Vector<D> n1 ((_normal_spline->point_at_time(t) - _spline->point_at_time(t)).normalize());
+			Vector<D> t1 (_spline->tangent_at_time(t));
 			
 			n1.normalize();
 			
@@ -174,7 +174,7 @@ namespace Dream {
 		
 		template <unsigned D>
 		const std::vector<Vector<D> > & SplineWithNormal<D>::points() const {
-			return m_spline->points();
+			return _spline->points();
 		}
 			
 		template <unsigned D>
@@ -199,7 +199,7 @@ namespace Dream {
 				bool tmp;
 			};
 			
-			static std::vector<PlaneAtTime> interpolatedPlanesForSpline(const ISpline<D> * spline, const std::vector<RealT> & times) {
+			static std::vector<PlaneAtTime> interpolated_planes_for_spline(const ISpline<D> * spline, const std::vector<RealT> & times) {
 				std::list<PlaneAtTime> planes;
 				
 				//Generate the plane for each point in the spline
@@ -207,7 +207,7 @@ namespace Dream {
 					PlaneAtTime pat;
 					pat.interpolated = false;
 					pat.time = *t;
-					pat.plane = Plane<D>(spline->pointAtTime(*t), spline->tangentAtTime(*t));
+					pat.plane = Plane<D>(spline->point_at_time(*t), spline->tangent_at_time(*t));
 					
 					planes.push_back(pat);
 				}
@@ -221,7 +221,7 @@ namespace Dream {
 						PlaneAtTime p2h;
 						p2h.interpolated = true;
 						p2h.time = p1.time + p2.time / (RealT)2.0;
-						p2h.plane = Plane<D>(spline->pointAtTime(p2h.time), spline->tangentAtTime(p2h.time));
+						p2h.plane = Plane<D>(spline->point_at_time(p2h.time), spline->tangent_at_time(p2h.time));
 						
 						// Insert p2h after p1, before p2 (pl points to p2 atm).
 						planes.insert(pl, p2h);
@@ -233,12 +233,12 @@ namespace Dream {
 				return std::vector<PlaneAtTime> (planes.begin(), planes.end());
 			}
 			
-			static void forSpline (const ISpline<D> * spline, const ISpline<D> * normalSpline) {			
-				std::vector<RealT> nts = spline->nominalTimes();
+			static void for_spline (const ISpline<D> * spline, const ISpline<D> * normal_spline) {			
+				std::vector<RealT> nts = spline->nominal_times();
 				nts.pop_back();
 				std::vector<Intersection> its;
 						
-				std::vector<PlaneAtTime> planes = interpolatedPlanesForSpline(spline, nts);
+				std::vector<PlaneAtTime> planes = interpolated_planes_for_spline(spline, nts);
 				
 				// Calculate plane intersection for non-parallel planes
 				for (unsigned i = 0; i < planes.size(); i += 1) {
@@ -248,7 +248,7 @@ namespace Dream {
 					Intersection it;
 					it.intersection.zero();
 					
-					if (pat1.plane.isParallel(pat2.plane)) {
+					if (pat1.plane.is_parallel(pat2.plane)) {
 						//These points are in sequence and in the same direction, ie '|' straight line
 						it.parallel = true;
 					} else {
@@ -256,24 +256,24 @@ namespace Dream {
 						RealT t1 = nts[i], t3 = nts[i+1 % nts.size()];
 						RealT t2 = (t1 + t3) / 2.0;
 						
-						Vector<D> pt1 = spline->pointAtTime(t1);
-						Vector<D> pt3 = spline->pointAtTime(t3);
+						Vector<D> pt1 = spline->point_at_time(t1);
+						Vector<D> pt3 = spline->point_at_time(t3);
 						
 						// If two of the same points on the line.
 						if (pt1 == pt3) continue;
 						
-						//Vector<D> pt3 = pt1 + spline->tangentAtTime(nts[i]) + spline->tangentAtTime(nts[i+1 % nts.size()]);
-						Vector<D> pt2 = spline->pointAtTime(t2);
+						//Vector<D> pt3 = pt1 + spline->tangent_at_time(nts[i]) + spline->tangent_at_time(nts[i+1 % nts.size()]);
+						Vector<D> pt2 = spline->point_at_time(t2);
 						
 						Triangle<D> tri (pt1, pt2, pt3);
 						Plane<D> p3 (pt1, tri.normal());
-						Line<D> lineIntersection;
+						Line<D> line_intersection;
 						
 						// There must be an intersection
-						ensure(pat1.plane.intersectsWith(pat2.plane, lineIntersection));
-						ensure(p3.intersectsWith(lineIntersection, it.intersection));
+						ensure(pat1.plane.intersects_with(pat2.plane, line_intersection));
+						ensure(p3.intersects_with(line_intersection, it.intersection));
 						
-						// it.intersection = (lineIntersection.pointForClosestPoint(pt1) + lineIntersection.pointForClosestPoint(pt2)) / 2.0;
+						// it.intersection = (line_intersection.point_for_closest_point(pt1) + line_intersection.point_for_closest_point(pt2)) / 2.0;
 						// This point gives us the best (shortest) normal from pt1 to pt2
 					}
 					
@@ -292,7 +292,7 @@ namespace Dream {
 					nat.time = pat.time;
 					
 					if (nat.fixed) {
-						nat.normal = (its[i].intersection - spline->pointAtTime(pat.time)).normalize();
+						nat.normal = (its[i].intersection - spline->point_at_time(pat.time)).normalize();
 					} else {
 						nat.normal.zero();
 					}
@@ -327,14 +327,14 @@ namespace Dream {
 				foreach(nml, normals) {
 					if (!(*nml).fixed) continue; // Skip temporary normals
 					// This next line is important but doesn't compile right now
-					// normalSpline->points().push_back(spline->pointAtTime((*nml).time) + ((*nml).normal.normalize() * 100));
+					// normal_spline->points().push_back(spline->point_at_time((*nml).time) + ((*nml).normal.normalize() * 100));
 				}
 			}
 		};
 		
 		template <unsigned D>
-		void SplineWithNormal<D>::forSpline (const ISpline<D> * spline, const ISpline<D> * normalSpline) {			
-			_SplineWithNormalGenerator<D>::forSpline(spline, normalSpline);
+		void SplineWithNormal<D>::for_spline (const ISpline<D> * spline, const ISpline<D> * normal_spline) {			
+			_SplineWithNormalGenerator<D>::for_spline(spline, normal_spline);
 		}
 
 		template class SplineWithNormal<3>;	
@@ -343,7 +343,7 @@ namespace Dream {
 #pragma mark Spline
 		
 		template <unsigned D>
-		Spline<D>::Spline () : m_closed(true) {
+		Spline<D>::Spline () : _closed(true) {
 		
 		}
 		
@@ -353,56 +353,56 @@ namespace Dream {
 		}
 		
 		template <unsigned D>
-		void Spline<D>::resetSegmentPointsCache () {
-			m_segmentPoints.clear();
+		void Spline<D>::reset_segment_points_cache () {
+			_segment_points.clear();
 		}
 		
 		template <unsigned D>
 		bool Spline<D>::closed () const {
-			return m_closed;
+			return _closed;
 		}
 		
 		template <unsigned D>
-		void Spline<D>::setClosed (bool closed) {
-			if (m_closed != closed) {
-				m_closed = closed;
-				resetSegmentPointsCache();
+		void Spline<D>::set_closed (bool closed) {
+			if (_closed != closed) {
+				_closed = closed;
+				reset_segment_points_cache();
 			}
 		}
 		
 		template <unsigned D>
-		const std::vector<Vector<D> >& Spline<D>::segmentPoints() const {
-			if (m_segmentPoints.empty()) {
-				m_segmentPoints = generateSegmentPoints();
+		const std::vector<Vector<D> >& Spline<D>::segment_points() const {
+			if (_segment_points.empty()) {
+				_segment_points = generate_segment_points();
 			}
 			
-			return m_segmentPoints;
+			return _segment_points;
 		}
 		
 		template <unsigned D>
-		std::vector<Vector<D> > Spline<D>::generateSegmentPoints() const {
-			if (!m_closed) {
-				return m_points;
+		std::vector<Vector<D> > Spline<D>::generate_segment_points() const {
+			if (!_closed) {
+				return _points;
 			}
 		
 			// We need to add the first point last so that the line is closed.
-			ensure(m_points.size() > 0);
-			PointsT segmentPoints(m_points);
-			segmentPoints.push_back(m_points[0]);
+			ensure(_points.size() > 0);
+			PointsT segment_points(_points);
+			segment_points.push_back(_points[0]);
 			
-			return segmentPoints;
+			return segment_points;
 		}
 		
 #pragma mark -
 #pragma mark LinearSpline
 
 		template <unsigned D>
-		Vector<D> LinearSpline<D>::pointAtTime(RealT t) const {			
-			unsigned sp = this->startingPoint(t);
-			RealT fr = this->fractionalComponent(t);
+		Vector<D> LinearSpline<D>::point_at_time(RealT t) const {			
+			unsigned sp = this->starting_point(t);
+			RealT fr = this->fractional_component(t);
 			
-			if (t >= 1.0) return this->m_points[sp];
-			else return linearInterpolate(fr, this->m_points[sp], this->m_points[sp+1]);
+			if (t >= 1.0) return this->_points[sp];
+			else return linear_interpolate(fr, this->_points[sp], this->_points[sp+1]);
 		}
 
 #pragma mark -
@@ -416,32 +416,32 @@ namespace Dream {
 		}
 		
 		template <unsigned D>
-		std::vector<Vector<D> > CubicSpline<D>::generateSegmentPoints() const {
-			if (!this->m_closed) {
-				return Spline<D>::generateSegmentPoints();
+		std::vector<Vector<D> > CubicSpline<D>::generate_segment_points() const {
+			if (!this->_closed) {
+				return Spline<D>::generate_segment_points();
 			}
 			
-			ensure(this->m_points.size() > 3);
+			ensure(this->_points.size() > 3);
 			PointsT pts;
 			
-			pts.push_back(this->m_points[this->m_points.size() - 1]);
-			pts.insert(pts.end(), this->m_points.begin(), this->m_points.end());
-			pts.push_back(this->m_points[0]);
-			pts.push_back(this->m_points[1]);
+			pts.push_back(this->_points[this->_points.size() - 1]);
+			pts.insert(pts.end(), this->_points.begin(), this->_points.end());
+			pts.push_back(this->_points[0]);
+			pts.push_back(this->_points[1]);
 			
 			return pts;
 		}
 		
 		template <unsigned D>
-		Vector<D> CubicSpline<D>::pointAtTime(RealT t) const {
-			const PointsT &pts = this->segmentPoints();
+		Vector<D> CubicSpline<D>::point_at_time(RealT t) const {
+			const PointsT &pts = this->segment_points();
 			ensure(pts.size() > 3 && "CublicSpline<D> requires at least 4 points");
 			
-			unsigned sp = this->startingPoint(t) + 1;
-			RealT fr = this->fractionalComponent(t);
+			unsigned sp = this->starting_point(t) + 1;
+			RealT fr = this->fractional_component(t);
 			
 			if (t >= 1.0) return pts[sp];
-			return cubicInterpolate(fr, pts[sp-1], pts[sp], pts[sp+1], pts[sp+2]);
+			return cubic_interpolate(fr, pts[sp-1], pts[sp], pts[sp+1], pts[sp+2]);
 
 		}
 
@@ -449,33 +449,33 @@ namespace Dream {
 #pragma mark HermiteSpline
 		
 		template <unsigned D>
-		Vector<D> HermiteSpline<D>::pointAtTime(RealT t) const {
-			const PointsT &pts = this->segmentPoints();
+		Vector<D> HermiteSpline<D>::point_at_time(RealT t) const {
+			const PointsT &pts = this->segment_points();
 			
 			ensure(pts.size() > 3 && "HermiteSpline<D> requires at least 4 points");
 			
-			unsigned sp = this->startingPoint(t) + 1;
-			RealT fr = this->fractionalComponent(t);
+			unsigned sp = this->starting_point(t) + 1;
+			RealT fr = this->fractional_component(t);
 			
 			if (t >= 1.0) return pts[sp];
 			
 			Vector<D> t1 (this->tangent(sp));
 			Vector<D> t2 (this->tangent(sp+1));
 			
-			return hermitePolynomial(fr, pts[sp], t1, pts[sp+1], t2);
+			return hermite_polynomial(fr, pts[sp], t1, pts[sp+1], t2);
 		}
 		
 		/// Catmull-Rom tangent function
 		template <unsigned D>
-		Vector<D> HermiteSpline<D>::catmullRomSpline (const ISpline<D> *s, unsigned n) {
-			const PointsT &pts = s->segmentPoints();
+		Vector<D> HermiteSpline<D>::catmull_rom_spline (const ISpline<D> *s, unsigned n) {
+			const PointsT &pts = s->segment_points();
 			
 			return ((pts[n+1 % pts.size()] - pts[n-1 % pts.size()]) * 0.5);
 		}
 		
 		template <unsigned D>
-		Vector<D> HermiteSpline<D>::fourPointLinearMu (const ISpline<D> *s, unsigned n) {
-			const PointsT &pts = s->segmentPoints();
+		Vector<D> HermiteSpline<D>::four_point_linear_mu (const ISpline<D> *s, unsigned n) {
+			const PointsT &pts = s->segment_points();
 		
 			if (n > 1) n += 1;
 			unsigned p1 = n, p2 = n-1;
@@ -487,8 +487,8 @@ namespace Dream {
 		}
 		
 		template <unsigned D>
-		Vector<D> HermiteSpline<D>::fourPointExponentialMu (const ISpline<D>* s, unsigned n) {
-			const PointsT &pts = s->segmentPoints();
+		Vector<D> HermiteSpline<D>::four_point_exponential_mu (const ISpline<D>* s, unsigned n) {
+			const PointsT &pts = s->segment_points();
 
 			if (n > 1) n += 1;
 			unsigned p1 = n, p2 = n-1;
@@ -503,8 +503,8 @@ namespace Dream {
 		
 		/// Simple linear tangent function
 		template <unsigned D>
-		Vector<D> HermiteSpline<D>::multiPointLinearMu (const ISpline<D>* s, unsigned n) {
-			const PointsT &pts = s->segmentPoints();
+		Vector<D> HermiteSpline<D>::multi_point_linear_mu (const ISpline<D>* s, unsigned n) {
+			const PointsT &pts = s->segment_points();
 
 			unsigned p1 = (n + 1) % pts.size(), p2 = (n-1) % pts.size();
 			

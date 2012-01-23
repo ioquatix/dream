@@ -12,10 +12,10 @@ namespace Dream {
 	namespace Events {
 		
 		Thread::Thread ()
-			: m_thread(NULL)
+			: _thread(NULL)
 		{
-			m_loop = new Loop;
-			m_loop->setStopWhenIdle(false);
+			_loop = new Loop;
+			_loop->set_stop_when_idle(false);
 		}
 		
 		Thread::~Thread ()
@@ -25,13 +25,13 @@ namespace Dream {
 		
 		REF(Loop) Thread::loop()
 		{
-			return m_loop;
+			return _loop;
 		}
 		
 		void Thread::start ()
 		{			
-			if (!m_thread)
-				m_thread = new std::thread(std::bind(&Thread::run, this));
+			if (!_thread)
+				_thread = new std::thread(std::bind(&Thread::run, this));
 		}
 		
 		void Thread::run ()
@@ -39,20 +39,20 @@ namespace Dream {
 			std::cerr << "Starting thread event loop..." << std::endl;
 		
 			// Lock the loop to ensure it isn't released by another thread.
-			REF(Loop) loop = m_loop;
+			REF(Loop) loop = _loop;
 			
-			loop->runForever();
+			loop->run_forever();
 			
 			std::cerr << "Exiting thread event loop..." << std::endl;
 		}
 		
 		void Thread::stop ()
 		{
-			if (m_thread) {
-				m_loop->stop();
-				m_thread->join();
+			if (_thread) {
+				_loop->stop();
+				_thread->join();
 				
-				m_thread = NULL;
+				_thread = NULL;
 			}
 		}
 
@@ -67,7 +67,7 @@ namespace Dream {
 				std::size_t count;
 				
 				TTLNote ();
-				virtual void processEvents (Loop *, Event);
+				virtual void process_events (Loop *, Event);
 		};
 		
 		TTLNote::TTLNote ()
@@ -76,7 +76,7 @@ namespace Dream {
 		
 		}
 		
-		void TTLNote::processEvents(Loop * loop, Event event)
+		void TTLNote::process_events(Loop * loop, Event event)
 		{			
 			count += 1;
 			
@@ -84,7 +84,7 @@ namespace Dream {
 				REF(Loop) next = loops.back();
 				loops.pop_back();
 				
-				next->postNotification(this, true);
+				next->post_notification(this, true);
 			}
 		}
 		
@@ -111,7 +111,7 @@ namespace Dream {
 			t2->start();
 			t3->start();
 			
-			t1->loop()->postNotification(note, true);
+			t1->loop()->post_notification(note, true);
 			
 			sleep(1);
 			
@@ -126,9 +126,9 @@ namespace Dream {
 			REF(TimerSource) e2 = new TimerSource(std::bind(add1, queue), 0.001, true);
 			REF(TimerSource) e3 = new TimerSource(std::bind(add1, queue), 0.001, true);
 			
-			t1->loop()->scheduleTimer(e1);
-			t2->loop()->scheduleTimer(e2);
-			t3->loop()->scheduleTimer(e3);
+			t1->loop()->schedule_timer(e1);
+			t2->loop()->schedule_timer(e2);
+			t3->loop()->schedule_timer(e3);
 			
 			queue->add(10);
 			

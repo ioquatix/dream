@@ -32,12 +32,12 @@ namespace Dream {
 		class AddressResolutionError : public std::runtime_error
 		{
 		protected:
-			int m_errorCode;
+			int _error_code;
 			
 		public:
-			AddressResolutionError (const std::string & what, int errorCode);
+			AddressResolutionError (const std::string & what, int error_code);
 			
-			int errorCode ();
+			int error_code ();
 		};
 		
 		/// PF_* eg PF_INET
@@ -62,29 +62,29 @@ namespace Dream {
 		 */
 		class Address {
 		private:
-			void copyFromAddress (const Address &);
-			void setAddressData (const sockaddr *, IndexT size);
-			void copyFromAddressInfo (const addrinfo *);
-			int nameInfoForAddress(std::string *, std::string *, int) const;
+			void copy_from_address (const Address &);
+			void set_address_data (const sockaddr *, IndexT size);
+			void copy_from_addressInfo (const addrinfo *);
+			int name_infoForAddress(std::string *, std::string *, int) const;
 			
-			static SocketType socketTypeForString(const std::string &);
+			static SocketType socket_typeForString(const std::string &);
 		
 		protected:
 			/// PF_xxx eg PF_INET
-			int m_protocolFamily;
+			int _protocol_family;
 			/// SOCK_xxx eg SOCK_STREAM
-			int m_socketType;
+			int _socket_type;
 			/// o or IPPROTO_xxx for IPv4/IPv6
-			int m_protocol;
+			int _protocol;
 		
 		private:
 			/// Address data (sockaddr)
-			sockaddr_storage m_addressData;
+			sockaddr_storage _address_data;
 			/// Address data length
-			unsigned m_addressDataSize;
+			unsigned _address_dataSize;
 			
 		public:
-			/// Blank constructor. isValid() returns false.
+			/// Blank constructor. is_valid() returns false.
 			Address ();
 			
 			/// Construct from another address and a <tt>sockaddr *</tt>. This is used when receiving a connection, for example, from the bind system call.
@@ -98,71 +98,71 @@ namespace Dream {
 			Address & operator= (const Address &);
 			
 			/// Returns whether or not the address is valid or not. Even if an address is valid, it is not guaranteed to be successful in other operations.
-			bool isValid () const;
+			bool is_valid () const;
 			
 			/// The size of the actual address data.
-			IndexT addressDataSize () const;
+			IndexT address_dataSize () const;
 			/// A pointer to the <tt>sockaddr *</tt>
-			sockaddr * addressData ();
+			sockaddr * address_data ();
 			/// A const pointer to the <tt>sockaddr *</tt>
-			const sockaddr * addressData () const;
+			const sockaddr * address_data () const;
 			
 			/// The address family, such as AF_INET
-			AddressFamily addressFamily () const;
+			AddressFamily address_family () const;
 			/// A string representation of the address family, such as "IPv4"
-			const char * addressFamilyName () const;
+			const char * address_familyName () const;
 			/// A string representation of the address family, such as "IPv4". Need to supply the AddressFamily value.
-			static const char * addressFamilyName (AddressFamily);
+			static const char * address_familyName (AddressFamily);
 			
-			/// The protocol family, such as PF_INET. Typically equal in value to the addressFamily().
-			ProtocolFamily protocolFamily () const;
+			/// The protocol family, such as PF_INET. Typically equal in value to the address_family().
+			ProtocolFamily protocol_family () const;
 			
 			/// The socket type, such as SOCK_STREAM or SOCK_DGRAM. Represents whether the address represents TCP or UDP connections, for example.
-			SocketType socketType () const;
+			SocketType socket_type () const;
 			/// The string representation of the socket type. Such as "STREAM" or "DGRAM"
-			const char * socketTypeName () const;
+			const char * socket_typeName () const;
 			/// The string representation of the socket type. Such as "STREAM" or "DGRAM". Need to supply the SocketType value. 
-			static const char * socketTypeName (SocketType);	
+			static const char * socket_typeName (SocketType);	
 			
 			/// The socket protocol, such as IPPROTO_TCP
-			SocketProtocol socketProtocol () const;
+			SocketProtocol socket_protocol () const;
 			
 			/// The name from /etc/protocol for the given SocketProtocol.
-			std::string socketProtocolName () const;
+			std::string socket_protocol_name () const;
 			
 			/// The port number if it is applicable.
-			PortNumber portNumber () const;
+			PortNumber port_number () const;
 			
 			/// The service name if it is applicable. Retrieved from /etc/services based on the port number.
-			std::string serviceName () const;
+			std::string service_name () const;
 			
 			/// Typically returns the hostname if one is available, otherwise returns the numeric address.
-			std::string canonicalName () const;
+			std::string canonical_name () const;
 			
 			/// Returns the numeric address.
-			std::string canonicalNumericName () const;
+			std::string canonical_numeric_name () const;
 			
 			/// A string that represents the address in a lossy human-readable form.
 			std::string description () const;
 			
 			/// Returns addresses for binding a server on the local machine. Supply a port number.
 			/// @sa ServerSocket::bind
-			static AddressesT interfaceAddressesForPort (PortNumber port, SocketType sockType);
+			static AddressesT interface_addresses_for_port (PortNumber port, SocketType sock_type);
 			/// Returns addresses for binding a server on the local machine. Supply a service name.
 			/// @sa ServerSocket::bind
-			static AddressesT interfaceAddressesForService (const char * service, SocketType sockType);
+			static AddressesT interface_addresses_for_service (const char * service, SocketType sock_type);
 			
 			/// Returns addresses for connecting to a remote service.
 			/// @sa ClientSocket::connect
-			static AddressesT addressesForName (const char * host, const char * service, SocketType sockType);
+			static AddressesT addresses_for_name (const char * host, const char * service, SocketType sock_type);
 			/// Returns addresses for connecting to a remote service.
 			/// @sa ClientSocket::connect			
-			static AddressesT addressesForName (const char * host, const char * service, addrinfo * hints);
+			static AddressesT addresses_for_name (const char * host, const char * service, addrinfo * hints);
 			
 			/// Returns addresses for a given URI.
 			/// Format of the URI is service://hostname/
 			/// e.g. http://www.google.com or www.google.com:80
-			static AddressesT addressesForURI (const URI &, SocketType socketType = SOCK_STREAM);
+			static AddressesT addresses_for_uri (const URI &, SocketType socket_type = SOCK_STREAM);
 		};
 	}
 }

@@ -93,30 +93,30 @@ const int RENDER_THREAD_FINISHED = 1;
 
 - (void)createFramebuffer
 {
-    if (context && !defaultFramebuffer) {
+    if (context && !_default_framebuffer) {
         [EAGLContext setCurrentContext:context];
         
         // Create default framebuffer object.
-        glGenFramebuffers(1, &defaultFramebuffer);
-        glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
+        glGenFramebuffers(1, &_default_framebuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, _default_framebuffer);
         
         // Create color render buffer and allocate backing store.
-        glGenRenderbuffers(1, &colorRenderbuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
+        glGenRenderbuffers(1, &_color_renderbuffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, _color_renderbuffer);
 		
         [context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
-        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &backingWidth);
-        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &backingHeight);
+        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_backing_width);
+        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_backing_height);
         
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _color_renderbuffer);
 		
 		// Depth buffer setup
-		GLenum depthFormat = GL_DEPTH_COMPONENT16;
+		GLenum depth_format = GL_DEPTH_COMPONENT16;
 		
-		glGenRenderbuffers(1, &depthRenderbuffer);
-		glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
-		glRenderbufferStorage(GL_RENDERBUFFER, depthFormat, backingWidth, backingHeight);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
+		glGenRenderbuffers(1, &_depth_renderbuffer);
+		glBindRenderbuffer(GL_RENDERBUFFER, _depth_renderbuffer);
+		glRenderbufferStorage(GL_RENDERBUFFER, depth_format, _backing_width, _backing_height);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depth_renderbuffer);
         
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
@@ -128,19 +128,19 @@ const int RENDER_THREAD_FINISHED = 1;
     if (context) {
         [EAGLContext setCurrentContext:context];
         
-        if (defaultFramebuffer) {
-            glDeleteFramebuffers(1, &defaultFramebuffer);
-            defaultFramebuffer = 0;
+        if (_default_framebuffer) {
+            glDeleteFramebuffers(1, &_default_framebuffer);
+            _default_framebuffer = 0;
         }
         
-        if (colorRenderbuffer) {
-            glDeleteRenderbuffers(1, &colorRenderbuffer);
-            colorRenderbuffer = 0;
+        if (_color_renderbuffer) {
+            glDeleteRenderbuffers(1, &_color_renderbuffer);
+            _color_renderbuffer = 0;
         }
 		
-		if (depthRenderbuffer) {
-			glDeleteRenderbuffers(1, &depthRenderbuffer);
-			depthRenderbuffer = 0;
+		if (_depth_renderbuffer) {
+			glDeleteRenderbuffers(1, &_depth_renderbuffer);
+			_depth_renderbuffer = 0;
 		}
     }
 }
@@ -150,17 +150,17 @@ const int RENDER_THREAD_FINISHED = 1;
     if (context) {
         [EAGLContext setCurrentContext:context];
         
-		if (resizeBuffers) {
+		if (_resize_buffers) {
 			[self deleteFramebuffer];
-			resizeBuffers = NO;
+			_resize_buffers = NO;
 		}
 		
-        if (!defaultFramebuffer)
+        if (!_default_framebuffer)
             [self createFramebuffer];
         
-        glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, _default_framebuffer);
         
-        glViewport(0, 0, backingWidth, backingHeight);
+        glViewport(0, 0, _backing_width, _backing_height);
     }
 }
 
@@ -171,7 +171,7 @@ const int RENDER_THREAD_FINISHED = 1;
     if (context) {
         [EAGLContext setCurrentContext:context];
         
-        glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, _color_renderbuffer);
         
         success = [context presentRenderbuffer:GL_RENDERBUFFER];
     }
@@ -182,7 +182,7 @@ const int RENDER_THREAD_FINISHED = 1;
 - (void)layoutSubviews
 {
     // The framebuffer will be re-created at the beginning of the next setFramebuffer method call.
-    resizeBuffers = YES;
+    _resize_buffers = YES;
 }
 
 - (void) render:(CADisplayLink*)displayLink
@@ -198,7 +198,7 @@ const int RENDER_THREAD_FINISHED = 1;
 - (void) _start
 {
 	// Lock the render process
-	[renderThreadLock lock];
+	[_render_thread_lock lock];
 	
 	// We shouldn't begin the rendering thread more than once.
 	NSAutoreleasePool * pool = [NSAutoreleasePool new];	
@@ -223,22 +223,22 @@ const int RENDER_THREAD_FINISHED = 1;
 	[pool release];
 	
 	// Signal that we are done.
-	[renderThreadLock unlockWithCondition:RENDER_THREAD_FINISHED];
+	[_render_thread_lock unlockWithCondition:RENDER_THREAD_FINISHED];
 }
 
 - (void) start
 {
-	if (!renderThreadLock) {
-		renderThreadLock = [NSConditionLock new];
+	if (!_render_thread_lock) {
+		_render_thread_lock = [NSConditionLock new];
 	}
 
-	if (!renderThread) {
+	if (!_render_thread) {
 		NSLog(@"Starting render thread...");
-		renderThread = [[NSThread alloc] initWithTarget:self selector:@selector(_start) object:nil];
+		_render_thread = [[NSThread alloc] initWithTarget:self selector:@selector(_start) object:nil];
 		
-		[renderThread start];
+		[_render_thread start];
 	} else {
-		NSLog(@"Render thread already running: %@", renderThread);
+		NSLog(@"Render thread already running: %@", _render_thread);
 	}
 }
 
@@ -246,21 +246,21 @@ const int RENDER_THREAD_FINISHED = 1;
 {
 	NSLog(@"Stopping render thread...");
 	
-	if (renderThread) {
-		[renderThread cancel];
+	if (_render_thread) {
+		[_render_thread cancel];
 		
 		// Send a notification via a mach port to the other thread's run loop. This causes the
 		// runMode:beforeDate: method to return immediately, with the end result that the run-loop
 		// is stopped.
-		[self performSelector:@selector(_exit) onThread:renderThread withObject:nil waitUntilDone:NO];
+		[self performSelector:@selector(_exit) onThread:_render_thread withObject:nil waitUntilDone:NO];
 		
 		// Wait for the render thread to finish.
-		[renderThreadLock lockWhenCondition:RENDER_THREAD_FINISHED];
+		[_render_thread_lock lockWhenCondition:RENDER_THREAD_FINISHED];
 		
-		[renderThread release];
-		renderThread = nil;
+		[_render_thread release];
+		_render_thread = nil;
 		
-		[renderThreadLock unlock];
+		[_render_thread_lock unlock];
 	}
 }
 

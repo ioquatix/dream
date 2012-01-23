@@ -16,7 +16,7 @@ namespace Dream
 	namespace Geometry
 	{
 		template <typename NumericT>
-		inline Plane<3, NumericT> convertPlaneFromMatrixEqn (const NumericT & a, const NumericT & b, const NumericT & c, NumericT distance)
+		inline Plane<3, NumericT> convert_plane_from_matrix_eqn (const NumericT & a, const NumericT & b, const NumericT & c, NumericT distance)
 		{
 			Vector<3, NumericT> normal(a, b, c);
 			
@@ -30,34 +30,34 @@ namespace Dream
 		}
 		
 		template <typename NumericT>
-		void Frustum<NumericT>::buildFrustrumFromMatrix (const Matrix<4, 4, NumericT> & m)
+		void Frustum<NumericT>::build_frustrum_from_matrix (const Matrix<4, 4, NumericT> & m)
 		{
 			// The constructor used for Plane will normalize its elements automatically
 			
 			// Left   (m3 + m0)
-			m_planes[LEFT] = convertPlaneFromMatrixEqn(m.at(3,0)+m.at(0,0), m.at(3,1)+m.at(0,1), m.at(3,2)+m.at(0,2), (m.at(3,3)+m.at(0,3)));
+			_planes[LEFT] = convert_plane_from_matrix_eqn(m.at(3,0)+m.at(0,0), m.at(3,1)+m.at(0,1), m.at(3,2)+m.at(0,2), (m.at(3,3)+m.at(0,3)));
 			
 			// Right  (m3 - m0)
-			m_planes[RIGHT] = convertPlaneFromMatrixEqn(m.at(3,0)-m.at(0,0), m.at(3,1)-m.at(0,1), m.at(3,2)-m.at(0,2), (m.at(3,3)-m.at(0,3)));
+			_planes[RIGHT] = convert_plane_from_matrix_eqn(m.at(3,0)-m.at(0,0), m.at(3,1)-m.at(0,1), m.at(3,2)-m.at(0,2), (m.at(3,3)-m.at(0,3)));
 			
 			// Top    (m3 - m1)
-			m_planes[TOP] = convertPlaneFromMatrixEqn(m.at(3,0)-m.at(1,0), m.at(3,1)-m.at(1,1), m.at(3,2)-m.at(1,2), (m.at(3,3)-m.at(1,3)));
+			_planes[TOP] = convert_plane_from_matrix_eqn(m.at(3,0)-m.at(1,0), m.at(3,1)-m.at(1,1), m.at(3,2)-m.at(1,2), (m.at(3,3)-m.at(1,3)));
 			
 			// Bottom (m3 + m1)
-			m_planes[BOTTOM] = convertPlaneFromMatrixEqn(m.at(3,0)+m.at(1,0), m.at(3,1)+m.at(1,1), m.at(3,2)+m.at(1,2), (m.at(3,3)+m.at(1,3)));
+			_planes[BOTTOM] = convert_plane_from_matrix_eqn(m.at(3,0)+m.at(1,0), m.at(3,1)+m.at(1,1), m.at(3,2)+m.at(1,2), (m.at(3,3)+m.at(1,3)));
 			
 			// Near
-			m_planes[NEAR] = convertPlaneFromMatrixEqn(m.at(2,0), m.at(2,1), m.at(2,2), m.at(2,3));
+			_planes[NEAR] = convert_plane_from_matrix_eqn(m.at(2,0), m.at(2,1), m.at(2,2), m.at(2,3));
 			
 			// Far    (m3 - m2)
-			m_planes[FAR] = convertPlaneFromMatrixEqn(m.at(3,0)-m.at(2,0), m.at(3,1)-m.at(2,1), m.at(3,2)-m.at(2,2), (m.at(3,3)-m.at(2,3)));
+			_planes[FAR] = convert_plane_from_matrix_eqn(m.at(3,0)-m.at(2,0), m.at(3,1)-m.at(2,1), m.at(3,2)-m.at(2,2), (m.at(3,3)-m.at(2,3)));
 		}
 		
 		template <typename NumericT>		
-		bool Frustum<NumericT>::intersectsWith (const Sphere<3, NumericT> & s) const
+		bool Frustum<NumericT>::intersects_with (const Sphere<3, NumericT> & s) const
 		{
 			for (unsigned i = 0; i < 6; ++i) {
-				NumericT d = m_planes[i].distanceToPoint(s.center());
+				NumericT d = _planes[i].distance_to_point(s.center());
 				
 				if (d <= - s.radius())
 					return false;
@@ -67,15 +67,15 @@ namespace Dream
 		}
 		
 		template <typename NumericT>
-		bool Frustum<NumericT>::intersectsWith (const AlignedBox<3, NumericT> &b) const
+		bool Frustum<NumericT>::intersects_with (const AlignedBox<3, NumericT> &b) const
 		{
-			return intersectsWith(b.boundingSphere());
+			return intersects_with(b.bounding_sphere());
 		}
 		
 		/*	
-		 bool Frustum::containsPoint (const Vec3 &p) const {
+		 bool Frustum::contains_point (const Vec3 &p) const {
 			for (unsigned i = 0; i < 6; ++i) {
-				RealT d = m_planes[i].distanceToPoint(p);
+				RealT d = _planes[i].distance_to_point(p);
 		 
 				if (d <= 0)
 					return false;

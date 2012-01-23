@@ -78,7 +78,7 @@ namespace Dream
 			inline const NumericT * values () const;
 
 		public:
-			Matrix<4, 4, NumericT> inverseMatrix () const;
+			Matrix<4, 4, NumericT> inverse_matrix () const;
 		};
 
 #pragma mark -
@@ -96,33 +96,33 @@ namespace Dream
 
 		public:
 			template <unsigned K>
-			static MatrixT scalingMatrix (const Vector<K, NumericT> & amount);
+			static MatrixT scaling_matrix (const Vector<K, NumericT> & amount);
 
 			template <unsigned K>
-			static MatrixT translatingMatrix (const Vector<K, NumericT> & amount);
+			static MatrixT translating_matrix (const Vector<K, NumericT> & amount);
 
 			// Rotations in 3D.
-			static MatrixT rotatingMatrix (const NumericT & radians, const Vector<3, NumericT> & normal);
-			static MatrixT rotatingMatrix (const NumericT & radians, const Vector<3, NumericT> & normal, const Vector<3, NumericT> & point);
-			static MatrixT rotatingMatrix (const Vector<3, NumericT> & from, const Vector<3, NumericT> & to, const Vector<3, NumericT> & normal);
+			static MatrixT rotating_matrix (const NumericT & radians, const Vector<3, NumericT> & normal);
+			static MatrixT rotating_matrix (const NumericT & radians, const Vector<3, NumericT> & normal, const Vector<3, NumericT> & point);
+			static MatrixT rotating_matrix (const Vector<3, NumericT> & from, const Vector<3, NumericT> & to, const Vector<3, NumericT> & normal);
 
 			// Rotations in 2D.
-			static MatrixT rotatingMatrixAroundX (const NumericT & radians);
-			static MatrixT rotatingMatrixAroundY (const NumericT & radians);
+			static MatrixT rotating_matrix_around_x (const NumericT & radians);
+			static MatrixT rotating_matrix_around_y (const NumericT & radians);
 			/// Also works for Matrix<2,2>
-			static MatrixT rotatingMatrixAroundZ (const NumericT & radians);
+			static MatrixT rotating_matrix_around_z (const NumericT & radians);
 
 			// Convenience Functions
-			MatrixT rotatedMatrix (const NumericT & radians, const Vector<3, NumericT> & normal);
-			MatrixT rotatedMatrix (const NumericT & radians, const Vector<3, NumericT> & normal, const Vector<3, NumericT> & point);
+			MatrixT rotated_matrix (const NumericT & radians, const Vector<3, NumericT> & normal);
+			MatrixT rotated_matrix (const NumericT & radians, const Vector<3, NumericT> & normal, const Vector<3, NumericT> & point);
 
 			template <unsigned K>
-			MatrixT scaledMatrix (const Vector<K, NumericT> & amount);
+			MatrixT scaled_matrix (const Vector<K, NumericT> & amount);
 
 			template <unsigned K>
-			MatrixT translatedMatrix (const Vector<K, NumericT> & amount);
+			MatrixT translated_matrix (const Vector<K, NumericT> & amount);
 
-			/// In-place transposition (transposeMatrix)
+			/// In-place transposition (transpose_matrix)
 			MatrixT & transpose ();
 		};
 
@@ -140,7 +140,7 @@ namespace Dream
 			typedef Matrix<R, C, float> MatrixT;
 
 		public:
-			bool equalWithinTolerance (const MatrixT & other, const unsigned & ulps = DEFAULT_ULPS) const;
+			bool equal_within_tolerance (const MatrixT & other, const unsigned & ulps = DEFAULT_ULPS) const;
 		};
 
 		template <unsigned R, unsigned C>
@@ -150,14 +150,14 @@ namespace Dream
 			typedef Matrix<R, C, double> MatrixT;
 
 		public:
-			bool equalWithinTolerance (const MatrixT & other, const unsigned & ulps = DEFAULT_ULPS) const;
+			bool equal_within_tolerance (const MatrixT & other, const unsigned & ulps = DEFAULT_ULPS) const;
 		};
 
 #pragma mark -
 #pragma mark Matrix Class
 
-		unsigned rowMajorOffset(unsigned row, unsigned col, unsigned sz);
-		unsigned columnMajorOffset(unsigned row, unsigned col, unsigned sz);
+		unsigned row_major_offset(unsigned row, unsigned col, unsigned sz);
+		unsigned column_major_offset(unsigned row, unsigned col, unsigned sz);
 
 		/** A 2-dimentional set of numbers that can represent useful transformations in n-space.
 		
@@ -174,7 +174,7 @@ namespace Dream
 			typedef _NumericT NumericT;
 
 		protected:
-			NumericT m_matrix[R*C];
+			NumericT _matrix[R*C];
 		
 		public:
 			// Uninitialized constructor
@@ -191,7 +191,7 @@ namespace Dream
 
 			void set (const NumericT * data)
 			{
-				memcpy(m_matrix, data, sizeof(m_matrix));
+				memcpy(_matrix, data, sizeof(_matrix));
 			}
 			
 			template <typename AnyT>
@@ -199,56 +199,56 @@ namespace Dream
 			{
 				for (unsigned i = 0; i < R*C; i++)
 				{
-					m_matrix[i] = data[i];
+					_matrix[i] = data[i];
 				}
 			}
 			
 			void zero ();
-			void loadIdentity (const NumericT & n = 1);
+			void load_identity (const NumericT & n = 1);
 
 			// Accessors
 			const NumericT & at (unsigned r, unsigned c) const
 			{
-				ensure(rowMajorOffset(r, c, C) < R*C);
-				return m_matrix[rowMajorOffset(r, c, C)];
+				ensure(row_major_offset(r, c, C) < R*C);
+				return _matrix[row_major_offset(r, c, C)];
 			}
 
 			NumericT & at (unsigned r, unsigned c)
 			{
-				ensure(rowMajorOffset(r, c, C) < R*C);
-				return m_matrix[rowMajorOffset(r, c, C)];
+				ensure(row_major_offset(r, c, C) < R*C);
+				return _matrix[row_major_offset(r, c, C)];
 			}
 			
 			const NumericT & at (unsigned i) const
 			{
 				ensure(i < R*C);
-				return m_matrix[i];
+				return _matrix[i];
 			}
 			
 			const NumericT & operator[] (unsigned i) const
 			{
-				return m_matrix[i];
+				return _matrix[i];
 			}
 			
 			NumericT & operator[] (unsigned i)
 			{
-				return m_matrix[i];
+				return _matrix[i];
 			}
 			
 			NumericT & at (unsigned i)
 			{
 				ensure(i < R*C);
-				return m_matrix[i];
+				return _matrix[i];
 			}
 
 			NumericT * value ()
 			{
-				return (NumericT*)m_matrix;
+				return (NumericT*)_matrix;
 			}
 
 			const NumericT * value () const
 			{
-				return (const NumericT*)m_matrix;
+				return (const NumericT*)_matrix;
 			}
 			
 			/// Copy a vector into the matix at position r, c
@@ -260,24 +260,24 @@ namespace Dream
 				memcpy(&at(r, c), v.value(), sizeof(NumericT) * D);
 			}
 			
-			/// Copy a vector into the matrix at position r, c, with elementOffset distance between each element.
+			/// Copy a vector into the matrix at position r, c, with element_offset distance between each element.
 			/// The purpose of this function is primarily to facilitate copying a vector into a matrix in an order
 			/// other than the major.
 			/// i.e. set(0, 0, Vec4(...), 4) will set a row in a column major matrix.
 			template <unsigned D>
-			void set (const IndexT & r, const IndexT & c, const Vector<D, NumericT> & v, IndexT elementOffset)
+			void set (const IndexT & r, const IndexT & c, const Vector<D, NumericT> & v, IndexT element_offset)
 			{
-				IndexT offset = &at(r, c) - (NumericT*)m_matrix;
+				IndexT offset = &at(r, c) - (NumericT*)_matrix;
 								
 				for (IndexT i = 0; i < D; i += 1) {
-					value()[offset + elementOffset * i] = v[i];
+					value()[offset + element_offset * i] = v[i];
 				}
 			}
 			
 			/// @todo Write get equivalent of set functions for retriving Vector data
 			
 			/// Return a copy of this matrix, transposed.
-			Matrix<C, R, NumericT> transposedMatrix () const
+			Matrix<C, R, NumericT> transposed_matrix () const
 			{
 				Matrix<C, R, NumericT> result;
 
@@ -289,7 +289,7 @@ namespace Dream
 			}
 			
 			/// Load a test patern into the matrix. Used for testing.
-			void loadTestPattern ()
+			void load_test_pattern ()
 			{
 				unsigned i = 0;
 
@@ -321,20 +321,20 @@ namespace Dream
 		typedef Matrix<2, 2, RealT> Mat22;
 
 		/// Convenience constructor for matrix class
-		Mat44 rotation (const RealT & radians, const Vec3 & aroundNormal, const Vec3 & aroundPoint);
+		Mat44 rotation (const RealT & radians, const Vec3 & around_normal, const Vec3 & around_point);
 		/// Convenience constructor for matrix class
-		Mat44 rotation (const RealT & radians, const Vec3 & aroundNormal);
+		Mat44 rotation (const RealT & radians, const Vec3 & around_normal);
 		/// Convenience constructor for matrix class
-		Mat44 rotation (const Vec3 & fromUnitVector, const Vec3 & toUnitVector, const Vec3 & aroundNormal);
+		Mat44 rotation (const Vec3 & from_unit_vector, const Vec3 & to_unit_vector, const Vec3 & around_normal);
 
 		template <typename NumericT>
-		Matrix<4, 4, NumericT> perspectiveMatrix (const NumericT & fieldOfView, const NumericT & aspectRatio, const NumericT & near, const NumericT & far) {
-			NumericT f = 1.0 / Number<NumericT>::tan(fieldOfView * 0.5);
+		Matrix<4, 4, NumericT> perspective_matrix (const NumericT & field_of_view, const NumericT & aspect_ratio, const NumericT & near, const NumericT & far) {
+			NumericT f = 1.0 / Number<NumericT>::tan(field_of_view * 0.5);
 			NumericT n = 1.0 / (near - far);
 			
 			Matrix<4, 4, NumericT> result(ZERO);
 			
-			result.at(0) = f / aspectRatio;
+			result.at(0) = f / aspect_ratio;
 			result.at(5) = f;
 			result.at(10) = (far + near) * n;
 			result.at(11) = -1.0;
@@ -344,7 +344,7 @@ namespace Dream
 		}
 		
 		template <typename NumericT>
-		Matrix<4, 4, NumericT> orthographicMatrix (const Vec3 & translation, const Vec3 & size) {
+		Matrix<4, 4, NumericT> orthographic_matrix (const Vec3 & translation, const Vec3 & size) {
 			Matrix<4, 4, NumericT> result(ZERO);
 			
 			result.at(0) = 2.0 / size[X];

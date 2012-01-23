@@ -9,7 +9,7 @@
 
 #include "OggResource.h"
 
-// We don't need the static callbacks, since we define our own callbacks to hook into IData::inputStream().
+// We don't need the static callbacks, since we define our own callbacks to hook into IData::input_stream().
 #define OV_EXCLUDE_STATIC_CALLBACKS
 
 #include <ogg/ogg.h>
@@ -29,62 +29,62 @@ namespace Dream
 			class OggReader : private NonCopyable
 			{
 				protected:
-					Shared<std::istream> m_inputStream;
-					OggVorbis_File m_file;
+					Shared<std::istream> _input_stream;
+					OggVorbis_File _file;
 					
 				public:
-					OggReader (Shared<std::istream> inputStream);
+					OggReader (Shared<std::istream> input_stream);
 					virtual ~OggReader ();
 					
 					OggVorbis_File * file ()
 					{
-						return &m_file;
+						return &_file;
 					}
 					
 				protected:
-					static std::size_t readCallback (void * buffer, std::size_t size, std::size_t count, void * source) {
-						OggReader * oggReader = (OggReader *)source;
+					static std::size_t read_callback (void * buffer, std::size_t size, std::size_t count, void * source) {
+						OggReader * ogg_reader = (OggReader *)source;
 						
-						return oggReader->m_inputStream->rdbuf()->sgetn((char*)buffer, size * count);
+						return ogg_reader->_input_stream->rdbuf()->sgetn((char*)buffer, size * count);
 					}
 					
-					static int seekCallback (void * source, ogg_int64_t offset, int whence) {
-						OggReader * oggReader = (OggReader *)source;
+					static int seek_callback (void * source, ogg_int64_t offset, int whence) {
+						OggReader * ogg_reader = (OggReader *)source;
 						
-						oggReader->m_inputStream->seekg(offset, (std::ios::seekdir)whence);
+						ogg_reader->_input_stream->seekg(offset, (std::ios::seekdir)whence);
 						
-						if (oggReader->m_inputStream->bad())
+						if (ogg_reader->_input_stream->bad())
 							return -1;
 						else
 							return 0;
 					}
 					
-					static long tellCallback (void * source) {
-						OggReader * oggReader = (OggReader *)source;
+					static long tell_callback (void * source) {
+						OggReader * ogg_reader = (OggReader *)source;
 						
-						return oggReader->m_inputStream->tellg();
+						return ogg_reader->_input_stream->tellg();
 					}
 			};
 			
-			OggReader::OggReader (Shared<std::istream> inputStream)
-				: m_inputStream(inputStream)
+			OggReader::OggReader (Shared<std::istream> input_stream)
+				: _input_stream(input_stream)
 			{
 				ov_callbacks callbacks;
 				
-				callbacks.read_func = readCallback;
-				callbacks.seek_func = seekCallback;
-				callbacks.tell_func = tellCallback;
+				callbacks.read_func = read_callback;
+				callbacks.seek_func = seek_callback;
+				callbacks.tell_func = tell_callback;
 				callbacks.close_func = NULL;
 				
-				int result = ov_open_callbacks(this, &m_file, NULL, 0, callbacks);
+				int result = ov_open_callbacks(this, &_file, NULL, 0, callbacks);
 				
 				if (result != 0)
-					throw std::runtime_error(OggResource::errorString(result));
+					throw std::runtime_error(OggResource::error_string(result));
 			}
 			
 			OggReader::~OggReader ()
 			{
-				ov_clear(&m_file);
+				ov_clear(&_file);
 			}
 			
 #pragma mark -
@@ -92,12 +92,12 @@ namespace Dream
 			
 			class OggStream : public Stream {
 			protected:
-				virtual bool loadNextBuffer (PTR(Source) source, ALuint buffer);
+				virtual bool load_next_buffer (PTR(Source) source, ALuint buffer);
 				
-				OggReader m_reader;
-				const REF(IData) m_data;
+				OggReader _reader;
+				const REF(IData) _data;
 				
-				bool m_loop;
+				bool _loop;
 				
 			public:
 				OggStream (PTR(Source) source, ALenum format, ALsizei frequency, const PTR(IData) data);
@@ -109,7 +109,7 @@ namespace Dream
 			
 			
 			OggStream::OggStream (PTR(Source) source, ALenum format, ALsizei frequency, const PTR(IData) data)
-				: Stream(source, format, frequency), m_reader(data->inputStream()), m_data(data), m_loop(true)
+				: Stream(source, format, frequency), _reader(data->input_stream()), _data(data), _loop(true)
 			{
 				
 			}
@@ -124,14 +124,14 @@ namespace Dream
 				Stream::stop();
 				
 				// Reset playhead.
-				int result = ov_pcm_seek(m_reader.file(), 0);
+				int result = ov_pcm_seek(_reader.file(), 0);
 				
 				if (result != 0)
-					throw std::runtime_error(OggResource::errorString(result));
+					throw std::runtime_error(OggResource::error_string(result));
 			}
 			
 			// Load a chunk of ogg data into the given buffer
-			bool OggStream::loadNextBuffer (PTR(Source) source, ALuint buffer)
+			bool OggStream::load_next_buffer (PTR(Source) source, ALuint buffer)
 			{
 				ByteT chunk[ChunkSize];
 				IndexT size = 0;
@@ -139,24 +139,24 @@ namespace Dream
 				
 				while (size < ChunkSize)
 				{
-					result = ov_read(m_reader.file(), (char*)(chunk + size), ChunkSize - size, 0, 2, 1, &section);
+					result = ov_read(_reader.file(), (char*)(chunk + size), ChunkSize - size, 0, 2, 1, &section);
 					
 					if (result > 0)
 						size += result;
-					else if (result == 0 && m_loop)
-						ov_pcm_seek(m_reader.file(), 0);
+					else if (result == 0 && _loop)
+						ov_pcm_seek(_reader.file(), 0);
 					else if (result == 0)
 						break;
 					else
-						throw std::runtime_error(OggResource::errorString(result));
+						throw std::runtime_error(OggResource::error_string(result));
 				}
 				
 				if (size == 0) {
-					stopBufferCallbacks();
+					stop_buffer_callbacks();
 					return false;
 				}
 				
-				bufferData(source, buffer, m_format, chunk, size, m_frequency);
+				buffer_data(source, buffer, _format, chunk, size, _frequency);
 				
 				return true;
 			}
@@ -164,32 +164,32 @@ namespace Dream
 #pragma mark -
 #pragma mark OggResource
 
-			void OggResource::Loader::registerLoaderTypes (ILoader * loader)
+			void OggResource::Loader::register_loader_types (ILoader * loader)
 			{
-				loader->setLoaderForExtension(this, "ogg");
-				loader->setLoaderForExtension(this, "oga");
+				loader->set_loader_for_extension(this, "ogg");
+				loader->set_loader_for_extension(this, "oga");
 			}
 			
-			REF(Object) OggResource::Loader::loadFromData (const PTR(IData) data, const ILoader * loader)
+			REF(Object) OggResource::Loader::load_from_data (const PTR(IData) data, const ILoader * loader)
 			{
 				return new OggResource(data);
 			}
 			
 			OggResource::OggResource (const PTR(IData) data)
-				: m_data(data)
+				: _data(data)
 			{
-				OggReader oggReader(data->inputStream());
+				OggReader ogg_reader(data->input_stream());
 				
-				vorbis_info * info = ov_info(oggReader.file(), -1);
-				//m_comment = ov_comment(oggReader.file(), -1);
+				vorbis_info * info = ov_info(ogg_reader.file(), -1);
+				//_comment = ov_comment(ogg_reader.file(), -1);
 				
 				// Determine audio chunk format
 				if (info->channels == 1)
-					m_format = AL_FORMAT_MONO16;
+					_format = AL_FORMAT_MONO16;
 				else
-					m_format = AL_FORMAT_STEREO16;
+					_format = AL_FORMAT_STEREO16;
 				
-				m_frequency = info->rate;
+				_frequency = info->rate;
 			}
 			
 			OggResource::~OggResource ()
@@ -197,17 +197,17 @@ namespace Dream
 			
 			}
 			
-			REF(Stream) OggResource::createStream (PTR(Source) source)
+			REF(Stream) OggResource::create_stream (PTR(Source) source)
 			{
-				return new OggStream(source, m_format, m_frequency, m_data);
+				return new OggStream(source, _format, _frequency, _data);
 			}
 			
-			REF(Sound) OggResource::createSound (PTR(Source) source)
+			REF(Sound) OggResource::create_sound (PTR(Source) source)
 			{
 				return NULL;
 			}
 			
-			StringT OggResource::errorString (int code) {
+			StringT OggResource::error_string (int code) {
 				switch(code) {
 					case OV_EREAD:
 						return "Could not read audio stream.";
@@ -227,18 +227,18 @@ namespace Dream
 			/*
 			void OggResource::debug() {
 				std::cerr
-					<< "version         " << m_info->version         << "\n"
-					<< "channels        " << m_info->channels        << "\n"
-					<< "rate (hz)       " << m_info->rate            << "\n"
-					<< "bitrate upper   " << m_info->bitrate_upper   << "\n"
-					<< "bitrate nominal " << m_info->bitrate_nominal << "\n"
-					<< "bitrate lower   " << m_info->bitrate_lower   << "\n"
-					<< "bitrate window  " << m_info->bitrate_window  << "\n"
+					<< "version         " << _info->version         << "\n"
+					<< "channels        " << _info->channels        << "\n"
+					<< "rate (hz)       " << _info->rate            << "\n"
+					<< "bitrate upper   " << _info->bitrate_upper   << "\n"
+					<< "bitrate nominal " << _info->bitrate_nominal << "\n"
+					<< "bitrate lower   " << _info->bitrate_lower   << "\n"
+					<< "bitrate window  " << _info->bitrate_window  << "\n"
 					<< "\n"
-					<< "vendor " << m_comment->vendor << "\n";
+					<< "vendor " << _comment->vendor << "\n";
 					
-				for(int i = 0; i < m_comment->comments; i++)
-					std::cerr << "   " << m_comment->user_comments[i] << "\n";
+				for(int i = 0; i < _comment->comments; i++)
+					std::cerr << "   " << _comment->user_comments[i] << "\n";
 					
 				std::cerr << std::endl;
 			}

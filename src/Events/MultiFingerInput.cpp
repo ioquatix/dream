@@ -15,48 +15,48 @@ namespace Dream
 	namespace Events
 	{
 	
-		MultiFingerInput::MultiFingerInput () : m_top(0)
+		MultiFingerInput::MultiFingerInput () : _top(0)
 		{
 			
 		}
 		
-		ButtonT MultiFingerInput::allocateButton ()
+		ButtonT MultiFingerInput::allocate_button ()
 		{
-			if (m_freeButtons.size()) {
-				ButtonT freeButton = m_freeButtons.back();
-				m_freeButtons.pop_back();
-				return freeButton;
+			if (_free_buttons.size()) {
+				ButtonT free_button = _free_buttons.back();
+				_free_buttons.pop_back();
+				return free_button;
 			} else {
-				m_top += 1;
-				return m_top;
+				_top += 1;
+				return _top;
 			}
 		}
 		
-		void MultiFingerInput::releaseButton (ButtonT button)
+		void MultiFingerInput::release_button (ButtonT button)
 		{
-			if (m_top == button) {
-				m_top -= 1;
+			if (_top == button) {
+				_top -= 1;
 			} else {
-				m_freeButtons.push_back(button);
+				_free_buttons.push_back(button);
 			}
 		}
 		
-		const FingerTracking & MultiFingerInput::beginMotion (FingerID finger, Vec3 position)
+		const FingerTracking & MultiFingerInput::begin_motion (FingerID finger, Vec3 position)
 		{
 			FingerTracking ft;
-			ft.button = allocateButton();
+			ft.button = allocate_button();
 			ft.position = position;
 			ft.motion.zero();
 			
 			//std::cerr << " Begin Tracking Finger : " << ft.button << " @ " << ft.position << std::endl;
 			
-			return (m_fingers[finger] = ft);
+			return (_fingers[finger] = ft);
 		}
 		
-		const FingerTracking & MultiFingerInput::updateMotion (FingerID finger, Vec3 position)
+		const FingerTracking & MultiFingerInput::update_motion (FingerID finger, Vec3 position)
 		{
-			FingersMap::iterator it = m_fingers.find(finger);
-			ensure(it != m_fingers.end());
+			FingersMap::iterator it = _fingers.find(finger);
+			ensure(it != _fingers.end());
 			
 			FingerTracking & ft = it->second;
 			ft.motion = ft.position - position;
@@ -67,17 +67,17 @@ namespace Dream
 			return ft;
 		}
 		
-		const FingerTracking MultiFingerInput::finishMotion (FingerID finger, Vec3 position)
+		const FingerTracking MultiFingerInput::finish_motion (FingerID finger, Vec3 position)
 		{
-			FingersMap::iterator it = m_fingers.find(finger);
-			ensure(it != m_fingers.end());
+			FingersMap::iterator it = _fingers.find(finger);
+			ensure(it != _fingers.end());
 			
 			FingerTracking ft = it->second;
 			ft.motion = ft.position - position;
 			ft.position = position;
 			
-			releaseButton(ft.button);
-			m_fingers.erase(it);
+			release_button(ft.button);
+			_fingers.erase(it);
 			
 			//std::cerr << "Finish Tracking Finger : " << ft.button << " @ " << ft.position << std::endl;
 			

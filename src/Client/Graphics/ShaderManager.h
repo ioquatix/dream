@@ -16,19 +16,19 @@ namespace Dream {
 		namespace Graphics {
 			
 			/*
-				REF(ShaderManager) shaderManager = new ShaderManager;
-				vertexShader = shaderManager->compile(GL_VERTEX_SHADER, resourceLoader()->...);
-				fragmentShader = shaderManager->compile(GL_VERTEX_SHADER, resourceLoader()->...);
+				REF(ShaderManager) shader_manager = new ShaderManager;
+				vertex_shader = shader_manager->compile(GL_VERTEX_SHADER, resource_loader()->...);
+				fragment_shader = shader_manager->compile(GL_VERTEX_SHADER, resource_loader()->...);
 				REF(Program) program = new Program();
-				program->attach(vertexShader);
-				program->attach(fragmentShader);
+				program->attach(vertex_shader);
+				program->attach(fragment_shader);
 				program->link();
 			 */
 
 			class ShaderError : public std::exception
 			{
 			protected:
-				StringT m_message;
+				StringT _message;
 			public:
 				ShaderError(StringT message);
 				
@@ -38,7 +38,7 @@ namespace Dream {
 			class Program : public Object {
 			protected:
 				// This is actually a program handle.
-				GLenum m_handle;
+				GLenum _handle;
 				
 			public:
 				Program();
@@ -47,13 +47,13 @@ namespace Dream {
 				void attach(GLenum shader);
 				bool link();
 				
-				GLuint attributeLocation(const char * name);
-				GLuint uniformLocation(const char * name);
+				GLuint attribute_location(const char * name);
+				GLuint uniform_location(const char * name);
 				
 				void bind_fragment_location(const char * name, GLuint output = 0);
 				
 				void property(GLenum name, GLint * value) {
-					glGetProgramiv(m_handle, name, value);
+					glGetProgramiv(_handle, name, value);
 				}
 				
 				Shared<Buffer> info_log();
@@ -67,7 +67,7 @@ namespace Dream {
 			 */
 			class ShaderManager : public Object {
 			protected:
-				std::vector<GLenum> m_shaders;
+				std::vector<GLenum> _shaders;
 				
 			public:
 				ShaderManager();

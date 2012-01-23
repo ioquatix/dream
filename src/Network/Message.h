@@ -23,7 +23,7 @@ namespace Dream {
 			/// The length in bytes.
 			Core::Ordered<uint32_t> length;
 			/// The packet type.
-			Core::Ordered<uint16_t> ptype;
+			Core::Ordered<uint16_t> packet_type;
 		};
 		
 		/** A message that can be sent across the network.
@@ -36,19 +36,19 @@ namespace Dream {
 		class Message : public Object
 		{
 		protected:
-			Core::BufferT m_packet;
+			Core::BufferT _packet;
 			
 		public:			
 			/// The length of the header segment.
-			uint32_t headerLength () const;
+			uint32_t header_length () const;
 			
 			/// The length of the data segment.
-			uint32_t dataLength () const;
+			uint32_t data_length () const;
 			
 			/// Used to indiciate that a complete header is currently available in the message.
-			bool headerComplete () const;
+			bool header_complete () const;
 			/// Used to indicate that the correct amount of data has been received for this message.
-			bool dataComplete () const;
+			bool data_complete () const;
 			
 			/// Returns a pointer to the header structure so that it can be easily interpreted and manipulated.
 			const MessageHeader * header () const;
@@ -59,37 +59,37 @@ namespace Dream {
 			Core::BufferT & packet ();
 			
 			/// Reset the message to zero-size.
-			void resetHeader ();
+			void reset_header ();
 			/// After adding data into the message, you need to update the header before data is sent.
-			void updateSize ();
+			void update_size ();
 			/// Check if the message data is valid.
-			bool isValid () const;
+			bool is_valid () const;
 			
 			/// Read structured data out of the message buffer.
 			template <typename type_t>
 			bool read (type_t & s, IndexT offset = 0) const {
-				offset += headerLength();
+				offset += header_length();
 				IndexT sz = sizeof(type_t);
 				
-				if (offset + sz > m_packet.size()) {
+				if (offset + sz > _packet.size()) {
 					return false;
 				}
 				
-				memcpy(&s, m_packet.begin() + offset, sz);
+				memcpy(&s, _packet.begin() + offset, sz);
 				return true;
 			}
 			
 			/// Write structured data into the message buffer.
 			template <typename type_t>
 			void insert (type_t & s) {
-				IndexT offset = m_packet.size();
+				IndexT offset = _packet.size();
 				IndexT sz = sizeof(type_t);
 				
 				// Make room at the end
-				m_packet.resize(offset + sz);
+				_packet.resize(offset + sz);
 				
-				memcpy(&m_packet[offset], &s, sz);
-				updateSize();
+				memcpy(&_packet[offset], &s, sz);
+				update_size();
 			}
 		};
 		
@@ -100,8 +100,8 @@ namespace Dream {
 		 */
 		class MessageSender {
 		protected:
-			REF(Message) m_message;
-			unsigned m_offset;
+			REF(Message) _message;
+			unsigned _offset;
 			
 		public:
 			MessageSender (REF(Message) msg);
@@ -115,13 +115,13 @@ namespace Dream {
 			void reset (REF(Message) msg);
 			
 			/// Returns true if a message is currently waiting to be sent or in progress.
-			bool hasMessageToSend () const;
+			bool has_message_to_send () const;
 			
 			/// Writes data to the socket to send the message to the remote peer.
-			bool sendViaSocket(ClientSocket * socket);
+			bool send_via_socket(ClientSocket * socket);
 			
 			/// Returns true once the message has been sent completely.
-			bool transmissionComplete () const;
+			bool transmission_complete () const;
 		};
 		
 		/** Receives a Message via a ClientSocket.
@@ -131,13 +131,13 @@ namespace Dream {
 		 */
 		class MessageReceiver {
 		protected:
-			REF(Message) m_message;
+			REF(Message) _message;
 			
 		public:
 			MessageReceiver ();
 			
 			/// Resets the message.
-			/// This should be done when the receiveFromSocket() method returns true.
+			/// This should be done when the receive_from_socket() method returns true.
 			void reset ();
 			
 			/// Retrieve the complete or partial message.
@@ -145,7 +145,7 @@ namespace Dream {
 			
 			/// Read data from the socket to add to the incoming message.
 			/// @returns true when the message is complete.
-			bool receiveFromSocket (ClientSocket * socket);
+			bool receive_from_socket (ClientSocket * socket);
 		};
 		
 #pragma mark -
@@ -161,17 +161,17 @@ namespace Dream {
 		 */
 		class MessageClientSocket : public ClientSocket {
 		protected:
-			MessageSender m_sender;
-			MessageReceiver m_receiver;
+			MessageSender _sender;
+			MessageReceiver _receiver;
 			
 			typedef std::queue<REF(Message)> QueueT;
-			QueueT m_recvq, m_sendq;
+			QueueT _recvq, _sendq;
 			
 			/// Processes any outgoing messages.
-			void updateSender ();
+			void update_sender ();
 			
 			/// @returns true when a complete message was received.
-			bool updateReceiver ();
+			bool update_receiver ();
 			
 		public:
 			MessageClientSocket (const SocketHandleT & h, const Address & address);
@@ -180,26 +180,29 @@ namespace Dream {
 			virtual ~MessageClientSocket ();
 			
 			/// Cancel all messages on the send queue.
-			void flushSendQueue ();
+			void flush_send_queue ();
 			
 			/// Remove any messages in the receive queue.
-			void flushReceiveQueue ();
+			void flush_receive_queue ();
 			
 			/// @returns true if there are currently messages to be sent or being sent.
-			bool hasMessagesToSend ();
+			bool has_messages_to_send ();
 			
 			/// Queues a message to be sent.
-			void sendMessage (REF(Message) msg);
+			void send_message (REF(Message) msg);
 			
 			/// Returns the queue containing incoming messages
-			QueueT & receivedMessages ();
-			const QueueT & receivedMessages () const;
+			QueueT & received_messages ();
+			const QueueT & received_messages () const;
 			
-			/// Calls updateSender() and updateReceiver() as needed.
-			virtual void processEvents (Events::Loop *, Events::Event);
+			/// Pop the front message off the receive queue and return it, otherwise NULL.
+			REF(Message) pop();
+			
+			/// Calls update_sender() and update_receiver() as needed.
+			virtual void process_events (Events::Loop *, Events::Event);
 			
 			/// Delegate function to handle incoming messages. Called when a message is received.
-			std::function<void (MessageClientSocket *)> messageReceivedCallback;
+			std::function<void (MessageClientSocket *)> message_received_callback;
 		};
 		
 	}

@@ -20,13 +20,13 @@ namespace Dream
 		
 		class TextLineRenderer {
 		protected:
-			Detail::FontFace * m_face;
+			Detail::FontFace * _face;
 			bool kerning;
 			
 			Vector<2,unsigned> pen;
-			Vector<2,unsigned> m_extents;
+			Vector<2,unsigned> _extents;
 			
-			FT_Pos prevRSBDelta;
+			FT_Pos prev_rsbdelta;
 			
 			// Glyph Indices
 			FT_UInt current;
@@ -36,38 +36,38 @@ namespace Dream
 			
 			REF(IMutablePixelBuffer) img;
 			
-			unsigned m_count;
+			unsigned _count;
 		public:
-			TextLineRenderer (Detail::FontFace * _face, bool _kerning) : m_face(_face), kerning(_kerning), pen(ZERO), m_extents(ZERO)
+			TextLineRenderer (Detail::FontFace * _face, bool _kerning) : _face(_face), kerning(_kerning), pen(ZERO), _extents(ZERO)
 			{
-				prevRSBDelta = 0;
+				prev_rsbdelta = 0;
 				
 				current = 0;
 				previous = 0;
 				
 				err = 0;
-				m_count = 0;
+				_count = 0;
 			}
 			
 			TextLineRenderer (const TextLineRenderer & other)
 			{
 				pen = other.pen;
-				m_face = other.m_face;
-				prevRSBDelta = other.prevRSBDelta;
+				_face = other._face;
+				prev_rsbdelta = other.prev_rsbdelta;
 				current = other.current;
 				previous = other.previous;
 				kerning = other.kerning;
 				img = other.img;
-				m_extents = other.m_extents;
-				m_count = other.m_count;
+				_extents = other._extents;
+				_count = other._count;
 			}
 			
-			void setImage (REF(IMutablePixelBuffer) _img)
+			void set_image (REF(IMutablePixelBuffer) _img)
 			{
 				img = _img;
 			}
 			
-			void setOrigin(Vector<2,unsigned> _pen)
+			void set_origin(Vector<2,unsigned> _pen)
 			{
 				pen = vec<unsigned>(_pen[X] << 6, _pen[Y] << 6);
 			}
@@ -79,72 +79,72 @@ namespace Dream
 			
 			const Vector<2,unsigned> & extents()
 			{
-				return m_extents;
+				return _extents;
 			}
 			
-			AlignedBox2u compositeCharacter (const Detail::FontGlyph * glyph)
+			AlignedBox2u composite_character (const Detail::FontGlyph * glyph)
 			{
-				Vector<2,unsigned> origin = glyph->calculateCharacterOrigin(pen);
+				Vector<2,unsigned> origin = glyph->calculate_character_origin(pen);
 				
 				// Update box extents
 				FT_BBox bbox;
 				
 				// This incorrectly rounds down the box size.
-				glyph->getCBox(FT_GLYPH_BBOX_PIXELS, &bbox);
+				glyph->get_cbox(FT_GLYPH_BBOX_PIXELS, &bbox);
 				
 				// We add one here to avoid problems where the box isn't quite wide enough
 				// due to anti-aliasing issues.
-				m_extents[X] = origin[X] + bbox.xMax + 1;
-				m_extents[Y] = origin[Y] + bbox.yMax;
+				_extents[X] = origin[X] + bbox.xMax + 1;
+				_extents[Y] = origin[Y] + bbox.yMax;
 				
 				// Copy the bitmap
 				if (img)
-					glyph->compositeToBuffer(origin, img);
+					glyph->composite_to_buffer(origin, img);
 				
-				return AlignedBox2u(origin, m_extents);
+				return AlignedBox2u(origin, _extents);
 			}
 			
-			AlignedBox2u processCharacter (wchar_t c)
+			AlignedBox2u process_character (wchar_t c)
 			{
 				AlignedBox2u box;
 				
-				current = m_face->getCharIndex(c);
-				Detail::FontGlyph * glyph = m_face->loadGlyphForIndex(current);
+				current = _face->get_char_index(c);
+				Detail::FontGlyph * glyph = _face->load_glyph_for_index(current);
 				
 				// Offset the first character a little bit
-				int delta = 0; //(m_count == 0 ? 64 : 0);
+				int delta = 0; //(_count == 0 ? 64 : 0);
 				
 				if (kerning && previous != 0 && current != 0) {
 					FT_Vector k;
-					FT_Get_Kerning(m_face->face(), previous, current, FT_KERNING_DEFAULT, &k);
+					FT_Get_Kerning(_face->face(), previous, current, FT_KERNING_DEFAULT, &k);
 					
 					// Increase the pen width by the kerning
 					delta += k.x;
 				}
 				
 				// Subtract or add a pixel for better position
-				delta += glyph->hintingAdjustment(prevRSBDelta);
+				delta += glyph->hinting_adjustment(prev_rsbdelta);
 				
 				pen[X] += delta;
 				
-				box = compositeCharacter(glyph);
+				box = composite_character(glyph);
 				
 				pen[X] += glyph->advance.x;
 				
 				// We need the previous character for calculating spacing
 				previous = current;
-				prevRSBDelta = glyph->rsbDelta;
+				prev_rsbdelta = glyph->rsb_delta;
 				
-				m_count += 1;
+				_count += 1;
 				
 				return box;
 			}
 			
-			unsigned advanceOfCharacter (wchar_t c) {
+			unsigned advance_of_character (wchar_t c) {
 				TextLineRenderer t(*this);
-				t.setImage(NULL);
+				t.set_image(NULL);
 				
-				AlignedBox2u box = t.processCharacter(c);
+				AlignedBox2u box = t.process_character(c);
 				
 				// Ensure box calculation is correct
 				ensure(box.size()[WIDTH] == t.extents()[X] - extents()[X]);
@@ -156,54 +156,54 @@ namespace Dream
 #pragma mark -
 #pragma mark TextLine Implementation
 		
-		TextLine::TextLine (TextBlock * b) : m_block(b), m_width(0)
+		TextLine::TextLine (TextBlock * b) : _block(b), _width(0)
 		{
-			m_renderer = new TextLineRenderer(m_block->m_face, m_block->kerningEnabled());
+			_renderer = new TextLineRenderer(_block->_face, _block->kerning_enabled());
 		}
 		
 		TextLine::~TextLine ()
 		{
-			delete m_renderer;
+			delete _renderer;
 		}
 		
-		bool TextLine::canAddCharacter (wchar_t c) const
+		bool TextLine::can_add_character (wchar_t c) const
 		{
-			unsigned w = m_renderer->advanceOfCharacter(c) + m_width;
+			unsigned w = _renderer->advance_of_character(c) + _width;
 			
-			return !(m_block->isLineWidthFixed() && w > m_block->lineWidth());
+			return !(_block->is_line_width_fixed() && w > _block->line_width());
 		}
 		
-		bool TextLine::addCharacter (wchar_t c)
+		bool TextLine::add_character (wchar_t c)
 		{
-			//unsigned w = m_renderer->advanceOfCharacter(c) + m_width;
+			//unsigned w = _renderer->advance_of_character(c) + _width;
 			
-			TextLineRenderer tmp(*m_renderer);
+			TextLineRenderer tmp(*_renderer);
 			
-			m_renderer->processCharacter(c);
+			_renderer->process_character(c);
 			
-			unsigned w = m_renderer->extents()[X];
+			unsigned w = _renderer->extents()[X];
 			
-			if (m_block->isLineWidthFixed() && w > m_block->lineWidth()) {
+			if (_block->is_line_width_fixed() && w > _block->line_width()) {
 				// Roll back the renderer state
-				*m_renderer = tmp;
+				*_renderer = tmp;
 				return false;
 			}
 			
-			m_chars += c;
-			m_width = m_renderer->extents()[X];
+			_chars += c;
+			_width = _renderer->extents()[X];
 			
 			return true;
 		}
 		
-		void TextLine::compositeToImage (REF(IMutablePixelBuffer) img, Vector<2,unsigned> pen, CharacterBoxes * boxes)
+		void TextLine::composite_to_image (REF(IMutablePixelBuffer) img, Vector<2,unsigned> pen, CharacterBoxes * boxes)
 		{
-			TextLineRenderer r(m_block->m_face, m_block->kerningEnabled());
+			TextLineRenderer r(_block->_face, _block->kerning_enabled());
 			
-			r.setImage(img);
-			r.setOrigin(pen);
+			r.set_image(img);
+			r.set_origin(pen);
 			
-			foreach (chr, m_chars) {
-				AlignedBox2u box = r.processCharacter(*chr);
+			foreach (chr, _chars) {
+				AlignedBox2u box = r.process_character(*chr);
 				
 				if (boxes) boxes->push_back(box);
 			}
@@ -212,71 +212,71 @@ namespace Dream
 #pragma mark -
 #pragma mark TextBlock Implementation
 		
-		TextBlock::TextBlock (Detail::FontFace * face) : m_face(face)
+		TextBlock::TextBlock (Detail::FontFace * face) : _face(face)
 		{
 			clear();
 			
-			m_lineWidth = 0;
-			m_horizontalPadding.zero();
-			m_verticalPadding.zero();
+			_lineWidth = 0;
+			_horizontal_padding.zero();
+			_vertical_padding.zero();
 							
-			setKerning(true);
-			setTextDirection(LR, TB);
+			set_kerning(true);
+			set_textDirection(LR, TB);
 		}
 		
 		TextBlock::~TextBlock ()
 		{
-			foreach (line, m_lines) {
+			foreach (line, _lines) {
 				delete *line;
 			}
 		}
 		
 		/*
-		 Vector<2,unsigned> TextBlock::pixelSize (wchar_t c) const {
+		 Vector<2,unsigned> TextBlock::pixel_size (wchar_t c) const {
 		 FT_Error err;
 		 
 		 FT_Glyph glyph;
 		 FT_BBox bbox;
-		 FT_UInt current = FT_Get_Char_Index(m_face, c);
-		 err = FT_Load_Glyph(m_face, current, FT_LOAD_DEFAULT);
-		 err = FT_Get_Glyph(m_face->glyph, &glyph);
+		 FT_UInt current = FT_Get_Char_Index(_face, c);
+		 err = FT_Load_Glyph(_face, current, FT_LOAD_DEFAULT);
+		 err = FT_Get_Glyph(_face->glyph, &glyph);
 		 
 		 FT_Glyph_Get_CBox(glyph, FT_GLYPH_BBOX_PIXELS, &bbox);
 		 
-		 return vec<unsigned> (bbox.xMax - bbox.xMin + 1, bbox.yMax - bbox.yMin);
+		 return vec<unsigned> (bbox.x_max - bbox.x_min + 1, bbox.y_max - bbox.y_min);
 		 }
 		 */
 		
-		void TextBlock::setTextDirection (TextDirection charDir, TextDirection lineDir)
+		void TextBlock::set_textDirection (TextDirection char_dir, TextDirection line_dir)
 		{
-			ensure(charDir & (LR|RL) && lineDir & (TB|BT)
-				   || charDir & (TB|BT) && lineDir & (LR|RL));
+			ensure(char_dir & (LR|RL) && line_dir & (TB|BT)
+				   || char_dir & (TB|BT) && line_dir & (LR|RL));
 			
-			//if (charDir & (LR|RL)) ensure(FT_HAS_HORIZONTAL(m_face));
-			//if (charDir & (TB|BT)) ensure(FT_HAS_VERTICAL(m_face));
+			//if (char_dir & (LR|RL)) ensure(FT_HAS_HORIZONTAL(_face));
+			//if (char_dir & (TB|BT)) ensure(FT_HAS_VERTICAL(_face));
 			
-			//std::cout << "charDir: " << charDir << " lineDir: " << lineDir << std::endl;
+			//std::cout << "char_dir: " << char_dir << " line_dir: " << line_dir << std::endl;
 			
-			m_charDir = charDir;
-			m_lineDir = lineDir;
+			_char_dir = char_dir;
+			_lineDir = line_dir;
 		}
 		
-		bool TextBlock::isHorizontal () const
+		bool TextBlock::is_horizontal () const
 		{
-			return m_charDir & (LR|RL);
+			return _char_dir & (LR|RL);
 		}
 		
-		bool TextBlock::isVertical () const
+		bool TextBlock::is_vertical () const
 		{
-			return m_charDir & (BT|TB);
+			return _char_dir & (BT|TB);
 		}
 		
-		Vector<2, unsigned> TextBlock::textOrigin ()
+		Vector<2, unsigned> TextBlock::text_origin ()
 		{
 			// {0, 0} is bottom left hand corner
 			Vector<2, unsigned> v;
 			
-			TextDirection c = (TextDirection)(m_charDir|m_lineDir);
+			TextDirection c = (TextDirection)(_char_dir|_lineDir);
 			
 			if (c & LR) {
 				v[0] = 0;
@@ -293,81 +293,81 @@ namespace Dream
 			return v;
 		}
 		
-		void TextBlock::setKerning (bool enabled)
+		void TextBlock::set_kerning (bool enabled)
 		{
-			m_kerning = enabled;
+			_kerning = enabled;
 		}
 		
-		bool TextBlock::kerningEnabled ()
+		bool TextBlock::kerning_enabled ()
 		{
-			return m_face->hasKerning() && m_kerning;
+			return _face->has_kerning() && _kerning;
 		}
 		
-		void TextBlock::setLineWidth (const unsigned &w)
+		void TextBlock::set_line_width (const unsigned &w)
 		{
-			m_lineWidth = w;
+			_lineWidth = w;
 		}
 		
-		bool TextBlock::isLineWidthFixed () const
+		bool TextBlock::is_line_width_fixed () const
 		{
-			return m_lineWidth != 0;
+			return _lineWidth != 0;
 		}
 		
-		unsigned TextBlock::lineWidth () const
+		unsigned TextBlock::line_width () const
 		{
-			return m_lineWidth;
+			return _lineWidth;
 		}
 		
 		void TextBlock::clear ()
 		{
-			foreach (line, m_lines) {
+			foreach (line, _lines) {
 				delete *line;
 			}
 			
-			m_lines.clear();
-			m_extents.zero();
+			_lines.clear();
+			_extents.zero();
 			
-			m_lines.push_back(new TextLine(this));
+			_lines.push_back(new TextLine(this));
 		}
 		
-		TextLine * TextBlock::lastLine ()
+		TextLine * TextBlock::last_line ()
 		{
-			return m_lines.back();
+			return _lines.back();
 		}
 		
 		// We must normalize input to have \n line endings
-		void TextBlock::addText (const std::wstring &str)
+		void TextBlock::add_text (const std::wstring &str)
 		{
-			TextLine * line = lastLine();
+			TextLine * line = last_line();
 			
 			foreach (c, str) {
 				if (*c == '\n') {
 					line = new TextLine(this);
-					m_lines.push_back(line);
+					_lines.push_back(line);
 					continue;
 				}
 				
-				if (!line->addCharacter(*c)) {
+				if (!line->add_character(*c)) {
 					line = new TextLine(this);
-					m_lines.push_back(line);
+					_lines.push_back(line);
 					
-					ensure(line->canAddCharacter(*c));
-					line->addCharacter(*c);
+					ensure(line->can_add_character(*c));
+					line->add_character(*c);
 				}
 			}
 		}
 		
-		void TextBlock::setText (const std::wstring &str)
+		void TextBlock::set_text (const std::wstring &str)
 		{
 			clear();
-			addText(str);
+			add_text(str);
 		}
 		
 		std::wstring TextBlock::text () const
 		{
 			std::wstring str;
 			
-			foreach (line, m_lines) {
+			foreach (line, _lines) {
 				str += (*line)->text();
 			}
 			
@@ -377,60 +377,60 @@ namespace Dream
 		void TextBlock::render (REF(IMutablePixelBuffer) pbuf, CharacterBoxes * boxes)
 		{
 			Vector<2,unsigned> pen(ZERO);
-			Vector<2,unsigned> origin = pbuf->size().reduce() * textOrigin();
+			Vector<2,unsigned> origin = pbuf->size().reduce() * text_origin();
 			
-			//std::cout << "Ascender: " << ascenderOffset() << std::endl;
+			//std::cout << "Ascender: " << ascender_offset() << std::endl;
 			
 			 // Removes unnecessary space
-			if (m_lineDir == TB) {
-				pen[Y] += m_face->lineOffset();
-				pen[Y] -= m_face->descenderOffset();
+			if (_lineDir == TB) {
+				pen[Y] += _face->line_offset();
+				pen[Y] -= _face->descender_offset();
 			} else {
-				pen[Y] += m_face->descenderOffset();
+				pen[Y] += _face->descender_offset();
 			}
 			
-			//std::cout << "Text Origin: " << textOrigin() << std::endl;
+			//std::cout << "Text Origin: " << text_origin() << std::endl;
 			
-			foreach (line, m_lines) {
-				if (m_lineDir == TB) {
+			foreach (line, _lines) {
+				if (_lineDir == TB) {
 					//std::cerr << "Line Origin: " << origin - pen << std::endl;
-					(*line)->compositeToImage(pbuf, origin - pen, boxes);
+					(*line)->composite_to_image(pbuf, origin - pen, boxes);
 				} else {
 					//std::cerr << "Line Origin: " << pen << std::endl;
-					(*line)->compositeToImage(pbuf, pen, boxes);
+					(*line)->composite_to_image(pbuf, pen, boxes);
 				}
 				
 				// Set pen to next line
 				pen[X] = 0;
-				pen[Y] += m_face->lineOffset();
+				pen[Y] += _face->line_offset();
 			}
 		}
 		
-		Vector<2,unsigned> TextBlock::calculateSize () const
+		Vector<2,unsigned> TextBlock::calculate_size () const
 		{
 			Vector<2,unsigned> result(ZERO);
 			
-			//std::cout << "Calculating text size for " << m_lines.size() << " lines..." << std::endl;
+			//std::cout << "Calculating text size for " << _lines.size() << " lines..." << std::endl;
 			
-			if (isLineWidthFixed()) {
-				result[X] = lineWidth();
+			if (is_line_width_fixed()) {
+				result[X] = line_width();
 			} else {
 				result[X] = 0;
-				foreach (line, m_lines) {
+				foreach (line, _lines) {
 					//std::wcout << "'" << (*line)->text() << "' " << (*line)->width() << "(" << result[X] << ")" << std::endl;
 					result[X] = std::max(result[X], (*line)->width());
 				}
 			}
 			
-			//std::cout << m_lines.size() << std::endl;
+			//std::cout << _lines.size() << std::endl;
 			
-			result[Y] = m_lines.size() * m_face->lineOffset() + m_face->descenderOffset();
+			result[Y] = _lines.size() * _face->line_offset() + _face->descender_offset();
 			
 			// Removes unnecessary space
-			if (m_lines.size())
-				result[Y] -= m_face->descenderOffset();
+			if (_lines.size())
+				result[Y] -= _face->descender_offset();
 			
-			result += vec<unsigned>(m_horizontalPadding.sum(), m_verticalPadding.sum());
+			result += vec<unsigned>(_horizontal_padding.sum(), _vertical_padding.sum());
 			
 			return result;
 		}

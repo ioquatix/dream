@@ -29,14 +29,14 @@ namespace Dream
 					class Loader : implements ILoadable
 					{
 					public:
-						virtual void registerLoaderTypes (ILoader * loader);
-						virtual REF(Object) loadFromData (const PTR(IData) data, const ILoader * loader);
+						virtual void register_loader_types (ILoader * loader);
+						virtual REF(Object) load_from_data (const PTR(IData) data, const ILoader * loader);
 					};
 					
 				protected:
-					ALuint m_bufferID;
-					ALenum m_format;
-					ALfloat m_frequency;
+					ALuint _buffer_id;
+					ALenum _format;
+					ALfloat _frequency;
 					
 				public:
 					Sound (ALenum format, ALsizei frequency, const Buffer *);

@@ -19,67 +19,67 @@ namespace Dream
 		}
 		
 		OrthographicProjection::OrthographicProjection(const AlignedBox<3> & box)
-		: m_box(box) {
+		: _box(box) {
 			
 		}
 		
-		FixedProjection::FixedProjection(const Mat44 projectionMatrix)
-		: m_projectionMatrix(projectionMatrix) {
+		FixedProjection::FixedProjection(const Mat44 projection_matrix)
+		: _projectionMatrix(projection_matrix) {
 			
 		}
 		
-		Mat44 FixedProjection::projectionMatrixForViewport(const IViewport & viewport) {
-			return m_projectionMatrix;
+		Mat44 FixedProjection::projection_matrix_for_viewport(const IViewport & viewport) {
+			return _projectionMatrix;
 		}
 		
-		Mat44 OrthographicProjection::projectionMatrixForViewport(const IViewport & viewport) {
-			return orthographicMatrix<RealT>(m_box.center(), m_box.size());
+		Mat44 OrthographicProjection::projection_matrix_for_viewport(const IViewport & viewport) {
+			return orthographic_matrix<RealT>(_box.center(), _box.size());
 		}
 		
-		void OrthographicProjection::setBox(const AlignedBox<3> & box) {
-			m_box = box;
+		void OrthographicProjection::set_box(const AlignedBox<3> & box) {
+			_box = box;
 		}
 		
 		const AlignedBox<3> & OrthographicProjection::box() const {
-			return m_box;
+			return _box;
 		}
 		
-		ScaledOrthographicProjection::ScaledOrthographicProjection(const AlignedBox<3> & box, IndexT scaleAxis) 
-		: OrthographicProjection(box), m_scaleAxis(scaleAxis){
+		ScaledOrthographicProjection::ScaledOrthographicProjection(const AlignedBox<3> & box, IndexT scale_axis) 
+		: OrthographicProjection(box), _scaleAxis(scale_axis){
 			
 		}
 		
-		Mat44 ScaledOrthographicProjection::projectionMatrixForViewport(const IViewport & viewport) {
-			Vec3 scaledSize = m_box.size();
-			RealT aspectRatio = viewport.bounds().size().aspectRatio();
+		Mat44 ScaledOrthographicProjection::projection_matrix_for_viewport(const IViewport & viewport) {
+			Vec3 scaled_size = _box.size();
+			RealT aspect_ratio = viewport.bounds().size().aspect_ratio();
 			
-			if (m_scaleAxis == X) {
-				scaledSize[X] *= aspectRatio;
-			} else if (m_scaleAxis == Y) {
-				scaledSize[Y] *= 1.0 / aspectRatio;
+			if (_scaleAxis == X) {
+				scaled_size[X] *= aspect_ratio;
+			} else if (_scaleAxis == Y) {
+				scaled_size[Y] *= 1.0 / aspect_ratio;
 			}
 			
-			return orthographicMatrix<RealT>(m_box.center(), scaledSize);
+			return orthographic_matrix<RealT>(_box.center(), scaled_size);
 		}
 		
-		PerspectiveProjection::PerspectiveProjection(RealT fieldOfView, RealT near, RealT far)
-		: m_fieldOfView(fieldOfView), m_near(near), m_far(far) {
+		PerspectiveProjection::PerspectiveProjection(RealT field_of_view, RealT near, RealT far)
+		: _field_of_view(field_of_view), _near(near), _far(far) {
 			
 		}
 		
-		Mat44 PerspectiveProjection::projectionMatrixForViewport(const IViewport & viewport) {
+		Mat44 PerspectiveProjection::projection_matrix_for_viewport(const IViewport & viewport) {
 			const Vec2 & size = viewport.bounds().size();
-			RealT aspectRatio = size[X] / size[Y];
+			RealT aspect_ratio = size[X] / size[Y];
 			
-			return perspectiveMatrix<RealT>(m_fieldOfView, aspectRatio, m_near, m_far);
+			return perspective_matrix<RealT>(_field_of_view, aspect_ratio, _near, _far);
 		}
 		
-		void PerspectiveProjection::setFieldOfView(RealT fieldOfView) {
-			m_fieldOfView = fieldOfView;
+		void PerspectiveProjection::set_field_of_view(RealT field_of_view) {
+			_field_of_view = field_of_view;
 		}
 		
-		RealT PerspectiveProjection::fieldOfView() const {
-			return m_fieldOfView;
+		RealT PerspectiveProjection::field_of_view() const {
+			return _field_of_view;
 		}
 	}
 }

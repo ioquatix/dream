@@ -10,7 +10,7 @@
 #include "../Context.h"
 
 @interface DOpenGLView : NSOpenGLView {
-	Dream::Client::Display::Context * displayContext;
+	Dream::Client::Display::Context * _display_context;
 }
 
 @property(nonatomic,assign) Dream::Client::Display::Context * displayContext;

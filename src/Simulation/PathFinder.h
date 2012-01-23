@@ -25,17 +25,17 @@ namespace Dream {
 		class Interface {
 	public:
 			// The cost to get to a certain location
-			virtual void notifyCost (const StepT& location, const CostT& costFromStart, const CostT& costToEnd) {}
+			virtual void notify_cost (const StepT& location, const CostT& cost_from_start, const CostT& cost_to_end) {}
 			
-			virtual void addStepsFrom (const Node *node, PathFinder & pf) const abstract;
+			virtual void add_stepsFrom (const Node *node, PathFinder & pf) const abstract;
 			
 			// The cost from one location to another
-			virtual CostT estimatePathCost (const StepT& from, const StepT& to) const abstract;
-			virtual CostT exactPathCost (const StepT& from, const StepT& to) const { 
-				return estimatePathCost(from, to);
+			virtual CostT estimate_path_cost (const StepT& from, const StepT& to) const abstract;
+			virtual CostT exact_path_cost (const StepT& from, const StepT& to) const { 
+				return estimate_path_cost(from, to);
 			}
 			
-			virtual bool isGoalState (PathFinder & pf, const StepT & from, const StepT &to) const {
+			virtual bool is_goal_state (PathFinder & pf, const StepT & from, const StepT &to) const {
 				return from == to;
 			}
 		};
@@ -54,17 +54,17 @@ namespace Dream {
 				bool closed;
 				
 				const StepT step;
-				const CostT costFromStart;
-				const CostT costToGoal;
+				const CostT cost_from_start;
+				const CostT cost_to_goal;
 				const Node * parent;
 				
-				Node (const StepT& _step, const CostT& _costFromStart, const CostT& _costToGoal, const Node* _parent = NULL)
-					: step(_step), costFromStart(_costFromStart), costToGoal(_costToGoal), parent(_parent), closed(false) {
+				Node (const StepT& _step, const CostT& _cost_from_start, const CostT& _cost_to_goal, const Node* _parent = NULL)
+					: step(_step), cost_from_start(_cost_from_start), cost_to_goal(_cost_to_goal), parent(_parent), closed(false) {
 						//std::cout << "Total Cost (" << step << "): " << total() << std::endl;
 				}
 				
 				CostT total () const {
-					return costFromStart+costToGoal;
+					return cost_from_start+cost_to_goal;
 				}
 				
 				bool operator< (const Node &other) const {
@@ -92,109 +92,109 @@ namespace Dream {
 			typedef std::set<const Node *> ClosedT;
 			
 	protected:
-			void openPush(Node * node) {
-				m_open.push_back(node);
-				std::push_heap(m_open.begin(), m_open.end(), typename Node::greater());
+			void open_push(Node * node) {
+				_open.push_back(node);
+				std::push_heap(_open.begin(), _open.end(), typename Node::greater());
 			}
 			
-			void openPop() {
-				std::pop_heap(m_open.begin(), m_open.end(), typename Node::greater());
-				m_open.pop_back();
+			void open_pop() {
+				std::pop_heap(_open.begin(), _open.end(), typename Node::greater());
+				_open.pop_back();
 			}
 
 			typedef std::map<StepT, Node*> TouchedT;
 			typedef std::pair<typename TouchedT::iterator, bool> TouchedResultT;
-			TouchedT m_touched;
+			TouchedT _touched;
 			
-			OpenT m_open;
-			ClosedT m_closed;
+			OpenT _open;
+			ClosedT _closed;
 
-			const StepT m_startLocation;
-			const StepT m_endLocation;
+			const StepT _startLocation;
+			const StepT _endLocation;
 			
-			InterfaceT* m_interface;
+			InterfaceT* _interface;
 			
 			/* Recursively create the path */
-			void constructForwardPath (const Node* node, PathT& path) const {
+			void construct_forward_path (const Node* node, PathT& path) const {
 				if (node->parent != NULL)
-					constructForwardPath(node->parent, path);
+					construct_forward_path(node->parent, path);
 				
 				path.push_back(node->step);
 			}
 
 	public:
-			PathFinder (const StepT& startLocation, const StepT& endLocation, InterfaceT* interface)
-			: m_startLocation(startLocation), m_endLocation(endLocation), m_interface(interface) {
-				CostT estimateToGoal = m_interface->estimatePathCost(startLocation, endLocation);
+			PathFinder (const StepT& start_location, const StepT& end_location, InterfaceT* interface)
+			: _startLocation(start_location), _endLocation(end_location), _interface(interface) {
+				CostT estimate_to_goal = _interface->estimate_path_cost(start_location, end_location);
 				
-				openPush (new Node(startLocation, 0, estimateToGoal));
+				open_push (new Node(start_location, 0, estimate_to_goal));
 			}
 			
 			~PathFinder () {
 				//std::cout << __PRETTY_FUNCTION__ << std::endl;
-				while (!m_open.empty()) {
-					delete m_open.front();
-					openPop();
+				while (!_open.empty()) {
+					delete _open.front();
+					open_pop();
 				}
 				
-				foreach(closedNode, m_closed) {
-					delete *closedNode;
+				foreach(closed_node, _closed) {
+					delete *closed_node;
 				}
 			}
 			
 			const OpenT open () const {
-				return m_open;
+				return _open;
 			}
 			
 			const ClosedT closed () const {
-				return m_closed;
+				return _closed;
 			}
 			
 			const Node * top () const {
-				return m_open.front();
+				return _open.front();
 			}
 			
 			Node * top () {
-				return m_open.front();
+				return _open.front();
 			}
 			
 			StepT goal () {
-				return m_endLocation;
+				return _endLocation;
 			}
 			
-			void addStep (const StepT & step, const Node * top) {
-				CostT estimateToGoal = m_interface->estimatePathCost(step, m_endLocation);
-				CostT stepCost = m_interface->exactPathCost(top->step, step);
-				CostT costFromStart = top->costFromStart + stepCost;
+			void add_step (const StepT & step, const Node * top) {
+				CostT estimate_to_goal = _interface->estimate_path_cost(step, _endLocation);
+				CostT step_cost = _interface->exact_path_cost(top->step, step);
+				CostT cost_from_start = top->cost_from_start + step_cost;
 				
 				/* Is this step in the priority queue already? */
-				bool insertNode = false;
-				Node* nextNode = new Node(step, costFromStart, estimateToGoal, top);
+				bool insert_node = false;
+				Node* next_node = new Node(step, cost_from_start, estimate_to_goal, top);
 				
-				typename TouchedT::iterator touchedIter = m_touched.find(step);
-				if (touchedIter != m_touched.end()) {
+				typename TouchedT::iterator touched_iter = _touched.find(step);
+				if (touched_iter != _touched.end()) {
 					/*	If we have already been to the node, only 
 					insert it if it costs less to get here this way */
-					Node* currentNext = (*touchedIter).second;
-					if (*currentNext > *nextNode) {
-						currentNext->closed = true;
-						insertNode = true;
+					Node* current_next = (*touched_iter).second;
+					if (*current_next > *next_node) {
+						current_next->closed = true;
+						insert_node = true;
 					}
 				} else {
-					insertNode = true;
+					insert_node = true;
 				}
 				
-				if (insertNode) {
-					m_interface->notifyCost(step, costFromStart, estimateToGoal);
-					openPush(nextNode);
-					m_touched[step] = nextNode;
+				if (insert_node) {
+					_interface->notify_cost(step, cost_from_start, estimate_to_goal);
+					open_push(next_node);
+					_touched[step] = next_node;
 				} else {
-					delete nextNode;
+					delete next_node;
 				}
 			}
 		
-			bool findPath (int iterations) {
-				while (!m_open.empty() && iterations--) {
+			bool find_path (int iterations) {
+				while (!_open.empty() && iterations--) {
 					const Node * top = this->top();
 					
 					if (top->closed) {
@@ -202,38 +202,38 @@ namespace Dream {
 							so we mark it as closed and skip it here.
 							This is only done if a faster way to the same
 							node is found. */
-						openPop();
+						open_pop();
 
 					} else {
-						if (m_interface->isGoalState(*this, top->step, m_endLocation)) {
+						if (_interface->is_goal_state(*this, top->step, _endLocation)) {
 							/* We have reached the goal and no longer need to do any searching */
 							return true;
 						}
 						
 						/* We are going to process this node, so remove it from the open list */
-						openPop();
-						m_interface->addStepsFrom(top, *this);
+						open_pop();
+						_interface->add_stepsFrom(top, *this);
 						
-						//std::set<StepT> nextSteps = m_interface->stepsFrom(top);
+						//std::set<StepT> next_steps = _interface->steps_from(top);
 						
-						//for (iterateEach (nextSteps, nextStep)) {
-						//	addStep(*nextStep, top);
+						//for (iterate_each (next_steps, next_step)) {
+						//	add_step(*next_step, top);
 						//}
 					}
 					
 					/* Once we have processed the node, place it on the closed list */
-					m_closed.insert(top);
+					_closed.insert(top);
 				}
 				
-				return m_open.empty();
+				return _open.empty();
 			}
 			
-			PathT constructCurrentPath () const {
+			PathT construct_current_path () const {
 				PathT path;
 				
-				if (!m_open.empty()) {
+				if (!_open.empty()) {
 					const Node* top = this->top();
-					constructForwardPath(top, path);
+					construct_forward_path(top, path);
 				}
 				
 				return path;

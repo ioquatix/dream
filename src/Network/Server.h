@@ -27,8 +27,8 @@ namespace Dream {
 		 connections (IPv4, IPv6, etc), there may be more than one ServerSocket instance accept()ing incoming connections. Thus, this class can be initialized
 		 with a service name and socket type, and will automatically construct all the required ServerSocket instances.
 		 
-		 It is generally expected that one would subclass and override connectionCallbackHandler to instantiate an appropriate subclass of ClientSocket, and
-		 begin communcation. You also need to override the constructor to call bindToService() with appropriate parameters.
+		 It is generally expected that one would subclass and override connection_callback to instantiate an appropriate subclass of ClientSocket, and
+		 begin communcation. You also need to override the constructor to call bind_to_service() with appropriate parameters.
 		 
 		 This class, when overriddden correctly, can act as a gatekeeper, checking the remote address or resource limits, and closing connections depending on
 		 circumstances.
@@ -38,22 +38,22 @@ namespace Dream {
 		{
 		protected:
 			/// The list of server sockets that are currently accepting connections.
-			std::vector<REF(ServerSocket)> m_serverSockets;
+			std::vector<REF(ServerSocket)> _server_sockets;
 			
 			/// The server runloop.
-			REF(Events::Loop) m_eventLoop;
+			REF(Events::Loop) _event_loop;
 			
 			/// Override this function to handle incoming connection requests.
-			virtual void connectionCallbackHandler (Events::Loop *, ServerSocket *, const SocketHandleT & h, const Address &) abstract;
+			virtual void connection_callback (Events::Loop *, ServerSocket *, const SocketHandleT & h, const Address &) abstract;
 			
 			/// Creates a set of sockets bound to the appropriate service.
 			/// You need to call this in your subclass to bind to the appropriate ports/services.
 			/// This call will schedule any new ServerSocket instances in the attached runloop.
-			void bindToService (const char * service, SocketType sockType);
+			void bind_to_service (const char * service, SocketType sock_type);
 			
 		public:
 			/// A server attaches to a runloop. It then should schedule incoming connections on the runloop.
-			Server (REF(Events::Loop) eventLoop);
+			Server (REF(Events::Loop) event_loop);
 			
 			virtual ~Server ();			
 		};
@@ -73,11 +73,11 @@ namespace Dream {
 		class ServerContainer : public Object
 		{
 		protected:
-			bool m_run;
-			REF(Events::Loop) m_eventLoop;
+			bool _run;
+			REF(Events::Loop) _event_loop;
 			
-			REF(Server) m_server;
-			Shared<std::thread> m_thread;
+			REF(Server) _server;
+			Shared<std::thread> _thread;
 			
 			void run ();
 			
@@ -87,7 +87,7 @@ namespace Dream {
 			virtual ~ServerContainer ();
 			
 			/// The runloop for the container. Be careful about accessing this from a different thread.
-			REF(Events::Loop) eventLoop ();
+			REF(Events::Loop) event_loop ();
 			
 			/// Start the container with a given server.
 			void start (REF(Server) server);

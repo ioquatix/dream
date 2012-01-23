@@ -36,13 +36,13 @@ namespace Dream {
 			typedef AlignedBox<D> SpaceT;
 			
 			template <typename ObjectT>
-			static SpaceT calculateBoundingBox (const ObjectT & obj) {
-				return obj.boundingBox();
+			static SpaceT calculate_bounding_box (const ObjectT & obj) {
+				return obj.bounding_box();
 			}
 												
-			static unsigned indexForPartition(const Vec2 &point, const Vec2 &center);
-			static Vec2 normalOriginForPartitionIndex(const IndexT &i);
-			static Vec2 offsetOriginForPartitionIndex(const IndexT &i);
+			static unsigned index_for_partition(const Vec2 &point, const Vec2 &center);
+			static Vec2 normal_origin_for_partition_index(const IndexT &i);
+			static Vec2 offset_origin_for_partition_index(const IndexT &i);
 			
 			enum PartitionLocation {
 				BottomLeft = 0,
@@ -51,7 +51,7 @@ namespace Dream {
 				TopRight = 3
 			};
 			
-			static PartitionLocation locationForDirection (const Direction &dir);	
+			static PartitionLocation location_for_direction (const Direction &dir);	
 		};
 		
 		// Template specialization for 3-dimentional oct-tree
@@ -63,13 +63,13 @@ namespace Dream {
 			typedef AlignedBox<D> SpaceT;
 			
 			template <typename ObjectT>
-			static SpaceT calculateBoundingBox (const ObjectT & obj) {
-				return obj.boundingBox();
+			static SpaceT calculate_bounding_box (const ObjectT & obj) {
+				return obj.bounding_box();
 			}
 			
-			static unsigned indexForPartition(const Vec3 &point, const Vec3 &center);
-			static Vec3 normalOriginForPartitionIndex(const IndexT &i);
-			static Vec3 offsetOriginForPartitionIndex(const IndexT &i);
+			static unsigned index_for_partition(const Vec3 &point, const Vec3 &center);
+			static Vec3 normal_origin_for_partition_index(const IndexT &i);
+			static Vec3 offset_origin_for_partition_index(const IndexT &i);
 			
 			enum PartitionLocation {
 				BottomLeftNear = 0,
@@ -82,7 +82,7 @@ namespace Dream {
 				TopRightFar = 7
 			};
 			
-			static PartitionLocation locationForDirection (const Direction &dir);
+			static PartitionLocation location_for_direction (const Direction &dir);
 		};
 		
 		// An aligned space partitioning tree.
@@ -95,100 +95,100 @@ namespace Dream {
 			typedef std::set<ObjectT> ObjectSetT;
 			
 			void debug () {
-				if (m_top) {
+				if (_top) {
 					std::cout << "Dumping tree..." << std::endl;
-					m_top->debug("");
+					_top->debug("");
 				} else
 					std::cout << "No top level partition!" << std::endl;
 			};
 			
 			class Partition {
 			protected:
-				ObjectSetT m_objects;
+				ObjectSetT _objects;
 				
-				AlignedTree* m_base;
-				typename TraitsT::PartitionLocation m_location;
+				AlignedTree* _base;
+				typename TraitsT::PartitionLocation _location;
 				
-				Partition* m_parent;
-				Partition* m_children[TraitsT::Q];
+				Partition* _parent;
+				Partition* _children[TraitsT::Q];
 				
-				VecT m_origin;
-				VecT m_size;
-				unsigned m_level;
+				VecT _origin;
+				VecT _size;
+				unsigned _level;
 				
-				void computePosition () {
-					m_origin = m_parent->origin() + (TraitsT::normalOriginForPartitionIndex(m_location) * m_parent->size());
-					m_size = m_parent->size() / 2;
-					m_level = m_parent->level() + 1;
+				void compute_position () {
+					_origin = _parent->origin() + (TraitsT::normal_origin_for_partition_index(_location) * _parent->size());
+					_size = _parent->size() / 2;
+					_level = _parent->level() + 1;
 				}
 				
 			public:
 				Partition (AlignedTree * base, const VecT & origin, const VecT & size)
-					: m_origin(origin), m_size(size), m_level(0)
+					: _origin(origin), _size(size), _level(0)
 				{
-					m_parent = NULL;
-					m_location = (typename TraitsT::PartitionLocation)0;
-					m_base = base;
+					_parent = NULL;
+					_location = (typename TraitsT::PartitionLocation)0;
+					_base = base;
 					
-					bzero(&m_children, sizeof(m_children));
+					bzero(&_children, sizeof(_children));
 				}
 				
 				Partition (Partition *parent, typename TraitsT::PartitionLocation location)
-					: m_parent(parent), m_location(location)
+					: _parent(parent), _location(location)
 				{
-					ensure(m_parent->m_children[m_location] == NULL);
+					ensure(_parent->_children[_location] == NULL);
 					
-					m_parent->m_children[m_location] = this;
-					m_base = parent->m_base;
+					_parent->_children[_location] = this;
+					_base = parent->_base;
 					
-					bzero(&m_children, sizeof(m_children));
+					bzero(&_children, sizeof(_children));
 					
-					computePosition();
+					compute_position();
 				}
 				
 				~Partition () {
 					for (unsigned i = 0; i < TraitsT::Q; i += 1) {
-						if (m_children[i] != NULL) {
-							delete m_children[i];
+						if (_children[i] != NULL) {
+							delete _children[i];
 						}
 					}
 				}
 					
 				VecT origin () const {
-					return m_origin;
+					return _origin;
 				}
 				
 				VecT size () const {
-					return m_size;
+					return _size;
 				}
 
-				SpaceT boundingBox() const {
-					return SpaceT(m_origin, m_origin + m_size);
+				SpaceT bounding_box() const {
+					return SpaceT(_origin, _origin + _size);
 				}
 				
 				unsigned level () const {
-					return m_level;
+					return _level;
 				}
 
 			public:
 				// Returns a given child partition.
-				Partition* child (unsigned i) { return m_children[i]; }
-				const Partition* child (unsigned i) const { return m_children[i]; }
+				Partition* child (unsigned i) { return _children[i]; }
+				const Partition* child (unsigned i) const { return _children[i]; }
 				
 				// Returns the parent partition.
-				Partition* parent () { return m_parent; }
-				const Partition* parent () const { return m_parent; }
+				Partition* parent () { return _parent; }
+				const Partition* parent () const { return _parent; }
 				
 				// Returns the objects in this partition.
-				ObjectSetT& objects() { return m_objects; }
-				const ObjectSetT& objects() const { return m_objects; }
+				ObjectSetT& objects() { return _objects; }
+				const ObjectSetT& objects() const { return _objects; }
 				
 				void debug (std::string indent) {
-					std::cout << indent << "Partition " << m_location << " has " << objects().size() << " objects." << std::endl;
+					std::cout << indent << "Partition " << _location << " has " << objects().size() << " objects." << std::endl;
 					
 					for (unsigned i = 0; i < TraitsT::Q; i++) {
-						if (m_children[i] != NULL) {
-							m_children[i]->debug(indent + "\t");
+						if (_children[i] != NULL) {
+							_children[i]->debug(indent + "\t");
 						}
 					}
 				}
@@ -197,8 +197,8 @@ namespace Dream {
 				template <typename VisitorT>
 				void visit (VisitorT & visitor) {
 					for (unsigned i = 0; i < TraitsT::Q; i++) {
-						if (m_children[i] != NULL) {
-							m_children[i]->visit(visitor);
+						if (_children[i] != NULL) {
+							_children[i]->visit(visitor);
 						}
 					}
 					
@@ -209,11 +209,11 @@ namespace Dream {
 				// Can potentially take a long time to execute. O(QN)
 				void redistribute () {
 					for (unsigned i = 0; i < TraitsT::Q; i += 1) {
-						if (m_children[i] == NULL) new Partition(this, (typename TraitsT::PartitionLocation)i);
+						if (_children[i] == NULL) new Partition(this, (typename TraitsT::PartitionLocation)i);
 					}
 					
 					ObjectSetT resort;
-					std::swap(m_objects, resort);
+					std::swap(_objects, resort);
 
 					foreach(object, resort) {
 						this->insert(*object);
@@ -222,7 +222,7 @@ namespace Dream {
 				
 				// Join this partition with its parent.
 				void coalesce () {
-					//m_parent->m_children[m_location] = NULL;
+					//_parent->_children[_location] = NULL;
 					//delete this;
 				}
 				
@@ -248,14 +248,14 @@ namespace Dream {
 				
 				// Find an object in this partition or a child.
 				Partition * find (ObjectT object) {
-					SpaceT b = TraitsT::calculateBoundingBox(object);
+					SpaceT b = TraitsT::calculate_bounding_box(object);
 					Partition *cur = this;
 					
 					unsigned i = 0;
 					while (i < TraitsT::Q) {
 						Partition *c = cur->child(i);
 						
-						if (c && c->boundingBox().containsBox(b)) {
+						if (c && c->bounding_box().contains_box(b)) {
 							// Descend into the current partition
 							cur = c;
 							i = 0;
@@ -269,13 +269,13 @@ namespace Dream {
 				}
 				
 				// Return the smallest partition for the given point.
-				Partition* partitionForPoint (const Vec2 &point) {
-					if (boundingBox().containsPoint(point, true)) {
+				Partition* partition_for_point (const Vec2 &point) {
+					if (bounding_box().contains_point(point, true)) {
 						// A child potentially contains the point
 						Partition *t = NULL;
 						for (unsigned i = 0; i < TraitsT::Q; i += 1) {
 							if (child(i)) {
-								t = child(i).partitionForPoint(point);
+								t = child(i).partition_for_point(point);
 							
 								if (t) return t;
 							}
@@ -287,13 +287,13 @@ namespace Dream {
 				}
 				
 				// Return the smallest partition for the given rect.
-				Partition* partitionForRect (const SpaceT &rect) {
-					if (boundingBox().containsBox(rect, true)) {
+				Partition* partition_for_rect (const SpaceT &rect) {
+					if (bounding_box().contains_box(rect, true)) {
 						// A child potentially contains the point
 						Partition *t = NULL;
 						for (unsigned i = 0; i < TraitsT::Q; i += 1) {
 							if (child(i)) {
-								t = child(i)->partitionForRect(rect);
+								t = child(i)->partition_for_rect(rect);
 							
 								if (t) return t;
 							}
@@ -304,30 +304,30 @@ namespace Dream {
 				}
 				
 				// Return all objets in the given partition including children.
-				ObjectSetT allObjects () {
+				ObjectSetT all_objects () {
 					ObjectSetT objects;
 					Partition * cur = this;
 					
 					while (cur != NULL) {
-						objects.insert(cur->m_objects.begin(), cur->m_objects.end());
+						objects.insert(cur->_objects.begin(), cur->_objects.end());
 						
-						cur = cur->m_parent;
+						cur = cur->_parent;
 					}
 					
 					return objects;
 				};
 				
 				// Return the set of objects in a given rectangle.
-				ObjectSetT objectsInRect (const SpaceT & _rect) {
+				ObjectSetT objects_in_rect (const SpaceT & _rect) {
 					SpaceT rect(_rect);
-					rect.clipToBox(this->boundingBox());
+					rect.clip_to_box(this->bounding_box());
 					
 					ObjectSetT selection;
 					
-					foreach(o, m_objects) {
-						SpaceT b = TraitsT::calculateBoundingBox(*o);
+					foreach(o, _objects) {
+						SpaceT b = TraitsT::calculate_bounding_box(*o);
 						
-						if (b.intersectsWith(rect)) {
+						if (b.intersects_with(rect)) {
 							selection.insert(*o);
 						}
 					}
@@ -335,10 +335,10 @@ namespace Dream {
 					for (unsigned i = 0; i < TraitsT::Q; i += 1) {
 						if (child(i) == NULL) continue;
 					
-						if (child(i)->boundingBox().intersectsWith(rect)) {
-							ObjectSetT childSelection = child(i)->objectsInRect(rect);
+						if (child(i)->bounding_box().intersects_with(rect)) {
+							ObjectSetT child_selection = child(i)->objects_in_rect(rect);
 
-							selection.insert(childSelection.begin(), childSelection.end());
+							selection.insert(child_selection.begin(), child_selection.end());
 						}
 					}
 					
@@ -346,18 +346,18 @@ namespace Dream {
 				}
 				
 				// This function probably needs to be fixed
-				ObjectSetT objectsAlongLine (const LineSegment<TraitsT::D> &l) {								
+				ObjectSetT objects_along_line (const LineSegment<TraitsT::D> &l) {								
 					ObjectSetT selection;
 					
 					for (unsigned i = 0; i < TraitsT::Q; i += 1) {
 						if (child(i) == NULL) continue;
 					
-						if (child(i)->boundingBox().intersectsWith(l, true)) {
+						if (child(i)->bounding_box().intersects_with(l, true)) {
 							// Add all current-level objects
 							selection.insert(child(i)->objects().begin(), child(i)->objects().end());
 							
 							// Add any more children objects
-							ObjectSetT objs = child(i)->objectsAlongLine(l);
+							ObjectSetT objs = child(i)->objects_along_line(l);
 							selection.insert(objs.begin(), objs.end());
 						}
 					}
@@ -367,8 +367,8 @@ namespace Dream {
 			};
 			
 		protected:		
-			SpaceT m_bounds;
-			Partition *m_top;
+			SpaceT _bounds;
+			Partition *_top;
 			
 			void expand (const unsigned & dir) {
 				if (dir && LEFT) {
@@ -381,39 +381,39 @@ namespace Dream {
 			}
 			
 		public:
-			AlignedTree (const VecT & origin, const VecT & size) : m_bounds(origin, origin + size), m_expanding(true) {
-				m_top = new Partition(this, origin, size);
+			AlignedTree (const VecT & origin, const VecT & size) : _bounds(origin, origin + size), _expanding(true) {
+				_top = new Partition(this, origin, size);
 			}
 			
 			// The top partition in the tree.
 			Partition * top () {
-				return m_top;
+				return _top;
 			}
 			
 			const Partition * top () const {
-				return m_top;
+				return _top;
 			}
 			
-			bool m_expanding;
-			bool expanding () const { return m_expanding; }
-			void setExpanding (bool expanding) { m_expanding = expanding; }
+			bool _expanding;
+			bool expanding () const { return _expanding; }
+			void set_expanding (bool expanding) { _expanding = expanding; }
 			
 			// Copy objects from another STL container.
 			template <typename IteratorT>
 			void insert (IteratorT begin, IteratorT end) {
 				for (; begin != end; ++begin) {
-					addObject(*begin);
+					add_object(*begin);
 				}
 			}
 			
 			// Insert an object if it exists, redistribute the tree if appropriate.
 			Partition * insert (ObjectT o, bool redistribute = true) {
-				SpaceT b = TraitsT::calculateBoundingBox(o);
+				SpaceT b = TraitsT::calculate_bounding_box(o);
 							
-				if (!m_top->boundingBox().containsBox(b))
+				if (!_top->bounding_box().contains_box(b))
 					return NULL;
 				
-				Partition * p = m_top->insert(o);
+				Partition * p = _top->insert(o);
 				
 				if (redistribute && p->objects().size() > 16) {
 					p->redistribute();
@@ -424,12 +424,12 @@ namespace Dream {
 			
 			// Find an object if it exists.
 			Partition * find (ObjectT o) {
-				SpaceT b = TraitsT::calculateBoundingBox(o);
+				SpaceT b = TraitsT::calculate_bounding_box(o);
 							
-				if (!m_top->boundingBox().intersectsWith(b))
+				if (!_top->bounding_box().intersects_with(b))
 					return NULL;
 				
-				return m_top->find(o);
+				return _top->find(o);
 			}
 			
 			// Erase an object if it exists.
@@ -448,13 +448,13 @@ namespace Dream {
 			}
 			
 			// Find the smallest partition which encloses the given point.
-			Partition* partitionForPoint (const Vec2 &point) {
-				return m_top->partitionForPoint(point);
+			Partition* partition_for_point (const Vec2 &point) {
+				return _top->partition_for_point(point);
 			}
 			
 			// Find the smallest partition which encloses the given rectangle.
-			Partition* partitionForRect (const SpaceT &rect) {
-				return m_top->partitionForRect(rect);
+			Partition* partition_for_rect (const SpaceT &rect) {
+				return _top->partition_for_rect(rect);
 			}
 		};
 	}

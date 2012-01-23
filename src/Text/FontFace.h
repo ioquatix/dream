@@ -32,52 +32,52 @@ namespace Dream
 			{
 				FT_Glyph glyph;
 				
-				FT_Pos lsbDelta;
-				FT_Pos rsbDelta;
+				FT_Pos lsb_delta;
+				FT_Pos rsb_delta;
 				
 				FT_Vector advance;
 				
 				~FontGlyph ();
 				
-				void compositeToBuffer(Vector<2,unsigned> origin, REF(IMutablePixelBuffer) img) const;
+				void composite_to_buffer(Vector<2,unsigned> origin, REF(IMutablePixelBuffer) img) const;
 				
-				Vector<2,unsigned> calculateCharacterOrigin (Vector<2,unsigned> pen) const;
-				void getCBox(FT_UInt bboxMode, FT_BBox * acbox) const;
+				Vector<2,unsigned> calculate_character_origin (Vector<2,unsigned> pen) const;
+				void get_cbox(FT_UInt bbox_mode, FT_BBox * acbox) const;
 				
-				bool isBitmap () const;
-				bool isOutline () const;
+				bool is_bitmap () const;
+				bool is_outline () const;
 				
-				unsigned hintingAdjustment(unsigned prevRSBDelta) const;
+				unsigned hinting_adjustment(unsigned prev_rsbdelta) const;
 			};
 			
 			class FontFace
 			{
 			protected:
 				typedef std::map<FT_UInt, FontGlyph*> GlyphMapT;
-				GlyphMapT m_glyphCache;
+				GlyphMapT _glyph_cache;
 				
-				FT_Face m_face;
-				ImagePixelFormat m_pixelFormat; //ALPHA or INTENSITY
+				FT_Face _face;
+				ImagePixelFormat _pixel_format; //ALPHA or INTENSITY
 				
 			public:
 				FontFace (FT_Face _face, ImagePixelFormat _fmt);
 				virtual ~FontFace ();
 			
-				bool hasKerning ();
+				bool has_kerning ();
 				
 				// These three functions need >> 6 to convert to pixels
-				unsigned lineOffset () const;
-				unsigned ascenderOffset () const;
-				unsigned descenderOffset() const;
+				unsigned line_offset () const;
+				unsigned ascender_offset () const;
+				unsigned descender_offset() const;
 				
-				FT_UInt getCharIndex (FT_UInt c);
+				FT_UInt get_char_index (FT_UInt c);
 				FT_Face face ();
 				
-				ImagePixelFormat pixelFormat ();
+				ImagePixelFormat pixel_format ();
 				
-				FontGlyph * loadGlyphForIndex (FT_UInt c);
+				FontGlyph * load_glyph_for_index (FT_UInt c);
 				
-				Vector<2, unsigned> processText(const std::wstring& text, REF(Image) dst);
+				Vector<2, unsigned> process_text(const std::wstring& text, REF(Image) dst);
 			};
 		}
 	}

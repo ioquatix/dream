@@ -20,44 +20,44 @@ namespace Dream {
 		
 		class ImageBase : implements IPixelBuffer {
 		protected:
-			ImagePixelFormat m_format;
-			ImageDataType m_dataType;
-			Vector<3, unsigned> m_size;
+			ImagePixelFormat _format;
+			ImageDataType _data_type;
+			Vector<3, unsigned> _size;
 			
 		public:			
-			ImageBase () : m_format(ImagePixelFormat(0)), m_dataType(ImageDataType(0)), m_size(ZERO) {}
+			ImageBase () : _format(ImagePixelFormat(0)), _data_type(ImageDataType(0)), _size(ZERO) {}
 			
 			//Accessors
-			virtual ImagePixelFormat pixelFormat () const
+			virtual ImagePixelFormat pixel_format () const
 			{
-				return m_format;
+				return _format;
 			}
 			
-			virtual ImageDataType pixelDataType () const
+			virtual ImageDataType pixel_dataType () const
 			{
-				return m_dataType;
+				return _data_type;
 			}
 			
 			virtual Vector<3, unsigned> size () const
 			{ 
-				return m_size;
+				return _size;
 			}
 		};
 		
 		class UnbufferedImage : public Object, public ImageBase, implements IPixelBuffer {
 		protected:
-			const ByteT *m_data;
+			const ByteT *_data;
 		
 		public:			
-			UnbufferedImage (ImagePixelFormat format, ImageDataType dataType);
-			UnbufferedImage (const ByteT *data, const Vector<3, unsigned> &size, ImagePixelFormat format, ImageDataType dataType);
+			UnbufferedImage (ImagePixelFormat format, ImageDataType data_type);
+			UnbufferedImage (const ByteT *data, const Vector<3, unsigned> &size, ImagePixelFormat format, ImageDataType data_type);
 						
-			void setFormat (ImagePixelFormat format, ImageDataType dataType);
-			void setData (const ByteT *data, const Vector<3, unsigned> &size);
+			void set_format (ImagePixelFormat format, ImageDataType data_type);
+			void set_data (const ByteT *data, const Vector<3, unsigned> &size);
 			
-			virtual const ByteT* pixelData () const
+			virtual const ByteT* pixel_data () const
 			{
-				return m_data;
+				return _data;
 			}
 		};
 		
@@ -65,33 +65,33 @@ namespace Dream {
 		public:
 			class Loader : public Object, implements ILoadable {
 			public:
-				virtual void registerLoaderTypes (ILoader * loader);
-				virtual REF(Object) loadFromData (const PTR(IData) data, const ILoader * loader);
+				virtual void register_loader_types (ILoader * loader);
+				virtual REF(Object) load_from_data (const PTR(IData) data, const ILoader * loader);
 			};
 			
 		protected:
-			DynamicBuffer m_data;
+			DynamicBuffer _data;
 					
 		public:
 			Image();
 			
-			Image(const Vector<3, unsigned> &size, ImagePixelFormat format, ImageDataType dataType);
+			Image(const Vector<3, unsigned> &size, ImagePixelFormat format, ImageDataType data_type);
 			
 			virtual ~Image ();
 					
 			// IMutablePixelBuffer access
-			virtual const ByteT * pixelData () const;
-			virtual ByteT * pixelData();
+			virtual const ByteT * pixel_data () const;
+			virtual ByteT * pixel_data();
 			
 			/// Offset and Length are in pixels
-			void setData (const Vector<3, unsigned> &size, ImagePixelFormat format, ImageDataType dataType, const ByteT * buffer);
-			void setData (IndexT offset, IndexT length, const ByteT* buffer);
+			void set_data (const Vector<3, unsigned> &size, ImagePixelFormat format, ImageDataType data_type, const ByteT * buffer);
+			void set_data (IndexT offset, IndexT length, const ByteT* buffer);
 			
-			/// Sets up the internal buffers for handing data for the specified size, format and dataType.
-			void allocate (const Vec3u & size, ImagePixelFormat format, ImageDataType dataType);
+			/// Sets up the internal buffers for handing data for the specified size, format and data_type.
+			void allocate (const Vec3u & size, ImagePixelFormat format, ImageDataType data_type);
 
 		protected:
-			static REF(Image) loadFromData (const PTR(IData) data);
+			static REF(Image) load_from_data (const PTR(IData) data);
 
 		};
 	}

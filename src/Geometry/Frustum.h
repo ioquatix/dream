@@ -21,21 +21,21 @@ namespace Dream {
 	public:			
 			typedef Plane<3, NumericT> PlaneT;
 	protected:
-			PlaneT m_planes[6];
+			PlaneT _planes[6];
 
 	public:
 			const PlaneT & operator[] (unsigned i) const
 			{
-				return m_planes[i];
+				return _planes[i];
 			}
 			
-			void buildFrustrumFromMatrix (const Matrix<4, 4, NumericT> &);
+			void build_frustrum_from_matrix (const Matrix<4, 4, NumericT> &);
 			
-			bool intersectsWith (const Sphere<3, NumericT> &s) const;
-			bool intersectsWith (const AlignedBox<3, NumericT> &b) const;
-			//bool intersectsWith (const Triangle &t) const;
+			bool intersects_with (const Sphere<3, NumericT> &s) const;
+			bool intersects_with (const AlignedBox<3, NumericT> &b) const;
+			//bool intersects_with (const Triangle &t) const;
 			
-			//bool containsPoint (const Vec3 &p) const;
+			//bool contains_point (const Vec3 &p) const;
 		};
 	
 	}

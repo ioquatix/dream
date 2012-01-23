@@ -22,24 +22,24 @@ namespace Dream {
 		class SimpleMesh
 		{
 			protected:
-				std::vector<IndexT> m_indices;
-				std::vector<Vec3> m_vertices;
-				std::vector<Vec3> m_normals;
-				std::vector<Vec2> m_texcoords;
+				std::vector<IndexT> _indices;
+				std::vector<Vec3> _vertices;
+				std::vector<Vec3> _normals;
+				std::vector<Vec2> _texcoords;
 				
 			public:
 				void construct(const std::vector<IndexT> & indices, const std::vector<Vec3> & vertices, const std::vector<Vec3> & normals, const std::vector<Vec2> & texcoords)
 				{
-					m_indices = indices;
-					m_vertices = vertices;
-					m_normals = normals;
-					m_texcoords = texcoords;
+					_indices = indices;
+					_vertices = vertices;
+					_normals = normals;
+					_texcoords = texcoords;
 				}
 				
-				const std::vector<IndexT> & indices() const { return m_indices; }
-				const std::vector<Vec3> & vertices() const { return m_vertices; }
-				const std::vector<Vec3> & normals() const { return m_normals; }				
-				const std::vector<Vec2> & texcoords() const { return m_texcoords; }				
+				const std::vector<IndexT> & indices() const { return _indices; }
+				const std::vector<Vec3> & vertices() const { return _vertices; }
+				const std::vector<Vec3> & normals() const { return _normals; }				
+				const std::vector<Vec2> & texcoords() const { return _texcoords; }				
 		};
 		
 	}

@@ -17,8 +17,8 @@ namespace Dream {
 		namespace Graphics {
 			using Dream::Imaging::IPixelBuffer;
 			
-			const char * targetName (GLenum target);
-			bool isValidTextureTarget (GLenum target);
+			const char * target_name (GLenum target);
+			bool is_valid_texture_target (GLenum target);
 			
 			struct TextureBinding {
 				GLenum index;
@@ -34,37 +34,37 @@ namespace Dream {
 			struct TextureParameters
 			{					
 				/// Whether or not mip-maps are used
-				bool generateMipMaps;
+				bool generate_mip_maps;
 				
 				/// The minification filter. This determins how a texture is sampled when a screen-space pixel covers more than one texture-space pixel.
-				GLenum minFilter;
+				GLenum min_filter;
 				
 				/// The magnification filter. This determins how a texture is sampled when a texture pixel covers more than one screen space pixel.
-				GLenum magFilter;
+				GLenum mag_filter;
 				
 				/// The texture target.
 				GLenum target;
 				
 				/// The internal format for the texture. Optional (set to 0)
-				GLenum internalFormat;
+				GLenum internal_format;
 				
 				/// Construct a TextureParameters object to use default values unless specified.
 				/// @todo Maybe make constructor for TextureParameters have an argument
 				/// i.e. TextureParameters tp(LOW_QUALITY || HIGH_QUALITY || TEXT_QUALITY) etc
 				TextureParameters ()
-				: generateMipMaps(true), minFilter(0), magFilter(0), target(0), internalFormat(0)
+				: generate_mip_maps(true), min_filter(0), mag_filter(0), target(0), internal_format(0)
 				{
 				}
 				
 				/// Returns the specified minification filter or the default if none was specified.
-				GLenum getMinFilter () const;
+				GLenum get_min_filter () const;
 				/// Returns the specified magnification filter or the default if none was specified.
-				GLenum getMagFilter () const;
+				GLenum get_mag_filter () const;
 				
-				/// Returns the target if specified or defaultTarget if none was given.
-				GLenum getTarget(GLenum defaultTarget) const;
+				/// Returns the target if specified or default_target if none was given.
+				GLenum get_target(GLenum default_target) const;
 				
-				GLenum getInternalFormat (GLenum defaultInternalFormat) const;
+				GLenum get_internal_format (GLenum default_internal_format) const;
 			};
 			
 			// A texture manager retains ownership over a set of indexed textures.
@@ -76,38 +76,38 @@ namespace Dream {
 					
 					TextureParameters parameters;
 					
-					Vec3u currentSize;
-					GLenum currentFormat;
-					GLenum currentDataType;
+					Vec3u current_size;
+					GLenum current_format;
+					GLenum current_data_type;
 				};
 				
-				std::vector<Record> m_textures;
+				std::vector<Record> _textures;
 				
-				IndexT m_imageUnitCount;
+				IndexT _imageUnitCount;
 				
 				struct State {
 					GLuint texture;	
 				};
 				
-				std::vector<State> m_current;
+				std::vector<State> _current;
 				
-				void loadPixelData(IndexT index, const Vector<3, unsigned> & size, const ByteT * pixels, GLenum format, GLenum dataType);
+				void load_pixel_data(IndexT index, const Vector<3, unsigned> & size, const ByteT * pixels, GLenum format, GLenum data_type);
 				
 			public:
 				TextureManager();
 				~TextureManager();
 				
-				/// Creates a texture with the given pixelBuffer.
-				IndexT create(const TextureParameters &, PTR(IPixelBuffer) pixelBuffer);
+				/// Creates a texture with the given pixel_buffer.
+				IndexT create(const TextureParameters &, PTR(IPixelBuffer) pixel_buffer);
 				
 				/// Also update the texture parameters.
-				void update(IndexT index, PTR(IPixelBuffer) pixelBuffer, const TextureParameters &);
+				void update(IndexT index, PTR(IPixelBuffer) pixel_buffer, const TextureParameters &);
 				
 				/// Use the pre-existing parameters for the texture data.
-				void update(IndexT index, PTR(IPixelBuffer) pixelBuffer);
+				void update(IndexT index, PTR(IPixelBuffer) pixel_buffer);
 				
 				/// Resize the texture, which invalidates any pixel data contained.
-				void resize(IndexT index, Vec3u size, GLenum format, GLenum dataType);
+				void resize(IndexT index, Vec3u size, GLenum format, GLenum data_type);
 				
 				/// Binds the texture index with the given texture unit.
 				void bind(IndexT index, IndexT unit);

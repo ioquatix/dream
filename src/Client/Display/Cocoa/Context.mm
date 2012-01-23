@@ -29,73 +29,71 @@ namespace Dream
 #pragma mark -
 							
 				// This is the renderer output callback function
-				CVReturn ViewContext::displayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* now, const CVTimeStamp* outputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
+				CVReturn ViewContext::display_link_callback(CVDisplayLinkRef display_link, const CVTimeStamp* now, const CVTimeStamp* output_time, CVOptionFlags flags_in, CVOptionFlags* flags_out, void* display_link_context)
 				{
-					ViewContext * context = (ViewContext*)displayLinkContext;
+					ViewContext * context = (ViewContext*)display_link_context;
 					
-					return context->displayLinkCallback(displayLink, now, outputTime, flagsIn, flagsOut);
+					return context->display_link_callback(display_link, now, output_time, flags_in, flags_out);
 				}
 				
 				// This is the renderer output callback function
-				CVReturn ViewContext::displayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* now, const CVTimeStamp* outputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut)
+				CVReturn ViewContext::display_link_callback(CVDisplayLinkRef display_link, const CVTimeStamp* now, const CVTimeStamp* output_time, CVOptionFlags flags_in, CVOptionFlags* flags_out)
 				{
-					TimeT time = (TimeT)(outputTime->hostTime) / (TimeT)CVGetHostClockFrequency();
+					TimeT time = (TimeT)(output_time->hostTime) / (TimeT)CVGetHostClockFrequency();
 					
-					m_contextDelegate->renderFrameForTime(this, time);
+					_context_delegate->render_frame_for_time(this, time);
 
 					return kCVReturnSuccess;
 				}
 				
 				void ViewContext::start() {
-					setupDisplayLink();
+					setup_display_link();
 					
-					ensure(m_displayLink != nil);
-					ensure(m_graphicsView != nil);
+					ensure(_display_link != nil);
+					ensure(_graphics_view != nil);
 					
-					CVDisplayLinkStart(m_displayLink);
+					CVDisplayLinkStart(_display_link);
 				}
 				
 				void ViewContext::stop() {
-					ensure(m_displayLink != nil);
+					ensure(_display_link != nil);
 					
-					CVDisplayLinkStop(m_displayLink);
+					CVDisplayLinkStop(_display_link);
 				}
 				
-				void ViewContext::setupDisplayLink ()
+				void ViewContext::setup_display_link ()
 				{
-					if (m_displayLink) return;
+					if (_display_link) return;
 					
 					// Synchronize buffer swaps with vertical refresh rate
 					GLint swap = 1;
-					[[m_graphicsView openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
+					[[_graphics_view openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
 					
 					// Create a display link capable of being used with all active displays
-					CVDisplayLinkCreateWithActiveCGDisplays(&m_displayLink);
+					CVDisplayLinkCreateWithActiveCGDisplays(&_display_link);
 					
 					// Set the renderer output callback function
-					CVDisplayLinkSetOutputCallback(m_displayLink, &ViewContext::displayLinkCallback, this);
+					CVDisplayLinkSetOutputCallback(_display_link, &ViewContext::display_link_callback, this);
 					
 					// Set the display link for the current renderer
-					CGLContextObj cglContext = (CGLContextObj)[[m_graphicsView openGLContext] CGLContextObj];
-					CGLPixelFormatObj cglPixelFormat = (CGLPixelFormatObj)[[m_graphicsView pixelFormat] CGLPixelFormatObj];
-					CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(m_displayLink, cglContext, cglPixelFormat);
+					CGLContextObj cglContext = (CGLContextObj)[[_graphics_view openGLContext] CGLContextObj];
+					CGLPixelFormatObj cglPixelFormat = (CGLPixelFormatObj)[[_graphics_view pixelFormat] CGLPixelFormatObj];
+					CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(_display_link, cglContext, cglPixelFormat);
 				}
 				
-				ViewContext::ViewContext ()
-					: m_graphicsView(nil), m_displayLink(nil)
+				ViewContext::ViewContext() : _graphics_view(NULL), _display_link(NULL)
 				{
 				}
 				
-				ViewContext::ViewContext(NSOpenGLView * graphicsView)
-					: m_graphicsView(graphicsView), m_displayLink(nil)
+				ViewContext::ViewContext(NSOpenGLView * graphicsView) : _graphics_view(graphicsView), _display_link(NULL)
 				{
 				}
 				
 				ViewContext::~ViewContext () {
-					if (m_displayLink) {
-						CVDisplayLinkStop(m_displayLink);
-						CVDisplayLinkRelease(m_displayLink);
-						m_displayLink = nil;
+					if (_display_link) {
+						CVDisplayLinkStop(_display_link);
+						CVDisplayLinkRelease(_display_link);
+						_display_link = nil;
 					}
 					
 					//[m_pool release];				
@@ -103,8 +101,8 @@ namespace Dream
 				
 				Vec2u ViewContext::size ()
 				{
-					if (m_graphicsView) {
-						NSSize size = [m_graphicsView frame].size;
+					if (_graphics_view) {
+						NSSize size = [_graphics_view frame].size;
 					
 						return Vec2u(size.width, size.height);
 					} else {
@@ -112,24 +110,24 @@ namespace Dream
 					}
 				}
 				
-				void ViewContext::makeCurrent ()
+				void ViewContext::make_current ()
 				{
-					[[m_graphicsView openGLContext] makeCurrentContext];
+					[[_graphics_view openGLContext] makeCurrentContext];
 				}
 				
-				void ViewContext::flushBuffers ()
+				void ViewContext::flush_buffers()
 				{
 					// We assume that if m_graphicsView is nil, this function will have no effect.
-					[[m_graphicsView openGLContext] flushBuffer];
+					[[_graphics_view openGLContext] flushBuffer];
 				}
 				
 #pragma mark -
 
-				void WindowContext::setupGraphicsView (PTR(Dictionary) config, NSRect frame)
+				void WindowContext::setup_graphics_view(PTR(Dictionary) config, NSRect frame)
 				{					
-					NSOpenGLView * graphicsView = NULL;
-					if (config->get("Cocoa.View", graphicsView)) {
-						m_graphicsView = graphicsView;
+					NSOpenGLView * graphics_view = NULL;
+					if (config->get("Cocoa.View", graphics_view)) {
+						_graphics_view = graphics_view;
 					} else {
 						std::vector<NSOpenGLPixelFormatAttribute> attributes;
 						
@@ -165,16 +163,17 @@ namespace Dream
 							attributes.push_back(0);
 						}
 
-						NSOpenGLPixelFormat * pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes.data()];
+						NSOpenGLPixelFormat * pixel_format = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes.data()];
 						
-						DOpenGLView * graphicsView = [[DOpenGLView alloc] initWithFrame:frame pixelFormat:pixelFormat];
-						[graphicsView setDisplayContext:this];
+						DOpenGLView * graphics_view = [[DOpenGLView alloc] initWithFrame:frame pixelFormat:pixel_format];
+						
+						[graphics_view setDisplayContext:this];
 												
-						m_graphicsView = graphicsView;						
+						_graphics_view = graphics_view;						
 					}
 
 					// Tight alignment
-					[[m_graphicsView openGLContext] makeCurrentContext];
+					[[_graphics_view openGLContext] makeCurrentContext];
 					
 					glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 					glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -189,48 +188,48 @@ namespace Dream
 
 				WindowContext::WindowContext (PTR(Dictionary) config)
 				{
-					NSRect windowRect = NSMakeRect(50, 50, 1024, 768);
+					NSRect window_rect = NSMakeRect(50, 50, 1024, 768);
 					
-					Vec2u initialSize;
-					if (config->get("Context.Size", initialSize)) {
-						windowRect.size.width = initialSize[WIDTH];
-						windowRect.size.height = initialSize[HEIGHT];
+					Vec2u initial_size;
+					if (config->get("Context.Size", initial_size)) {
+						window_rect.size.width = initial_size[WIDTH];
+						window_rect.size.height = initial_size[HEIGHT];
 					}
 					
-					unsigned windowStyle = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask;
+					unsigned window_style = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask;
 
-					m_window = [[NSWindow alloc] initWithContentRect:windowRect styleMask:windowStyle backing:NSBackingStoreBuffered defer:YES];
-					[m_window setAcceptsMouseMovedEvents:YES];
+					_window = [[NSWindow alloc] initWithContentRect:window_rect styleMask:window_style backing:NSBackingStoreBuffered defer:YES];
+					[_window setAcceptsMouseMovedEvents:YES];
 					
-					m_windowDelegate = [DWindowDelegate new];
-					[m_windowDelegate setInputHandler:this];
+					_window_delegate = [DWindowDelegate new];
+					[_window_delegate setInputHandler:this];
 					
-					[[m_windowDelegate screenManager] setPartialScreenWindow:m_window];
+					[[_window_delegate screenManager] setPartialScreenWindow:_window];
 					
-					[m_window setDelegate:m_windowDelegate];
+					[_window setDelegate:_window_delegate];
 					
-					setupGraphicsView(config, windowRect);
-					ensure(m_graphicsView);
+					setup_graphics_view(config, window_rect);
+					ensure(_graphics_view);
 					
-					[m_window setContentView:m_graphicsView];
-					[m_window makeFirstResponder:m_graphicsView];
+					[_window setContentView:_graphics_view];
+					[_window makeFirstResponder:_graphics_view];
 				}
 				
 				WindowContext::~WindowContext ()
 				{
-					[m_window release];
+					[_window release];
 				}
 			
 				void WindowContext::start ()
 				{
-					[m_window makeKeyAndOrderFront:nil];
+					[_window makeKeyAndOrderFront:nil];
 					ViewContext::start();
 				}
 				
 				void WindowContext::stop ()
 				{
 					ViewContext::stop();
-					[m_window close];
+					[_window close];
 				}
 
 			}

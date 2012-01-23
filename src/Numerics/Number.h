@@ -37,7 +37,7 @@ namespace Dream
 
 			/// Clamp a value at a lower bound.
 			template <typename t>
-			static inline t clampBottom (const t & v, const t & l = 0.0)
+			static inline t clamp_bottom (const t & v, const t & l = 0.0)
 			{
 				if (v < l) return l;
 				return v;
@@ -45,7 +45,7 @@ namespace Dream
 
 			/// Clamp a value at an upper bound.
 			template <typename t>
-			static inline t clampTop (const t & v, const t & u = 1.0)
+			static inline t clamp_top (const t & v, const t & u = 1.0)
 			{
 				if (v > u) return u;
 				return v;

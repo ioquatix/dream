@@ -10,26 +10,26 @@
 
 @implementation DApplicationDelegate
 
-@synthesize application;
+@synthesize application = _application;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-	application->delegate()->applicationDidFinishLaunching(application);
+	_application->delegate()->application_did_finish_launching(_application);
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification
 {
-	application->delegate()->applicationWillTerminate(application);
+	_application->delegate()->application_will_terminate(_application);
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification
 {
-	application->delegate()->applicationDidEnterForeground(application);
+	_application->delegate()->application_did_enter_foreground(_application);
 }
 
 - (void)applicationWillResignActive:(NSNotification *)aNotification
 {
-	application->delegate()->applicationWillEnterBackground(application);
+	_application->delegate()->application_will_enter_background(_application);
 }
 
 @end

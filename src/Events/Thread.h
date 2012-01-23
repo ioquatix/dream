@@ -23,8 +23,8 @@ namespace Dream
 		class Thread : public Object
 		{
 			protected:
-				REF(Loop) m_loop;
-				Shared<std::thread> m_thread;
+				REF(Loop) _loop;
+				Shared<std::thread> _thread;
 				
 				void run ();
 				
@@ -49,8 +49,8 @@ namespace Dream
 		class Queue : public Object
 		{
 			protected:
-				std::mutex m_lock;
-				std::vector<ItemT> * m_waiting, * m_processing;
+				std::mutex _lock;
+				std::vector<ItemT> * _waiting, * _processing;
 			
 			public:
 				Queue ();
@@ -65,37 +65,37 @@ namespace Dream
 		template <typename ItemT>
 		Queue<ItemT>::Queue ()
 		{
-			std::lock_guard<std::mutex> lock(m_lock);
+			std::lock_guard<std::mutex> lock(_lock);
 			
-			m_waiting = new std::vector<ItemT>;
-			m_processing = new std::vector<ItemT>;
+			_waiting = new std::vector<ItemT>;
+			_processing = new std::vector<ItemT>;
 		}
 		
 		template <typename ItemT>
 		Queue<ItemT>::~Queue ()
 		{
-			std::lock_guard<std::mutex> lock(m_lock);
+			std::lock_guard<std::mutex> lock(_lock);
 			
-			delete m_waiting;
-			delete m_processing;
+			delete _waiting;
+			delete _processing;
 		}
 
 		// This function can be called by any number of threads.
 		template <typename ItemT>
 		void Queue<ItemT>::add (ItemT item)
 		{
-			std::lock_guard<std::mutex> lock(m_lock);
+			std::lock_guard<std::mutex> lock(_lock);
 
-			m_waiting->push_back(item);
+			_waiting->push_back(item);
 		}
 
 		//
 		template <typename ItemT>
 		void Queue<ItemT>::flush ()
 		{
-			std::lock_guard<std::mutex> lock(m_lock);
+			std::lock_guard<std::mutex> lock(_lock);
 			
-			m_waiting->resize(0);
+			_waiting->resize(0);
 		}
 
 		// This function is not re-entrant and must be called by only one thread or protected with a lock.
@@ -104,13 +104,13 @@ namespace Dream
 		std::vector<ItemT> * Queue<ItemT>::fetch ()
 		{
 			{
-				std::lock_guard<std::mutex> lock(m_lock);
+				std::lock_guard<std::mutex> lock(_lock);
 
-				std::swap(m_processing, m_waiting);
-				m_waiting->resize(0);
+				std::swap(_processing, _waiting);
+				_waiting->resize(0);
 			}
 			
-			return m_processing;
+			return _processing;
 		}
 	
 	}

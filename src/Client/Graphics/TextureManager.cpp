@@ -15,7 +15,7 @@ namespace Dream {
 			const GLenum INVALID_TARGET = 0;
 			const GLuint INVALID_TEXTURE = (GLuint)-1;
 			
-			const char * targetName (GLenum target)
+			const char * target_name (GLenum target)
 			{
 				switch (target) {
 #ifdef GL_TEXTURE_1D
@@ -33,7 +33,7 @@ namespace Dream {
 				}
 			}
 			
-			bool isValidTextureTarget (GLenum target)
+			bool is_valid_texture_target (GLenum target)
 			{
 				switch (target) {
 #ifdef GL_TEXTURE_1D
@@ -51,59 +51,59 @@ namespace Dream {
 			
 #pragma mark -
 
-			GLenum TextureParameters::getMinFilter () const {
-				if (minFilter)
-					return minFilter;
-				else if (generateMipMaps)
+			GLenum TextureParameters::get_min_filter () const {
+				if (min_filter)
+					return min_filter;
+				else if (generate_mip_maps)
 					return GL_LINEAR_MIPMAP_LINEAR;
 				else
 					return GL_LINEAR;
 			}
 
-			GLenum TextureParameters::getMagFilter () const {
-				if (magFilter)
-					return magFilter;
+			GLenum TextureParameters::get_mag_filter () const {
+				if (mag_filter)
+					return mag_filter;
 				else
 					return GL_LINEAR;
 			}
 
-			GLenum TextureParameters::getTarget (GLenum defaultTarget) const {
+			GLenum TextureParameters::get_target (GLenum default_target) const {
 				if (target)
 					return target;
 				else
-					return defaultTarget;
+					return default_target;
 			}
 
-			GLenum TextureParameters::getInternalFormat (GLenum defaultInternalFormat) const {
-				if (internalFormat)
-					return internalFormat;
+			GLenum TextureParameters::get_internal_format (GLenum default_internal_format) const {
+				if (internal_format)
+					return internal_format;
 				else
-					return defaultInternalFormat;
+					return default_internal_format;
 			}
 			
 #pragma mark -
 			
 			TextureManager::TextureManager()
 			{
-				GLint imageUnitCount = 0;
-				glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &imageUnitCount);
+				GLint image_unit_count = 0;
+				glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &image_unit_count);
 								
 				State initial = {INVALID_TEXTURE};
-				m_current.resize(imageUnitCount, initial);
+				_current.resize(image_unit_count, initial);
 								
-				m_imageUnitCount = imageUnitCount;
+				_imageUnitCount = image_unit_count;
 				
-				std::cerr << "OpenGL Texture Units: " << imageUnitCount << std::endl;
+				std::cerr << "OpenGL Texture Units: " << image_unit_count << std::endl;
 			}
 			
 			TextureManager::~TextureManager()
 			{
-				for (Record & r : m_textures) {
+				for (Record & r : _textures) {
 					glDeleteTextures(1, &r.handle);
 				}
 			}
 
-			IndexT TextureManager::create(const TextureParameters & parameters, PTR(IPixelBuffer) pixelBuffer)
+			IndexT TextureManager::create(const TextureParameters & parameters, PTR(IPixelBuffer) pixel_buffer)
 			{
 				GLenum handle;
 				
@@ -111,76 +111,76 @@ namespace Dream {
 				
 				Record record = {handle, parameters};
 				
-				m_textures.push_back(record);
-				IndexT index = m_textures.size() - 1;
+				_textures.push_back(record);
+				IndexT index = _textures.size() - 1;
 				
-				if (pixelBuffer) {
-					update(index, pixelBuffer);
+				if (pixel_buffer) {
+					update(index, pixel_buffer);
 				}
 				
 				return index;
 			}
 			
-			void TextureManager::loadPixelData (IndexT index, const Vector<3, unsigned> & size, const ByteT * pixels, GLenum format, GLenum dataType)
+			void TextureManager::load_pixel_data (IndexT index, const Vector<3, unsigned> & size, const ByteT * pixels, GLenum format, GLenum data_type)
 			{
-				const TextureParameters & parameters = m_textures[index].parameters;
+				const TextureParameters & parameters = _textures[index].parameters;
 				
 				// We will use unit 0 to upload the texture data.
 				bind(index, 0);
 				
 				/// Invalidate the first texture unit since we may use it to upload texture data.
-				m_current[0].texture = INVALID_TEXTURE;
+				_current[0].texture = INVALID_TEXTURE;
 				
-				GLenum internalFormat = parameters.getInternalFormat(format);
+				GLenum internal_format = parameters.get_internal_format(format);
 				
 				switch (parameters.target) {
 #ifdef GL_TEXTURE_1D
 					case GL_TEXTURE_1D:
-						glTexImage1D(parameters.target, 0, internalFormat, size[WIDTH], 0, format, dataType, pixels);
+						glTexImage1D(parameters.target, 0, internal_format, size[WIDTH], 0, format, data_type, pixels);
 						break;
 #endif
 					case GL_TEXTURE_2D:
-						glTexImage2D(parameters.target, 0, internalFormat, size[WIDTH], size[HEIGHT], 0, format, dataType, pixels);
+						glTexImage2D(parameters.target, 0, internal_format, size[WIDTH], size[HEIGHT], 0, format, data_type, pixels);
 						break;
 #ifdef GL_TEXTURE_3D
 					case GL_TEXTURE_3D:
-						glTexImage3D(parameters.target, 0, internalFormat, size[WIDTH], size[HEIGHT], size[DEPTH], 0, format, dataType, pixels);
+						glTexImage3D(parameters.target, 0, internal_format, size[WIDTH], size[HEIGHT], size[DEPTH], 0, format, data_type, pixels);
 						break;
 #endif
 				}
 				
-				m_textures[index].currentSize = size;
-				m_textures[index].currentFormat = format;
-				m_textures[index].currentDataType = dataType;
+				_textures[index].current_size = size;
+				_textures[index].current_format = format;
+				_textures[index].current_data_type = data_type;
 				
-				if (parameters.generateMipMaps)
+				if (parameters.generate_mip_maps)
 					glGenerateMipmap(parameters.target);
 			}
 			
-			void TextureManager::update(IndexT index, PTR(IPixelBuffer) pixelBuffer, const TextureParameters & parameters)
+			void TextureManager::update(IndexT index, PTR(IPixelBuffer) pixel_buffer, const TextureParameters & parameters)
 			{
-				m_textures[index].parameters = parameters;
+				_textures[index].parameters = parameters;
 				
-				loadPixelData(index, pixelBuffer->size(), pixelBuffer->pixelData(), pixelBuffer->pixelFormat(), pixelBuffer->pixelDataType());
+				load_pixel_data(index, pixel_buffer->size(), pixel_buffer->pixel_data(), pixel_buffer->pixel_format(), pixel_buffer->pixel_dataType());
 			}
 			
-			void TextureManager::update(IndexT index, PTR(IPixelBuffer) pixelBuffer)
+			void TextureManager::update(IndexT index, PTR(IPixelBuffer) pixel_buffer)
 			{
-				loadPixelData(index, pixelBuffer->size(), pixelBuffer->pixelData(), pixelBuffer->pixelFormat(), pixelBuffer->pixelDataType());
+				load_pixel_data(index, pixel_buffer->size(), pixel_buffer->pixel_data(), pixel_buffer->pixel_format(), pixel_buffer->pixel_dataType());
 			}
 			
-			void TextureManager::resize(IndexT index, Vec3u size, GLenum format, GLenum dataType)
+			void TextureManager::resize(IndexT index, Vec3u size, GLenum format, GLenum data_type)
 			{
-				if (size != m_textures[index].currentSize)
-					loadPixelData(index, size, NULL, m_textures[index].currentFormat, m_textures[index].currentDataType);
+				if (size != _textures[index].current_size)
+					load_pixel_data(index, size, NULL, _textures[index].current_format, _textures[index].current_data_type);
 			}
 			
 			void TextureManager::bind(IndexT index, IndexT unit)
 			{
-				ensure(index < m_textures.size());
+				ensure(index < _textures.size());
 				
-				const Record & record = m_textures[index];
-				State & state = m_current[unit];
+				const Record & record = _textures[index];
+				State & state = _current[unit];
 				
 				if (state.texture != record.handle) {
 					glActiveTexture(GL_TEXTURE0 + unit);
@@ -190,8 +190,8 @@ namespace Dream {
 					
 					glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_REPEAT);
 					glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_REPEAT);
-					glTexParameteri(target, GL_TEXTURE_MAG_FILTER, record.parameters.getMagFilter());
-					glTexParameteri(target, GL_TEXTURE_MIN_FILTER, record.parameters.getMinFilter());
+					glTexParameteri(target, GL_TEXTURE_MAG_FILTER, record.parameters.get_mag_filter());
+					glTexParameteri(target, GL_TEXTURE_MIN_FILTER, record.parameters.get_min_filter());
 				}
 			}
 			
@@ -204,7 +204,7 @@ namespace Dream {
 			
 			void TextureManager::invalidate()
 			{
-				for (State & s : m_current) {
+				for (State & s : _current) {
 					s.texture = INVALID_TEXTURE;
 				}
 			}

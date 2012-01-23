@@ -23,8 +23,8 @@ namespace Dream {
 		template <unsigned D, typename NumericT>
 		class Sphere {
 		protected:
-			Vector<D, NumericT> m_center;
-			NumericT m_radius;
+			Vector<D, NumericT> _center;
+			NumericT _radius;
 
 			typedef typename RealType<NumericT>::RealT NumericRealT;
 
@@ -42,30 +42,30 @@ namespace Dream {
 			/// @returns the center of the sphere.
 			const Vector<D, NumericT> & center () const;
 			/// Sets the center of the sphere.
-			void setCenter (const Vector<D> & center);
+			void set_center (const Vector<D> & center);
 			
 			/// @returns the radius of the sphere.
 			const NumericT & radius () const;
 			/// Sets the center of the sphere.
-			void setRadius (const NumericT & radius);
+			void set_radius (const NumericT & radius);
 			
 			/// Displacement returns the vector between the two circles.
-			NumericRealT distanceBetweenEdges (const Sphere<D, NumericT> & other, Vector<D, NumericT> & displacement) const;
+			NumericRealT distance_between_edges (const Sphere<D, NumericT> & other, Vector<D, NumericT> & displacement) const;
 
 			/// Displacement returns the vector between the two centers.
-			NumericRealT distanceFromPoint (const Vector<D, NumericT> & point, Vector<D, NumericT> & displacement) const;
+			NumericRealT distance_from_point (const Vector<D, NumericT> & point, Vector<D, NumericT> & displacement) const;
 			
-			/// Distance is the time along the Line (use pointAtTime).
-			IntersectionResult intersectsWith (const Line<D, NumericT> &line, RealT & entryTime, RealT & exitTime) const;
+			/// Distance is the time along the Line (use point_at_time).
+			IntersectionResult intersects_with (const Line<D, NumericT> &line, RealT & entry_time, RealT & exit_time) const;
 			
-			/// Distance is the time along the LineSegment (use pointAtTime).
-			IntersectionResult intersectsWith (const LineSegment<D, NumericT> &line, RealT & entryTime, RealT & exitTime) const;
+			/// Distance is the time along the LineSegment (use point_at_time).
+			IntersectionResult intersects_with (const LineSegment<D, NumericT> &line, RealT & entry_time, RealT & exit_time) const;
 			
 			/// Test between two spheres
-			IntersectionResult intersectsWith (const Sphere & other, Vector<D, NumericT> & displacement) const;
+			IntersectionResult intersects_with (const Sphere & other, Vector<D, NumericT> & displacement) const;
 			
 			/// Test between a point and a sphere
-			IntersectionResult intersectsWith (const Vector<D, NumericT> & point, Vector<D, NumericT> & displacement) const;
+			IntersectionResult intersects_with (const Vector<D, NumericT> & point, Vector<D, NumericT> & displacement) const;
 		};
 		
 		typedef Sphere<2> Sphere2;

@@ -12,7 +12,7 @@
 namespace Dream {
 	namespace Resources {
 		
-		LoadError::LoadError (StringT what) : m_what(what) {
+		LoadError::LoadError (StringT what) : _what(what) {
 			
 		}
 		
@@ -21,7 +21,7 @@ namespace Dream {
 		}
 		
 		const char * LoadError::what () const noexcept {
-			return m_what.c_str();
+			return _what.c_str();
 		}
 		
 	}

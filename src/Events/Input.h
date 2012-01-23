@@ -66,38 +66,38 @@ namespace Dream
 		/* Simple encapsulation of a device and its button */
 		class Key {
 		protected:
-			DeviceT m_device;
-			ButtonT m_button;
+			DeviceT _device;
+			ButtonT _button;
 			
 		public:
-			const DeviceT& device () const { return m_device; }
-			const ButtonT& button () const { return m_button; }
+			const DeviceT& device () const { return _device; }
+			const ButtonT& button () const { return _button; }
 			
 			bool operator< (const Key& other) const {
-				return m_device < other.m_device && m_button < other.m_button;
+				return _device < other._device && _button < other._button;
 			}
 			
 			bool operator<= (const Key& other) const {
-				return m_device <= other.m_device && m_button <= other.m_button;
+				return _device <= other._device && _button <= other._button;
 			}
 			
 			bool operator> (const Key& other) const {
-				return m_device > other.m_device && m_button > other.m_button;
+				return _device > other._device && _button > other._button;
 			}
 			
 			bool operator>= (const Key& other) const {
-				return m_device >= other.m_device && m_button >= other.m_button;
+				return _device >= other._device && _button >= other._button;
 			}
 			
 			bool operator== (const Key& other) const {
-				return m_device == other.m_device && m_button == other.m_button;
+				return _device == other._device && _button == other._button;
 			}
 			
 			bool operator!= (const Key& other) const {
 				return ! ((*this) == other);
 			}
 			
-			Key (const DeviceT &device, const ButtonT &button) : m_device(device), m_button(button) {
+			Key (const DeviceT &device, const ButtonT &button) : _device(device), _button(button) {
 				/* Simple Constructor */
 			}
 		};
@@ -111,7 +111,7 @@ namespace Dream
 		class Input
 		{
 		protected:
-			TimeT m_time;
+			TimeT _time;
 			
 		public:
 			Input ();
@@ -119,7 +119,7 @@ namespace Dream
 			
 			virtual ~Input();
 			
-			TimeT time () const { return m_time; }
+			TimeT time () const { return _time; }
 			virtual bool act (IInputHandler * handler) const abstract;
 		};
 		
@@ -159,15 +159,15 @@ namespace Dream
 			EventName event() const;
 		
 		protected:
-			EventName m_event;
+			EventName _event;
 			
 			virtual bool act (IInputHandler * handler) const;
 		};
 		
 		class ButtonInput : public Input {
 		private:
-			Key m_key;
-			StateT m_state;
+			Key _key;
+			StateT _state;
 			
 		public:
 			ButtonInput(const Key &e, const StateT &s);
@@ -177,26 +177,26 @@ namespace Dream
 			
 			virtual bool act (IInputHandler * handler) const;
 			
-			const Key & key () const { return m_key; }
-			const StateT & state () const { return m_state; }
+			const Key & key () const { return _key; }
+			const StateT & state () const { return _state; }
 			
-			bool buttonPressed (const char b) const {
-				return m_state == Pressed && m_key.button() == b;
+			bool button_pressed (const char b) const {
+				return _state == Pressed && _key.button() == b;
 			}
 			
-			bool buttonReleased (const char b) const {
-				return m_state == Released && m_key.button() == b;
+			bool button_released (const char b) const {
+				return _state == Released && _key.button() == b;
 			}
 		};
 		
 		class MotionInput : public Input {
 		private:
-			Key m_key;
-			StateT m_state;
-			Vec3 m_position, m_motion;
+			Key _key;
+			StateT _state;
+			Vec3 _position, _motion;
 			
 			// The bounds of the view/screen which handled the motion input.
-			AlignedBox<2> m_bounds;
+			AlignedBox<2> _bounds;
 			
 		public:
 			MotionInput(const Key &key, const StateT &state, const Vec3 &position, const Vec3 &motion, const AlignedBox<2> & bounds);
@@ -206,50 +206,50 @@ namespace Dream
 			
 			virtual bool act (IInputHandler * handler) const;
 			
-			const Vec3 & currentPosition () const { return m_position; }
-			const Vec3 previousPosition () const { return m_position - m_motion; }
-			const Vec3 motion () const { return m_motion; }
+			const Vec3 & current_position () const { return _position; }
+			const Vec3 previous_position () const { return _position - _motion; }
+			const Vec3 motion () const { return _motion; }
 			
-			const AlignedBox<2> & bounds() const { return m_bounds; }
+			const AlignedBox<2> & bounds() const { return _bounds; }
 			
 			// Updated bounds must be within the coordinate system provided by the current input event.
-			MotionInput inputByRefiningBounds(const AlignedBox<2> & updatedBounds);
+			MotionInput input_by_refining_bounds(const AlignedBox<2> & updated_bounds);
 			
-			const Key & key () const { return m_key; }
-			const StateT & state () const { return m_state; }
+			const Key & key () const { return _key; }
+			const StateT & state () const { return _state; }
 			
-			bool buttonPressed(MouseButton b) const {
-				return m_state == Pressed && m_key.button() == b;
+			bool button_pressed(MouseButton b) const {
+				return _state == Pressed && _key.button() == b;
 			}
 			
-			bool buttonPressedOrDragged(MouseButton b) const {
-				return (m_state == Pressed || m_state == Dragged) && m_key.button() == b;
+			bool button_pressedOrDragged(MouseButton b) const {
+				return (_state == Pressed || _state == Dragged) && _key.button() == b;
 			}
 			
-			bool buttonReleased(MouseButton b) const {
-				return m_state == Released && m_key.button() == b;
+			bool button_released(MouseButton b) const {
+				return _state == Released && _key.button() == b;
 			}
 		};
 		
 		class ResizeInput : public Input {
 		private:
-			Vec2u m_newSize;
+			Vec2u _new_size;
 			
 		public:
-			ResizeInput(const Vec2u & newSize);
+			ResizeInput(const Vec2u & new_size);
 			ResizeInput(const ResizeInput & other);
 			
 			virtual ~ResizeInput ();
 			
 			virtual bool act (IInputHandler * handler) const;
 			
-			Vec2u newSize () const { return m_newSize; }
+			Vec2u new_size () const { return _new_size; }
 		};
 		
 		/// The input queue can send user input across threads.
 		class InputQueue : implements IInputHandler {
 			protected:
-				Events::Queue<Input*> m_queue;
+				Events::Queue<Input*> _queue;
 				
 				virtual bool resize(const ResizeInput &);
 				virtual bool button(const ButtonInput &);
@@ -266,21 +266,21 @@ namespace Dream
 		class InputMapper {
 		protected:
 			typedef std::map<Key, ActionT> ActionsMap;
-			ActionsMap m_actions;
+			ActionsMap _actions;
 			
 		public:
 			void bind (const Key &e, ActionT a) {
-				m_actions[e] = a;
+				_actions[e] = a;
 			}
 			
 			void bind (DeviceT d, ButtonT b, ActionT a) {
 				Key e(d,b);
-				m_actions[e] = a;
+				_actions[e] = a;
 			}
 			
 			bool lookup (const Key &e, const ActionT &a) const {
-				typename ActionsMap::const_iterator i = m_actions.find(e);
-				if (i != m_actions.end()) {
+				typename ActionsMap::const_iterator i = _actions.find(e);
+				if (i != _actions.end()) {
 					a = *i;
 					return true;
 				} else {

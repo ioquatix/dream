@@ -41,9 +41,9 @@ namespace Dream
 	/// Represents a open file.
 	typedef int FileDescriptorT;
 	
-	const char * buildDate ();
-	const char * buildPlatform ();
-	const char * buildRevision ();
+	const char * build_date ();
+	const char * build_platform ();
+	const char * build_revision ();
 }
 
 #include "Assertion.h"

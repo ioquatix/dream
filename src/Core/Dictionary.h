@@ -28,25 +28,25 @@ namespace Dream
 			
 		protected:
 			typedef std::map<KeyT, Value> ValuesT;
-			ValuesT m_values;
+			ValuesT _values;
 			
 		public:			
 			/// Returns whether the key has a value in the dictionary.
 			bool key (const KeyT & key);
 			
-			void setValue (const KeyT & key, const Value & value);
-			const Value getValue (const KeyT & key) const;
+			void set_value (const KeyT & key, const Value & value);
+			const Value get_value (const KeyT & key) const;
 			
 			template <typename t>
 			void set (const KeyT & key, const t & value)
 			{
-				setValue(key, Value(value));
+				set_value(key, Value(value));
 			}
 			
 			template <typename ValueT>
 			const ValueT get (const KeyT & key)
 			{
-				Value v = getValue(key);
+				Value v = get_value(key);
 				
 				return v.extract<ValueT>();
 			}
@@ -54,7 +54,7 @@ namespace Dream
 			template <typename ValueT>
 			bool get (const KeyT & key, ValueT & value)
 			{
-				Value v = getValue(key);
+				Value v = get_value(key);
 				
 				if (v.defined()) {
 					value = v.extract<ValueT>();
@@ -69,9 +69,9 @@ namespace Dream
 			template <typename t>
 			bool update (const KeyT & key, t & value) const
 			{
-				ValuesT::const_iterator i = m_values.find(key);
+				ValuesT::const_iterator i = _values.find(key);
 				
-				if (i != m_values.end())
+				if (i != _values.end())
 				{
 					value = i->second.extract<t>();
 					return true;

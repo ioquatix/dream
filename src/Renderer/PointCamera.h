@@ -21,22 +21,22 @@ namespace Dream
 		
 		class PointCamera : public Object, implements ICamera {
 		protected:
-			Vec3 m_origin;
-			Vec3 m_direction;
-			Vec3 m_up;
+			Vec3 _origin;
+			Vec3 _direction;
+			Vec3 _up;
 			
 		public:
 			PointCamera ();
 			
-			static Mat44 lookAt(const Vec3 & origin, const Vec3 & direction, const Vec3 & up);
+			static Mat44 look_at(const Vec3 & origin, const Vec3 & direction, const Vec3 & up);
 			
-			void setDirection (const Vec3 &dir) { m_direction = dir; }
-			void setOrigin (const Vec3 &origin) { m_origin = origin; }
-			void setUp (const Vec3 &up) { m_up = up; }
+			void set_direction (const Vec3 &dir) { _direction = dir; }
+			void set_origin (const Vec3 &origin) { _origin = origin; }
+			void set_up (const Vec3 &up) { _up = up; }
 			
 			void set (const Line<3> &l);
 			
-			virtual Mat44 viewMatrix () const;				
+			virtual Mat44 view_matrix () const;				
 		};
 		
 	}

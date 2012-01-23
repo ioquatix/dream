@@ -40,14 +40,14 @@ namespace Dream {
 		raw pointer to this type.
 	*/
 	
-	void debugAllocations ();
+	void debug_allocations ();
 	
 	class SharedObject {
 		public:
 			typedef int32_t NumberT;
 		protected:
 			/// The number of references to this instance.
-			mutable volatile NumberT m_count;
+			mutable volatile NumberT _count;
 		
 		public:
 			/// Default constructor. Sets the reference count to 0.
@@ -70,104 +70,104 @@ namespace Dream {
 			// delete this object
 			void deallocate () const;
 			
-			NumberT referenceCount () const;
+			NumberT reference_count () const;
 	};
 	
 	template <typename ObjectT>
 	class Pointer {
 		protected:
-			ObjectT* m_object;
+			ObjectT* _object;
 			
 		public:
-			Pointer () : m_object(NULL) {
+			Pointer () : _object(NULL) {
 			}
 			
-			Pointer (ObjectT * object) : m_object(object) {
-			}
-			
-			template <typename OtherObjectT>
-			Pointer (OtherObjectT* object) : m_object(dynamic_cast<ObjectT*>(object)) {
+			Pointer (ObjectT * object) : _object(object) {
 			}
 			
 			template <typename OtherObjectT>
-			Pointer (Pointer<OtherObjectT> other) : m_object(dynamic_cast<ObjectT*>(other.get())) {
+			Pointer (OtherObjectT* object) : _object(dynamic_cast<ObjectT*>(object)) {
+			}
+			
+			template <typename OtherObjectT>
+			Pointer (Pointer<OtherObjectT> other) : _object(dynamic_cast<ObjectT*>(other.get())) {
 			}
 			
 			ObjectT* operator-> () const {
-				ensure(m_object != NULL);
-				return m_object;
+				ensure(_object != NULL);
+				return _object;
 			}
 						
 			ObjectT& operator* () const {
-				ensure(m_object != NULL);
-				return *m_object;
+				ensure(_object != NULL);
+				return *_object;
 			}
 			
 			bool operator== (const Pointer & other) const
 			{
-				return m_object == other.m_object;
+				return _object == other._object;
 			}
 			
 			bool operator!= (const Pointer & other) const
 			{
-				return m_object != other.m_object;
+				return _object != other._object;
 			}
 			
 			bool operator< (const Pointer & other) const
 			{
-				return m_object < other.m_object;
+				return _object < other._object;
 			}
 			
 			bool operator> (const Pointer & other) const
 			{
-				return m_object > other.m_object;
+				return _object > other._object;
 			}
 			
 			bool operator<= (const Pointer & other) const
 			{
-				return m_object <= other.m_object;
+				return _object <= other._object;
 			}
 			
 			bool operator>= (const Pointer & other) const
 			{
-				return m_object >= other.m_object;
+				return _object >= other._object;
 			}
 			
 			ObjectT* get () const
 			{
-				return m_object;
+				return _object;
 			}
 			
 			typedef ObjectT* Pointer::* safe_bool;
 			
 			operator safe_bool() const
 			{
-				return m_object ? &Pointer::m_object : 0;
+				return _object ? &Pointer::_object : 0;
 			}
 			
 			template <typename OtherObjectT>
-			Pointer<OtherObjectT> dynamicCast () const {
-				return Pointer<OtherObjectT>(dynamic_cast<OtherObjectT*>(m_object));
+			Pointer<OtherObjectT> as () const {
+				return Pointer<OtherObjectT>(dynamic_cast<OtherObjectT*>(_object));
 			}
 	};
 	
-	void markStaticAllocation (void*);
+	void mark_static_allocation (void*);
 	
 	template <typename ObjectT>
 	class Static : public Pointer<ObjectT> {
 		public:
 			Static () : Pointer<ObjectT>(new ObjectT) {
-				this->m_object->retain();
-				markStaticAllocation(this->m_object);
+				this->_object->retain();
+				mark_static_allocation(this->_object);
 			}
 			
 			Static (ObjectT* object) : Pointer<ObjectT>(object) {
-				this->m_object->retain();
-				markStaticAllocation(this->m_object);
+				this->_object->retain();
+				mark_static_allocation(this->_object);
 			}
 			
 			~Static () {
-				this->m_object->release();
+				this->_object->release();
 			}
 	};
 	
@@ -175,8 +175,8 @@ namespace Dream {
 	class Reference : public Pointer<ObjectT> {
 		private:
 			void construct () {
-				if (this->m_object)
-					this->m_object->retain();
+				if (this->_object)
+					this->_object->retain();
 			}
 			
 			template <typename OtherObjectT>
@@ -191,9 +191,9 @@ namespace Dream {
 			
 		public:
 			void clear () {
-				if (this->m_object) {
-					this->m_object->release();
-					this->m_object = NULL;
+				if (this->_object) {
+					this->_object->release();
+					this->_object = NULL;
 				}
 			}
 		
@@ -202,7 +202,7 @@ namespace Dream {
 				
 				if (object) {
 					object->retain();
-					this->m_object = object;
+					this->_object = object;
 				}
 				
 				return *this;
@@ -256,17 +256,17 @@ namespace Dream {
 	class Shared
 	{
 		protected:
-			REF(SharedObject) m_controller;
-			ValueT * m_value;
+			REF(SharedObject) _controller;
+			ValueT * _value;
 		
 		public:
 			REF(SharedObject) controller () const
 			{
-				return m_controller;
+				return _controller;
 			}
 			
 			Shared ()
-				: m_controller(NULL), m_value(NULL)
+				: _controller(NULL), _value(NULL)
 			{
 			
 			}
@@ -274,26 +274,26 @@ namespace Dream {
 			~Shared ()
 			{
 				// If this is the last Shared<...> we delete the value.
-				if (m_value && m_controller->referenceCount() == 1) {
-					delete m_value;
+				if (_value && _controller->reference_count() == 1) {
+					delete _value;
 				}
 			}
 			
 			Shared (ValueT * value)
-				: m_controller(new SharedObject), m_value(value)
+				: _controller(new SharedObject), _value(value)
 			{
 				
 			}
 			
 			Shared (const Shared & other)
-				: m_controller(other.m_controller), m_value(other.m_value)
+				: _controller(other._controller), _value(other._value)
 			{
 				
 			}
 			
 			template <typename OtherValueT>
 			Shared (OtherValueT * object)
-				: m_controller(new SharedObject), m_value(dynamic_cast<ValueT*>(object))
+				: _controller(new SharedObject), _value(dynamic_cast<ValueT*>(object))
 			{
 			
 			}
@@ -301,24 +301,24 @@ namespace Dream {
 			template <typename OtherValueT>
 			Shared (Shared<OtherValueT> other)
 			{
-				m_value = dynamic_cast<ValueT*>(other.get());
+				_value = dynamic_cast<ValueT*>(other.get());
 				
-				if (m_value)
-					m_controller = other.controller();
+				if (_value)
+					_controller = other.controller();
 				else
-					m_controller = NULL;
+					_controller = NULL;
 			}
 			
 			ValueT * get () const
 			{
-				return m_value;
+				return _value;
 			}
 			
 			/// Copy operator. Doesn't modify reference count.
 			Shared & operator= (const Shared & other)
 			{
-				m_controller = other.m_controller;
-				m_value = other.m_value;
+				_controller = other._controller;
+				_value = other._value;
 				
 				return *this;
 			}
@@ -327,10 +327,10 @@ namespace Dream {
 			template <typename OtherValueT>
 			Shared & operator= (const Shared<OtherValueT> & other)
 			{
-				m_value = dynamic_cast<ValueT*>(other.get());
+				_value = dynamic_cast<ValueT*>(other.get());
 				
-				if (m_value)
-					m_controller = other.controller();
+				if (_value)
+					_controller = other.controller();
 				
 				return *this;
 			}
@@ -338,29 +338,29 @@ namespace Dream {
 			template <typename OtherValueT>
 			Shared & operator= (OtherValueT * other)
 			{
-				m_value = dynamic_cast<ValueT*>(other);
+				_value = dynamic_cast<ValueT*>(other);
 				
-				if (m_value)
-					m_controller = new SharedObject;
+				if (_value)
+					_controller = new SharedObject;
 				
 				return *this;
 			}
 			
 			ValueT* operator-> () const {
-				ensure(m_value != NULL);
-				return m_value;
+				ensure(_value != NULL);
+				return _value;
 			}
 						
 			ValueT& operator* () const {
-				ensure(m_value != NULL);
-				return *m_value;
+				ensure(_value != NULL);
+				return *_value;
 			}
 			
 			typedef ValueT* Shared::* safe_bool;
 			
 			operator safe_bool() const
 			{
-				return m_value ? &Shared::m_value : 0;
+				return _value ? &Shared::_value : 0;
 			}
 	};
 }

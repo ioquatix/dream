@@ -30,19 +30,19 @@ Dream::Client::Display::IApplication * g_application = NULL;
 
 	//[self performSelector:@selector(runApplicationCallback:) withObject:nil afterDelay:0.0];
 	
-	g_application->delegate()->applicationDidFinishLaunching(g_application);
+	g_application->delegate()->application_did_finish_launching(g_application);
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-	g_application->delegate()->applicationWillEnterBackground(g_application);
+	g_application->delegate()->application_will_enter_background(g_application);
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-	g_application->delegate()->applicationDidEnterForeground(g_application);
+	g_application->delegate()->application_did_enter_foreground(g_application);
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-	g_application->delegate()->applicationDidFinishLaunching(g_application);
+	g_application->delegate()->application_did_finish_launching(g_application);
 }
 
 @end

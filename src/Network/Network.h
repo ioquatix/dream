@@ -51,7 +51,7 @@ namespace Dream {
 		class ConnectionShutdown : public Events::FileDescriptorClosed
 		{
 		protected:
-			const std::string & m_what;
+			const std::string & _what;
 		
 		public:
 			explicit ConnectionShutdown (const std::string & what);

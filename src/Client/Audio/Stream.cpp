@@ -15,7 +15,7 @@ namespace Dream
 	{
 		namespace Audio
 		{
-			ALenum bytesPerSample (ALenum format)
+			ALenum bytes_per_sample (ALenum format)
 			{
 				switch (format) {
 					case AL_FORMAT_MONO8:
@@ -40,22 +40,22 @@ namespace Dream
 			
 			}
 
-			void IStreamDelegate::streamWillPlay (PTR(Stream) stream)
+			void IStreamDelegate::stream_will_play (PTR(Stream) stream)
 			{
 			
 			}
 			
-			void IStreamDelegate::streamDidPause (PTR(Stream) stream)
+			void IStreamDelegate::stream_did_pause (PTR(Stream) stream)
 			{
 			
 			}
 			
-			void IStreamDelegate::streamDidStop (PTR(Stream) stream)
+			void IStreamDelegate::stream_did_stop (PTR(Stream) stream)
 			{
 			
 			}
 			
-			void IStreamDelegate::streamDidQueueBuffer (PTR(Stream) stream, ALenum format, const ALvoid * data, ALsizei size)
+			void IStreamDelegate::stream_did_queue_buffer (PTR(Stream) stream, ALenum format, const ALvoid * data, ALsizei size)
 			{
 			
 			}
@@ -63,149 +63,149 @@ namespace Dream
 #pragma mark -
 			
 			Stream::Stream (PTR(Source) source, ALenum format, ALsizei frequency) 
-				: m_source(source), m_format(format), m_frequency(frequency)
+				: _source(source), _format(format), _frequency(frequency)
 			{
-				m_buffers.resize(BufferCount);
-				alGenBuffers(m_buffers.size(), &m_buffers[0]);
+				_buffers.resize(BufferCount);
+				alGenBuffers(_buffers.size(), &_buffers[0]);
 			}
 			
 			Stream::~Stream () {
-				alDeleteBuffers(m_buffers.size(), &m_buffers[0]);
+				alDeleteBuffers(_buffers.size(), &_buffers[0]);
 				
-				stopBufferCallbacks();
+				stop_buffer_callbacks();
 			}
 			
-			void Stream::bufferData(PTR(Source) source, ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq)
+			void Stream::buffer_data(PTR(Source) source, ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq)
 			{
-				if (m_delegate)
-					m_delegate->streamDidQueueBuffer(this, format, data, size);
+				if (_delegate)
+					_delegate->stream_did_queue_buffer(this, format, data, size);
 				
-				IStreamable::bufferData(source, buffer, format, data, size, freq);
+				IStreamable::buffer_data(source, buffer, format, data, size, freq);
 			}
 			
-			void Stream::bufferCallback ()
+			void Stream::buffer_callback ()
 			{
-				m_source->streamBuffers(this);
+				_source->stream_buffers(this);
 			}
 			
-			void Stream::startBufferCallbacks (PTR(Events::Loop) loop)
+			void Stream::start_buffer_callbacks (PTR(Events::Loop) loop)
 			{
-				stopBufferCallbacks();
+				stop_buffer_callbacks();
 				
-				m_timer = new TimerSource(std::bind(&Stream::bufferCallback, this), secondsPerBuffer(), true, true);
+				_timer = new TimerSource(std::bind(&Stream::buffer_callback, this), seconds_per_buffer(), true, true);
 				
-				loop->scheduleTimer(m_timer);
+				loop->schedule_timer(_timer);
 			}
 			
-			void Stream::stopBufferCallbacks ()
+			void Stream::stop_buffer_callbacks ()
 			{
-				if (m_timer) {
-					m_timer->cancel();
-					m_timer = NULL;
+				if (_timer) {
+					_timer->cancel();
+					_timer = NULL;
 				}
 			}
 			
 			void Stream::play (PTR(Events::Loop) loop)
 			{
-				if (m_fader) m_fader->cancel();
+				if (_fader) _fader->cancel();
 			
-				if (!m_source->isPlaying()) {
-					if (m_delegate)
-						m_delegate->streamWillPlay(this);
+				if (!_source->is_playing()) {
+					if (_delegate)
+						_delegate->stream_will_play(this);
 				
 					AudioError::reset();
 					
 					// If buffers are currently being processed,
 					// queued + processed = total buffers
-					ALint processed = m_source->processedBufferCount();
-					std::vector<ALuint> freeBuffers;
+					ALint processed = _source->processed_buffer_count();
+					std::vector<ALuint> free_buffers;
 					
 					if (processed > 0) {
-						freeBuffers.resize(processed);
-						m_source->unqueueBuffers(&freeBuffers[0], processed);
+						free_buffers.resize(processed);
+						_source->unqueue_buffers(&free_buffers[0], processed);
 					} else {
 						// If there are no processed buffers and no queued buffers,
 						// that means that the buffers have not been loaded yet.
-						if (m_source->queuedBufferCount() == 0)
-							freeBuffers = m_buffers;
+						if (_source->queued_buffer_count() == 0)
+							free_buffers = _buffers;
 					}
 					
 					AudioError::check("Checking Buffers");
 					
 					// Setup the initial buffers
-					for (std::size_t i = 0; i < freeBuffers.size(); i++) {
-						loadNextBuffer(m_source, freeBuffers[i]);
+					for (std::size_t i = 0; i < free_buffers.size(); i++) {
+						load_next_buffer(_source, free_buffers[i]);
 					}
 					
 					AudioError::check("Loading Buffers");
 					
-					m_source->queueBuffers(&freeBuffers[0], freeBuffers.size());
+					_source->queue_buffers(&free_buffers[0], free_buffers.size());
 					
-					startBufferCallbacks(loop);
+					start_buffer_callbacks(loop);
 					
-					m_source->play();
+					_source->play();
 				}
 			}
 			
 			void Stream::pause ()
 			{
-				stopBufferCallbacks();
-				m_source->pause();
+				stop_buffer_callbacks();
+				_source->pause();
 				
-				if (m_delegate)
-					m_delegate->streamDidPause(this);
+				if (_delegate)
+					_delegate->stream_did_pause(this);
 			}
 			
 			void Stream::stop ()
 			{
-				stopBufferCallbacks();
-				m_source->stop();
+				stop_buffer_callbacks();
+				_source->stop();
 				
 				// Remove any queued buffers.
-				m_source->setSound(0);
+				_source->set_sound(0);
 				
-				if (m_delegate)
-					m_delegate->streamDidStop(this);
+				if (_delegate)
+					_delegate->stream_did_stop(this);
 			}
 			
-			void Stream::fadeOut (PTR(Events::Loop) loop, TimeT duration, RealT gain)
+			void Stream::fade_out (PTR(Events::Loop) loop, TimeT duration, RealT gain)
 			{
-				if (m_fader)
-					m_fader->cancel();
+				if (_fader)
+					_fader->cancel();
 				
-				Shared<IKnob> decreaseGain = new LinearKnob<float>(m_source, AL_GAIN, m_source->gain(), gain);
-				m_fader = new Fader(decreaseGain, 100, duration / 100);
+				Shared<IKnob> decrease_gain = new LinearKnob<float>(_source, AL_GAIN, _source->gain(), gain);
+				_fader = new Fader(decrease_gain, 100, duration / 100);
 				
-				m_fader->setFinishCallback(std::bind(&Stream::pause, this));
+				_fader->set_finish_callback(std::bind(&Stream::pause, this));
 				
-				loop->scheduleTimer(m_fader);
+				loop->schedule_timer(_fader);
 			}
 			
-			void Stream::fadeIn (PTR(Events::Loop) loop, TimeT duration, RealT gain)
+			void Stream::fade_in (PTR(Events::Loop) loop, TimeT duration, RealT gain)
 			{
 				// This will cancel any existing fader
 				play(loop);
 				
-				Shared<IKnob> increaseGain = new LinearKnob<float>(m_source, AL_GAIN, m_source->gain(), gain);
-				m_fader = new Fader(increaseGain, 100, duration / 100);
+				Shared<IKnob> increase_gain = new LinearKnob<float>(_source, AL_GAIN, _source->gain(), gain);
+				_fader = new Fader(increase_gain, 100, duration / 100);
 				
-				loop->scheduleTimer(m_fader);
+				loop->schedule_timer(_fader);
 			}
 			
-			TimeT Stream::secondsPerBuffer () const {
+			TimeT Stream::seconds_per_buffer () const {
 				// Frequency is the number of samples per second.
-				TimeT bytesPerSecond = TimeT(m_frequency) * bytesPerSample(m_format);
-				return TimeT(ChunkSize) / bytesPerSecond;
+				TimeT bytes_per_second = TimeT(_frequency) * bytes_per_sample(_format);
+				return TimeT(ChunkSize) / bytes_per_second;
 			}
 			
-			void Stream::setDelegate(PTR(IStreamDelegate) delegate)
+			void Stream::set_delegate(PTR(IStreamDelegate) delegate)
 			{
-				m_delegate = delegate;
+				_delegate = delegate;
 			}
 			
 			PTR(IStreamDelegate) Stream::delegate ()
 			{
-				return m_delegate;
+				return _delegate;
 			}
 		}
 	}

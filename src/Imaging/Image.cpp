@@ -13,34 +13,34 @@
 namespace Dream {
 	namespace Imaging {
 
-		UnbufferedImage::UnbufferedImage(ImagePixelFormat format, ImageDataType dataType) : m_data(NULL) {
-			setFormat(format, dataType);
+		UnbufferedImage::UnbufferedImage(ImagePixelFormat format, ImageDataType data_type) : _data(NULL) {
+			set_format(format, data_type);
 		}
 		
-		UnbufferedImage::UnbufferedImage(const ByteT *data, const Vector<3, unsigned> &size, ImagePixelFormat format, ImageDataType dataType) : m_data(NULL) { // black image of size
-			setFormat(format, dataType);
-			setData(data, size);
+		UnbufferedImage::UnbufferedImage(const ByteT *data, const Vector<3, unsigned> &size, ImagePixelFormat format, ImageDataType data_type) : _data(NULL) { // black image of size
+			set_format(format, data_type);
+			set_data(data, size);
 		}
 
-		void UnbufferedImage::setFormat(ImagePixelFormat format, ImageDataType dataType) {
-			m_format = format;
-			m_dataType = dataType;
+		void UnbufferedImage::set_format(ImagePixelFormat format, ImageDataType data_type) {
+			_format = format;
+			_data_type = data_type;
 		}
 		
-		void UnbufferedImage::setData(const ByteT *data, const Vector<3, unsigned> &size) {
-			m_data = data;
-			m_size = size;		
+		void UnbufferedImage::set_data(const ByteT *data, const Vector<3, unsigned> &size) {
+			_data = data;
+			_size = size;		
 		}
 
-		void Image::Loader::registerLoaderTypes (ILoader * loader)
+		void Image::Loader::register_loader_types (ILoader * loader)
 		{
-			loader->setLoaderForExtension(this, "jpg");
-			loader->setLoaderForExtension(this, "png");
+			loader->set_loader_for_extension(this, "jpg");
+			loader->set_loader_for_extension(this, "png");
 		}
 		
-		REF(Object) Image::Loader::loadFromData(const PTR(IData) data, const ILoader * loader)
+		REF(Object) Image::Loader::load_from_data(const PTR(IData) data, const ILoader * loader)
 		{
-			return Image::loadFromData(data);
+			return Image::load_from_data(data);
 		}
 		 
 		Image::Image ()
@@ -48,9 +48,9 @@ namespace Dream {
 		
 		}
 		
-		Image::Image (const Vector<3, unsigned> &size, ImagePixelFormat format, ImageDataType dataType)
+		Image::Image (const Vector<3, unsigned> &size, ImagePixelFormat format, ImageDataType data_type)
 		{
-			allocate(size, format, dataType);
+			allocate(size, format, data_type);
 		}
 
 		Image::~Image()
@@ -58,37 +58,37 @@ namespace Dream {
 			
 		}
 				
-		void Image::allocate (const Vec3u & size, ImagePixelFormat format, ImageDataType dataType)
+		void Image::allocate (const Vec3u & size, ImagePixelFormat format, ImageDataType data_type)
 		{
-			m_size = size;
-			m_format = format;
-			m_dataType = dataType;
+			_size = size;
+			_format = format;
+			_data_type = data_type;
 
-			m_data.resize(pixelDataLength());
+			_data.resize(pixel_dataLength());
 		}
 		
-		const ByteT * Image::pixelData () const
+		const ByteT * Image::pixel_data () const
 		{
-			return m_data.begin();
+			return _data.begin();
 		}
 		
-		ByteT * Image::pixelData()
+		ByteT * Image::pixel_data()
 		{
-			return m_data.begin();
+			return _data.begin();
 		}
 		
-		void Image::setData (const Vector<3, unsigned> &size, ImagePixelFormat format, ImageDataType dataType, const ByteT * buffer)
+		void Image::set_data (const Vector<3, unsigned> &size, ImagePixelFormat format, ImageDataType data_type, const ByteT * buffer)
 		{
-			allocate(size, format, dataType);
+			allocate(size, format, data_type);
 			
 			if (buffer) {
-				setData(0, m_size.product(), buffer);
+				set_data(0, _size.product(), buffer);
 			}
 		}
 		
-		void Image::setData (IndexT offset, IndexT length, const ByteT* buffer)
+		void Image::set_data (IndexT offset, IndexT length, const ByteT* buffer)
 		{
-			m_data.assign(buffer, buffer + length, offset);
+			_data.assign(buffer, buffer + length, offset);
 		}
 		
 	}		

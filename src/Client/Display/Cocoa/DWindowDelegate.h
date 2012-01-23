@@ -13,9 +13,9 @@
 @class DScreenManager;
 
 @interface DWindowDelegate : NSObject <NSWindowDelegate> {
-	DScreenManager * screenManager;
+	DScreenManager * _screen_manager;
 	
-	Dream::Client::Display::IInputHandler * _inputHandler;
+	Dream::Client::Display::IInputHandler * _input_handler;
 }
 
 @property(nonatomic,assign) Dream::Client::Display::IInputHandler * inputHandler;

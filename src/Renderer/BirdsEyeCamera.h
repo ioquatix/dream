@@ -19,18 +19,18 @@ namespace Dream
 		
 		class BirdsEyeCamera : public Object, implements ICamera {
 		protected:
-			Vec3 m_up;
-			Vec3 m_right;
+			Vec3 _up;
+			Vec3 _right;
 			
-			/* Cached m_up.cross(m_left) */
-			Vec3 m_back;
+			/* Cached _up.cross(_left) */
+			Vec3 _back;
 			
-			Vec3 m_center;
+			Vec3 _center;
 			
-			RealT m_distance;
-			RealT m_twist, m_azimuth, m_incidence;
+			RealT _distance;
+			RealT _twist, _azimuth, _incidence;
 			
-			Vec3 m_multiplier;
+			Vec3 _multiplier;
 			
 			void regenerate ();
 		public:
@@ -40,33 +40,33 @@ namespace Dream
 			virtual bool button(const ButtonInput &);
 			virtual bool motion(const MotionInput &);
 			
-			virtual Mat44 viewMatrix () const;
+			virtual Mat44 view_matrix () const;
 			
-			void setCenter (const Vec3 &newCenter);
+			void set_center (const Vec3 &new_center);
 			const Vec3& center () const {
-				return m_center;
+				return _center;
 			}
 			
-			void setDistance (const RealT& amnt, bool relative = false);
-			const RealT& distance () const { return m_distance; }
+			void set_distance (const RealT& amnt, bool relative = false);
+			const RealT& distance () const { return _distance; }
 			
-			void setTwist (const RealT& amnt, bool relative = false);
-			const RealT& twist () const { return m_twist; }
+			void set_twist (const RealT& amnt, bool relative = false);
+			const RealT& twist () const { return _twist; }
 			
-			void setAzimuth (const RealT& amnt, bool relative = false);
-			const RealT& azimuth () const { return m_azimuth; }
+			void set_azimuth (const RealT& amnt, bool relative = false);
+			const RealT& azimuth () const { return _azimuth; }
 			
-			void setMultiplier (const Vec3 &m);
+			void set_multiplier (const Vec3 &m);
 			const Vec3 &multiplier ();
 			
-			void setIncidence (const RealT &amnt, bool relative = false);
-			const RealT& incidence () const { return m_incidence; }
+			void set_incidence (const RealT &amnt, bool relative = false);
+			const RealT& incidence () const { return _incidence; }
 			
-			void setUp (const Vec3 &up);
-			const Vec3 & up () const { return m_up; }
+			void set_up (const Vec3 &up);
+			const Vec3 & up () const { return _up; }
 			
-			void setRight (const Vec3 &right);
-			const Vec3 & right () const { return m_right; }
+			void set_right (const Vec3 &right);
+			const Vec3 & right () const { return _right; }
 		};	
 	}
 }

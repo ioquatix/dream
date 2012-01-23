@@ -18,7 +18,7 @@ namespace Dream {
 			
 				class Application : public Object, implements IApplication {
 					protected:
-						REF(IApplicationDelegate) m_applicationDelegate;
+						REF(IApplicationDelegate) _application_delegate;
 						
 					public:
 						Application(PTR(IApplicationDelegate) delegate);
@@ -26,7 +26,7 @@ namespace Dream {
 						
 						void run();
 						
-						virtual REF(IContext) createContext (REF(Dictionary) config);
+						virtual REF(IContext) create_context (REF(Dictionary) config);
 						
 						virtual IApplicationDelegate * delegate () const;
 				};

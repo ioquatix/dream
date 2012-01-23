@@ -18,8 +18,8 @@ namespace Dream {
 	
 		class PerlinNoise {
 		protected:
-			RealT m_table[256];
-			unsigned char m_indicies[256];
+			RealT _table[256];
+			unsigned char _indicies[256];
 			
 		public:
 			PerlinNoise(unsigned seed);
@@ -35,7 +35,7 @@ namespace Dream {
 			}
 			
 		protected:
-			RealT latticeNoise(IndexT i, IndexT j, IndexT k) const;
+			RealT lattice_noise(IndexT i, IndexT j, IndexT k) const;
 			RealT spline (RealT x) const;
 		};
 

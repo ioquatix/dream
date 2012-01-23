@@ -32,15 +32,15 @@ namespace Dream {
 				offset = 0;
 			}
 			
-			const char * readBytes (unsigned length) {
-				unsigned prevOffset = offset;
+			const char * read_bytes (unsigned length) {
+				unsigned prev_offset = offset;
 				offset += length;
-				return (const char*)(buffer->begin() + prevOffset);
+				return (const char*)(buffer->begin() + prev_offset);
 			}
 			
-			static void pngReadData (png_structp pngReader, png_bytep data, png_size_t length) {
-				DataFile *dataFile = (DataFile *) png_get_io_ptr (pngReader);
-				memcpy(data, dataFile->readBytes(length), length);
+			static void png_read_data (png_structp png_reader, png_bytep data, png_size_t length) {
+				DataFile *data_file = (DataFile *) png_get_io_ptr (png_reader);
+				memcpy(data, data_file->read_bytes(length), length);
 			}
 		};
 
@@ -65,12 +65,12 @@ namespace Dream {
 		 * uninteresting data (such as an APPn marker).
 		 */
 
-		void jpeg_skip_input_data (j_decompress_ptr cinfo, long numBytes) {
-			//ensure(numBytes < cinfo->src.bytes_in_buffer && "jpeglib tried to skip further than the end of file!!");
+		void jpeg_skip_input_data (j_decompress_ptr cinfo, long num_bytes) {
+			//ensure(num_bytes < cinfo->src.bytes_in_buffer && "jpeglib tried to skip further than the end of file!!");
 			
-			if (numBytes > 0 && numBytes < (long)cinfo->src->bytes_in_buffer) {
-				cinfo->src->next_input_byte += (IndexT) numBytes;
-				cinfo->src->bytes_in_buffer -= (IndexT) numBytes;
+			if (num_bytes > 0 && num_bytes < (long)cinfo->src->bytes_in_buffer) {
+				cinfo->src->next_input_byte += (IndexT) num_bytes;
+				cinfo->src->bytes_in_buffer -= (IndexT) num_bytes;
 			} else {
 				jpeg_fill_input_buffer(cinfo);
 			}
@@ -93,14 +93,14 @@ namespace Dream {
 			cinfo->src->bytes_in_buffer = bufsize;
 		}
 
-		REF(Image) loadJPEGImage (const PTR(IData) data) {
+		REF(Image) load_jpegimage (const PTR(IData) data) {
 			jpeg_decompress_struct cinfo;
 			jpeg_error_mgr jerr;
 			
 			ImagePixelFormat format = ImagePixelFormat(0);
-			ImageDataType dataType = UBYTE;
+			ImageDataType data_type = UBYTE;
 
-			REF(Image) resultImage;
+			REF(Image) result_image;
 			Shared<Buffer> buffer = data->buffer();
 			
 			unsigned width, height;
@@ -119,24 +119,24 @@ namespace Dream {
 				width = cinfo.image_width;
 				height = cinfo.image_height;
 				
-				unsigned rowWidth = 0;
+				unsigned row_width = 0;
 				if (cinfo.jpeg_color_space == JCS_GRAYSCALE) {
-					rowWidth = width; 
+					row_width = width; 
 					format = LUMINANCE; 
 				} else {
-					rowWidth = 3 * width;
+					row_width = 3 * width;
 					format = RGB; 
 				}
 				
-				resultImage = new Image(Vector<3, unsigned>(width, height, 1), format, dataType);
+				result_image = new Image(Vector<3, unsigned>(width, height, 1), format, data_type);
 				
-				ByteT *line = resultImage->pixelData();
+				ByteT *line = result_image->pixel_data();
 				jpeg_start_decompress(&cinfo); 
 
 				// read jpeg image 
 				while (cinfo.output_scanline < cinfo.output_height) { 
 					jpeg_read_scanlines(&cinfo, &line, 1); 
-					line += rowWidth;
+					line += row_width;
 				}
 
 				jpeg_finish_decompress(&cinfo); 
@@ -145,30 +145,30 @@ namespace Dream {
 				
 			}
 			
-			return resultImage;
+			return result_image;
 		};
 
 	#pragma mark -
 	#pragma mark PNG Loader Code
-		static void pngError (png_structp pngReader, png_const_charp msg) {
+		static void png_error (png_structp png_reader, png_const_charp msg) {
 			throw std::runtime_error(msg);
 		}
 		
-		REF(Image) loadPNGImage (const PTR(IData) data) {
+		REF(Image) load_pngimage (const PTR(IData) data) {
 			// Image formatting details
 			ImagePixelFormat format = ImagePixelFormat(0);
-			ImageDataType dataType = ImageDataType(0);
+			ImageDataType data_type = ImageDataType(0);
 			
 			DataFile df(data);
-			REF(Image) resultImage;
+			REF(Image) result_image;
 			Shared<Buffer> buffer = data->buffer();
 			
 			// internally used by libpng
-			png_structp pngReader = NULL;
+			png_structp png_reader = NULL;
 			// user requested transforms
-			png_infop pngInfo = NULL;
+			png_infop png_info = NULL;
 			
-			png_byte **ppbRowPointers = NULL;
+			png_byte **ppb_row_pointers = NULL;
 			
 			if (!png_check_sig((png_byte*)buffer->begin(), 8)) {
 				std::cerr << "Could not verify PNG image!" << std::endl;
@@ -176,100 +176,100 @@ namespace Dream {
 			}
 			
 			try {
-				pngReader = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, pngError, NULL);
-				ensure(pngReader != NULL && "png_create_read_struct returned NULL!");
+				png_reader = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, png_error, NULL);
+				ensure(png_reader != NULL && "png_create_read_struct returned NULL!");
 				
-				pngInfo = png_create_info_struct(pngReader);
-				ensure(pngInfo != NULL && "png_create_info_struct returned NULL!");
+				png_info = png_create_info_struct(png_reader);
+				ensure(png_info != NULL && "png_create_info_struct returned NULL!");
 				
 				// We will use this function to read data from Data class
-				png_set_read_fn (pngReader, (void *)&df, DataFile::pngReadData);
+				png_set_read_fn (png_reader, (void *)&df, DataFile::png_read_data);
 				
 				// Read PNG header
-				png_read_info (pngReader, pngInfo);
+				png_read_info (png_reader, png_info);
 				
 				// Interpret IMAGE header
-				int bitDepth, colorType;
+				int bit_depth, color_type;
 				png_uint_32 width, height;
 				
-				png_get_IHDR (pngReader, pngInfo, &width, &height, &bitDepth, &colorType, NULL, NULL, NULL);
+				png_get_IHDR (png_reader, png_info, &width, &height, &bit_depth, &color_type, NULL, NULL, NULL);
 				
-				if (bitDepth < 8) {
-					png_set_packing (pngReader);
-					//png_set_expand(pngReader);
+				if (bit_depth < 8) {
+					png_set_packing (png_reader);
+					//png_set_expand(png_reader);
 				}
 				
-				if (colorType == PNG_COLOR_TYPE_PALETTE) {
-					png_set_expand(pngReader);
+				if (color_type == PNG_COLOR_TYPE_PALETTE) {
+					png_set_expand(png_reader);
 				}
 				
-				// after the transformations have been registered update pngInfo data
-				png_read_update_info(pngReader, pngInfo);
-				png_get_IHDR(pngReader, pngInfo, &width, &height, &bitDepth, &colorType, NULL, NULL, NULL);
+				// after the transformations have been registered update png_info data
+				png_read_update_info(png_reader, png_info);
+				png_get_IHDR(png_reader, png_info, &width, &height, &bit_depth, &color_type, NULL, NULL, NULL);
 				
 				// Figure out image format
-				if (colorType == PNG_COLOR_TYPE_RGB) {
+				if (color_type == PNG_COLOR_TYPE_RGB) {
 					format = RGB;
-				} else if (colorType == PNG_COLOR_TYPE_RGB_ALPHA) {
+				} else if (color_type == PNG_COLOR_TYPE_RGB_ALPHA) {
 					format = RGBA;
-				} else if (colorType == PNG_COLOR_TYPE_GRAY_ALPHA) {
+				} else if (color_type == PNG_COLOR_TYPE_GRAY_ALPHA) {
 					format = LUMINANCE_ALPHA;
-				} else if (colorType == PNG_COLOR_TYPE_GRAY) {
+				} else if (color_type == PNG_COLOR_TYPE_GRAY) {
 					format = LUMINANCE;
 				}
 				
 				// Figure out bit depth
-				if (bitDepth == 16) {
-					// It is possible to convert to 8bpp using: png_set_strip_16 (pngReader);
-					dataType = USHORT;
-				} else if (bitDepth == 8) {
-					dataType = UBYTE;
+				if (bit_depth == 16) {
+					// It is possible to convert to 8bpp using: png_set_strip_16 (png_reader);
+					data_type = USHORT;
+				} else if (bit_depth == 8) {
+					data_type = UBYTE;
 				} else {
-					std::stringstream s; s << "PNG: Bit depth of " << bitDepth << " not supported!" << std::endl;
+					std::stringstream s; s << "PNG: Bit depth of " << bit_depth << " not supported!" << std::endl;
 					throw std::runtime_error(s.str());
 				}
 				
-				// rowBytes is the width x number of channels
-				unsigned rowBytes = png_get_rowbytes(pngReader, pngInfo);
+				// row_bytes is the width x number of channels
+				unsigned row_bytes = png_get_rowbytes(png_reader, png_info);
 
 				// Allocate the image_data buffer.
-				resultImage = new Image(Vector<3, unsigned>(width, height, 1), format, dataType);
-				ByteT *imageBytes = resultImage->pixelData();
-				ensure(imageBytes != NULL);
+				result_image = new Image(Vector<3, unsigned>(width, height, 1), format, data_type);
+				ByteT *image_bytes = result_image->pixel_data();
+				ensure(image_bytes != NULL);
 				
-				//ByteT * imageData = (unsigned char *) malloc(rowbytes * height);
-				ppbRowPointers = (png_bytepp)malloc(height * sizeof(png_bytep));
+				//ByteT * image_data = (unsigned char *) malloc(rowbytes * height);
+				ppb_row_pointers = (png_bytepp)malloc(height * sizeof(png_bytep));
 				for (unsigned i = 0; i < height; i++)
-					ppbRowPointers[i] = imageBytes + i * rowBytes;
+					ppb_row_pointers[i] = image_bytes + i * row_bytes;
 				
-				png_read_image(pngReader, ppbRowPointers);
-				png_read_end(pngReader, NULL);
+				png_read_image(png_reader, ppb_row_pointers);
+				png_read_end(png_reader, NULL);
 				
-				free(ppbRowPointers);
+				free(ppb_row_pointers);
 				
-				if (pngReader) png_destroy_read_struct(&pngReader, &pngInfo, NULL);
+				if (png_reader) png_destroy_read_struct(&png_reader, &png_info, NULL);
 			} catch (std::exception &e) {
 				std::cerr << "PNG read error: " << e.what() << std::endl;
 				
-				if (pngReader) png_destroy_read_struct(&pngReader, &pngInfo, NULL);
-				pngReader = NULL;
+				if (png_reader) png_destroy_read_struct(&png_reader, &png_info, NULL);
+				png_reader = NULL;
 				
-				if (ppbRowPointers) free(ppbRowPointers);
+				if (ppb_row_pointers) free(ppb_row_pointers);
 				
 				throw;
 			}
 			
-			return resultImage;
+			return result_image;
 		}
 
 #pragma mark -
 #pragma mark Loader Multiplexer
 		
-		REF(Image) Image::loadFromData (const PTR(IData) data) {
+		REF(Image) Image::load_from_data (const PTR(IData) data) {
 			static Stopwatch t;
 			static unsigned count = 0; ++count;
 			
-			REF(Image) loadedImage;
+			REF(Image) loaded_image;
 			Shared<Buffer> buffer;
 
 			t.start();
@@ -278,13 +278,13 @@ namespace Dream {
 			
 			switch (buffer->mimetype()) {
 				case IMAGE_JPEG:
-					loadedImage = loadJPEGImage(data);
+					loaded_image = load_jpegimage(data);
 					break;
 				case IMAGE_PNG:
-					loadedImage = loadPNGImage(data);
+					loaded_image = load_pngimage(data);
 					break;
 				//case Data::IMAGE_DDS:
-				//	loadedImage = loadDDSImage(data);
+				//	loaded_image = load_ddsimage(data);
 				default:
 					std::cerr << "Could not load image! Type not understood." << std::endl;
 			}
@@ -293,7 +293,7 @@ namespace Dream {
 			
 			std::cerr << "*** Total time to load " << count << " images: " << t.time() << "s" << std::endl;
 			
-			return loadedImage;
+			return loaded_image;
 		}
 	}	
 }

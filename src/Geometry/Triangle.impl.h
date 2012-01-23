@@ -20,7 +20,7 @@ namespace Dream
 
 		/// http://www.blackpawn.com/texts/pointinpoly/default.html
 		template <typename NumericT>
-		bool sameSide(const Vector<3, NumericT> &p1, const Vector<3, NumericT> &p2, const Vector<3, NumericT> &a, const Vector<3, NumericT> &b) {
+		bool same_side(const Vector<3, NumericT> &p1, const Vector<3, NumericT> &p2, const Vector<3, NumericT> &a, const Vector<3, NumericT> &b) {
 			Vector<3, NumericT> cp1 = (b-a).cross(p1-a);
 			Vector<3, NumericT> cp2 = (b-a).cross(p2-a);
 			
@@ -32,39 +32,39 @@ namespace Dream
 		template <unsigned D, typename NumericT>
 		Triangle<D, NumericT>::Triangle (const Vector<D, NumericT> & p1, const Vector<D, NumericT> & p2, const Vector<D, NumericT> & p3)
 		{
-			this->m_points[0] = p1;
-			this->m_points[1] = p2;
-			this->m_points[2] = p3;	
+			this->_points[0] = p1;
+			this->_points[1] = p2;
+			this->_points[2] = p3;	
 		}
 		
 		template <unsigned D, typename NumericT>
 		Vector<D, NumericT> Triangle<D, NumericT>::normal () const
 		{
-			return this->m_points[0].normal(this->m_points[1], this->m_points[2]);	
+			return this->_points[0].normal(this->_points[1], this->_points[2]);	
 		}
 		
 		template <unsigned D, typename NumericT>
-		IntersectionResult Triangle<D, NumericT>::intersectsWith (const Line<3, NumericT> & line, Vector<D, NumericT> & at) const
+		IntersectionResult Triangle<D, NumericT>::intersects_with (const Line<3, NumericT> & line, Vector<D, NumericT> & at) const
 		{
 			Plane<D, NumericT> p (*this);
 			
-			IntersectionResult result = p.intersectsWith(line, at);
+			IntersectionResult result = p.intersects_with(line, at);
 			if (!result) return NO_INTERSECTION;
 			
-			if (sameSide(at, this->m_points[0], this->m_points[1], this->m_points[2]) && 
-				sameSide(at, this->m_points[1], this->m_points[0], this->m_points[2]) &&
-				sameSide(at, this->m_points[2], this->m_points[0], this->m_points[1]))
+			if (same_side(at, this->_points[0], this->_points[1], this->_points[2]) && 
+				same_side(at, this->_points[1], this->_points[0], this->_points[2]) &&
+				same_side(at, this->_points[2], this->_points[0], this->_points[1]))
 				return SHAPES_INTERSECT;
 			
 			return NO_INTERSECTION;			
 		}
 		
 		template <unsigned D, typename NumericT>
-		AlignedBox<D, NumericT> Triangle<D, NumericT>::boundingBox ()
+		AlignedBox<D, NumericT> Triangle<D, NumericT>::bounding_box ()
 		{
-			AlignedBox<D, NumericT> box(this->m_points[0], this->m_points[1]);
+			AlignedBox<D, NumericT> box(this->_points[0], this->_points[1]);
 			
-			box.unionWithPoint(this->m_points[2]);
+			box.union_with_point(this->_points[2]);
 			
 			return box;
 		}

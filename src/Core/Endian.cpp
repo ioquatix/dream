@@ -28,11 +28,11 @@ namespace Dream
 			uint32_t a, b, c;
 			uint64_t d, e;
 
-			Endian otherEndian = LITTLE;
+			Endian other_endian = LITTLE;
 
-			if (hostEndian() == LITTLE)
+			if (host_endian() == LITTLE)
 			{
-				otherEndian = BIG;
+				other_endian = BIG;
 			}
 
 			testing("Endian Conversions");
@@ -40,28 +40,28 @@ namespace Dream
 			// 32-bit value
 			a = 0x10203040;
 
-			orderCopy(a, b, hostEndian(), otherEndian);
+			order_copy(a, b, host_endian(), other_endian);
 			check(b == 0x40302010) << "32-bit endian conversion is correct";
 
 			a = 100;
-			orderCopy(a, b, hostEndian(), otherEndian);
-			orderCopy(b, c, otherEndian, hostEndian());
+			order_copy(a, b, host_endian(), other_endian);
+			order_copy(b, c, other_endian, host_endian());
 			check(a == c) << "Converted values are the same";
 
-			endianDecode(b, otherEndian, hostEndian());
+			endian_decode(b, other_endian, host_endian());
 			check(a == b) << "Correctly converted in-place";
 
-			orderCopy(a, b, LITTLE, LITTLE);
+			order_copy(a, b, LITTLE, LITTLE);
 			check(a == b) << "Values are not converted when endian is the same";
 
-			orderCopy(a, b, BIG, BIG);
+			order_copy(a, b, BIG, BIG);
 			check(a == b) << "Values are not converted when endian is the same";
 
-			orderCopy(a, b, LITTLE, BIG);
+			order_copy(a, b, LITTLE, BIG);
 			check(a != b) << "Values are not converted when endian is the same";
 
 			d = 0x1020304050607080ull;
-			orderCopy(d, e, hostEndian(), otherEndian);
+			order_copy(d, e, host_endian(), other_endian);
 			check(e == 0x8070605040302010ull) << "64-bit endian conversion is correct";
 
 			testing("Ordered Structs");
@@ -72,7 +72,7 @@ namespace Dream
 			ls.value = 0x10203040;
 			bs.value = 0x10203040;
 
-			if (hostEndian() == LITTLE)
+			if (host_endian() == LITTLE)
 			{
 				check(ls.value.base == 0x10203040) << "Value is stored in native order";
 				check(bs.value.base == 0x40302010) << "Value is stored in converted order";
