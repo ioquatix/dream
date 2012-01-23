@@ -18,12 +18,16 @@ namespace Dream {
 			const char * targetName (GLenum target)
 			{
 				switch (target) {
+#ifdef GL_TEXTURE_1D
 					case GL_TEXTURE_1D:
 						return "GL_TEXTURE_1D";
+#endif
 					case GL_TEXTURE_2D:
 						return "GL_TEXTURE_2D";
+#ifdef GL_TEXTURE_3D
 					case GL_TEXTURE_3D:
 						return "GL_TEXTURE_3D";
+#endif
 					default:
 						return "Unknown Target";
 				}
@@ -32,9 +36,13 @@ namespace Dream {
 			bool isValidTextureTarget (GLenum target)
 			{
 				switch (target) {
+#ifdef GL_TEXTURE_1D
 					case GL_TEXTURE_1D:
+#endif
 					case GL_TEXTURE_2D:
+#ifdef GL_TEXTURE_3D
 					case GL_TEXTURE_3D:
+#endif
 						return true;
 					default:
 						return false;
@@ -126,15 +134,19 @@ namespace Dream {
 				GLenum internalFormat = parameters.getInternalFormat(format);
 				
 				switch (parameters.target) {
+#ifdef GL_TEXTURE_1D
 					case GL_TEXTURE_1D:
 						glTexImage1D(parameters.target, 0, internalFormat, size[WIDTH], 0, format, dataType, pixels);
 						break;
+#endif
 					case GL_TEXTURE_2D:
 						glTexImage2D(parameters.target, 0, internalFormat, size[WIDTH], size[HEIGHT], 0, format, dataType, pixels);
 						break;
+#ifdef GL_TEXTURE_3D
 					case GL_TEXTURE_3D:
 						glTexImage3D(parameters.target, 0, internalFormat, size[WIDTH], size[HEIGHT], size[DEPTH], 0, format, dataType, pixels);
 						break;
+#endif
 				}
 				
 				m_textures[index].currentSize = size;

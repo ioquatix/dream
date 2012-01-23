@@ -16,15 +16,19 @@
 #include "../Display/Scene.h"
 
 #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
-#include <OpenGLES/ES2/gl.h>
-#include <OpenGLES/ES2/glext.h>
+	#include <OpenGLES/ES2/gl.h>
+	#include <OpenGLES/ES2/glext.h>
 
-#define DREAM_OPENGLES2
-
+	#define DREAM_OPENGLES2
 #elif TARGET_OS_MAC
-#include <OpenGL/gl3.h>
+	#include <OpenGL/gl3.h>
 
-#define DREAM_OPENGL32
+	#define DREAM_OPENGL32
+#elif TARGET_OS_ANDROID
+	#include <GLES2/gl2.h>
+	#include <GLES2/gl2ext.h>
+
+	#define DREAM_OPENGLES2
 #endif
 
 namespace Dream

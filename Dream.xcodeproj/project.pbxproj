@@ -790,6 +790,13 @@
 			path = UIKit;
 			sourceTree = "<group>";
 		};
+		7EA0A13214CD2D5900B43C61 /* Android */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Android;
+			sourceTree = "<group>";
+		};
 		7EA911CB0EB40F530080E66D /* Client */ = {
 			isa = PBXGroup;
 			children = (
@@ -884,6 +891,7 @@
 				7EBC15A40FA31F3500D2CA1D /* Scene.cpp */,
 				7EF8EBFE1420401B00FE753A /* Cocoa */,
 				7E9EA743142719CA00F8BC49 /* UIKit */,
+				7EA0A13214CD2D5900B43C61 /* Android */,
 			);
 			path = Display;
 			sourceTree = "<group>";

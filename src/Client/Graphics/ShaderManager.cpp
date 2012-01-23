@@ -14,8 +14,7 @@ namespace Dream {
 	namespace Client {
 		namespace Graphics {
 
-			ShaderError::ShaderError(StringT message)
-			: m_message(message)
+			ShaderError::ShaderError(StringT message) : m_message(message)
 			{
 				
 			}
@@ -73,7 +72,9 @@ namespace Dream {
 			
 			void Program::bind_fragment_location(const char * name, GLuint output)
 			{
+#ifdef DREAM_OPENGL32
 				glBindFragDataLocation(m_handle, output, name);
+#endif
 			}
 			
 			Shared<Buffer> Program::info_log() {

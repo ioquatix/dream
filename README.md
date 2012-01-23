@@ -21,6 +21,15 @@ For documentation and examples please see the main [project page][1].
 
 [1]: http://www.oriontransfer.co.nz/projects/dream
 
+Documentation
+-------------
+
+To generate documentation, make sure you have `doxygen` installed and run:
+
+	rake dream:documentation:generate
+	
+The documentation can be found in `docs/html/index.html`.
+
 Dependencies
 ------------
 
