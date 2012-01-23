@@ -70,7 +70,7 @@ Depending on the platform, there may be different files available to build the r
 * `Core/Timer-CoreVideo.cpp`
 * `Core/Timer-Unix.cpp`
 
-Only one of these implementations need to be compiled for a specific platform. Generally, there will be specific implementations (Core/Timer-CoreVideo.cpp) and generic implementations (Core/Timer-Unix.cpp). You should generally compile the most specific implementation for a platform, rather than the generic implementation.
+Only one of these implementations need to be compiled for a specific platform. Generally, there will be specific implementations (`Core/Timer-CoreVideo.cpp`) and generic implementations (`Core/Timer-Unix.cpp`). You should generally compile the most specific implementation for a platform, rather than the generic implementation.
 
 ### Resource Management ###
 
@@ -78,7 +78,7 @@ One feature of the Dream framework is automatic resource/memory management. This
 
 When an object has ownership of a resource, it should use a `Dream::Ref<Object>`. Ownership is typically referred to as a <em>has-a</em> or <em>has-many</em> relationship.
 
-When passing objects to a function, you don't need to incur the performance cost of memory management. Therefore, you should use `Dream::Ptr<Object>`. Return values should still be `Dream::Ref<Object>`.
+When passing objects to a function, you don't need to incur the performance cost of memory management. Therefore, you should use `Dream::Ptr<Object>`. Return values should still be `Dream::Ref<Object>`. Return value optimization ensures that reference counting overhead is minimized.
 
 License
 -------
