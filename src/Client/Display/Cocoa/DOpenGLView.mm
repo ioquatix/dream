@@ -51,6 +51,8 @@ using namespace Dream::Client::Display;
 
 - (BOOL) handleMouseEvent:(NSEvent *)event withButton:(unsigned)button
 {
+	//NSLog(@"Handling mouse event: %@", event);
+	
 	Vec3 position, movement;
 	AlignedBox<2> bounds(ZERO, ZERO);
 	
@@ -196,6 +198,20 @@ using namespace Dream::Client::Display;
 - (void)keyUp:(NSEvent *)event
 {
 	[self handleEvent:event];
+}
+
+// For some reason NSWindow's delegate won't work with the automatic menu enabling... =/
+- (IBAction)toggleFullScreen:(id)sender {
+	if ([self isInFullScreenMode]) {
+		[self exitFullScreenModeWithOptions:nil];
+		
+		// When the window returns to normal size, the view doesn't seem to have first responder status. We ensure that it is the first responder so that mouse events are tracked properly.
+		[[self window] makeFirstResponder:self];
+	} else {
+		[self enterFullScreenMode:[NSScreen mainScreen] withOptions:nil];
+	}
+	
+	[self reshape];
 }
 
 @end

@@ -10,7 +10,6 @@
 #include "Context.h"
 
 #import "DWindowDelegate.h"
-#import "DScreenManager.h"
 #import "DOpenGLView.h"
 
 @interface NSAppleMenuController : NSObject
@@ -203,16 +202,14 @@ namespace Dream
 					
 					_window_delegate = [DWindowDelegate new];
 					[_window_delegate setInputHandler:this];
-					
-					[[_window_delegate screenManager] setPartialScreenWindow:_window];
-					
+										
 					[_window setDelegate:_window_delegate];
 					
 					setup_graphics_view(config, window_rect);
 					ensure(_graphics_view);
 					
 					[_window setContentView:_graphics_view];
-					[_window makeFirstResponder:_graphics_view];
+					[_window setInitialFirstResponder:_graphics_view];
 				}
 				
 				WindowContext::~WindowContext ()

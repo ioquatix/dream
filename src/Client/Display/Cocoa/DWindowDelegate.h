@@ -7,23 +7,17 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "DScreenManager.h"
 #include "Context.h"
 
 @class DScreenManager;
 
 @interface DWindowDelegate : NSObject <NSWindowDelegate> {
-	DScreenManager * _screen_manager;
-	
 	Dream::Client::Display::IInputHandler * _input_handler;
 }
 
 @property(nonatomic,assign) Dream::Client::Display::IInputHandler * inputHandler;
-@property(nonatomic,retain) DScreenManager * screenManager;
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender;
 - (BOOL)windowShouldClose:(id)sender;
-
-- (void)toggleFullScreen:(id)sender;
 
 @end

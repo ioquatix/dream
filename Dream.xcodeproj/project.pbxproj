@@ -334,7 +334,6 @@
 		7EF8EBFA14203DC400FE753A /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EF8EBF814203DBF00FE753A /* Application.cpp */; };
 		7EF8EBFB14203DC400FE753A /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EF8EBF814203DBF00FE753A /* Application.cpp */; };
 		7EF8EC0614204A8700FE753A /* Context.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EF8EC0514204A8700FE753A /* Context.mm */; };
-		7EF8EC0B1420A0BB00FE753A /* DScreenManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EF8EC0A1420A0BA00FE753A /* DScreenManager.mm */; };
 		7EF8EC0E1420A22C00FE753A /* DOpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EF8EC0D1420A22B00FE753A /* DOpenGLView.mm */; };
 		7EF8EC111420CF2000FE753A /* DWindowDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EF8EC101420CF1E00FE753A /* DWindowDelegate.mm */; };
 		7EF8EC1D1420EC5F00FE753A /* DApplicationDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EF8EC1C1420EC5E00FE753A /* DApplicationDelegate.mm */; };
@@ -599,8 +598,6 @@
 		7EF8EBFF1420403700FE753A /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Application.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		7EF8EC0414204A8700FE753A /* Context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Context.h; sourceTree = "<group>"; };
 		7EF8EC0514204A8700FE753A /* Context.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Context.mm; sourceTree = "<group>"; };
-		7EF8EC091420A0BA00FE753A /* DScreenManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DScreenManager.h; sourceTree = "<group>"; };
-		7EF8EC0A1420A0BA00FE753A /* DScreenManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DScreenManager.mm; sourceTree = "<group>"; };
 		7EF8EC0D1420A22B00FE753A /* DOpenGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DOpenGLView.mm; sourceTree = "<group>"; };
 		7EF8EC101420CF1E00FE753A /* DWindowDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DWindowDelegate.mm; sourceTree = "<group>"; };
 		7EF8EC1B1420EC5E00FE753A /* DApplicationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DApplicationDelegate.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -1024,8 +1021,6 @@
 				7EF8EC1C1420EC5E00FE753A /* DApplicationDelegate.mm */,
 				7EF8EC0414204A8700FE753A /* Context.h */,
 				7EF8EC0514204A8700FE753A /* Context.mm */,
-				7EF8EC091420A0BA00FE753A /* DScreenManager.h */,
-				7EF8EC0A1420A0BA00FE753A /* DScreenManager.mm */,
 				7E14F82E1422467300AB80F1 /* DWindowDelegate.h */,
 				7EF8EC101420CF1E00FE753A /* DWindowDelegate.mm */,
 				7E14F82F142248F200AB80F1 /* DOpenGLView.h */,
@@ -1509,7 +1504,6 @@
 				7EF8EBF914203DC400FE753A /* Application.cpp in Sources */,
 				7E14F82A142243E400AB80F1 /* Application.mm in Sources */,
 				7EF8EC0614204A8700FE753A /* Context.mm in Sources */,
-				7EF8EC0B1420A0BB00FE753A /* DScreenManager.mm in Sources */,
 				7EF8EC0E1420A22C00FE753A /* DOpenGLView.mm in Sources */,
 				7EF8EC111420CF2000FE753A /* DWindowDelegate.mm in Sources */,
 				7EF8EC1D1420EC5F00FE753A /* DApplicationDelegate.mm in Sources */,
