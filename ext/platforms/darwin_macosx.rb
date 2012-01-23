@@ -1,7 +1,14 @@
 
+#
+#  ext/platforms/darwin_macosx.rb
+#  This file is part of the "Dream" project, and is released under the MIT license.
+#
+
 Platform.new(:darwin_macosx) do |config|
+	macosx_sdk_version = ENV["MACOSX_SDK_VERSION"] || "10.7"
+	
 	config.platform = Pathname.new("/")
-	config.sdk_version = MACOSX_SDK_VERSION
+	config.sdk_version = macosx_sdk_version
 	config.sdk = config.platform + Pathname.new("Developer/SDKs/MacOSX#{config.sdk_version}.sdk")
 	
 	# PowerPC is no longer supported on the current architectures.

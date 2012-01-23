@@ -1,5 +1,13 @@
 #!/usr/bin/env ruby
 
+#
+#  ext/rakefile
+#  This file is part of the "Dream" project, and is released under the MIT license.
+#
+#  Created by Samuel Williams on 14/08/2010.
+#  Copyright (c) 2010 Samuel Williams. All rights reserved.
+#
+
 require 'rubygems'
 gem 'rexec'
 
@@ -150,8 +158,6 @@ class Platform
 end
 
 GLOBAL_CFLAGS = "-O2 -Wall -Wmissing-prototypes -std=c99 -ffast-math -fno-strict-aliasing -pipe"
-MACOSX_SDK_VERSION = "10.7"
-IPHONE_SDK_VERSION = "4.3"
 
 # Load all platforms - some might not build on the current host.
 Dir[PLATFORMS_PATH + "*.rb"].each do |path|
