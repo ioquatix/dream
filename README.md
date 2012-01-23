@@ -59,6 +59,27 @@ Dream uses features from C++11, and therefore requires a C++11 compiler such as 
 [1]: http://clang.llvm.org/
 [2]: http://gcc.gnu.org/gcc-4.6/
 
+Coding Guidelines
+-----------------
+
+### File Variants ###
+
+Depending on the platform, there may be different files available to build the required functionality. These will typically only be implementation files. For example:
+
+* `Core/Timer.h`
+* `Core/Timer-CoreVideo.cpp`
+* `Core/Timer-Unix.cpp`
+
+Only one of these implementations need to be compiled for a specific platform. Generally, there will be specific implementations (Core/Timer-CoreVideo.cpp) and generic implementations (Core/Timer-Unix.cpp). You should generally compile the most specific implementation for a platform, rather than the generic implementation.
+
+### Resource Management ###
+
+One feature of the Dream framework is automatic resource/memory management. This is done by using reference counted pointers. It is important to understand a few things about the semantics of these "values" in order to get the best performance.
+
+When an object has ownership of a resource, it should use a `Dream::Ref<Object>`. Ownership is typically referred to as a <em>has-a</em> or <em>has-many</em> relationship.
+
+When passing objects to a function, you don't need to incur the performance cost of memory management. Therefore, you should use `Dream::Ptr<Object>`. Return values should still be `Dream::Ref<Object>`.
+
 License
 -------
 

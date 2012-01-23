@@ -461,7 +461,6 @@
 		7E3B8B2E0F9C0BD8002B6541 /* Graphics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Graphics.h; sourceTree = "<group>"; };
 		7E3B90C80F9C18DF002B6541 /* Timer-Unix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Timer-Unix.cpp"; sourceTree = "<group>"; };
 		7E3B90CD0F9C18FD002B6541 /* Timer-CoreVideo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Timer-CoreVideo.cpp"; sourceTree = "<group>"; };
-		7E3B92510F9C1ADD002B6541 /* README.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = README.rtf; sourceTree = "<group>"; };
 		7E3C878F0FADF6200049ABA3 /* STLAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STLAdditions.h; sourceTree = "<group>"; };
 		7E3C87900FADF6200049ABA3 /* STLAdditions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = STLAdditions.cpp; sourceTree = "<group>"; };
 		7E3E1EDF118B575A00DA4F84 /* Color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Color.h; sourceTree = "<group>"; };
@@ -660,7 +659,6 @@
 			isa = PBXGroup;
 			children = (
 				7E3EA859118086DB00F6C40B /* README.md */,
-				7E3B92510F9C1ADD002B6541 /* README.rtf */,
 				08FB77AEFE84172EC02AAC07 /* src */,
 				7EBC1F240FA5178700D2CA1D /* inf */,
 				034768DFFF38A50411DB9C8B /* Products */,
