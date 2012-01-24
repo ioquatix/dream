@@ -77,7 +77,7 @@ namespace Dream
 				
 				FontGlyph * load_glyph_for_index (FT_UInt c);
 				
-				Vector<2, unsigned> process_text(const std::wstring& text, Ref<Image> dst);
+				Vector<2, unsigned> process_text(const std::string & text, Ref<Image> dst);
 			};
 		}
 	}

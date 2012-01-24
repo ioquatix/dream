@@ -161,7 +161,7 @@ namespace Dream
 				return cache;
 			}
 			
-			Vector<2, unsigned> FontFace::process_text(const std::wstring& text, Ref<Image> dst)
+			Vector<2, unsigned> FontFace::process_text(const std::string& text, Ref<Image> dst)
 			{
 				TextBlock block(this);
 				

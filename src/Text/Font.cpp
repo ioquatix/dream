@@ -104,23 +104,23 @@ namespace Dream
 			return _face;
 		}
 		
-		void Font::set_pixel_size(unsigned sz)
+		void Font::set_pixel_size(unsigned size)
 		{
 			ensure(_face != NULL);
 			
-			FT_Error err = FT_Set_Pixel_Sizes(_face->face(), sz, sz);
+			FT_Error err = FT_Set_Pixel_Sizes(_face->face(), size, size);
 			
 			ensure(err == 0);
 		}
 		
-		Vector<2, unsigned> Font::compute_bounding_box (const std::wstring &text) const
+		Vector<2, unsigned> Font::compute_bounding_box (const std::string &text) const
 		{
 			ensure(_face != NULL);
 			
 			return _face->process_text(text, Ref<Image>());
 		}
 		
-		Ref<Image> Font::render_text (const std::wstring & text)
+		Ref<Image> Font::render_text (const std::string & text)
 		{
 			ensure(_face != NULL);
 			
@@ -147,6 +147,7 @@ namespace Dream
 			switch (code) {
 #include FT_ERRORS_H
 			}
+			
 			
 			std::cerr << __PRETTY_FUNCTION__ << "unknown error code: " << code << std::endl;
 			return "unknown error";

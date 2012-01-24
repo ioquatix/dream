@@ -16,6 +16,9 @@
 #include <iostream>
 #include <sstream>
 
+// Include the unicode support
+#include "Strings/utf8.h"
+
 namespace Dream
 {
 	namespace Core
@@ -23,8 +26,7 @@ namespace Dream
 		typedef std::string StringT;
 		typedef std::stringstream StringStreamT;
 		
-		/// Converts UTF8 to UTF16
-		std::wstring convert_string_to_utf16 (const std::string source);
+		typedef uint32_t CodePointT;
 
 		std::string trimmed (std::string const & str, char const * sep_set);
 

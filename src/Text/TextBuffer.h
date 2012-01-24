@@ -22,9 +22,9 @@ namespace Dream
 		protected:
 			Ref<Font> _font;
 			Ref<Image> _image;
-			std::wstring _image_text;
+			std::string _image_text;
 			
-			std::wstring _text;
+			std::string _text;
 			bool _text_updated;
 			
 			bool _use_static_size;
@@ -35,7 +35,6 @@ namespace Dream
 			virtual ~TextBuffer ();
 			
 			void set_text (const std::string & text);
-			void set_text (const std::wstring & text);
 
 			template <typename StringT>
 			void append_text (const StringT & text)

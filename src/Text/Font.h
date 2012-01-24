@@ -41,7 +41,7 @@ namespace Dream
 			Detail::FontFace *_face;
 			Ref<IData> _font_data;
 			
-			Vector<2, unsigned> compute_bounding_box (const std::wstring & text) const;
+			Vector<2, unsigned> compute_bounding_box (const std::string & text) const;
 			
 		public:
 			class Loader : implements ILoadable {
@@ -63,8 +63,9 @@ namespace Dream
 			void set_pixel_size (unsigned sz);
 			IndexT single_line_offset ();
 			
-			Ref<Image> render_text (const std::wstring & text);
-			Ref<Image> render_text (const std::wstring & text, unsigned line_width);
+			// utf8 encoding is assumed.
+			Ref<Image> render_text (const std::string & text);
+			Ref<Image> render_text (const std::string & text, unsigned line_width);
 		};
 		
 	}

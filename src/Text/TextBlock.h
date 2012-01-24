@@ -58,9 +58,9 @@ namespace Dream
 			TextBlock (Detail::FontFace * font);
 			virtual ~TextBlock ();
 			
-			//Vector<2,unsigned> pixel_size (wchar_t c) const;
+			//Vector<2,unsigned> pixel_size (CodePointT c) const;
 			
-			void set_textDirection (TextDirection char_dir, TextDirection line_dir);
+			void set_text_direction (TextDirection char_dir, TextDirection line_dir);
 			
 			bool is_horizontal () const;
 			bool is_vertical () const;
@@ -80,9 +80,10 @@ namespace Dream
 			TextLine * last_line ();
 			
 			// We must normalize input to have \n line endings
-			void add_text (const std::wstring &str);
-			void set_text (const std::wstring &str);
-			std::wstring text () const;
+			void add_text (const std::string &str);
+			void set_text (const std::string &str);
+			
+			std::string text () const;
 			
 			Vector<2,unsigned> calculate_size () const;
 			
@@ -95,7 +96,7 @@ namespace Dream
 			TextBlock * _block;
 
 			unsigned _width;			
-			std::wstring _chars;
+			std::string _chars;
 			
 			TextLineRenderer * _renderer;
 			
@@ -103,12 +104,12 @@ namespace Dream
 			TextLine (TextBlock * b);
 			virtual ~TextLine ();
 			
-			const std::wstring & text () const { return _chars; }
+			const std::string & text () const { return _chars; }
 			unsigned width () const { return _width; }
 			
-			bool can_add_character (wchar_t c) const;
+			bool can_add_character (CodePointT c) const;
 			
-			bool add_character (wchar_t c);
+			bool add_character (CodePointT c);
 			void composite_to_image (Ref<IMutablePixelBuffer> img, Vector<2,unsigned> pen, CharacterBoxes * boxes = NULL);
 		};
 		

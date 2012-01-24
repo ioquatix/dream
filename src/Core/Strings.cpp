@@ -13,21 +13,10 @@
 
 #include <iostream>
 
-#include "Strings/utf8.h"
-
 namespace Dream
 {
 	namespace Core
 	{
-		std::wstring convert_string_to_utf16 (const std::string source)
-		{
-			std::wstring result;
-			
-			utf8::utf8to16(source.begin(), source.end(), std::back_inserter(result));
-			
-			return result;
-		}
-		
 		std::string trimmed (std::string const & str, char const * sep_set)
 		{
 			using namespace std;
@@ -169,17 +158,6 @@ namespace Dream
 			check(center("Apple", 10, ' ') == "   Apple  ") << "String is centered";
 			check(center("Apple", 11, ' ') == "   Apple   ") << "String is centered";
 			check(center("Apple", 11, '-') == "---Apple---") << "String is centered";
-		}
-		
-		UNIT_TEST(StringConversions)
-		{
-			std::string s1("\xe6\x97\xa5\xd1\x88\xf0\x9d\x84\x9e");
-			
-			std::wstring result = convert_string_to_utf16(s1);
-			
-			check(result.size() == 4) << "Converted string is correct length";
-			check(result[2] == 0xd834) << "Converted character is correct value";
-			check(result[3] == 0xdd1e) << "Converted character is correct value";
 		}
 #endif
 	}

@@ -39,11 +39,6 @@ namespace Dream
 		
 		void TextBuffer::set_text (const std::string & text)
 		{
-			set_text(convert_string_to_utf16(text));
-		}
-		
-		void TextBuffer::set_text (const std::wstring & text)
-		{
 			if (_text != text) {
 				_text = text;
 				_text_updated = true;

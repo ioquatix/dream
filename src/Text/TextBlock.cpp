@@ -12,6 +12,7 @@
 
 #include "../Numerics/Matrix.h"
 #include "../Numerics/Vector.h"
+#include "../Core/Strings.h"
 
 namespace Dream
 {
@@ -104,7 +105,7 @@ namespace Dream
 				return AlignedBox2u(origin, _extents);
 			}
 			
-			AlignedBox2u process_character (wchar_t c)
+			AlignedBox2u process_character (CodePointT c)
 			{
 				AlignedBox2u box;
 				
@@ -140,7 +141,7 @@ namespace Dream
 				return box;
 			}
 			
-			unsigned advance_of_character (wchar_t c) {
+			unsigned advance_of_character (CodePointT c) {
 				TextLineRenderer t(*this);
 				t.set_image(NULL);
 				
@@ -166,14 +167,14 @@ namespace Dream
 			delete _renderer;
 		}
 		
-		bool TextLine::can_add_character (wchar_t c) const
+		bool TextLine::can_add_character (CodePointT c) const
 		{
 			unsigned w = _renderer->advance_of_character(c) + _width;
 			
 			return !(_block->is_line_width_fixed() && w > _block->line_width());
 		}
 		
-		bool TextLine::add_character (wchar_t c)
+		bool TextLine::add_character (CodePointT c)
 		{
 			//unsigned w = _renderer->advance_of_character(c) + _width;
 			
@@ -189,7 +190,7 @@ namespace Dream
 				return false;
 			}
 			
-			_chars += c;
+			utf8::append(c, std::back_inserter(_chars));
 			_width = _renderer->extents()[X];
 			
 			return true;
@@ -221,7 +222,7 @@ namespace Dream
 			_vertical_padding.zero();
 							
 			set_kerning(true);
-			set_textDirection(LR, TB);
+			set_text_direction(LR, TB);
 		}
 		
 		TextBlock::~TextBlock ()
@@ -232,7 +233,7 @@ namespace Dream
 		}
 		
 		/*
-		 Vector<2,unsigned> TextBlock::pixel_size (wchar_t c) const {
+		 Vector<2,unsigned> TextBlock::pixel_size (CodePointT c) const {
 		 FT_Error err;
 		 
 		 FT_Glyph glyph;
@@ -247,7 +248,7 @@ namespace Dream
 		 }
 		 */
 		
-		void TextBlock::set_textDirection (TextDirection char_dir, TextDirection line_dir)
+		void TextBlock::set_text_direction (TextDirection char_dir, TextDirection line_dir)
 		{
 			ensure(char_dir & (LR|RL) && line_dir & (TB|BT)
 				   || char_dir & (TB|BT) && line_dir & (LR|RL));
@@ -336,36 +337,44 @@ namespace Dream
 		}
 		
 		// We must normalize input to have \n line endings
-		void TextBlock::add_text (const std::wstring &str)
+		void TextBlock::add_text (const std::string &str)
 		{
 			TextLine * line = last_line();
 			
-			foreach (c, str) {
-				if (*c == '\n') {
+			std::string::const_iterator current = str.begin(), end = str.end();
+			
+			while (true) {
+				CodePointT codepoint = utf8::next(current, end);
+				
+				if (codepoint == '\n') {
 					line = new TextLine(this);
 					_lines.push_back(line);
 					continue;
 				}
 				
-				if (!line->add_character(*c)) {
+				if (!line->add_character(*current)) {
 					line = new TextLine(this);
 					_lines.push_back(line);
 					
-					ensure(line->can_add_character(*c));
-					line->add_character(*c);
+					ensure(line->can_add_character(*current));
+					line->add_character(*current);
+				}
+				
+				if (current == end) {
+					break;
 				}
 			}
 		}
 		
-		void TextBlock::set_text (const std::wstring &str)
+		void TextBlock::set_text (const std::string &str)
 		{
 			clear();
 			add_text(str);
 		}
 		
-		std::wstring TextBlock::text () const
+		std::string TextBlock::text () const
 		{
-			std::wstring str;
+			std::string str;
 			
 			foreach (line, _lines) {
 				str += (*line)->text();
