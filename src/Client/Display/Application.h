@@ -36,6 +36,7 @@ namespace Dream {
 			
 			class IApplication : implements IObject {
 				public:
+					IApplication();
 					virtual ~IApplication ();
 					
 					static void start (Ptr<IApplicationDelegate> delegate);

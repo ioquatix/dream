@@ -53,8 +53,11 @@ namespace Dream {
 					// Something went wrong...
 					
 					Shared<Buffer> log = info_log();
-					std::cerr << "Error linking program:" << std::endl;
-					std::cerr << StringT(log->begin(), log->end()) << std::endl;
+					
+					LogBuffer buffer;
+					buffer << "Error linking program:" << std::endl;
+					buffer << StringT(log->begin(), log->end()) << std::endl;
+					logger()->log(LOG_ERROR, buffer);
 				}
 				
 				return status != 0;
@@ -135,14 +138,16 @@ namespace Dream {
 					
 					glGetShaderInfoLog(shader, (GLsizei)buffer->size(), (GLsizei*)&log_length, (GLchar*)buffer->begin());
 					
-					std::cerr << "Error compiling shader:" << std::endl;
-					std::cerr << buffer->begin() << std::endl;
+					LogBuffer log_buffer;
+					log_buffer << "Error compiling shader:" << std::endl;
+					log_buffer << buffer->begin() << std::endl;
+					logger()->log(LOG_ERROR, log_buffer);
 				}
 				
 				GLint status;
 				glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
 				if (status == 0) {
-					std::cerr << "Shader didn't compile!" << std::endl;
+					logger()->log(LOG_ERROR, "Shader compilation failed!");
 					
 					glDeleteShader(shader);
 					

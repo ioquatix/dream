@@ -7,12 +7,25 @@
 //
 
 #include "Thread.h"
+#include "Logger.h"
+
+#include <string.h>
 
 namespace Dream {
 	namespace Events {
 		
-		Thread::Thread ()
-			: _thread(NULL)
+		std::string system_error_description(int error_number)
+		{
+			const std::size_t MAX_LENGTH = 1024;
+			char buffer[MAX_LENGTH];
+						
+			if (strerror_r(error_number, buffer, MAX_LENGTH) == 0)
+				return buffer;
+			else
+				return "Unknown failure";
+		}
+		
+		Thread::Thread () : _thread(NULL)
 		{
 			_loop = new Loop;
 			_loop->set_stop_when_idle(false);
@@ -36,14 +49,14 @@ namespace Dream {
 		
 		void Thread::run ()
 		{
-			std::cerr << "Starting thread event loop..." << std::endl;
+			logger()->log(LOG_INFO, "Starting thread event loop...");
 		
 			// Lock the loop to ensure it isn't released by another thread.
 			Ref<Loop> loop = _loop;
 			
 			loop->run_forever();
-			
-			std::cerr << "Exiting thread event loop..." << std::endl;
+
+			logger()->log(LOG_INFO, "Exiting thread event loop...");
 		}
 		
 		void Thread::stop ()

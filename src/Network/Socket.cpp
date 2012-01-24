@@ -10,6 +10,8 @@
 #include "Socket.h"
 
 #include "../Events/Loop.h"
+#include "../Events/Thread.h"
+#include "../Events/Logger.h"
 
 #include <fcntl.h>
 #include <sys/types.h>
@@ -22,6 +24,9 @@
 
 namespace Dream {
 	namespace Network {
+		
+		using namespace Events::Logging;
+		
 		/*
 		 void print_backtrace(void) {
 		 void *addresses[10];
@@ -62,7 +67,7 @@ namespace Dream {
 			// std::cerr << "=====> Opening socket " << _socket << std::endl;
 			
 			if (_socket == -1) {
-				perror("Socket::open_socket");
+				logger()->system_error("socket()");
 			}
 		}
 		
@@ -84,11 +89,9 @@ namespace Dream {
 		
 		void Socket::close () {
 			ensure(is_valid());
-			
-			// std::cerr << "=====< Closing socket " << _socket << std::endl;
-			
+						
 			if (::close(_socket) == -1) {
-				perror("Socket::close");
+				logger()->system_error("close()");
 			}
 			
 			_socket = -1;
@@ -106,7 +109,7 @@ namespace Dream {
 			int result = setsockopt(_socket, SOL_SOCKET, TCP_NODELAY, (char*)&flag, sizeof(int));
 			
 			if (result < 0) {
-				perror("Socket::set_no_delay_mode");
+				logger()->system_error("setsockopt(no delay mode)");
 			}
 		}
 		
@@ -168,7 +171,8 @@ namespace Dream {
 				if (errno == ECONNRESET)
 					throw ConnectionResetByPeer("write error");
 				
-				perror("Socket::send");
+				logger()->system_error("send()");
+				
 				sz = 0;
 			}
 			
@@ -196,7 +200,8 @@ namespace Dream {
 				if (errno == ECONNRESET)
 					throw ConnectionResetByPeer("read error");
 				
-				perror("Socket::recv");
+				logger()->system_error("recv()");
+				
 				sz = 0;
 			}
 			
@@ -209,15 +214,13 @@ namespace Dream {
 #pragma mark -
 #pragma mark class ServerSocket
 		
-		
-		
 		ServerSocket::ServerSocket (const Address &server_address, unsigned listen_count) {
 			bind(server_address);
 			listen(listen_count);
 			
 			set_will_block(false);
-						
-			std::cerr << "Server " << this << " starting on address: " << server_address.description() << " fd: " << file_descriptor() << std::endl;
+			
+			logger()->log(LOG_INFO, LogBuffer() << "Server " << this << " starting on address: " << server_address.description() << " fd: " << file_descriptor());
 		}
 		
 		ServerSocket::~ServerSocket () {
@@ -248,7 +251,8 @@ namespace Dream {
 			}
 			
 			if (::bind(_socket, na.address_data(), na.address_dataSize()) == -1) {
-				perror("Socket::bind");
+				logger()->system_error("bind()");
+				
 				return false;
 			}
 			
@@ -259,7 +263,7 @@ namespace Dream {
 		
 		void ServerSocket::listen (unsigned n) {
 			if (::listen(_socket, n) == -1) {
-				perror("Socket::listen");
+				logger()->system_error("listen()");
 			}
 		}
 		
@@ -277,8 +281,9 @@ namespace Dream {
 			
 			if(h == -1)
 			{
-				if (errno != EWOULDBLOCK)
-					perror("Socket::accept");
+				if (errno != EWOULDBLOCK) {
+					logger()->system_error("accept()");
+				}
 				
 				return false;
 			}
@@ -296,7 +301,7 @@ namespace Dream {
 			int r = setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(int));
 			
 			if (r == -1) {
-				perror("Socket::set_reuse_address");
+				logger()->system_error("setsockopt(reuse address)");
 			}
 		}
 		
@@ -332,10 +337,11 @@ namespace Dream {
 			
 			if (::connect(_socket, na.address_data(), na.address_dataSize()) == -1)
 			{
-				if (errno == ECONNRESET)
+				if (errno == ECONNRESET) {
 					throw ConnectionResetByPeer("connect error");
-				else
-					perror(__PRETTY_FUNCTION__);
+				} else {
+					logger()->system_error("connect()");
+				}
 				
 				return false;
 			}

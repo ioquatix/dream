@@ -9,11 +9,15 @@
 
 #include "Loader.h"
 
+#include "../Events/Logger.h"
+
 #include <iostream>
 #include <map>
 
 namespace Dream {
 	namespace Resources {
+		
+		using namespace Events::Logging;
 		
 		void Loader::set_loader_for_extension (Ptr<ILoadable> loadable, StringT ext) {
 			_loaders[ext] = loadable;
@@ -49,7 +53,7 @@ namespace Dream {
 		
 		Loader::~Loader ()
 		{
-			std::cerr << "Loader being deallocated: " << this << std::endl;
+			logger()->log(LOG_INFO, LogBuffer() << "Loader being deallocated: " << this);
 			
 			double total_size = 0.0;
 			foreach(cache, _dataCache) {
@@ -57,7 +61,8 @@ namespace Dream {
 			}
 			
 			total_size /= (1024 * 1024);
-			std::cerr << "Freeing " << total_size << " Mbytes." << std::endl;
+			
+			logger()->log(LOG_INFO, LogBuffer() << "Freeing: " << total_size << "Mbytes.");
 		}
 		
 		Ref<IData> Loader::fetch_data_for_path (const Path & path) const
@@ -69,7 +74,7 @@ namespace Dream {
 			
  			Ref<IData> data = new LocalFileData(path);
 			
-			std::cerr << "Adding " << path << " to cache." << std::endl;
+			logger()->log(LOG_INFO, LogBuffer() << "Adding " << path << " to cache.");
 			
 			_dataCache[path] = data;
 			
@@ -78,7 +83,8 @@ namespace Dream {
 		
 		void Loader::preload_resource (const Path & path)
 		{
-			std::cerr << "Preloading " << path << "..." << std::endl;
+			logger()->log(LOG_INFO, LogBuffer() << "Preloading " << path << "...");
+			
 			fetch_data_for_path(path_for_resource(path));
 		}
 		
@@ -132,9 +138,11 @@ namespace Dream {
 				}
 				
 				if (resource_paths.size() > 1) {
-					std::cerr << "Multiple paths found for resource: " << name << " in " << full_path << std::endl;
-					foreach(path, resource_paths)
-						std::cerr << "\t" << *path << std::endl;
+					logger()->log(LOG_WARN, LogBuffer() << "Multiple paths found for resource: " << name << " in " << full_path);
+					
+					foreach(path, resource_paths) {
+						logger()->log(LOG_WARN, LogBuffer() << "\t" << *path);
+					}
 				}
 				
 				if (resource_paths.size() >= 1) {
@@ -157,7 +165,8 @@ namespace Dream {
 		
 		Ref<Object> Loader::load_path (const Path &p) const {
 			if (!p.exists()) {
-				std::cerr << "File does not exist at path '" << p << "'" << std::endl;
+				logger()->log(LOG_WARN, LogBuffer() << "File does not exist at path: " << p);
+				
 				return Ref<Object>();
 			}
 			
@@ -166,7 +175,9 @@ namespace Dream {
 			
 			if (!loader) {
 				// No loader for this type
-				std::cerr << "No loader found for type '" << ext << "' (" << p << ")." << std::endl;
+				
+				logger()->log(LOG_WARN, LogBuffer() << "No loader found for type: " << ext << " while loading path:" << p);
+				
 				return Ref<Object>();
 			}
 			
@@ -176,12 +187,13 @@ namespace Dream {
 			try {
 				resource = loader->load_from_data(data, this);
 			} catch (LoadError & e) {
-				std::cerr << "Could not load resource " << p << ": " << e.what() << std::endl;
+				logger()->log(LOG_WARN, LogBuffer() << "Exception thrown while loading resource " << p << ": " << e.what());
+
 				throw;
 			}
 			
 			if (!resource) {
-				std::cerr << "Resource " << p << " failed to load!" << std::endl;
+				logger()->log(LOG_WARN, LogBuffer() << "Resource " << p << " failed to load!");
 			}
 			
 			return resource;

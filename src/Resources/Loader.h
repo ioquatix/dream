@@ -11,6 +11,7 @@
 #define _DREAM_RESOURCES_LOADER_H
 
 #include "Loadable.h"
+#include "../Events/Logger.h"
 
 #include <map>
 
@@ -68,13 +69,19 @@ namespace Dream {
 			/// Primary interface for loading resources
 			template <typename InterfaceT>
 			Ref<InterfaceT> load (const Path &res) const {
+				using namespace Events::Logging;
+				
 				Ref<Object> ptr = load_path(path_for_resource(res));
 				
-				if (!ptr) std::cerr << "Resource failed to load: '" << res << "'" << std::endl;
+				if (!ptr) { 
+					logger()->log(LOG_ERROR, LogBuffer() << "Resource failed to load: " << res);
+				}
 				
 				Ref<InterfaceT> result = ptr;
 				
-				if (!result) std::cerr << "Resource was not correct type: '" << res << std::endl;
+				if (!result) {
+					logger()->log(LOG_ERROR, LogBuffer() << "Invalid resource class: " << res);
+				}
 				
 				return result;
 			}

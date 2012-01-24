@@ -9,6 +9,9 @@
 
 #include "Loop.h"
 #include "Console.h"
+#include "Logger.h"
+#include "Thread.h"
+
 #include "../Core/Timer.h"
 
 #include <iostream>
@@ -186,9 +189,8 @@ namespace Dream
 					
 					IFileDescriptorSource * s = (IFileDescriptorSource *)events[i].udata;
 					
-					if(events[i].flags & EV_ERROR)
-					{
-						std::cerr << "Error processing fd: " << s->file_descriptor() << std::endl;
+					if(events[i].flags & EV_ERROR) {
+						logger()->log(LOG_ERROR, LogBuffer() << "Error processing fd: " << s->file_descriptor());
 					}
 					
 					try {
@@ -200,8 +202,10 @@ namespace Dream
 					} catch (FileDescriptorClosed & ex) {
 						remove_source(s);
 					} catch (std::runtime_error & ex) {
-						std::cerr << "Exception thrown by runloop " << this << ": " << ex.what() << std::endl;
-						std::cerr << "Removing file descriptor " << s->file_descriptor() << " ..." << std::endl;
+						LogBuffer buffer;
+						buffer << "Exception thrown by runloop " << this << ": " << ex.what() << std::endl;
+						buffer << "Removing file descriptor " << s->file_descriptor() << "..." << std::endl;
+						logger()->log(LOG_ERROR, buffer);
 						
 						remove_source(s);
 					}
@@ -300,8 +304,7 @@ namespace Dream
 			}
 			
 			if (result < 0) {
-				std::cerr << "poll failed: " << result << std::endl;
-				perror("poll");
+				logger()->system_error("poll()");
 			}
 			
 			_delete_current_file_descriptor_handle = false;
@@ -316,8 +319,9 @@ namespace Dream
 					if (pollfds[i].revents & POLLOUT)
 						e |= WRITE_READY;
 					
-					if (pollfds[i].revents & POLLNVAL)
-						std::cerr << "Invalid file descriptor: " << pollfds[i].fd << std::endl;
+					if (pollfds[i].revents & POLLNVAL) {
+						logger()->log(LOG_ERROR, LogBuffer() << "Invalid file descriptor: " << pollfds[i].fd);
+					}
 					
 					if (e == 0) continue;
 					
@@ -541,7 +545,7 @@ namespace Dream
 			}
 			
 			if (rate == 0 && _rate_limit != 0) {
-				std::cerr << "Warning: Notifications were rate limited! " << _notifications.processing.size() << " rescheduled notification(s)!" << std::endl;
+				logger()->log(LOG_WARN, LogBuffer() << "Warning: Notifications were rate limited! " << _notifications.processing.size() << " rescheduled notification(s)!");
 				
 				while (!_notifications.processing.empty())
 				{
@@ -578,8 +582,9 @@ namespace Dream
 				}
 			}
 			
-			if (rate == 0 && _rate_limit != 0)
-				std::cerr << "Warning: Timers were rate limited" << std::endl;
+			if (rate == 0 && _rate_limit != 0) {
+				logger()->log(LOG_WARN, "Warning: Timers were rate limited");
+			}
 			
 			// There are timeouts that should have run, but didn't.
 			if (timeout < 0)

@@ -33,6 +33,11 @@ namespace Dream {
 			
 #pragma mark -
 			
+			IApplication::IApplication()
+			{
+				logger()->set_thread_name("Application");
+			}
+			
 			IApplicationDelegate::~IApplicationDelegate ()
 			{
 			}
@@ -110,7 +115,7 @@ namespace Dream {
 			
 			void ApplicationDelegate::application_will_enter_background (IApplication * application)
 			{
-				std::cerr << "Application entering background..." << std::endl;
+				logger()->log(LOG_INFO, "Application entering background...");
 				
 				EventInput suspend_event(EventInput::PAUSE);
 				_sceneManager->process_input(_context, suspend_event);
@@ -121,7 +126,7 @@ namespace Dream {
 			
 			void ApplicationDelegate::application_did_enter_foreground (IApplication * application)
 			{
-				std::cerr << "Application entering foreground..." << std::endl;
+				logger()->log(LOG_INFO, "Application entering foreground...");
 				
 				//_thread->start();
 				//_context->start();

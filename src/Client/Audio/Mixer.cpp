@@ -46,9 +46,8 @@ namespace Dream
 			{
 				ALint error = AL_NO_ERROR;
 				
-				while ((error = alGetError()) != AL_NO_ERROR)
-				{
-					std::cerr << "Unhandled audio error #" << error << ": " << alGetString(error) << std::endl;
+				while ((error = alGetError()) != AL_NO_ERROR) {
+					logger()->log(LOG_ERROR, LogBuffer() << "Unhandled audio error #" << error << ": " << alGetString(error));
 				}
 			}
 
@@ -73,7 +72,8 @@ namespace Dream
 			{
 				AudioError::reset();
 				
-				std::cerr << "Deleting audio source: " << _sourceID << std::endl;
+				logger()->log(LOG_INFO, LogBuffer() << "Deleting audio source: " << _sourceID);
+				
 				alDeleteSources(1, &_sourceID);
 				
 				AudioError::check("Deallocating Source");
@@ -377,9 +377,12 @@ namespace Dream
 				AudioError::check("Initializing Audio Context");
 				
 				bool result = alcMakeContextCurrent(_audio_context);
-				std::cerr << "OpenAL Context Initialized..." << std::endl;
-				std::cerr << "OpenAL Vendor: " << alGetString(AL_VENDOR) << " " << alGetString(AL_VERSION) << std::endl;
-				std::cerr << "OpenAL Device: '" << device_name << "'" << std::endl;
+				
+				LogBuffer buffer;
+				buffer << "OpenAL Context Initialized..." << std::endl;
+				buffer << "OpenAL Vendor: " << alGetString(AL_VENDOR) << " " << alGetString(AL_VERSION) << std::endl;
+				buffer << "OpenAL Device: '" << device_name << "'" << std::endl;
+				logger()->log(LOG_INFO, buffer);
 				
 				//al_distance_model(AL_LINEAR_DISTANCE);
 				set_listener_position(Vec3(ZERO));

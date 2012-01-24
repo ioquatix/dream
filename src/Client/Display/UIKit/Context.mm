@@ -92,7 +92,7 @@ namespace Dream
 					GLenum error;
 					
 					while ((error = glGetError()) != GL_NO_ERROR)
-						std::cerr << "OpenGL Error " << "#" << error << ": " << getSymbolicError(error) << std::endl;
+						logger()->log(LOG_ERROR, LogBuffer() << "OpenGL Error " << "#" << error << ": " << getSymbolicError(error));
 				}
 			
 #pragma mark -
@@ -119,10 +119,12 @@ namespace Dream
 					glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 					glPixelStorei(GL_PACK_ALIGNMENT, 1);
 					
-					std::cerr << "OpenGL Context Initialized..." << std::endl;
-					std::cerr << "OpenGL Vendor: " << glGetString(GL_VENDOR) << std::endl;
-					std::cerr << "OpenGL Renderer: " << glGetString(GL_RENDERER) << " " << glGetString(GL_VERSION) << std::endl;
-					std::cerr << "OpenGL Shading Language Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+					LogBuffer buffer;
+					buffer << "OpenGL Context Initialized..." << std::endl;
+					buffer << "\tOpenGL Vendor: " << glGetString(GL_VENDOR) << std::endl;
+					buffer << "\tOpenGL Renderer: " << glGetString(GL_RENDERER) << " " << glGetString(GL_VERSION) << std::endl;
+					buffer << "\tOpenGL Shading Language Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+					logger()->log(LOG_INFO, buffer);
 					
 					// Clear current context.
 					[EAGLContext setCurrentContext:nil];
@@ -139,7 +141,7 @@ namespace Dream
 						[_graphics_view setDisplayContext:this];
 						[_window addSubview:_graphics_view];
 					} else {
-						std::cerr << "Couldn't initialize graphics view!" << std::endl;
+						logger()->log(LOG_ERROR, "Couldn't initialize graphics view!");
 					}
 				}
 				
@@ -153,7 +155,8 @@ namespace Dream
 			
 				void WindowContext::start ()
 				{
-					std::cerr << "Starting graphics context: " << _graphics_view << " window: " << _window << std::endl;
+					logger()->log(LOG_INFO, LogBuffer() << "Starting graphics context: " << _graphics_view << " window: " << _window);
+					
 					[_window makeKeyAndVisible];
 					ViewContext::start();
 				}

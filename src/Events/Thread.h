@@ -18,6 +18,8 @@ namespace Dream
 {
 	namespace Events
 	{
+		
+		std::string system_error_description(int error_number);
 	
 		/// Manage an event-loop on a separate thread.
 		class Thread : public Object

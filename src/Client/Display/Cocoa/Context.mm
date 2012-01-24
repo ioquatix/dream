@@ -24,12 +24,13 @@ namespace Dream
 		{
 			namespace Cocoa
 			{
-						
+					
+				using namespace Events::Logging;
 #pragma mark -
 							
 				// This is the renderer output callback function
 				CVReturn ViewContext::display_link_callback(CVDisplayLinkRef display_link, const CVTimeStamp* now, const CVTimeStamp* output_time, CVOptionFlags flags_in, CVOptionFlags* flags_out, void* display_link_context)
-				{
+				{					
 					ViewContext * context = (ViewContext*)display_link_context;
 					
 					return context->display_link_callback(display_link, now, output_time, flags_in, flags_out);
@@ -38,6 +39,12 @@ namespace Dream
 				// This is the renderer output callback function
 				CVReturn ViewContext::display_link_callback(CVDisplayLinkRef display_link, const CVTimeStamp* now, const CVTimeStamp* output_time, CVOptionFlags flags_in, CVOptionFlags* flags_out)
 				{
+					if (!_initialized) {
+						logger()->set_thread_name("Renderer");
+						
+						_initialized = true;
+					}
+					
 					TimeT time = (TimeT)(output_time->hostTime) / (TimeT)CVGetHostClockFrequency();
 					
 					_context_delegate->render_frame_for_time(this, time);
@@ -177,10 +184,12 @@ namespace Dream
 					glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 					glPixelStorei(GL_PACK_ALIGNMENT, 1);
 					
-					std::cerr << "OpenGL Context Initialized..." << std::endl;
-					std::cerr << "OpenGL Vendor: " << glGetString(GL_VENDOR) << std::endl;
-					std::cerr << "OpenGL Renderer: " << glGetString(GL_RENDERER) << " " << glGetString(GL_VERSION) << std::endl;
-					std::cerr << "OpenGL Shading Language Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+					LogBuffer buffer;
+					buffer << "OpenGL Context Initialized..." << std::endl;
+					buffer << "OpenGL Vendor: " << glGetString(GL_VENDOR) << std::endl;
+					buffer << "OpenGL Renderer: " << glGetString(GL_RENDERER) << " " << glGetString(GL_VERSION) << std::endl;
+					buffer << "OpenGL Shading Language Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+					logger()->log(LOG_INFO, buffer);
 					
 					[NSOpenGLContext clearCurrentContext];
 				}

@@ -9,6 +9,7 @@
 
 #include "FontFace.h"
 #include "TextBlock.h"
+#include "../Events/Logger.h"
 
 namespace Dream
 {
@@ -16,7 +17,10 @@ namespace Dream
 	{
 		namespace Detail
 		{
+			using namespace Events::Logging;
+			
 #pragma mark -
+			
 			FontGlyph::~FontGlyph ()
 			{
 				FT_Done_Glyph(glyph);
@@ -93,7 +97,7 @@ namespace Dream
 				
 				FT_Done_Face(_face);
 				
-				std::cerr << "Freed " << count << " cached glyphs." << std::endl;
+				logger()->log(LOG_INFO, LogBuffer() << "Freed " << count << " cached glyphs.");
 			}
 		
 			bool FontFace::has_kerning ()

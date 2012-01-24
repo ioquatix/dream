@@ -22,6 +22,8 @@
 	#define TARGET_OS_WIN32 1
 #endif
 
+#include "../Events/Logger.h"
+
 namespace Dream
 {
 	/** The Client namespace is functionality which is specific to actual graphical applications.
@@ -30,6 +32,7 @@ namespace Dream
 	*/
 	namespace Client
 	{
+		using namespace Dream::Events;
 	}
 }
 

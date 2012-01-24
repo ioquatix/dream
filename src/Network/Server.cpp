@@ -21,8 +21,6 @@ namespace Dream {
 #pragma mark -
 #pragma mark ServerContainer
 		
-		
-		
 		ServerContainer::ServerContainer () : _run(false)
 		{
 			_event_loop = new Loop;

@@ -93,7 +93,7 @@ namespace Dream {
 								
 				_imageUnitCount = image_unit_count;
 				
-				std::cerr << "OpenGL Texture Units: " << image_unit_count << std::endl;
+				logger()->log(LOG_INFO, LogBuffer() << "OpenGL Texture Units: " << image_unit_count);
 			}
 			
 			TextureManager::~TextureManager()

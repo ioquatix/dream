@@ -160,7 +160,7 @@ namespace Dream
 				
 				if (_stats.update_count() > (60 * 20))
 				{
-					std::cerr << "FPS: " << _stats.updates_per_second() << std::endl;
+					logger()->log(LOG_INFO, LogBuffer() << "FPS: " << _stats.updates_per_second());
 					_stats.reset();
 				}
 				

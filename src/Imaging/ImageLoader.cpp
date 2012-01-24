@@ -10,6 +10,7 @@
 #include "Image.h"
 #include "../Core/Data.h"
 #include "../Core/Timer.h"
+#include "../Events/Logger.h"
 
 extern "C" {
 #include <png.h>
@@ -22,6 +23,8 @@ extern "C" {
 
 namespace Dream {
 	namespace Imaging {
+		
+		using namespace Events::Logging;
 		
 		struct DataFile {
 			Shared<Buffer> buffer;
@@ -171,7 +174,7 @@ namespace Dream {
 			png_byte **ppb_row_pointers = NULL;
 			
 			if (!png_check_sig((png_byte*)buffer->begin(), 8)) {
-				std::cerr << "Could not verify PNG image!" << std::endl;
+				logger()->log(LOG_ERROR, "Could not verify PNG image!");
 				return Ref<Image>();
 			}
 			
@@ -249,7 +252,7 @@ namespace Dream {
 				
 				if (png_reader) png_destroy_read_struct(&png_reader, &png_info, NULL);
 			} catch (std::exception &e) {
-				std::cerr << "PNG read error: " << e.what() << std::endl;
+				logger()->log(LOG_ERROR, LogBuffer() << "PNG read error: " << e.what());
 				
 				if (png_reader) png_destroy_read_struct(&png_reader, &png_info, NULL);
 				png_reader = NULL;
@@ -286,12 +289,12 @@ namespace Dream {
 				//case Data::IMAGE_DDS:
 				//	loaded_image = load_ddsimage(data);
 				default:
-					std::cerr << "Could not load image! Type not understood." << std::endl;
+					logger()->log(LOG_ERROR, "Could not load image: Unsupported image format.");
 			}
 			
 			t.pause();
 			
-			std::cerr << "*** Total time to load " << count << " images: " << t.time() << "s" << std::endl;
+			logger()->log(LOG_INFO, LogBuffer() << "*** Total time to load " << count << " images: " << t.time() << "s");
 			
 			return loaded_image;
 		}
