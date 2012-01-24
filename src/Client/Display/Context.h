@@ -10,6 +10,8 @@
 #ifndef _DREAM_CLIENT_DISPLAY_CONTEXT_H
 #define _DREAM_CLIENT_DISPLAY_CONTEXT_H
 
+#include "../Client.h"
+
 #include "../../Core/Dictionary.h"
 #include "../../Core/Strings.h"
 #include "../../Numerics/Vector.h"
@@ -26,6 +28,14 @@ namespace Dream {
 			using namespace Dream::Events;
 			
 #pragma mark -
+			
+			enum CursorMode {
+				/// Display the cursor normally.
+				CURSOR_NORMAL = 0,
+				
+				/// Hide the mouse cursor and constrain its input to the current window.
+				CURSOR_GRAB = 1
+			};
 			
 			class IContext;
 			
@@ -71,13 +81,19 @@ namespace Dream {
 				/// This delegate will typically be called on a separate thread.
 				virtual void set_delegate(Ptr<IContextDelegate> context_delegate) abstract;
 				
-				/// Possibly add some mouse handling functions?
-				/// void grab_cursor ();
+				/// Set the cursor mode.
+				virtual void set_cursor_mode(CursorMode mode) abstract;
+				
+				/// Get the current cursor mode.
+				virtual CursorMode cursor_mode() const abstract;
+				
 			};
 			
 			class Context : public Object, implements IContext, implements IInputHandler {
 			protected:
 				Ref<IContextDelegate> _context_delegate;
+				
+				CursorMode _cursor_mode;
 				
 			public:
 				// Process some input
@@ -89,6 +105,9 @@ namespace Dream {
 				virtual ~Context();
 				
 				virtual void set_delegate(Ptr<IContextDelegate> context_delegate);
+				
+				virtual void set_cursor_mode(CursorMode mode);				
+				virtual CursorMode cursor_mode() const;
 			};
 		}
 	}

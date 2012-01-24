@@ -20,6 +20,7 @@
 #import <CoreVideo/CVDisplayLink.h>
 
 @class DWindowDelegate;
+@class DOpenGLView;
 
 namespace Dream
 {
@@ -33,7 +34,8 @@ namespace Dream
 				class ViewContext : public Context
 				{
 					protected:
-						NSOpenGLView * _graphics_view;
+						bool _initialized;
+						DOpenGLView * _graphics_view;
 						
 						// Display link callback
 						static CVReturn display_link_callback(CVDisplayLinkRef display_link, const CVTimeStamp* now, const CVTimeStamp* output_time, CVOptionFlags flags_in, CVOptionFlags* flags_out, void* display_link_context);
@@ -44,19 +46,21 @@ namespace Dream
 						void setup_display_link ();
 						
 						// Need to manually set _graphics_view and call setup_display_link()
-						ViewContext ();
+						ViewContext();
 						
 					public:
-						ViewContext (NSOpenGLView * graphics_view);
-						virtual ~ViewContext ();
+						ViewContext(DOpenGLView * graphics_view);
+						virtual ~ViewContext();
 						
-						virtual void start ();
-						virtual void stop ();
+						virtual void start();
+						virtual void stop();
 						
-						virtual Vec2u size ();
+						virtual Vec2u size();
 						
-						virtual void make_current ();
-						virtual void flush_buffers ();
+						virtual void make_current();
+						virtual void flush_buffers();
+					
+						virtual void set_cursor_mode(CursorMode mode);
 				};
 				
 				/// This context manages a window which can be used to display content.

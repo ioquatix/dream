@@ -25,11 +25,11 @@ using namespace Dream::Client::Display;
 	
 	using namespace Dream::Client::Display;
 	
-	NSSize frameSize = [self frame].size;
-	Vec2u newSize(frameSize.width, frameSize.height);
-	ResizeInput resizeInput(newSize);
+	NSSize frame_size = [self frame].size;
+	Vec2u new_size(frame_size.width, frame_size.height);
+	ResizeInput resize_input(new_size);
 	
-	_display_context->process(resizeInput);
+	_display_context->process(resize_input);
 }
 
 - (unsigned) buttonForEvent:(NSEvent *)event
@@ -49,41 +49,66 @@ using namespace Dream::Client::Display;
 	return [event buttonNumber];
 }
 
-- (BOOL) handleMouseEvent:(NSEvent *)event withButton:(unsigned)button
+- (BOOL) handleMouseEvent:(NSEvent *)event withButton:(Dream::Events::ButtonT)button
 {
 	//NSLog(@"Handling mouse event: %@", event);
 	
 	Vec3 position, movement;
 	AlignedBox<2> bounds(ZERO, ZERO);
 	
-	NSPoint curPoint = [event locationInWindow];
-	curPoint = [self convertPoint:curPoint fromView:nil];
+	NSPoint window_point = [event locationInWindow];
 	
-	position[X] = curPoint.x;
-	position[Y] = curPoint.y;
+	// Convert the point from window base coordinates to view coordinates
+	NSPoint current_point = [self convertPoint:window_point fromView:nil];
+		
+	position[X] = current_point.x;
+	position[Y] = current_point.y;
 	position[Z] = 0;
 		
-	movement[X] = [event deltaX];
-	movement[Y] = [event deltaY];
-	movement[Z] = [event deltaZ];
+	if (button == MouseScroll && [event hasPreciseScrollingDeltas]) {
+		movement[X] = [event scrollingDeltaX];
+		movement[Y] = [event scrollingDeltaY];
+		movement[Z] = [event deltaZ];
+	} else {
+		movement[X] = [event deltaX];
+		// Strictly speaking, this isn't completely correct. A change in position in the view's coordinates would be more accurate, but this isn't so easy
+		// to implement with a disassociated cursor. So, we assume that the mouse coordinates and view coordinates have inverse-y and reverse the delta appropriately.
+		movement[Y] = -[event deltaY];
+		movement[Z] = [event deltaZ];
+	}
 	
 	StateT state;
-	NSEventType t = [event type];
+	NSEventType event_type = [event type];
 	
-	if (t == NSLeftMouseDown || t == NSRightMouseDown || t == NSOtherMouseDown)
-		state = Pressed;
-	else if (t == NSLeftMouseDragged || t == NSRightMouseDragged || t == NSOtherMouseDragged)
-		state = Dragged;
-	else
-		state = Released;
+	if (button == MouseScroll) {
+		// http://developer.apple.com/library/mac/#releasenotes/Cocoa/AppKit.html
+		switch ([event momentumPhase]) {
+			case NSEventPhaseNone:
+			case NSEventPhaseChanged:
+				state = Pressed;
+				break;
+				
+			default:
+				state = Released;
+				break;
+		}
+	} else {
+		if (event_type == NSLeftMouseDown || event_type == NSRightMouseDown || event_type == NSOtherMouseDown)
+			state = Pressed;
+		else if (event_type == NSLeftMouseDragged || event_type == NSRightMouseDragged || event_type == NSOtherMouseDragged)
+			state = Dragged;
+		else
+			state = Released;
+	}
 	
+	// The mouse point is relative to the frame of the view.
 	bounds.set_origin(Vec2(self.frame.origin.x, self.frame.origin.y));
 	bounds.set_size_from_origin(Vec2(self.frame.size.width, self.frame.size.height));
 	
 	Key key(DefaultMouse, button);
-	MotionInput motionInput(key, state, position, movement, bounds);
+	MotionInput motion_input(key, state, position, movement, bounds);
 	
-	return _display_context->process(motionInput);
+	return _display_context->process(motion_input);
 }
 
 - (BOOL) handleEvent:(NSEvent *)event
@@ -115,11 +140,12 @@ using namespace Dream::Client::Display;
 			case NSOtherMouseDown:
 			case NSOtherMouseUp:
 			case NSOtherMouseDragged:
+			case NSMouseMoved:
 				return [self handleMouseEvent:event withButton:[self buttonForEvent:event]];
+				
 			case NSScrollWheel:
 				return [self handleMouseEvent:event withButton:MouseScroll];
-			case NSMouseMoved:
-				return [self handleMouseEvent:event withButton:NullButton];
+				
 			case NSMouseEntered:
 				return [self handleMouseEvent:event withButton:MouseEntered];
 			case NSMouseExited:
@@ -200,7 +226,7 @@ using namespace Dream::Client::Display;
 	[self handleEvent:event];
 }
 
-// For some reason NSWindow's delegate won't work with the automatic menu enabling... =/
+/*
 - (IBAction)toggleFullScreen:(id)sender {
 	if ([self isInFullScreenMode]) {
 		[self exitFullScreenModeWithOptions:nil];
@@ -213,5 +239,6 @@ using namespace Dream::Client::Display;
 	
 	[self reshape];
 }
+ */
 
 @end

@@ -55,6 +55,8 @@ namespace Dream
 				void ViewContext::start() {
 					setup_display_link();
 					
+					_initialized = false;
+					
 					ensure(_display_link != nil);
 					ensure(_graphics_view != nil);
 					
@@ -91,7 +93,7 @@ namespace Dream
 				{
 				}
 				
-				ViewContext::ViewContext(NSOpenGLView * graphicsView) : _graphics_view(graphicsView), _display_link(NULL)
+				ViewContext::ViewContext(DOpenGLView * graphicsView) : _graphics_view(graphicsView), _display_link(NULL)
 				{
 				}
 				
@@ -127,11 +129,23 @@ namespace Dream
 					[[_graphics_view openGLContext] flushBuffer];
 				}
 				
+				void ViewContext::set_cursor_mode(CursorMode mode) {
+					Context::set_cursor_mode(mode);
+					
+					if (mode == CURSOR_GRAB) {
+						CGDisplayHideCursor(kCGNullDirectDisplay);
+						CGAssociateMouseAndMouseCursorPosition(false);
+					} else {
+						CGAssociateMouseAndMouseCursorPosition(true);
+						CGDisplayShowCursor(kCGNullDirectDisplay);
+					}
+				}
+				
 #pragma mark -
 
 				void WindowContext::setup_graphics_view(Ptr<Dictionary> config, NSRect frame)
 				{					
-					NSOpenGLView * graphics_view = NULL;
+					DOpenGLView * graphics_view = NULL;
 					if (config->get("Cocoa.View", graphics_view)) {
 						_graphics_view = graphics_view;
 					} else {
@@ -206,8 +220,11 @@ namespace Dream
 					
 					unsigned window_style = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask;
 
-					_window = [[NSWindow alloc] initWithContentRect:window_rect styleMask:window_style backing:NSBackingStoreBuffered defer:YES];
+					_window = [[NSWindow alloc] initWithContentRect:window_rect styleMask:window_style backing:NSBackingStoreBuffered defer:NO];
 					[_window setAcceptsMouseMovedEvents:YES];
+					
+					// Enable Lion full-screen support
+					[_window setCollectionBehavior:NSWindowCollectionBehaviorFullScreenPrimary];
 					
 					_window_delegate = [DWindowDelegate new];
 					[_window_delegate setInputHandler:this];

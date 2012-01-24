@@ -63,6 +63,12 @@ namespace Dream
 			MouseExited = 0xF3
 		};
 		
+		// List of key codes for Mac OS X:
+		// http://forums.macrumors.com/showthread.php?t=780577
+		enum KeyboardButton {
+			
+		};
+		
 		/* Simple encapsulation of a device and its button */
 		class Key {
 		protected:

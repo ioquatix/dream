@@ -20,4 +20,11 @@
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender;
 - (BOOL)windowShouldClose:(id)sender;
 
+/*
+- (void)windowWillEnterFullScreen:(NSNotification *)notification;
+- (void)windowDidEnterFullScreen:(NSNotification *)notification;
+- (void)windowWillExitFullScreen:(NSNotification *)notification;
+- (void)windowDidExitFullScreen:(NSNotification *)notification;
+*/
+
 @end

@@ -7,13 +7,13 @@
 //
 
 #import <AppKit/AppKit.h>
-#include "../Context.h"
+#include "Context.h"
 
 @interface DOpenGLView : NSOpenGLView {
-	Dream::Client::Display::Context * _display_context;
+	Dream::Client::Display::Cocoa::ViewContext * _display_context;	
 }
 
-@property(nonatomic,assign) Dream::Client::Display::Context * displayContext;
+@property(nonatomic,assign) Dream::Client::Display::Cocoa::ViewContext * displayContext;
 
 - (BOOL) handleEvent:(NSEvent *)event;
 

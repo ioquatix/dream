@@ -61,6 +61,13 @@ namespace Dream {
 				}
 			}
 			
+			void Context::set_cursor_mode(CursorMode mode) {
+				_cursor_mode = mode;
+			}
+			
+			CursorMode Context::cursor_mode() const {
+				return _cursor_mode;
+			}
 		}
 	}
 }
