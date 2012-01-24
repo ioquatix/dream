@@ -41,6 +41,19 @@ namespace Dream
 			using namespace Dream::Client::Display;
 			
 			void check_error();
+			
+			template <typename TypeT>
+			struct GLTypeTraits {};
+			
+#define GL_TYPE_TRAITS(type, name) template <> struct GLTypeTraits<type> { enum { TYPE = name }; };
+			
+			GL_TYPE_TRAITS(GLbyte, GL_BYTE)
+			GL_TYPE_TRAITS(GLubyte, GL_UNSIGNED_BYTE)
+			GL_TYPE_TRAITS(GLshort, GL_SHORT)
+			GL_TYPE_TRAITS(GLushort, GL_UNSIGNED_SHORT)
+			GL_TYPE_TRAITS(GLint, GL_INT)
+			GL_TYPE_TRAITS(GLuint, GL_UNSIGNED_INT)
+			GL_TYPE_TRAITS(GLfloat, GL_FLOAT)
 		}
 	}
 }
