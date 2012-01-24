@@ -289,6 +289,10 @@
 		7ECD9356122EB13C00A2757F /* Path.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ECD9354122EB13C00A2757F /* Path.cpp */; };
 		7ECD9357122EB13C00A2757F /* Path.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ECD9354122EB13C00A2757F /* Path.cpp */; };
 		7ECD93C2122ECDB100A2757F /* Path.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ECD9354122EB13C00A2757F /* Path.cpp */; };
+		7ED448B714CE6049000D5865 /* Logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED448B614CE6049000D5865 /* Logger.cpp */; };
+		7ED448B814CE6049000D5865 /* Logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED448B614CE6049000D5865 /* Logger.cpp */; };
+		7ED448B914CE6049000D5865 /* Logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED448B614CE6049000D5865 /* Logger.cpp */; };
+		7ED448BA14CE6049000D5865 /* Logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED448B614CE6049000D5865 /* Logger.cpp */; };
 		7EF7AE65148B65CB008A9BD7 /* TextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7AE64148B65CB008A9BD7 /* TextureManager.cpp */; };
 		7EF7AE66148B65CB008A9BD7 /* TextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7AE64148B65CB008A9BD7 /* TextureManager.cpp */; };
 		7EF7AE67148B65CB008A9BD7 /* TextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7AE64148B65CB008A9BD7 /* TextureManager.cpp */; };
@@ -567,6 +571,8 @@
 		7ECD9353122EB13C00A2757F /* Path.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Path.h; sourceTree = "<group>"; };
 		7ECD9354122EB13C00A2757F /* Path.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Path.cpp; sourceTree = "<group>"; };
 		7ED213270F00F0E900511926 /* Serialization.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Serialization.cpp; sourceTree = "<group>"; };
+		7ED448B514CE6041000D5865 /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logger.h; sourceTree = "<group>"; };
+		7ED448B614CE6049000D5865 /* Logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Logger.cpp; sourceTree = "<group>"; };
 		7EF7AE64148B65CB008A9BD7 /* TextureManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureManager.cpp; sourceTree = "<group>"; };
 		7EF7AE69148B65D9008A9BD7 /* TextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureManager.h; sourceTree = "<group>"; };
 		7EF7AE6B148B680F008A9BD7 /* BirdsEyeCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BirdsEyeCamera.cpp; sourceTree = "<group>"; };
@@ -704,6 +710,8 @@
 				7E3F2C010EF366230051D321 /* Console.cpp */,
 				7EF8EBEE141E56F000FE753A /* Thread.h */,
 				7EF8EBEF141E56FA00FE753A /* Thread.cpp */,
+				7ED448B514CE6041000D5865 /* Logger.h */,
+				7ED448B614CE6049000D5865 /* Logger.cpp */,
 			);
 			path = Events;
 			sourceTree = "<group>";
@@ -1249,6 +1257,7 @@
 				7EF8EBF3141E5F0300FE753A /* Thread.cpp in Sources */,
 				7E8ADD21147B5D7700BB929D /* Spline.cpp in Sources */,
 				7EF7AE65148B65CB008A9BD7 /* TextureManager.cpp in Sources */,
+				7ED448B714CE6049000D5865 /* Logger.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1340,6 +1349,7 @@
 				7EF7AEA1148B9BE9008A9BD7 /* ShaderManager.cpp in Sources */,
 				7EF7AEA6148B9E99008A9BD7 /* Graphics.cpp in Sources */,
 				7E4F579014A2A39100A6DB0C /* Input.cpp in Sources */,
+				7ED448B914CE6049000D5865 /* Logger.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1431,6 +1441,7 @@
 				7EF7AEA2148B9BE9008A9BD7 /* ShaderManager.cpp in Sources */,
 				7EF7AEA7148B9E99008A9BD7 /* Graphics.cpp in Sources */,
 				7E4F579114A2A39100A6DB0C /* Input.cpp in Sources */,
+				7ED448BA14CE6049000D5865 /* Logger.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1521,6 +1532,7 @@
 				7EF7AEA0148B9BE9008A9BD7 /* ShaderManager.cpp in Sources */,
 				7EF7AEA5148B9E99008A9BD7 /* Graphics.cpp in Sources */,
 				7E4F578F14A2A39100A6DB0C /* Input.cpp in Sources */,
+				7ED448B814CE6049000D5865 /* Logger.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
