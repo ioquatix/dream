@@ -19,29 +19,38 @@
 namespace Dream {
 	namespace Geometry {
 	
-		class SimpleMesh
-		{
-			protected:
-				std::vector<IndexT> _indices;
-				std::vector<Vec3> _vertices;
-				std::vector<Vec3> _normals;
-				std::vector<Vec2> _texcoords;
-				
-			public:
-				void construct(const std::vector<IndexT> & indices, const std::vector<Vec3> & vertices, const std::vector<Vec3> & normals, const std::vector<Vec2> & texcoords)
-				{
-					_indices = indices;
-					_vertices = vertices;
-					_normals = normals;
-					_texcoords = texcoords;
-				}
-				
-				const std::vector<IndexT> & indices() const { return _indices; }
-				const std::vector<Vec3> & vertices() const { return _vertices; }
-				const std::vector<Vec3> & normals() const { return _normals; }				
-				const std::vector<Vec2> & texcoords() const { return _texcoords; }				
+		struct Vertex {
+			Vec3 position;
+			Vec3 normal;
+			Vec4 colour;
+			Vec2 mapping;
+			
+			void apply(const Mat44 & position);
 		};
 		
+		template <typename ValueT>
+		class Array : public std::vector<ValueT> {
+		public:
+			std::size_t length() const { return this->size() * sizeof(ValueT); }
+		};
+		
+		/// A mesh is a list of vertices and an ordered list of indices which make up a set of triangles. We assume that all meshes are made up of triangle strips. These assumptions and limitations are primarily to keep the generation of Mesh objects simple.
+		template <typename _VertexT = Vertex>
+		class Mesh {
+		public:
+			typedef unsigned IndexT;
+			typedef _VertexT VertexT;
+			
+			Array<IndexT> indices;
+			Array<VertexT> vertices;
+			
+			// Apply some kind of tranform to all vertices.
+			template <typename TransformT>
+			void apply(const TransformT & transform) {
+				for (std::size_t i = 0; i < vertices.size(); i++)
+					vertices[i].apply(transform);
+			}
+		};
 	}
 }
 

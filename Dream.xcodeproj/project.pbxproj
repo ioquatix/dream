@@ -468,7 +468,6 @@
 		7E3F2D460EF3C32F0051D321 /* Network.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Network.cpp; sourceTree = "<group>"; };
 		7E43EDA812C83C2B0000BD51 /* System.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = System.h; sourceTree = "<group>"; };
 		7E43EDA912C83C2B0000BD51 /* System.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = System.cpp; sourceTree = "<group>"; };
-		7E49FFB913054E47006894A0 /* mesh.txt */ = {isa = PBXFileReference; lastKnownFileType = text; lineEnding = 0; name = mesh.txt; path = "../../../../../../To Sort/mesh.txt"; sourceTree = "<group>"; };
 		7E4D76E50F9858D800ECC0E5 /* Framework.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Framework.cpp; sourceTree = "<group>"; };
 		7E4F578D14A2A39100A6DB0C /* Input.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Input.cpp; sourceTree = "<group>"; };
 		7E4F578E14A2A39100A6DB0C /* Input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Input.h; sourceTree = "<group>"; };
@@ -981,7 +980,6 @@
 				7E6F285A1229551000E51772 /* Mesh.h */,
 				7E6F285E1229551000E51772 /* Mesh.impl.h */,
 				7E6F28591229551000E51772 /* Mesh.cpp */,
-				7E49FFB913054E47006894A0 /* mesh.txt */,
 			);
 			path = Geometry;
 			sourceTree = "<group>";

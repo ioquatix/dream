@@ -75,7 +75,7 @@ namespace Dream {
 			static AlignedBox from_center_and_size (const VectorT &center, const VectorT &size)
 			{
 				AlignedBox r;
-				r.set_centerAndSize(center, size);
+				r.set_center_and_size(center, size);
 				return r;
 			}
 			
@@ -150,7 +150,7 @@ namespace Dream {
 			
 			/// Set the center and size of the box.
 			/// @sa from_center_and_size()
-			void set_centerAndSize (const VectorT &center, const VectorT &size)
+			void set_center_and_size (const VectorT &center, const VectorT &size)
 			{
 				_min = center - (size/2);
 				_max = center + (size/2);

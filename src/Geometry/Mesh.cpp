@@ -13,11 +13,11 @@
 #include "Line.h"
 
 namespace Dream {
-	namespace Geometry {
-	/*
-		void BasicMeshTraits::VertexProperties::apply (const Mat44 & transform) {
-			vertex = transform * vertex;
+	namespace Geometry {			
+		void Vertex::apply(const Mat44 & transform) {
+			Vec3 new_position = transform * position;
+			normal = ((transform * (position + normal)) - new_position).normalize();
+			position = new_position;
 		}
-	*/
 	}
 }
