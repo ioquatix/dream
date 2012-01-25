@@ -68,12 +68,6 @@ namespace Dream {
 				/// Hide the display context and return control to the system if the context was fullscreen.
 				virtual void stop () abstract;
 				
-				/// Make the associated graphics context current for the given thread of execution.
-				virtual void make_current () abstract;
-				
-				/// Flip the buffers. Generally should be called at the end of rendering to indicate the frame is complete.
-				virtual void flush_buffers () abstract;
-				
 				/// The resolution of the current display window or screen.
 				virtual Vec2u size () abstract;
 				

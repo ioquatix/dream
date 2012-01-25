@@ -38,24 +38,8 @@
 	return NO;
 }
 
-- (void)windowWillEnterFullScreen:(NSNotification *)notification {
-	NSLog(@"windowWillEnterFullScreen");
+- (void)windowWillClose:(NSNotification *)notification {
 	_window_context->stop();
-}
-
-- (void)windowDidEnterFullScreen:(NSNotification *)notification {
-	NSLog(@"windowDidEnterFullScreen");
-	_window_context->start();
-}
-
-- (void)windowWillExitFullScreen:(NSNotification *)notification {
-	NSLog(@"windowWillExitFullScreen");
-	_window_context->stop();
-}
-
-- (void)windowDidExitFullScreen:(NSNotification *)notification {
-	NSLog(@"windowDidExitFullScreen");
-	_window_context->start();
 }
 
 @end

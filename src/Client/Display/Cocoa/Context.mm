@@ -12,6 +12,8 @@
 #import "DWindowDelegate.h"
 #import "DOpenGLView.h"
 
+#import <mutex>
+
 @interface NSAppleMenuController : NSObject
 - (void)controlMenu:(NSMenu *)aMenu;
 @end
@@ -39,20 +41,37 @@ namespace Dream
 				
 				// This is the renderer output callback function
 				CVReturn ViewContext::display_link_callback(CVDisplayLinkRef display_link, const CVTimeStamp* now, const CVTimeStamp* output_time, CVOptionFlags flags_in, CVOptionFlags* flags_out)
-				{
-					logger()->log(LOG_DEBUG, "Enter ViewContext::display_link_callback");
-					
+				{					
 					if (!_initialized) {
 						logger()->set_thread_name("Renderer");
 						
 						_initialized = true;
 					}
 					
+					//logger()->log(LOG_DEBUG, LogBuffer() << "*** Rendering frame for context " << _graphics_view.openGLContext.CGLContextObj);
+					
 					TimeT time = (TimeT)(output_time->hostTime) / (TimeT)CVGetHostClockFrequency();
 					
-					_context_delegate->render_frame_for_time(this, time);
+					@autoreleasepool {
+						// Lock the context so that no other thread can be accessing it:
+						CGLLockContext((CGLContextObj)_graphics_view.openGLContext.CGLContextObj);
 
-					logger()->log(LOG_DEBUG, "Exit ViewContext::display_link_callback");
+						// Prepare the context for rendering:
+						[_graphics_view.openGLContext makeCurrentContext];
+						
+						// Ask the client to render a frame:
+						_context_delegate->render_frame_for_time(this, time);
+						
+						// Flush the buffer:
+						[[_graphics_view openGLContext] flushBuffer];
+						
+						// Unlock the context:
+						CGLUnlockContext((CGLContextObj)_graphics_view.openGLContext.CGLContextObj);
+					}
+					
+					//logger()->log(LOG_DEBUG, "... Finished rendering frame.");
+					
+					_frame_refresh.notify_all();
 					
 					return kCVReturnSuccess;
 				}
@@ -68,7 +87,7 @@ namespace Dream
 					ensure(_graphics_view != nil);
 					
 					CVReturn result = CVDisplayLinkStart(_display_link);
-					
+										
 					if (result != kCVReturnSuccess) {
 						logger()->log(LOG_ERROR, LogBuffer() << "CVDisplayLinkStart error #" << result);
 					}
@@ -78,16 +97,26 @@ namespace Dream
 				
 				void ViewContext::stop() {
 					logger()->log(LOG_DEBUG, "Enter ViewContext::stop");
-					
+										
 					ensure(_display_link != nil);
 					
 					CVReturn result = CVDisplayLinkStop(_display_link);
-					
+										
 					if (result != kCVReturnSuccess) {
 						logger()->log(LOG_ERROR, LogBuffer() << "CVDisplayLinkStop error #" << result);
 					}
 					
 					logger()->log(LOG_DEBUG, "Exit ViewContext::stop");
+				}
+				
+				void ViewContext::wait_for_refresh()
+				{
+					std::unique_lock<std::mutex> lock(_frame_refresh_mutex);
+					
+					if (_display_link && CVDisplayLinkIsRunning(_display_link)) {
+						// Wait for two frames:
+						_frame_refresh.wait(lock);
+					}
 				}
 				
 				void ViewContext::setup_display_link ()
@@ -102,12 +131,14 @@ namespace Dream
 						
 						// Set the renderer output callback function
 						CVDisplayLinkSetOutputCallback(_display_link, &ViewContext::display_link_callback, this);
-					}
 					
-					// Set the display link for the current renderer
-					CGLContextObj cglContext = (CGLContextObj)[[_graphics_view openGLContext] CGLContextObj];
-					CGLPixelFormatObj cglPixelFormat = (CGLPixelFormatObj)[[_graphics_view pixelFormat] CGLPixelFormatObj];
-					CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(_display_link, cglContext, cglPixelFormat);
+						// Set the display link for the current renderer
+						CGLContextObj cglContext = (CGLContextObj)_graphics_view.openGLContext.CGLContextObj;
+						CGLPixelFormatObj cglPixelFormat = (CGLPixelFormatObj)_graphics_view.pixelFormat.CGLPixelFormatObj;
+						CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(_display_link, cglContext, cglPixelFormat);
+						
+						logger()->log(LOG_DEBUG, LogBuffer() << "Creating display link " << _display_link);
+					}
 				}
 				
 				ViewContext::ViewContext() : _graphics_view(NULL), _display_link(NULL)
@@ -137,22 +168,6 @@ namespace Dream
 					} else {
 						return Vec2u(0, 0);
 					}
-				}
-				
-				void ViewContext::make_current ()
-				{
-					if ([NSOpenGLContext currentContext] == [_graphics_view openGLContext]) {
-						return;
-					} else {
-						logger()->log(LOG_INFO, LogBuffer() << "Switching OpenGL context: " << [_graphics_view openGLContext]);
-						[[_graphics_view openGLContext] makeCurrentContext];
-					}
-				}
-				
-				void ViewContext::flush_buffers()
-				{
-					// We assume that if m_graphicsView is nil, this function will have no effect.
-					[[_graphics_view openGLContext] flushBuffer];
 				}
 				
 				void ViewContext::set_cursor_mode(CursorMode mode) {
@@ -219,6 +234,7 @@ namespace Dream
 					}
 
 					// Tight alignment
+					CGLLockContext((CGLContextObj)_graphics_view.openGLContext.CGLContextObj);
 					[[_graphics_view openGLContext] makeCurrentContext];
 					
 					glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -231,10 +247,12 @@ namespace Dream
 					buffer << "OpenGL Shading Language Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 					logger()->log(LOG_INFO, buffer);
 					
+					CGLUnlockContext((CGLContextObj)_graphics_view.openGLContext.CGLContextObj);
+					
 					[NSOpenGLContext clearCurrentContext];
 				}
 
-				WindowContext::WindowContext (Ptr<Dictionary> config)
+				WindowContext::WindowContext(Ptr<Dictionary> config)
 				{
 					NSRect window_rect = NSMakeRect(50, 50, 1024, 768);
 					
@@ -248,6 +266,7 @@ namespace Dream
 
 					_window = [[NSWindow alloc] initWithContentRect:window_rect styleMask:window_style backing:NSBackingStoreBuffered defer:NO];
 					[_window setAcceptsMouseMovedEvents:YES];
+					[_window setReleasedWhenClosed:NO];
 					
 					// Enable Lion full-screen support
 					[_window setCollectionBehavior:NSWindowCollectionBehaviorFullScreenPrimary];
@@ -270,17 +289,14 @@ namespace Dream
 				}
 			
 				void WindowContext::start ()
-				{
-					[_window makeKeyAndOrderFront:nil];
+				{					
+					// It is essential that the window is shown _AFTER_ the display link is started.
+					if (![_window isVisible]) {
+						[_window makeKeyAndOrderFront:nil];
+					}
+					
 					ViewContext::start();
 				}
-				
-				void WindowContext::stop ()
-				{
-					ViewContext::stop();
-					[_window close];
-				}
-
 			}
 		}
 	}

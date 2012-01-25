@@ -147,8 +147,6 @@ namespace Dream
 			
 			void SceneManager::render_frame_for_time(Ptr<IContext> context, TimeT time)
 			{
-				context->make_current();
-				
 				_stats.begin_timer(_stopwatch.time());
 
 				if (!_current_scene || _current_sceneIsFinished)
@@ -162,9 +160,7 @@ namespace Dream
 				{
 					logger()->log(LOG_INFO, LogBuffer() << "FPS: " << _stats.updates_per_second());
 					_stats.reset();
-				}
-				
-				context->flush_buffers();
+				}				
 			}
 			
 			void SceneManager::process_input (Ptr<IContext> context, const Input & input)
@@ -183,8 +179,12 @@ namespace Dream
 			
 			bool SceneManager::event (const Display::EventInput & ipt)
 			{
-				if (ipt.event() == EventInput::EXIT)
+				if (ipt.event() == EventInput::EXIT) {
 					event_loop()->stop();
+					_display_context->stop();
+					
+					return true;
+				}
 				
 				return false;
 			}

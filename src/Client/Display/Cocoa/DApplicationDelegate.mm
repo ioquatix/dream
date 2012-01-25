@@ -20,6 +20,12 @@
 - (void)applicationWillTerminate:(NSNotification *)aNotification
 {
 	_application->delegate()->application_will_terminate(_application);
+	
+	{
+		using namespace Dream::Events::Logging;
+		
+		logger()->log(LOG_DEBUG, "Application terminating.");
+	}
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification

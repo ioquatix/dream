@@ -25,6 +25,8 @@ using namespace Dream::Client::Display;
 	
 	if (!_display_context) return;
 	
+	//logger()->log(LOG_DEBUG, LogBuffer() << "Reshape for context: " << self.openGLContext.CGLContextObj);
+	
 	using namespace Dream::Client::Display;
 	
 	NSSize frame_size = [self frame].size;
@@ -32,6 +34,9 @@ using namespace Dream::Client::Display;
 	ResizeInput resize_input(new_size);
 	
 	_display_context->process(resize_input);
+	
+	// The renderer needs to render a frame since the view size has changed.
+	_display_context->wait_for_refresh();
 }
 
 - (unsigned) buttonForEvent:(NSEvent *)event

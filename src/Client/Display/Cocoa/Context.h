@@ -19,6 +19,8 @@
 #import <CoreVideo/CoreVideo.h>
 #import <CoreVideo/CVDisplayLink.h>
 
+#import <condition_variable>
+
 @class DWindowDelegate;
 @class DOpenGLView;
 
@@ -34,6 +36,9 @@ namespace Dream
 				class ViewContext : public Context
 				{
 					protected:
+						std::condition_variable _frame_refresh;
+						std::mutex _frame_refresh_mutex;
+					
 						bool _initialized;
 						DOpenGLView * _graphics_view;
 						
@@ -56,11 +61,10 @@ namespace Dream
 						virtual void stop();
 						
 						virtual Vec2u size();
-						
-						virtual void make_current();
-						virtual void flush_buffers();
 					
 						virtual void set_cursor_mode(CursorMode mode);
+					
+						void wait_for_refresh();
 				};
 				
 				/// This context manages a window which can be used to display content.
@@ -77,7 +81,6 @@ namespace Dream
 						virtual ~WindowContext ();
 					
 						virtual void start ();
-						virtual void stop ();
 				};
 			}
 		}
