@@ -171,6 +171,8 @@ namespace Demo {
 		_viewport->set_bounds(AlignedBox<2>(ZERO, input.new_size()));
 		glViewport(0, 0, input.new_size()[WIDTH], input.new_size()[HEIGHT]);
 		
+		check_error();
+		
 		return Scene::resize(input);
 	}
 	
@@ -278,19 +280,19 @@ namespace Demo {
 		
 		_context->start();
 	}
-	
+		
 	void DemoApplicationDelegate::application_will_enter_background (IApplication * application)
 	{
 		logger()->log(LOG_INFO, "Entering background...");
 
-		//m_context->stop();
+		_context->stop();
 	}
 	
 	void DemoApplicationDelegate::application_did_enter_foreground (IApplication * application)
 	{
 		logger()->log(LOG_INFO, "Entering foreground...");
 		
-		//m_context->start();
+		_context->start();
 		
 		// Grab the cursor
 		_context->set_cursor_mode(CURSOR_GRAB);
