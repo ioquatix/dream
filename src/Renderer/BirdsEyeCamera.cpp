@@ -56,7 +56,7 @@ namespace Dream
 		bool BirdsEyeCamera::motion(const MotionInput & input) {
 			const Vec3 & d = input.motion();
 
-			if (input.button_pressedOrDragged(MouseLeftButton)) {
+			if (input.button_pressed_or_dragged(MouseLeftButton)) {
 				RealT k = -1.0, i = Math::mod(_incidence, R360);
 				
 				if (i < 0) i += R360;

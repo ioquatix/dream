@@ -228,7 +228,7 @@ namespace Dream
 				return _state == Pressed && _key.button() == b;
 			}
 			
-			bool button_pressedOrDragged(MouseButton b) const {
+			bool button_pressed_or_dragged(MouseButton b) const {
 				return (_state == Pressed || _state == Dragged) && _key.button() == b;
 			}
 			
