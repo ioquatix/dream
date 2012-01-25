@@ -30,6 +30,18 @@ To generate documentation, make sure you have `doxygen` installed and run:
 	
 The documentation can be found in `docs/html/index.html`.
 
+### Compiling Examples on Mac OS X ###
+
+Firstly, execute the following using Terminal.app:
+
+	cd $DREAM/ext
+	rake fetch
+	rake build platform=dream_darwin
+
+Secondly, open Dream.xcodeproj, select "Dream-Darwin-MacOSX" target and build.
+
+Finally, open Demo.xcodeproj, select "Demo" target and run.
+
 Dependencies
 ------------
 
