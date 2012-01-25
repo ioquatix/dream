@@ -12,19 +12,17 @@
 @class DScreenManager;
 
 @interface DWindowDelegate : NSObject <NSWindowDelegate> {
-	Dream::Client::Display::IInputHandler * _input_handler;
+	Dream::Client::Display::Cocoa::WindowContext * _window_context;
 }
 
-@property(nonatomic,assign) Dream::Client::Display::IInputHandler * inputHandler;
+@property(nonatomic,assign) Dream::Client::Display::Cocoa::WindowContext * displayContext;
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender;
 - (BOOL)windowShouldClose:(id)sender;
 
-/*
 - (void)windowWillEnterFullScreen:(NSNotification *)notification;
 - (void)windowDidEnterFullScreen:(NSNotification *)notification;
 - (void)windowWillExitFullScreen:(NSNotification *)notification;
 - (void)windowDidExitFullScreen:(NSNotification *)notification;
-*/
 
 @end

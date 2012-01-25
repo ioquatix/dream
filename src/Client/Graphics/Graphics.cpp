@@ -19,7 +19,7 @@ namespace Dream
 				GLenum error = GL_NO_ERROR;
 				
 				while ((error = glGetError()) != GL_NO_ERROR) {
-					logger()->log(LOG_ERROR, LogBuffer() << "Error #" << error);
+					logger()->log(LOG_ERROR, LogBuffer() << "OpenGL Error #" << error);
 					
 					// Abort due to error
 					ensure(error == GL_NO_ERROR);

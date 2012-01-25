@@ -10,16 +10,16 @@
 
 @implementation DWindowDelegate
 
-@synthesize inputHandler = _input_handler;
+@synthesize displayContext = _window_context;
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
 {
 	using namespace Dream::Client::Display;
 
-	if (_input_handler) {
+	if (_window_context) {
 		EventInput ipt(EventInput::EXIT);
 		
-		_input_handler->process(ipt);				
+		_window_context->process(ipt);				
 	}
 	
 	return NSTerminateCancel;
@@ -29,14 +29,33 @@
 {
 	using namespace Dream::Client::Display;
 	
-	if (_input_handler) {
+	if (_window_context) {
 		EventInput ipt(EventInput::EXIT);
 		
-		_input_handler->process(ipt);
+		_window_context->process(ipt);
 	}
 	
 	return NO;
 }
 
+- (void)windowWillEnterFullScreen:(NSNotification *)notification {
+	NSLog(@"windowWillEnterFullScreen");
+	_window_context->stop();
+}
+
+- (void)windowDidEnterFullScreen:(NSNotification *)notification {
+	NSLog(@"windowDidEnterFullScreen");
+	_window_context->start();
+}
+
+- (void)windowWillExitFullScreen:(NSNotification *)notification {
+	NSLog(@"windowWillExitFullScreen");
+	_window_context->stop();
+}
+
+- (void)windowDidExitFullScreen:(NSNotification *)notification {
+	NSLog(@"windowDidExitFullScreen");
+	_window_context->start();
+}
 
 @end

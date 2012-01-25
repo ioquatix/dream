@@ -20,7 +20,9 @@ using namespace Dream::Client::Display;
 }
 
 - (void)reshape
-{
+{	
+	[super reshape];
+	
 	if (!_display_context) return;
 	
 	using namespace Dream::Client::Display;

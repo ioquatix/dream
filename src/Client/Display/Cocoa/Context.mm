@@ -24,8 +24,9 @@ namespace Dream
 		{
 			namespace Cocoa
 			{
-					
+				
 				using namespace Events::Logging;
+								
 #pragma mark -
 							
 				// This is the renderer output callback function
@@ -39,6 +40,8 @@ namespace Dream
 				// This is the renderer output callback function
 				CVReturn ViewContext::display_link_callback(CVDisplayLinkRef display_link, const CVTimeStamp* now, const CVTimeStamp* output_time, CVOptionFlags flags_in, CVOptionFlags* flags_out)
 				{
+					logger()->log(LOG_DEBUG, "Enter ViewContext::display_link_callback");
+					
 					if (!_initialized) {
 						logger()->set_thread_name("Renderer");
 						
@@ -49,10 +52,14 @@ namespace Dream
 					
 					_context_delegate->render_frame_for_time(this, time);
 
+					logger()->log(LOG_DEBUG, "Exit ViewContext::display_link_callback");
+					
 					return kCVReturnSuccess;
 				}
 				
 				void ViewContext::start() {
+					logger()->log(LOG_DEBUG, "Enter ViewContext::start");
+					
 					setup_display_link();
 					
 					_initialized = false;
@@ -60,28 +67,42 @@ namespace Dream
 					ensure(_display_link != nil);
 					ensure(_graphics_view != nil);
 					
-					CVDisplayLinkStart(_display_link);
+					CVReturn result = CVDisplayLinkStart(_display_link);
+					
+					if (result != kCVReturnSuccess) {
+						logger()->log(LOG_ERROR, LogBuffer() << "CVDisplayLinkStart error #" << result);
+					}
+					
+					logger()->log(LOG_DEBUG, "Exit ViewContext::start");
 				}
 				
 				void ViewContext::stop() {
+					logger()->log(LOG_DEBUG, "Enter ViewContext::stop");
+					
 					ensure(_display_link != nil);
 					
-					CVDisplayLinkStop(_display_link);
+					CVReturn result = CVDisplayLinkStop(_display_link);
+					
+					if (result != kCVReturnSuccess) {
+						logger()->log(LOG_ERROR, LogBuffer() << "CVDisplayLinkStop error #" << result);
+					}
+					
+					logger()->log(LOG_DEBUG, "Exit ViewContext::stop");
 				}
 				
 				void ViewContext::setup_display_link ()
 				{
-					if (_display_link) return;
-					
-					// Synchronize buffer swaps with vertical refresh rate
-					GLint swap = 1;
-					[[_graphics_view openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
-					
-					// Create a display link capable of being used with all active displays
-					CVDisplayLinkCreateWithActiveCGDisplays(&_display_link);
-					
-					// Set the renderer output callback function
-					CVDisplayLinkSetOutputCallback(_display_link, &ViewContext::display_link_callback, this);
+					if (!_display_link) {
+						// Synchronize buffer swaps with vertical refresh rate
+						GLint swap = 1;
+						[[_graphics_view openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
+						
+						// Create a display link capable of being used with all active displays
+						CVDisplayLinkCreateWithActiveCGDisplays(&_display_link);
+						
+						// Set the renderer output callback function
+						CVDisplayLinkSetOutputCallback(_display_link, &ViewContext::display_link_callback, this);
+					}
 					
 					// Set the display link for the current renderer
 					CGLContextObj cglContext = (CGLContextObj)[[_graphics_view openGLContext] CGLContextObj];
@@ -120,7 +141,12 @@ namespace Dream
 				
 				void ViewContext::make_current ()
 				{
-					[[_graphics_view openGLContext] makeCurrentContext];
+					if ([NSOpenGLContext currentContext] == [_graphics_view openGLContext]) {
+						return;
+					} else {
+						logger()->log(LOG_INFO, LogBuffer() << "Switching OpenGL context: " << [_graphics_view openGLContext]);
+						[[_graphics_view openGLContext] makeCurrentContext];
+					}
 				}
 				
 				void ViewContext::flush_buffers()
@@ -227,7 +253,7 @@ namespace Dream
 					[_window setCollectionBehavior:NSWindowCollectionBehaviorFullScreenPrimary];
 					
 					_window_delegate = [DWindowDelegate new];
-					[_window_delegate setInputHandler:this];
+					[_window_delegate setDisplayContext:this];
 										
 					[_window setDelegate:_window_delegate];
 					
