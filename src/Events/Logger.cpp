@@ -61,7 +61,7 @@ namespace Dream
 		
 		Logger::Logger() : _log_level(LOG_ALL)
 		{
-			_output = STDERR_FILENO;
+			_output = dup(STDERR_FILENO);
 			
 			_log_time.reset();
 			
