@@ -176,6 +176,17 @@ namespace Dream
 					if (mode == CURSOR_GRAB) {
 						CGDisplayHideCursor(kCGNullDirectDisplay);
 						CGAssociateMouseAndMouseCursorPosition(false);
+						
+						// Warp the mouse cursor to the center of the view.
+						NSRect bounds = _graphics_view.bounds;
+						NSPoint view_center = NSMakePoint(bounds.origin.x + bounds.size.width / 2.0, bounds.origin.y + bounds.size.height / 2.0);
+						NSPoint window_center = [_graphics_view convertPoint:view_center toView:nil];
+						NSPoint screen_offset = [[_graphics_view window] convertBaseToScreen:window_center];
+						
+						NSScreen * screen = [[_graphics_view window] screen];
+						CGDirectDisplayID display = [[screen.deviceDescription objectForKey:@"NSScreenNumber"] unsignedIntValue];
+						
+						CGDisplayMoveCursorToPoint(display, CGPointMake(screen_offset.x, screen.frame.size.height - screen_offset.y));
 					} else {
 						CGAssociateMouseAndMouseCursorPosition(true);
 						CGDisplayShowCursor(kCGNullDirectDisplay);
