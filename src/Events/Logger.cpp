@@ -14,6 +14,7 @@
 #include <map>
 #include <iomanip>
 #include <time.h>
+#include <unistd.h>
 
 namespace Dream
 {
@@ -58,8 +59,10 @@ namespace Dream
 			log(LOG_INFO, log_buffer);
 		}
 		
-		Logger::Logger() : _output(std::cerr), _log_level(LOG_ALL)
+		Logger::Logger() : _log_level(LOG_ALL)
 		{
+			_output = STDERR_FILENO;
+			
 			_log_time.reset();
 			
 			start_session();
@@ -70,31 +73,53 @@ namespace Dream
 		}
 		
 		void Logger::header(LogLevel level) {
-			_output << "[" 
+			LogBuffer buffer;
+			buffer << "[" 
 				<< std::setfill(' ') << std::setw(8) << _log_time.time() << "; " 
 				/* << std::setw(18) */ << thread_name() << " " 
 				/* << std::setw(5) */ << level_name(level) << "] ";
+			
+			const std::string & value = buffer.str();
+			::write(_output, value.data(), value.size());
 		}
 				
-		void Logger::log(LogLevel level, std::string message)
+		void Logger::log(LogLevel level, const std::string & message)
 		{
 			if (level & _log_level) {
 				std::lock_guard<std::mutex> lock(_lock);
 				
 				header(level);
 				
-				_output << message << std::endl;
+				::write(_output, message.data(), message.size());
+				::write(_output, "\n", 1);
 			}
 		}
 		
-		void Logger::log(LogLevel level, std::ostream & buffer)
+		void Logger::log(LogLevel level, const std::ostream & buffer)
 		{
 			if (level & _log_level) {
 				std::lock_guard<std::mutex> lock(_lock);
 				
 				header(level);
 				
-				_output << buffer.rdbuf() << std::endl;
+				const std::size_t BUFFER_SIZE = 1024;
+				char output_buffer[BUFFER_SIZE];
+				
+				std::streambuf * stream = buffer.rdbuf();
+				stream->pubseekpos(0);
+				
+				// Write the output atomically.
+				while (1) {
+					std::size_t count = stream->sgetn(output_buffer, BUFFER_SIZE);
+					
+					::write(_output, output_buffer, count);
+					
+					if (count != BUFFER_SIZE)
+						break;
+				}
+				
+				// Write a newline.
+				::write(_output, "\n", 1);
 			}
 		}
 		
@@ -120,6 +145,8 @@ namespace Dream
 		
 		void Logger::set_thread_name(std::string name)
 		{
+			log(LOG_DEBUG, LogBuffer() << "Renaming thread " << thread_name() << " to " << name);
+			
 			_thread_names[std::this_thread::get_id()] = name;
 		}
 		

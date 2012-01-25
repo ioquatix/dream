@@ -29,6 +29,8 @@ namespace Dream
 				
 				LOG_ALL = (1 | 2 | 4 | 8)
 			};
+			
+			typedef std::stringstream LogBuffer;
 		}
 		
 		using namespace Logging;
@@ -40,10 +42,10 @@ namespace Dream
 		protected:
 			Timer _log_time;
 			
-			std::ostream & _output;
 			std::mutex _lock;
 			
 			LogLevel _log_level;
+			FileDescriptorT _output;
 			
 			static const char * level_name(LogLevel level);
 			
@@ -56,8 +58,8 @@ namespace Dream
 			Logger();
 			virtual ~Logger();
 			
-			void log(LogLevel level, std::string message);
-			void log(LogLevel level, std::ostream & buffer);
+			void log(LogLevel level, const std::string & message);
+			void log(LogLevel level, const std::ostream & buffer);
 			
 			/// Provides perror like functionality
 			void system_error(std::string message);
@@ -71,8 +73,6 @@ namespace Dream
 		
 		namespace Logging {
 			Logger * logger();
-			
-			typedef std::stringstream LogBuffer;
 		};
 	}
 }
