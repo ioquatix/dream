@@ -35,10 +35,10 @@ namespace Dream {
 		};
 		
 		/// A mesh is a list of vertices and an ordered list of indices which make up a set of triangles. We assume that all meshes are made up of triangle strips. These assumptions and limitations are primarily to keep the generation of Mesh objects simple.
-		template <typename _VertexT = Vertex>
+		template <typename _VertexT = Vertex, typename _IndexT = uint16_t>
 		class Mesh {
 		public:
-			typedef unsigned IndexT;
+			typedef _IndexT IndexT;
 			typedef _VertexT VertexT;
 			
 			Array<IndexT> indices;
