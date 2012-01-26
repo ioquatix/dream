@@ -13,10 +13,8 @@ namespace Dream
 {
 	namespace Renderer
 	{
-					
-		BirdsEyeCamera::BirdsEyeCamera ()
-			: _up(0.0, 0.0, 1.0), _right(1.0, 0.0, 0.0), _center(ZERO), _multiplier(IDENTITY, 1)
-		{
+		
+		BirdsEyeCamera::BirdsEyeCamera() : _up(0.0, 0.0, 1.0), _right(1.0, 0.0, 0.0), _center(ZERO), _multiplier(IDENTITY, 1) {
 			_distance = 100;
 			_azimuth = R45;
 			_incidence = R45;

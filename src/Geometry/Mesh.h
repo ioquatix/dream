@@ -22,7 +22,7 @@ namespace Dream {
 		struct Vertex {
 			Vec3 position;
 			Vec3 normal;
-			Vec4 colour;
+			Vec4 color;
 			Vec2 mapping;
 			
 			void apply(const Mat44 & position);

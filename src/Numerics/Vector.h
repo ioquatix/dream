@@ -168,6 +168,9 @@ namespace Dream
 		class Vector : public VectorTraits<E, NumericT>, public VectorEqualityTraits<E, NumericT>, public VectorConversionTraits<E, NumericT>
 		{
 		public:
+			enum { ELEMENTS = E };
+			typedef NumericT ElementT;
+			
 			/// The type of the vector elements.
 			typedef typename RealType<NumericT>::RealT NumericRealT;
 

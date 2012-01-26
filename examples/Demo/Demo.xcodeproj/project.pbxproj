@@ -21,6 +21,7 @@
 		7E9EA73C142306E300F8BC49 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E9EA73B142306E300F8BC49 /* OpenGL.framework */; };
 		7E9EA73D1423124800F8BC49 /* shader.vsh in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E9EA7371423049900F8BC49 /* shader.vsh */; };
 		7E9EA73E1423124D00F8BC49 /* shader.fsh in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E9EA739142304AC00F8BC49 /* shader.fsh */; };
+		7ED8A81214D0F16E005F890A /* Materials in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E5B632C148D786200027AF5 /* Materials */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -32,6 +33,7 @@
 			files = (
 				7E9EA73D1423124800F8BC49 /* shader.vsh in CopyFiles */,
 				7E9EA73E1423124D00F8BC49 /* shader.fsh in CopyFiles */,
+				7ED8A81214D0F16E005F890A /* Materials in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
