@@ -71,7 +71,7 @@ namespace Dream
 		const double D2R = (M_PI / 180.0);
 	
 		/// If the supplied value is a power of two, it is returned, otherwise the next highest power of 2 is calculated and returned.
-		uint32_t next_highest_power_of2 (uint32_t);
+		uint32_t next_highest_power_of_2 (uint32_t);
 
 		/// Checks if an unsigned int is a power of 2.
 		bool is_power_of2 (uint32_t);

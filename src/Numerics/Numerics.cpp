@@ -57,7 +57,7 @@ namespace Dream
 
 			static const FIntT S = FIntT (0x80ULL << ((sizeof (FloatT) - 1) * 8));
 
-			static FIntT convert_toInteger (const FloatT & f)
+			static FIntT convert_to_integer (const FloatT & f)
 			{
 				Conversion c;
 				c.f = f;
@@ -68,7 +68,7 @@ namespace Dream
 					return c.i;
 			}
 
-			static FloatT convert_toFloat (const FIntT & i)
+			static FloatT convert_to_float (const FIntT & i)
 			{
 				Conversion c;
 				c.i = i;
@@ -89,7 +89,7 @@ namespace Dream
 
 			static bool is_zero (const FloatT & value, const FIntT & threshold)
 			{
-				FIntT p = convert_toInteger(value);
+				FIntT p = convert_to_integer(value);
 
 				return is_zero (p, threshold);
 			}
@@ -111,8 +111,8 @@ namespace Dream
 				ensure(max_ulps < 4 * 1024 * 1024);
 
 				// Make lexicographically ordered as a twos-complement int
-				FIntT a_int = convert_toInteger(a);
-				FIntT b_int = convert_toInteger(b);
+				FIntT a_int = convert_to_integer(a);
+				FIntT b_int = convert_to_integer(b);
 
 				FIntT int_diff = Number<FIntT>::abs(a_int - b_int);
 
@@ -125,8 +125,8 @@ namespace Dream
 			static bool equivalent (const FloatT & a, const FloatT & b)
 			{
 				// Make lexicographically ordered as a twos-complement int
-				FIntT a_int = convert_toInteger(a);
-				FIntT b_int = convert_toInteger(b);
+				FIntT a_int = convert_to_integer(a);
+				FIntT b_int = convert_to_integer(b);
 
 				if (a_int == b_int) return true;
 
@@ -142,7 +142,7 @@ namespace Dream
 		};
 
 		// http://acius2.blogspot.com/2007/11/calculating-next-power-of-2.html
-		uint32_t next_highest_power_of2 (uint32_t n)
+		uint32_t next_highest_power_of_2 (uint32_t n)
 		{
 			if (n == 0) return 0;
 			
@@ -215,27 +215,27 @@ namespace Dream
 		UNIT_TEST(FloatingPointTraits)
 		{
 			typedef FloatingPointTraits<float> F;
-			F::FIntT i = F::convert_toInteger(1.0056f);
-			F::FloatT f = F::convert_toFloat(i);
+			F::FIntT i = F::convert_to_integer(1.0056f);
+			F::FloatT f = F::convert_to_float(i);
 			check(1.0056f == f) << "Integer - float conversion correct for 1.0056";
 
-			i = F::convert_toInteger(-0.52f);
-			f = F::convert_toFloat(i);
+			i = F::convert_to_integer(-0.52f);
+			f = F::convert_to_float(i);
 			check(-0.52f == f) << "Integer - float conversion correct for -0.52";
 
 			double t = 0.0000001;
 			std::cout << "acosf: " << cos(R90) << std::endl;
-			check(FloatingPointTraits<double>::is_zero(cos(R90)) << FloatingPointTraits<double>::convert_toInteger(t)) << "cosf is zero";
+			check(FloatingPointTraits<double>::is_zero(cos(R90)) << FloatingPointTraits<double>::convert_to_integer(t)) << "cosf is zero";
 
-			std::cout << "Accuracy of float: " << FloatingPointTraits<double>::convert_toInteger(t) << std::endl;
+			std::cout << "Accuracy of float: " << FloatingPointTraits<double>::convert_to_integer(t) << std::endl;
 		}
 		
 		UNIT_TEST(PowerOfTwo)
 		{
-			int k = next_highest_power_of2(16);
+			int k = next_highest_power_of_2(16);
 			check(k == 16) << "Next power of two calculated correctly";
 			
-			k = next_highest_power_of2(17);
+			k = next_highest_power_of_2(17);
 			check(k == 32) << "Next power of two calculated correctly";
 		}
 
@@ -254,22 +254,22 @@ namespace Dream
 			if (v1 < (FloatT) 0.0)
 			{
 				// Increment floating point number to next discrete step
-				f = F::convert_toFloat (F::convert_toInteger (f) + 1);
+				f = F::convert_to_float (F::convert_to_integer (f) + 1);
 			} else
 			{
 				// Decrement floating point number to previous discrete step
-				f = F::convert_toFloat (F::convert_toInteger (f) - 1);
+				f = F::convert_to_float (F::convert_to_integer (f) - 1);
 			}
 
 			FloatT v2 = Number<FloatT>::cos(f);
 
-			FIntT d1 = Number<FIntT>::abs(F::convert_toInteger(v1));
-			FIntT d2 = Number<FIntT>::abs(F::convert_toInteger(v2));
+			FIntT d1 = Number<FIntT>::abs(F::convert_to_integer(v1));
+			FIntT d2 = Number<FIntT>::abs(F::convert_to_integer(v2));
 			FIntT d3 = Number<FIntT>::max(d1, d2);
 
 			std::cout << "d1 : " << d1 << " d2 : " << d2 << " = d3 : " << d3 << std::endl;
 			std::cout << "Trigonometric precision of " << typeid(t).name() << " around zero is ";
-			std::cout << F::convert_toFloat(d3) << std::endl;
+			std::cout << F::convert_to_float(d3) << std::endl;
 		}
 
 		UNIT_TEST(CalculateFloatAccuracy)
@@ -277,8 +277,8 @@ namespace Dream
 			calculate_float_accuracy<float>();
 			calculate_float_accuracy<double>();
 
-			std::cout << "   Float ACCURACY: " << FloatingPointTraits<float>::convert_toInteger(0.000001) << std::endl;
-			std::cout << "  Double ACCURACY: " << FloatingPointTraits<double>::convert_toInteger(0.000000000001) << std::endl;
+			std::cout << "   Float ACCURACY: " << FloatingPointTraits<float>::convert_to_integer(0.000001) << std::endl;
+			std::cout << "  Double ACCURACY: " << FloatingPointTraits<double>::convert_to_integer(0.000000000001) << std::endl;
 		}
 		
 		UNIT_TEST(CheckRotationAccuracy)
