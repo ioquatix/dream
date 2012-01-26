@@ -19,7 +19,7 @@
 
 #include <Dream/Events/Logger.h>
 
-#include <Dream/Geometry/Mesh.h>
+#include <Dream/Client/Graphics/MeshBuffer.h>
 
 namespace Demo {
 	using namespace Dream;
@@ -28,171 +28,15 @@ namespace Demo {
 	using namespace Dream::Renderer;
 	using namespace Dream::Client::Display;
 	using namespace Dream::Client::Graphics;
-	
-	/*
-		MeshT _mesh = ...;
 		
-		VertexArray _grid_array;
-		VertexBuffer _grid_vertices(GL_ARRAY_BUFFER, _mesh.vertices);
-		VertexBuffer _grid_indices(GL_ELEMENT_ARRAY_BUFFER, _mesh.indices);
-	 
-		_grid_array->draw();
-	 */
-	
-	class VertexArray : private NonCopyable {
-	protected:
-		GLuint _handle;
-		
-	public:
-		GLuint handle() const { return _handle; }
-		
-		VertexArray() {
-			glGenVertexArrays(1, &_handle);
-		}
-		
-		~VertexArray() {
-			glDeleteVertexArrays(1, &_handle);
-		}
-		
-		void bind() {
-			glBindVertexArray(_handle);
-		}
-		
-		void unbind() {
-			glBindVertexArray(0);
-		}
-		
-		// These functions facilitate canonical usage where data is stored in vertex buffers.
-		void draw(GLenum mode, GLsizei count, GLenum type) {
-			glDrawElements(mode, count, type, 0);
-		}
-		
-		void set_attribute(GLuint index, GLuint size, GLenum type, GLboolean normalized, GLsizei stride, std::ptrdiff_t offset) {
-			glVertexAttribPointer(index, size, type, normalized, stride, (const GLvoid *)offset);
-		}
-	};
-	
-	class VertexBuffer : private NonCopyable {
-	protected:
-		GLuint _handle;
-		GLenum _target;
-		
-	public:
-		GLuint handle() const { return _handle; }
-		GLenum target() const { return _target; }
-		
-		template <typename AnyT>
-		void buffer_data(Array<AnyT> array, GLenum usage) {
-			glBufferData(_target, array.length(), array.data(), usage);
-		}
-		
-		VertexBuffer(GLenum target) : _target(target) {
-			glGenBuffers(1, &_handle);
-		}
-		
-		~VertexBuffer() {
-			glDeleteBuffers(1, &_handle);
-		}
-		
-		void attach(VertexArray & vertex_array) {
-			glBindBuffer(_target, _handle);
-		}
-	};
-	
-	template <typename MeshT>
-	class MeshBuffer : private NonCopyable {
-	protected:
-		Shared<MeshT> _mesh;
-		
-		VertexArray _vertex_array;
-		
-		GLenum _index_buffer_usage, _vertex_buffer_usage;
-		
-		VertexBuffer _index_buffer;
-		VertexBuffer _vertex_buffer;
-		
-		std::size_t _count;
-		
-		bool _invalid;
-				
-	public:
-		MeshBuffer(Shared<MeshT> mesh) : _mesh(mesh), _index_buffer_usage(GL_STATIC_DRAW), _vertex_buffer_usage(GL_STATIC_DRAW), _index_buffer(GL_ELEMENT_ARRAY_BUFFER), _vertex_buffer(GL_ARRAY_BUFFER), _invalid(true) {
-			
-		}
-		
-		virtual ~MeshBuffer() {
-			
-		}
-		
-		/// This function is used as follows:
-		/// _mesh_buffer->associate(_position_attribute, MeshT::VertexT::position);
-		template<class T, typename U>
-		void associate(GLuint index, U T::* member, bool normalized = false) {
-			_vertex_array.set_attribute(index, U::ELEMENTS, GLTypeTraits<typename U::ElementT>::TYPE, normalized, sizeof(T), member_offset(member));
-		}
-		
-		void set_usage(GLenum usage) {
-			_index_buffer_usage = _vertex_buffer_usage = usage;
-		}
-		
-		void set_index_buffer_usage(GLenum usage) {
-			_index_buffer_usage = usage;
-		}
-		
-		void set_vertex_buffer_usage(GLenum usage) {
-			_vertex_buffer_usage = usage;
-		}
-		
-		void set_mesh(Shared<MeshT> mesh) {
-			if (_mesh != mesh) {
-				_mesh = mesh;				
-			}
-			
-			_invalid = true;
-		}
-		
-		void invalidate() {
-			_invalid = true;
-		}
-		
-		void upload() {
-			if (_invalid) {				
-				_vertex_array.bind();
-				
-				_index_buffer.attach(_vertex_array);
-				_index_buffer.buffer_data(_mesh->indices, _index_buffer_usage);
-				
-				_vertex_buffer.attach(_vertex_array);
-				_vertex_buffer.buffer_data(_mesh->vertices, _vertex_buffer_usage);
-				
-				_vertex_array.unbind();
-				
-				// Keep track of the number of indices uploaded for drawing:
-				_count = _mesh->indices.size();
-				
-				// The mesh buffer is now okay for drawing:
-				_invalid = false;
-			}
-		}
-		
-		void draw(GLenum mode) {
-			// Ensure the geometry is available for rendering:
-			upload();
-			
-			_vertex_array.draw(mode, _count, GLTypeTraits<typename MeshT::IndexT>::TYPE);
-		}
-	};
-	
-	typedef Geometry::Mesh<> MeshT;
-	
 	class DemoScene : public Scene
 	{
 	protected:
 		// These are the locations of default attributes in the shader programs used:
 		enum ProgramAttributes {
 			POSITION = 0,
-			COLOR = 1,
-			NORMAL = 2,
+			NORMAL = 1,
+			COLOR = 2,
 			MAPPING = 3
 		};
 		
@@ -206,11 +50,11 @@ namespace Demo {
 		GLuint _diffuse_uniform;
 		IndexT _crate_texture;
 		
-		GLuint _object_vertex_array, _grid_vertex_array;
 		Vec2 _point;
 		Vec4 _light_positions[2];
 		
-		MeshT _object_mesh, _grid_mesh;
+		typedef Geometry::Mesh<> MeshT;
+		Ref<MeshBuffer<MeshT>> _object_mesh_buffer, _grid_mesh_buffer;
 		
 		Ref<ShaderManager> _shader_manager;
 		Ref<TextureManager> _texture_manager;
@@ -301,87 +145,57 @@ namespace Demo {
 
 			_light_positions_uniform = _shader_program->uniform_location("light_positions");
 			
+			_shader_program->set_attribute_location("position", POSITION);
+			_shader_program->set_attribute_location("normal", NORMAL);
+			_shader_program->set_attribute_location("color", COLOR);
+			_shader_program->set_attribute_location("mapping", MAPPING);
+			
 			_color_attribute = _shader_program->attribute_location("color");
 			_position_attribute = _shader_program->attribute_location("position");
 			_normal_attribute = _shader_program->attribute_location("normal");
 			_mapping_attribute = _shader_program->attribute_location("mapping");
+			
 			check_error();
 		}
-				
+		
 		{
 			using namespace Geometry;
 			
+			Shared<MeshT> mesh = new MeshT;
+			
 			//Generate::cube(_mesh, Geometry::AlignedBox<3>::from_center_and_size(ZERO, 1.0));
 			//Generate::shade_square_cube(_mesh);
+			Generate::sphere(*mesh, 0.5, 12, 12);
+			Generate::solid_color(*mesh, Vec4(0.5, 0.5, 0.5, 1.0));
 			
-			Generate::sphere(_object_mesh, 0.5, 12, 12);
-			Generate::solid_color(_object_mesh, Vec4(0.5, 0.5, 0.5, 1.0));
+			_object_mesh_buffer = new MeshBuffer<MeshT>();
+			_object_mesh_buffer->set_mesh(mesh);
+		
+			{
+				auto associations = _object_mesh_buffer->associations();
+				associations[_position_attribute] = &MeshT::VertexT::position;
+				associations[_normal_attribute] = &MeshT::VertexT::normal;
+				associations[_color_attribute] = &MeshT::VertexT::color;
+				associations[_mapping_attribute] = &MeshT::VertexT::mapping;
+			}
 		}
 		
 		{
-			glGenVertexArrays(1, &_object_vertex_array);
-			glBindVertexArray(_object_vertex_array);
+			using namespace Geometry;
 			
-			GLuint vertex_buffer, index_buffer;
-			glGenBuffers(1, &vertex_buffer);
-			glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-			glBufferData(GL_ARRAY_BUFFER, _object_mesh.vertices.length(), _object_mesh.vertices.data(), GL_STATIC_DRAW);
+			Shared<MeshT> mesh = new MeshT;
+			Generate::grid(*mesh, 32, 2.0);
 			
-			check_error();
-			
-			glEnableVertexAttribArray(_position_attribute);
-			glEnableVertexAttribArray(_color_attribute);
-			glEnableVertexAttribArray(_normal_attribute);
-			glEnableVertexAttribArray(_mapping_attribute);
-			
-			check_error();
-			
-			glVertexAttribPointer(_position_attribute, 3, GL_FLOAT, GL_FALSE, sizeof(MeshT::VertexT), (const GLvoid *)member_offset(&MeshT::VertexT::position));
-			glVertexAttribPointer(_color_attribute, 4, GL_FLOAT, GL_FALSE, sizeof(MeshT::VertexT), (const GLvoid *)member_offset(&MeshT::VertexT::color));
-			glVertexAttribPointer(_normal_attribute, 3, GL_FLOAT, GL_TRUE, sizeof(MeshT::VertexT), (const GLvoid *)member_offset(&MeshT::VertexT::normal));
-			glVertexAttribPointer(_mapping_attribute, 2, GL_FLOAT, GL_FALSE, sizeof(MeshT::VertexT), (const GLvoid *)member_offset(&MeshT::VertexT::mapping));
-			
-			check_error();
-			
-			glGenBuffers(1, &index_buffer);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, _object_mesh.indices.length(), _object_mesh.indices.data(), GL_STATIC_DRAW);
-			
-			check_error();
-		}
-		
-		{
-			glGenVertexArrays(1, &_grid_vertex_array);
-			glBindVertexArray(_grid_vertex_array);
+			_grid_mesh_buffer = new MeshBuffer<MeshT>();
+			_grid_mesh_buffer->set_mesh(mesh, GL_LINES);
 			
 			{
-				Generate::grid(_grid_mesh, 32, 2.0);
+				auto associations = _grid_mesh_buffer->associations();
+				associations[_position_attribute] = &MeshT::VertexT::position;
+				associations[_normal_attribute] = &MeshT::VertexT::normal;
+				associations[_color_attribute] = &MeshT::VertexT::color;
+				associations[_mapping_attribute] = &MeshT::VertexT::mapping;
 			}
-			
-			GLuint vertex_buffer, index_buffer;
-			glGenBuffers(1, &vertex_buffer);
-			glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-			glBufferData(GL_ARRAY_BUFFER, _grid_mesh.vertices.length(), _grid_mesh.vertices.data(), GL_STATIC_DRAW);
-			
-			check_error();
-			
-			glEnableVertexAttribArray(_position_attribute);
-			glEnableVertexAttribArray(_normal_attribute);
-			glEnableVertexAttribArray(_color_attribute);
-			glEnableVertexAttribArray(_mapping_attribute);
-			
-			glVertexAttribPointer(_position_attribute, 3, GL_FLOAT, GL_FALSE, sizeof(MeshT::VertexT), (const GLvoid *)member_offset(&MeshT::VertexT::position));
-			glVertexAttribPointer(_color_attribute, 4, GL_FLOAT, GL_FALSE, sizeof(MeshT::VertexT), (const GLvoid *)member_offset(&MeshT::VertexT::color));
-			glVertexAttribPointer(_normal_attribute, 3, GL_FLOAT, GL_TRUE, sizeof(MeshT::VertexT), (const GLvoid *)member_offset(&MeshT::VertexT::normal));
-			glVertexAttribPointer(_mapping_attribute, 2, GL_FLOAT, GL_FALSE, sizeof(MeshT::VertexT), (const GLvoid *)member_offset(&MeshT::VertexT::mapping));
-			
-			check_error();
-			
-			glGenBuffers(1, &index_buffer);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, _grid_mesh.indices.length(), _grid_mesh.indices.data(), GL_STATIC_DRAW);
-			
-			check_error();
 		}
 		
 		glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -484,16 +298,10 @@ namespace Demo {
 		
 		check_error();
 		
-		glBindVertexArray(_grid_vertex_array);
-		glDrawElements(GL_LINES, _grid_mesh.indices.size(), GLTypeTraits<MeshT::IndexT>::TYPE, 0);
-		
-		glBindVertexArray(_object_vertex_array);
-		glDrawElements(GL_TRIANGLE_STRIP, _object_mesh.indices.size(), GLTypeTraits<MeshT::IndexT>::TYPE, 0);
-
-		glPolygonOffset(0.0, -0.1);
-		glDrawElements(GL_LINE_STRIP, _object_mesh.indices.size(), GLTypeTraits<MeshT::IndexT>::TYPE, 0);
-		glPolygonOffset(0.0, 0.0);
-		
+		// *** Draw the various objects to the screen ***
+		_grid_mesh_buffer->draw();
+		_object_mesh_buffer->draw();
+				
 		check_error();
 	}
 	

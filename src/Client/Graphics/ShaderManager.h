@@ -47,6 +47,10 @@ namespace Dream {
 				void attach(GLenum shader);
 				bool link();
 				
+				void set_attribute_location(const char * name, GLuint location) {
+					glBindAttribLocation(_handle, location, name);
+				}
+				
 				GLuint attribute_location(const char * name);
 				GLuint uniform_location(const char * name);
 				
