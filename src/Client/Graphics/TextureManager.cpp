@@ -155,6 +155,8 @@ namespace Dream {
 				
 				if (parameters.generate_mip_maps)
 					glGenerateMipmap(parameters.target);
+				
+				check_error();
 			}
 			
 			void TextureManager::update(IndexT index, Ptr<IPixelBuffer> pixel_buffer, const TextureParameters & parameters)
@@ -185,13 +187,19 @@ namespace Dream {
 				if (state.texture != record.handle) {
 					glActiveTexture(GL_TEXTURE0 + unit);
 					
+					check_error();
+					
 					GLenum target = record.parameters.target;
 					glBindTexture(target, record.handle);
+					
+					check_error();
 					
 					glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_REPEAT);
 					glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_REPEAT);
 					glTexParameteri(target, GL_TEXTURE_MAG_FILTER, record.parameters.get_mag_filter());
 					glTexParameteri(target, GL_TEXTURE_MIN_FILTER, record.parameters.get_min_filter());
+					
+					check_error();
 				}
 			}
 			
