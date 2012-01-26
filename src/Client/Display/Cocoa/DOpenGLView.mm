@@ -163,6 +163,11 @@ using namespace Dream::Client::Display;
 	return false;
 }
 
+- (void) scrollWheel:(NSEvent *)event
+{
+	[self handleEvent:event];
+}
+
 - (void) mouseDown: (NSEvent*)event
 {
 	[self handleEvent:event];
