@@ -50,6 +50,26 @@ namespace Dream
 		StringT unescape_string (const StringT &);
 		StringT escape_string (const StringT &);
 		
+		template <typename AnyT>
+		StringT to_string(const AnyT & value) {
+			StringStreamT buffer;
+			
+			buffer << value;
+			
+			return buffer.str();
+		}
+		
+		template <typename AnyT>
+		AnyT to(const StringT & string) {
+			StringStreamT buffer(string);
+			
+			AnyT value;
+			if (!(buffer >> value)) {
+				throw std::runtime_error("Invalid input");
+			}
+			
+			return value;
+		}
 	}
 }
 
