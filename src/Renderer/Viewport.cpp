@@ -23,10 +23,10 @@ namespace Dream
 			n[X] = ((c[X] - viewport.origin()[X]) / viewport.size()[X]) * 2.0 - 1.0;
 			n[Y] = ((c[Y] - viewport.origin()[Y]) / viewport.size()[Y]) * 2.0 - 1.0;
 			
-			return convert_fromProjectionSpaceToObjectSpace (projection_matrix, model_view_matrix, n);
+			return convert_from_projection_space_to_object_space (projection_matrix, model_view_matrix, n);
 		}
 		
-		ViewportEyeSpace ViewportEyeSpace::convert_fromProjectionSpaceToObjectSpace (const Mat44 & projection_matrix, const Mat44 & model_view_matrix, const Vec2 & _n)
+		ViewportEyeSpace ViewportEyeSpace::convert_from_projection_space_to_object_space (const Mat44 & projection_matrix, const Mat44 & model_view_matrix, const Vec2 & _n)
 		{
 			// Reverse the viewport transformation from normalized device coordinates back into object space
 			Vec3 n = _n << -1;
@@ -58,7 +58,7 @@ namespace Dream
 			return result;
 		}
 		
-		Vec4 ViewportEyeSpace::convert_fromProjectionSpaceToObjectSpace (const Mat44 & projection_matrix, const Mat44 & model_view_matrix, const Vec3 & n)
+		Vec4 ViewportEyeSpace::convert_from_projection_space_to_object_space (const Mat44 & projection_matrix, const Mat44 & model_view_matrix, const Vec3 & n)
 		{
 			Mat44 inverse_model_view(model_view_matrix.inverse_matrix());
 			Mat44 inverse_projection(projection_matrix.inverse_matrix());
@@ -68,7 +68,7 @@ namespace Dream
 		
 #pragma mark -
 
-		ViewportEyeSpace IViewport::convert_toObjectSpace(const Vec2 & point) {
+		ViewportEyeSpace IViewport::convert_to_object_space(const Vec2 & point) {
 			return ViewportEyeSpace::convert_from_viewport_to_object_space(projection_matrix(), view_matrix(), bounds(), point);
 		}
 		

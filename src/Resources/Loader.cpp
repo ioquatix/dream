@@ -53,10 +53,10 @@ namespace Dream {
 		
 		Loader::~Loader ()
 		{
-			logger()->log(LOG_INFO, LogBuffer() << "Loader being deallocated: " << this);
+			// logger()->log(LOG_INFO, LogBuffer() << "Loader being deallocated: " << this);
 			
 			double total_size = 0.0;
-			foreach(cache, _dataCache) {
+			foreach(cache, _data_cache) {
 				total_size += cache->second->size();
 			}
 			
@@ -67,18 +67,23 @@ namespace Dream {
 		
 		Ref<IData> Loader::fetch_data_for_path (const Path & path) const
 		{
-			CacheT::iterator c = _dataCache.find(path);
+			CacheT::iterator c = _data_cache.find(path);
 			
-			if (c != _dataCache.end())
+			if (c != _data_cache.end())
 				return c->second;
 			
- 			Ref<IData> data = new LocalFileData(path);
 			
-			logger()->log(LOG_INFO, LogBuffer() << "Adding " << path << " to cache.");
-			
-			_dataCache[path] = data;
-			
-			return data;
+			if (path.exists()) {
+				Ref<IData> data = new LocalFileData(path);
+				
+				// logger()->log(LOG_INFO, LogBuffer() << "Adding " << path << " to cache.");
+				
+				_data_cache[path] = data;
+				
+				return data;
+			} else {
+				return NULL;
+			}
 		}
 		
 		void Loader::preload_resource (const Path & path)

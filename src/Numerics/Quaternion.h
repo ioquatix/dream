@@ -38,8 +38,7 @@ namespace Dream
 			typedef Matrix<4, 4, _NumericT> MatrixT;
 
 			/// Undefined constructor.
-			Quaternion ()
-			{
+			Quaternion () {
 			}
 
 			/// Identity constructor.

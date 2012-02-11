@@ -88,7 +88,7 @@ namespace Dream
 			_multiplier = m;
 		}
 		
-		const Vec3 &BirdsEyeCamera::multiplier () {
+		const Vec3 & BirdsEyeCamera::multiplier () {
 			return _multiplier;
 		}
 		

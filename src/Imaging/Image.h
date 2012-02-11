@@ -89,10 +89,9 @@ namespace Dream {
 			
 			/// Sets up the internal buffers for handing data for the specified size, format and data_type.
 			void allocate (const Vec3u & size, ImagePixelFormat format, ImageDataType data_type);
-
+		
 		protected:
 			static Ref<Image> load_from_data (const Ptr<IData> data);
-
 		};
 	}
 }

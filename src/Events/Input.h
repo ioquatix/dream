@@ -154,7 +154,7 @@ namespace Dream
 			enum EventName {
 				EXIT = 1,
 				PAUSE = 2,
-				RESUME = 3,
+				RESUME = 3
 			};
 			
 			EventInput(EventName event);

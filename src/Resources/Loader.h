@@ -112,7 +112,7 @@ namespace Dream {
 			Path _current_path;
 			
 			typedef std::map<Path, Ref<IData>> CacheT;
-			mutable CacheT _dataCache;
+			mutable CacheT _data_cache;
 			
 		public:
 			virtual void set_loader_for_extension (Ptr<ILoadable> loadable, StringT ext);

@@ -28,11 +28,11 @@ namespace Dream
 																	  const AlignedBox<2> & viewport, const Vec2 & c);
 			
 			/// Calculate the object-space coordinates when given a projection-space coordinate on the near plane.
-			static ViewportEyeSpace convert_fromProjectionSpaceToObjectSpace (const Mat44 & projection_matrix, const Mat44 & model_view_matrix, const Vec2 & n);
+			static ViewportEyeSpace convert_from_projection_space_to_object_space (const Mat44 & projection_matrix, const Mat44 & model_view_matrix, const Vec2 & n);
 			
 			/// Calculate the object-space coordinate when given a projection-space coordinate. This function is not fast for many points, as it calculates
 			/// inverse matrices per call.
-			static Vec4 convert_fromProjectionSpaceToObjectSpace (const Mat44 & projection_matrix, const Mat44 & model_view_matrix, const Vec3 & n);
+			static Vec4 convert_from_projection_space_to_object_space (const Mat44 & projection_matrix, const Mat44 & model_view_matrix, const Vec3 & n);
 		};
 		
 		class IViewport : implements Object {
@@ -45,7 +45,7 @@ namespace Dream
 					return projection_matrix() * view_matrix();
 				}
 			
-				ViewportEyeSpace convert_toObjectSpace(const Vec2 & point);
+				ViewportEyeSpace convert_to_object_space(const Vec2 & point);
 		};
 		
 		class Viewport : public Object, implements IViewport {

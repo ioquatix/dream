@@ -96,7 +96,7 @@ namespace Dream {
 			cinfo->src->bytes_in_buffer = bufsize;
 		}
 
-		Ref<Image> load_jpegimage (const Ptr<IData> data) {
+		Ref<Image> load_jpeg_image (const Ptr<IData> data) {
 			jpeg_decompress_struct cinfo;
 			jpeg_error_mgr jerr;
 			
@@ -157,7 +157,7 @@ namespace Dream {
 			throw std::runtime_error(msg);
 		}
 		
-		Ref<Image> load_pngimage (const Ptr<IData> data) {
+		Ref<Image> load_png_image (const Ptr<IData> data) {
 			// Image formatting details
 			ImagePixelFormat format = ImagePixelFormat(0);
 			ImageDataType data_type = ImageDataType(0);
@@ -281,10 +281,10 @@ namespace Dream {
 			
 			switch (buffer->mimetype()) {
 				case IMAGE_JPEG:
-					loaded_image = load_jpegimage(data);
+					loaded_image = load_jpeg_image(data);
 					break;
 				case IMAGE_PNG:
-					loaded_image = load_pngimage(data);
+					loaded_image = load_png_image(data);
 					break;
 				//case Data::IMAGE_DDS:
 				//	loaded_image = load_ddsimage(data);

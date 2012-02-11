@@ -21,8 +21,7 @@ namespace Dream
 #pragma mark -
 #pragma mark LocalFileData
 
-		LocalFileData::LocalFileData (const Path & path)
-			: _path(path)
+		LocalFileData::LocalFileData (const Path & path) : _path(path)
 		{
 			
 		}
