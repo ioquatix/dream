@@ -184,9 +184,15 @@ namespace Dream
 						NSPoint screen_offset = [[_graphics_view window] convertBaseToScreen:window_center];
 						
 						NSScreen * screen = [[_graphics_view window] screen];
-						CGDirectDisplayID display = [[screen.deviceDescription objectForKey:@"NSScreenNumber"] unsignedIntValue];
 						
-						CGDisplayMoveCursorToPoint(display, CGPointMake(screen_offset.x, screen.frame.size.height - screen_offset.y));
+						CGPoint newCursorPosition = CGPointMake(screen_offset.x, screen.frame.size.height - screen_offset.y);
+						
+						// What is the difference between these two functions?
+						// CGDirectDisplayID display = [[screen.deviceDescription objectForKey:@"NSScreenNumber"] unsignedIntValue];
+						// CGDisplayMoveCursorToPoint(display, newCursorPosition);
+						
+						// Alternative approach - doesn't generate events?
+						CGWarpMouseCursorPosition(newCursorPosition);
 					} else {
 						CGAssociateMouseAndMouseCursorPosition(true);
 						CGDisplayShowCursor(kCGNullDirectDisplay);

@@ -42,4 +42,14 @@
 	_window_context->stop();
 }
 
+- (void)windowDidBecomeKey:(NSNotification *)notification {
+	
+}
+
+- (void)windowDidResignKey:(NSNotification *)notification {
+	NSWindow * window = (NSWindow *)[notification object];
+	
+	[window makeFirstResponder:window];
+}
+
 @end

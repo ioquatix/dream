@@ -19,6 +19,22 @@ using namespace Dream::Client::Display;
 	return YES;
 }
 
+- (BOOL)becomeFirstResponder {
+	EventInput event_input(EventInput::RESUME);
+	
+	_display_context->process(event_input);
+	
+	return YES;
+}
+
+- (BOOL)resignFirstResponder {
+	EventInput event_input(EventInput::PAUSE);
+	
+	_display_context->process(event_input);
+	
+	return YES;
+}
+
 - (void)reshape
 {	
 	[super reshape];
