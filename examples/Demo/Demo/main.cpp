@@ -20,6 +20,9 @@
 #include <Dream/Events/Logger.h>
 
 #include <Dream/Client/Graphics/MeshBuffer.h>
+#include <Dream/Client/Graphics/PixelBufferRenderer.h>
+
+#include <Dream/Numerics/Quaternion.h>
 
 namespace Demo {
 	using namespace Dream;
@@ -28,7 +31,26 @@ namespace Demo {
 	using namespace Dream::Renderer;
 	using namespace Dream::Client::Display;
 	using namespace Dream::Client::Graphics;
+	
+	struct FlowingLight {
+		Vec3 position;
+		Array<Vec3> history;
+		Quat rotations[3];
 		
+		void update() {
+			rotations[1].set_to_angle_axis_rotation(rotations[1].rotation_angle(), rotations[2] * rotations[1].rotation_axis());
+			rotations[0].set_to_angle_axis_rotation(rotations[0].rotation_angle(), rotations[1] * rotations[0].rotation_axis());
+			position = rotations[0] * position;
+			
+			history.push_back(position);
+			for (std::size_t i = 1; i < history.size(); i++) {
+				history[i-1] = history[i];
+			}
+			
+			history.resize(std::min<std::size_t>(history.size(), 40));
+		}
+	};
+	
 	class DemoScene : public Scene
 	{
 	protected:
@@ -44,20 +66,30 @@ namespace Demo {
 		Ref<IProjection> _projection;
 		Ref<Viewport> _viewport;
 		
-		Ref<Program> _shader_program;
+		Ref<Program> _textured_program, _flat_program, _solid_program;
 		GLuint _position_uniform, _light_positions_uniform, _color_attribute, _position_attribute, _normal_attribute, _mapping_attribute;
 		
 		GLuint _diffuse_uniform;
-		IndexT _crate_texture;
+		Ref<Texture> _crate_texture;
 		
 		Vec2 _point;
 		Vec4 _light_positions[2];
+		Vec4 _light_colors[2];
+		FlowingLight _flowing_lights[2];
+		
+		Shared<VertexArray> _flowing_array;
+		Shared<VertexBuffer> _flowing_buffer;
 		
 		typedef Geometry::Mesh<> MeshT;
 		Ref<MeshBuffer<MeshT>> _object_mesh_buffer, _grid_mesh_buffer;
 		
 		Ref<ShaderManager> _shader_manager;
 		Ref<TextureManager> _texture_manager;
+		
+		Ref<IPixelBuffer> _image;
+		Ref<PixelBufferRenderer> _pixel_buffer_renderer;
+		
+		RealT _rotation;
 
 	public:
 		virtual ~DemoScene ();
@@ -65,11 +97,13 @@ namespace Demo {
 		virtual void will_become_current (ISceneManager *);
 		virtual void will_revoke_current (ISceneManager *);
 		
+		virtual bool event (const EventInput & input);
 		virtual bool button (const ButtonInput & input);
 		virtual bool motion (const MotionInput & input);
 		virtual bool resize (const ResizeInput & input);
 				
 		GLuint compile_shader_of_type (GLenum type, StringT path);
+		Ref<Program> load_program(StringT name);
 		
 		virtual void render_frame_for_time (TimeT time);
 	};
@@ -82,7 +116,34 @@ namespace Demo {
 	{
 		Ref<IData> data = resource_loader()->data_for_resource(name);
 		
-		return _shader_manager->compile(type, data->buffer().get());
+		if (data) {
+			logger()->log(LOG_DEBUG, LogBuffer() << "Loading " << name);
+			return _shader_manager->compile(type, data->buffer().get());
+		} else {
+			return 0;
+		}
+	}
+	
+	Ref<Program> DemoScene::load_program(StringT name) {
+		GLuint vertex_shader = compile_shader_of_type(GL_VERTEX_SHADER, name + ".vertex-shader");
+		GLuint geometry_shader = compile_shader_of_type(GL_GEOMETRY_SHADER, name + ".geometry-shader");
+		GLuint fragment_shader = compile_shader_of_type(GL_FRAGMENT_SHADER, name + ".fragment-shader");
+		
+		Ref<Program> program = new Program;
+	
+		if (vertex_shader)
+			program->attach(vertex_shader);
+	
+		if (geometry_shader)
+			program->attach(geometry_shader);
+		
+		if (fragment_shader)
+			program->attach(fragment_shader);
+		
+		program->link();
+		program->bind_fragment_location("fragment_color");
+		
+		return program;
 	}
 	
 	void DemoScene::will_become_current(ISceneManager * manager)
@@ -91,7 +152,7 @@ namespace Demo {
 		
 		glEnable(GL_DEPTH_TEST);
 		
-		check_error();
+		check_graphics_error();
 		
 		_camera = new BirdsEyeCamera;
 		_camera->set_distance(10);
@@ -102,8 +163,12 @@ namespace Demo {
 		_viewport->set_bounds(AlignedBox<2>(ZERO, manager->display_context()->size()));
 		
 		_point.zero();
-		_light_positions[0] = vec(1.0, 1.0, 3.0, 1.0);
-		_light_positions[1] = vec(-1.0, -1.0, 3.0, 1.0);
+		_light_positions[0] = vec(-10.0, 0.0, 1.0, 1.0);
+		_light_positions[1] = vec(10.0, 0.0, 1.0, 1.0);
+		
+		_rotation = 0.0;
+		_light_colors[0] = Vec4(2.0, 0.8, 0.4, 0.0);
+		_light_colors[1] = Vec4(0.4, 0.8, 2.0, 0.0);
 		
 		_shader_manager = new ShaderManager;
 		_texture_manager = new TextureManager;
@@ -115,47 +180,80 @@ namespace Demo {
 		
 		parameters.target = GL_TEXTURE_2D;
 		
-		//Ref<IPixelBuffer> texture_image = resource_loader()->load<IPixelBuffer>("Materials/9452-diffuse");
-		Ref<IPixelBuffer> texture_image = resource_loader()->load<IPixelBuffer>("Materials/DeathBall");
-		_crate_texture = _texture_manager->create(parameters, texture_image);
-		_texture_manager->bind(_crate_texture, 0);
+		_image = resource_loader()->load<IPixelBuffer>("Materials/Checkers");
+		Ref<IPixelBuffer> texture_image = resource_loader()->load<IPixelBuffer>("Materials/Checkers");
 		
-		check_error();
+		_crate_texture = _texture_manager->allocate(parameters, texture_image);
+		_texture_manager->bind(0, _crate_texture);
 		
-		GLuint vertex_shader = compile_shader_of_type(GL_VERTEX_SHADER, "shader.vsh");
-		GLuint fragment_shader = compile_shader_of_type(GL_FRAGMENT_SHADER, "shader.fsh");
-
-		check_error();
-
-		ensure(vertex_shader != 0);
-		ensure(fragment_shader != 0);
+		check_graphics_error();
 		
-		if (vertex_shader && fragment_shader) {
-			_shader_program = new Program;
-			_shader_program->attach(vertex_shader);
-			_shader_program->attach(fragment_shader);
-			check_error();
+		{
+			_pixel_buffer_renderer = new PixelBufferRenderer(_texture_manager);
+		}
+		
+		{
+			_solid_program = load_program("Shaders/solid");
+		}
+		
+		{
+			// Setup the buffer for drawing the light trails.
+			_flowing_array = new VertexArray;
+			_flowing_buffer = new VertexBuffer;
 			
-			_shader_program->link();
+			_flowing_array->bind();
+			_flowing_buffer->attach(*_flowing_array);
 			
-			_shader_program->bind_fragment_location("fragment_color");
+			VertexArray::Attributes attributes(*_flowing_array, *_flowing_buffer);
+			attributes[0] = &BasicVertex<Vec3>::element;
 			
-			_position_uniform = _shader_program->uniform_location("point");
-			_diffuse_uniform = _shader_program->uniform_location("diffuse");
+			check_graphics_error();
+			
+			_flowing_array->unbind();
+		}
+		
+		{
+			_flat_program = load_program("Shaders/flat");
+			
+			_flat_program->set_attribute_location("position", 0);
+			_flat_program->set_attribute_location("mapping", 1);
+			_flat_program->link();
+			
+			_flat_program->enable();
+			_flat_program->set_texture_unit("diffuse_texture", 0);
+			_flat_program->disable();
+			
+			check_graphics_error();
+		}
+		
+		{
+			_textured_program = load_program("Shaders/surface");
+			
+			_textured_program->set_attribute_location("position", POSITION);
+			_textured_program->set_attribute_location("normal", NORMAL);
+			_textured_program->set_attribute_location("color", COLOR);
+			_textured_program->set_attribute_location("mapping", MAPPING);
+			_textured_program->link();
+			
+			_position_uniform = _textured_program->uniform_location("point");
+			_diffuse_uniform = _textured_program->uniform_location("diffuse");
 
-			_light_positions_uniform = _shader_program->uniform_location("light_positions");
+			_light_positions_uniform = _textured_program->uniform_location("light_positions");
 			
-			_shader_program->set_attribute_location("position", POSITION);
-			_shader_program->set_attribute_location("normal", NORMAL);
-			_shader_program->set_attribute_location("color", COLOR);
-			_shader_program->set_attribute_location("mapping", MAPPING);
+			_color_attribute = _textured_program->attribute_location("color");
+			_position_attribute = _textured_program->attribute_location("position");
+			_normal_attribute = _textured_program->attribute_location("normal");
+			_mapping_attribute = _textured_program->attribute_location("mapping");
 			
-			_color_attribute = _shader_program->attribute_location("color");
-			_position_attribute = _shader_program->attribute_location("position");
-			_normal_attribute = _shader_program->attribute_location("normal");
-			_mapping_attribute = _shader_program->attribute_location("mapping");
+			LogBuffer buffer;
+			buffer << "Attribute positions" << std::endl;
+			buffer << "Position @ " << _position_attribute << std::endl;
+			buffer << "Normal @ " << _normal_attribute << std::endl;
+			buffer << "Color @ " << _color_attribute << std::endl;
+			buffer << "Mapping @ " << _mapping_attribute << std::endl;
+			logger()->log(LOG_DEBUG, buffer);
 			
-			check_error();
+			check_graphics_error();
 		}
 		
 		{
@@ -163,20 +261,31 @@ namespace Demo {
 			
 			Shared<MeshT> mesh = new MeshT;
 			
-			//Generate::cube(_mesh, Geometry::AlignedBox<3>::from_center_and_size(ZERO, 1.0));
-			//Generate::shade_square_cube(_mesh);
-			Generate::sphere(*mesh, 0.5, 12, 12);
+			Generate::sphere(*mesh, 4, 8*2, (16*2)+1);
 			Generate::solid_color(*mesh, Vec4(0.5, 0.5, 0.5, 1.0));
 			
+			/*
+			{
+				LogBuffer buffer;
+				buffer << "Mesh vertices: " << std::endl;
+				for (auto i : mesh->indices) {
+					MeshT::VertexT vertex = mesh->vertices[i];
+					
+					buffer << "Vertex " << i << ": " << vertex.position << "; " << vertex.mapping << std::endl;
+				}
+				logger()->log(LOG_DEBUG, buffer);
+			}
+			*/
+			
 			_object_mesh_buffer = new MeshBuffer<MeshT>();
-			_object_mesh_buffer->set_mesh(mesh);
+			_object_mesh_buffer->set_mesh(mesh, GL_TRIANGLE_STRIP);
 		
 			{
-				auto associations = _object_mesh_buffer->associations();
-				associations[_position_attribute] = &MeshT::VertexT::position;
-				associations[_normal_attribute] = &MeshT::VertexT::normal;
-				associations[_color_attribute] = &MeshT::VertexT::color;
-				associations[_mapping_attribute] = &MeshT::VertexT::mapping;
+				VertexArray::Attributes attributes(_object_mesh_buffer);
+				attributes[_position_attribute] = &MeshT::VertexT::position;
+				attributes[_normal_attribute] = &MeshT::VertexT::normal;
+				attributes[_color_attribute] = &MeshT::VertexT::color;
+				attributes[_mapping_attribute] = &MeshT::VertexT::mapping;
 			}
 		}
 		
@@ -190,12 +299,24 @@ namespace Demo {
 			_grid_mesh_buffer->set_mesh(mesh, GL_LINES);
 			
 			{
-				auto associations = _grid_mesh_buffer->associations();
-				associations[_position_attribute] = &MeshT::VertexT::position;
-				associations[_normal_attribute] = &MeshT::VertexT::normal;
-				associations[_color_attribute] = &MeshT::VertexT::color;
-				associations[_mapping_attribute] = &MeshT::VertexT::mapping;
+				VertexArray::Attributes attributes(_grid_mesh_buffer);
+				attributes[_position_attribute] = &MeshT::VertexT::position;
+				attributes[_normal_attribute] = &MeshT::VertexT::normal;
+				attributes[_color_attribute] = &MeshT::VertexT::color;
+				attributes[_mapping_attribute] = &MeshT::VertexT::mapping;
 			}
+		}
+		
+		{
+			_flowing_lights[0].rotations[0].set_to_angle_axis_rotation(R90 / 25.0, Vec3(0.0, 0.3, 1.0).normalize());
+			_flowing_lights[0].rotations[1].set_to_angle_axis_rotation(R10 / 10.0, Vec3(0.0, 1.0, 1.0).normalize());
+			_flowing_lights[0].rotations[2].set_to_angle_axis_rotation(R180 / 5, Vec3(1.0, 0.0, 0.5).normalize());
+			_flowing_lights[0].position = Vec3(10, 0, 0);
+			
+			_flowing_lights[1].rotations[0].set_to_angle_axis_rotation(R90 / 25.0, Vec3(0.0, 1.0, 0.0));
+			_flowing_lights[1].rotations[1].set_to_angle_axis_rotation(R30 / 10.0, Vec3(1.0, 1.0, 0.0).normalize());
+			_flowing_lights[1].rotations[2].set_to_angle_axis_rotation(R180 / 2, Vec3(1.0, 0.0, 0.7).normalize());
+			_flowing_lights[1].position = Vec3(10, 0, 0);
 		}
 		
 		glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -211,7 +332,26 @@ namespace Demo {
 		
 		_shader_manager = NULL;
 		_texture_manager = NULL;
-		_shader_program = NULL;
+		_textured_program = NULL;
+	}
+	
+	bool DemoScene::event(const EventInput &input) {
+		// Grab the cursor
+		Ref<IContext> context = manager()->display_context();
+		
+		if (input.event() == EventInput::RESUME) {
+			context->set_cursor_mode(CURSOR_GRAB);
+			logger()->log(LOG_INFO, LogBuffer() << "Cursor Mode: " << context->cursor_mode());
+			
+			return true;
+		} else {
+			context->set_cursor_mode(CURSOR_NORMAL);
+			logger()->log(LOG_INFO, LogBuffer() << "Cursor Mode: " << context->cursor_mode());
+			
+			return true;
+		}
+		
+		return false;
 	}
 	
 	bool DemoScene::resize (const ResizeInput & input)
@@ -221,7 +361,7 @@ namespace Demo {
 		_viewport->set_bounds(AlignedBox<2>(ZERO, input.new_size()));
 		glViewport(0, 0, input.new_size()[WIDTH], input.new_size()[HEIGHT]);
 		
-		check_error();
+		check_graphics_error();
 		
 		return Scene::resize(input);
 	}
@@ -265,6 +405,13 @@ namespace Demo {
 			}
 			
 			return true;
+		} else if (input.button_pressed('d')) {
+			LogBuffer buffer;
+			buffer << "*** Debug ***" << std::endl;
+			buffer << "Projection Matrix: " << std::endl << _viewport->projection_matrix() << std::endl;
+			buffer << "View Matrix: " << std::endl << _viewport->view_matrix() << std::endl;
+			buffer << "Display Matrix: " << std::endl << _viewport->display_matrix() << std::endl;
+			logger()->log(LOG_DEBUG, buffer);
 		}
 		
 		logger()->log(LOG_INFO, LogBuffer() << "Key pressed: " << input.key().button());
@@ -276,33 +423,86 @@ namespace Demo {
 	{
 		Scene::render_frame_for_time(time);
 		
+		_flowing_lights[0].update();
+		_light_positions[0] = _flowing_lights[0].position << 1.0;
+		_flowing_lights[1].update();
+		_light_positions[1] = _flowing_lights[1].position << 1.0;
+		
+		_rotation += 0.01;
+		
 		/// Dequeue any button/motion/resize events and process them now (in this thread).
 		manager()->process_pending_events(this);
 		
-		check_error();
+		check_graphics_error();
 		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		_shader_program->enable();
 		
-		glUniform1i(_diffuse_uniform, 0);
+		{
+			_textured_program->enable();
+			_texture_manager->bind(0, _crate_texture);
+			
+			glUniform1i(_diffuse_uniform, 0);
+			
+			Mat44 modelview_matrix = Mat44::rotating_matrix_around_z(_rotation);
+			modelview_matrix = _viewport->display_matrix() * modelview_matrix;
+			
+			GLuint display_matrix_uniform = _textured_program->uniform_location("display_matrix");
+			
+			//Vec4 updated_positions[2];
+			//updated_positions[0] = _viewport->display_matrix() * _light_positions[0];
+			//updated_positions[1] = _viewport->display_matrix() * _light_positions[1];
+			
+			glUniform4fv(_textured_program->uniform_location("light_colors"), 2, _light_colors[0].value());
+			glUniform4fv(_light_positions_uniform, 2, _light_positions[0].value());
+			
+			check_graphics_error();
+			
+			//Vec2 p(0.5 * Math::sin(time), 0.5 * Math::cos(time));
+			glUniform2fv(_position_uniform, 1, (const GLfloat *)_point.value());
+			
+			check_graphics_error();
+			
+			// Draw the various objects to the screen:
+			//glUniformMatrix4fv(display_matrix_uniform, 1, GL_FALSE, _viewport->display_matrix().value());
+			//_grid_mesh_buffer->draw();
+			
+			glUniformMatrix4fv(display_matrix_uniform, 1, GL_FALSE, modelview_matrix.value());
+			_object_mesh_buffer->draw();
+					
+			check_graphics_error();
+		}
 		
-		GLuint display_matrix_uniform = _shader_program->uniform_location("display_matrix");
-		glUniformMatrix4fv(display_matrix_uniform, 1, GL_FALSE, _viewport->display_matrix().value());
+		for (std::size_t i = 0; i < 2; i += 1) {
+			_solid_program->enable();
+			glUniform4f(_solid_program->uniform_location("color"), 0.5, 0.5, 0.5, 0.5);
+			glUniformMatrix4fv(_solid_program->uniform_location("display_matrix"), 1, GL_FALSE, _viewport->display_matrix().value());
+			glUniform4fv(_solid_program->uniform_location("light_position"), 1, _light_positions[i].value());
+			glUniform4fv(_solid_program->uniform_location("light_color"), 1, _light_colors[i].value());
+			
+			_flowing_array->bind();
+			_flowing_buffer->attach(*_flowing_array);
+			_flowing_buffer->buffer_data(_flowing_lights[i].history.data_size(), (ByteT *)_flowing_lights[i].history.data(), GL_STREAM_DRAW);
+			_flowing_array->draw_arrays(GL_LINE_STRIP, 0, (GLsizei)_flowing_lights[0].history.size());
+			_flowing_array->unbind();
+			
+			check_graphics_error();
+		}
 		
-		glUniform4fv(_light_positions_uniform, 2, _light_positions[0].value());
-		
-		check_error();
-		
-		//Vec2 p(0.5 * Math::sin(time), 0.5 * Math::cos(time));
-		glUniform2fv(_position_uniform, 1, (const GLfloat *)_point.value());
-		
-		check_error();
-		
-		// *** Draw the various objects to the screen ***
-		_grid_mesh_buffer->draw();
-		_object_mesh_buffer->draw();
-				
-		check_error();
+		// Draw textured rectangle:
+		if (0) {
+			_flat_program->enable();
+			
+			GLuint display_matrix_uniform = _flat_program->uniform_location("display_matrix");
+			//glUniformMatrix4fv(display_matrix_uniform, 1, GL_FALSE, _viewport->display_matrix().value());
+			Mat44 display_matrix = Mat44::rotating_matrix_around_y(R180);
+			glUniformMatrix4fv(display_matrix_uniform, 1, GL_FALSE, display_matrix.value());
+			
+			//AlignedBox2 box = AlignedBox2::from_center_and_size(ZERO, _image->size().reduce());
+			AlignedBox2 box = AlignedBox2::from_center_and_size(ZERO, 1.0);
+			_pixel_buffer_renderer->render(box, _image);
+			
+			check_graphics_error();
+		}
 	}
 	
 	class DemoApplicationDelegate : public Object, implements IApplicationDelegate
@@ -317,7 +517,7 @@ namespace Demo {
 			virtual void application_did_enter_foreground (IApplication * application);
 	};
 	
-	DemoApplicationDelegate::~DemoApplicationDelegate ()
+	DemoApplicationDelegate::~DemoApplicationDelegate()
 	{
 	}
 	
@@ -348,10 +548,6 @@ namespace Demo {
 		logger()->log(LOG_INFO, "Entering foreground...");
 		
 		_context->start();
-		
-		// Grab the cursor
-		_context->set_cursor_mode(CURSOR_GRAB);
-		logger()->log(LOG_INFO, LogBuffer() << "Cursor Mode: " << _context->cursor_mode());
 	}
 }
 
