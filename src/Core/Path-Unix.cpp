@@ -83,18 +83,30 @@ namespace Dream
 			StringT path = to_local_path();
 			DIR * directory = opendir(path.c_str());
 			
-			struct dirent * entry = NULL;
+			struct dirent storage, * entry;
 			int entry_type = 0;
 			
-			if (filter == DIRECTORY)
-				entry_type = DT_DIR;
-			else if (filter == STORAGE)
-				entry_type = DT_REG;
+			if (filter & DIRECTORY)
+				entry_type |= DT_DIR;
+			else if (filter & STORAGE)
+				entry_type |= DT_REG;
 						
-			while ((entry = readdir(directory)) != NULL) {
-				//std::cout << "Checking entry: " << entry->d_name << std::endl;
+			while (1) {
+				int error = readdir_r(directory, &storage, &entry);
 				
-				if (entry_type && (entry_type != entry->d_type))
+				// Did some error occur?
+				if (error != 0)
+					throw std::runtime_error("Could not enumerate directory");
+				
+				// Are we at the end of the directory list?
+				if (entry == NULL)
+					break;
+				
+				if (entry_type && !(entry_type & entry->d_type))
+					continue;
+				
+				// Skip "hidden" files.
+				if (!(filter & HIDDEN) && entry->d_name[0] == '.')
 					continue;
 				
 				entries.push_back(entry->d_name);

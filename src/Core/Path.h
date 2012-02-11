@@ -77,8 +77,17 @@ namespace Dream
 			
 			enum FileType {
 				UNKNOWN = 0,
-				DIRECTORY = 0x4,
-				STORAGE = 0x8
+				
+				// Include directories:
+				DIRECTORY = 1 << 0,
+				
+				// Regular readable files:
+				STORAGE = 1 << 2,
+			
+				// Include entries that start with dots:
+				HIDDEN = 1 << 8,
+				
+				ANY = 0xFFFFFFFF,
 			};
 			
 			// ** Local File Operations **

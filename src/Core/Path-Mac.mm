@@ -88,9 +88,12 @@ namespace Dream
 				if (filter) {
 					Path fullPath = *this + filename;
 					
-					if (fullPath.file_status() != filter)
+					if (!(fullPath.file_status() & filter))
 						continue;
 				}
+				
+				if (!(filter & HIDDEN) & [entry characterAtIndex:0] == '.')
+					continue;
 				
 				entries.push_back([entry UTF8String]);
 			}
