@@ -19,6 +19,21 @@
 namespace Dream {
 	namespace Geometry {
 	
+		template <typename ElementT, unsigned N>
+		std::size_t count_of(const ElementT(&)[N]) {
+			return N;
+		}
+		
+		template <typename ElementT, unsigned N>
+		const ElementT * begin(const ElementT(& array)[N]) {
+			return array;
+		}
+		
+		template <typename ElementT, unsigned N>
+		const ElementT * end(const ElementT(& array)[N]) {
+			return array + N;
+		}
+		
 		struct Vertex {
 			Vec3 position;
 			Vec3 normal;
@@ -31,7 +46,7 @@ namespace Dream {
 		template <typename ValueT>
 		class Array : public std::vector<ValueT> {
 		public:
-			std::size_t length() const { return this->size() * sizeof(ValueT); }
+			std::size_t data_size() const { return this->size() * sizeof(ValueT); }
 		};
 		
 		/// A mesh is a list of vertices and an ordered list of indices which make up a set of triangles. We assume that all meshes are made up of triangle strips. These assumptions and limitations are primarily to keep the generation of Mesh objects simple.

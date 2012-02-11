@@ -11,9 +11,53 @@
 #error This header should not be included manually. Include Mesh.h instead.
 #endif
 
+#include <algorithm>
+
 namespace Dream {	
 	namespace Geometry {
 		namespace Generate {
+			
+			template <typename MeshT>
+			void plane(MeshT & mesh, Vec2 size) {
+				// Draw with GL_TRIANGLE_FAN
+				
+				// We make a plane out of four triangles.
+
+				// Center point:
+				typename MeshT::VertexT vertex;
+				
+				vertex.position = ZERO;
+				vertex.mapping = Vec2(0.5, 0.5);
+				
+				mesh.vertices.push_back(vertex);
+				
+				// The four surrounding points:
+				RealT coordinates[4][2] = {
+					{-1, -1}, {1, -1}, {1, 1}, {-1, 1}
+				};
+				
+				RealT mappings[4][2] = {
+					{0, 0}, {1, 0}, {1, 1}, {0, 1}
+				};
+				
+				for (std::size_t i = 0; i < 4; i += 1) {
+					typename MeshT::VertexT vertex;
+					
+					vertex.position.zero();
+					vertex.position.set(size * Vec2(coordinates[i][0], coordinates[i][1]));
+					
+					vertex.mapping = Vec2(mappings[i][0], mappings[i][1]);
+					
+					mesh.vertices.push_back(vertex);
+				}
+			
+				// The indices for the triangle fan:
+				typename MeshT::IndexT indices[] = {
+					0, 1, 2, 3, 4, 1
+				};
+				
+				std::copy(indices, indices + (sizeof(indices) / sizeof(*indices)), std::back_inserter(mesh.indices));
+			}
 			
 			template <typename MeshT>
 			void grid(MeshT & mesh, Vec2u count, Vec2 spacing) {
