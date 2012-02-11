@@ -21,8 +21,7 @@ namespace Dream
 #pragma mark -
 #pragma mark LocalFileData
 
-		LocalFileData::LocalFileData (const Path & path)
-			: _path(path)
+		LocalFileData::LocalFileData (const Path & path) : _path(path)
 		{
 			
 		}
@@ -34,7 +33,7 @@ namespace Dream
 		
 		Shared<Buffer> LocalFileData::buffer () const
 		{
-			if (!_buffer) {
+			if (!_buffer && _path.exists()) {
 				_buffer = new FileBuffer(_path);
 			}
 			
