@@ -20,13 +20,6 @@ namespace Dream {
 			const char * target_name (GLenum target);
 			bool is_valid_texture_target (GLenum target);
 			
-			struct TextureBinding {
-				GLenum index;
-				GLenum unit;
-			};
-			
-			typedef std::vector<TextureBinding> TextureBindingsT;
-			
 			/**
 			 A set of parameters which determines the way a texture is loaded and used.
 			 
@@ -51,9 +44,7 @@ namespace Dream {
 				/// Construct a TextureParameters object to use default values unless specified.
 				/// @todo Maybe make constructor for TextureParameters have an argument
 				/// i.e. TextureParameters tp(LOW_QUALITY || HIGH_QUALITY || TEXT_QUALITY) etc
-				TextureParameters ()
-				: generate_mip_maps(true), min_filter(0), mag_filter(0), target(0), internal_format(0)
-				{
+				TextureParameters () : generate_mip_maps(true), min_filter(0), mag_filter(0), target(0), internal_format(0) {
 				}
 				
 				/// Returns the specified minification filter or the default if none was specified.
@@ -67,58 +58,101 @@ namespace Dream {
 				GLenum get_internal_format (GLenum default_internal_format) const;
 			};
 			
-			// A texture manager retains ownership over a set of indexed textures.
-			// If the texture manager is freed, the textures are freed with it.
+			class Texture;
+			
+			struct TextureBinding {
+				Ref<Texture> texture;
+				std::size_t unit;
+			};
+			
+			typedef std::vector<TextureBinding> TextureBindingsT;
+			
+			// A texture manager is responsible for managing the current state of the texture units.
 			class TextureManager : public Object {
-			protected:
-				struct Record {
-					GLuint handle;
-					
-					TextureParameters parameters;
-					
-					Vec3u current_size;
-					GLenum current_format;
-					GLenum current_data_type;
-				};
-				
-				std::vector<Record> _textures;
-				
-				IndexT _imageUnitCount;
-				
-				struct State {
-					GLuint texture;	
-				};
-				
-				std::vector<State> _current;
-				
-				void load_pixel_data(IndexT index, const Vector<3, unsigned> & size, const ByteT * pixels, GLenum format, GLenum data_type);
-				
 			public:
+				// A binding represents a bound texture which can then be manipulated:
+				class Binding : private NonCopyable {
+				protected:
+					friend class TextureManager;
+					
+					Ptr<Texture> _texture;
+					
+					void set_texture(Ptr<Texture> texture) { _texture = texture; }
+					
+				public:
+					/// Resize the texture, which invalidates any pixel data contained.
+					void resize(Vec3u size, GLenum format, GLenum data_type);
+					void resize(Vec3u size);
+					
+					/// Update the texture data. Use the pre-existing parameters for the texture data.
+					void update(Ptr<IPixelBuffer> pixel_buffer);
+					
+					/// Update the texture data and associated parameters.
+					void update(const TextureParameters & parameters, Ptr<IPixelBuffer> pixel_buffer);
+				};
+				
+			protected:
+				std::vector<GLuint> _handles;
+				
+				std::vector<Ptr<Texture>> _state;
+				std::size_t _image_unit_count;
+				Binding _binding;
+				
+			public:				
 				TextureManager();
-				~TextureManager();
+				virtual ~TextureManager();
 				
-				/// Creates a texture with the given pixel_buffer.
-				IndexT create(const TextureParameters &, Ptr<IPixelBuffer> pixel_buffer);
-				
-				/// Also update the texture parameters.
-				void update(IndexT index, Ptr<IPixelBuffer> pixel_buffer, const TextureParameters &);
-				
-				/// Use the pre-existing parameters for the texture data.
-				void update(IndexT index, Ptr<IPixelBuffer> pixel_buffer);
-				
-				/// Resize the texture, which invalidates any pixel data contained.
-				void resize(IndexT index, Vec3u size, GLenum format, GLenum data_type);
+				/// Create a texture from the pool of available handles.
+				Ref<Texture> allocate(const TextureParameters & parameters, Ptr<IPixelBuffer> pixel_buffer = NULL);
 				
 				/// Binds the texture index with the given texture unit.
-				void bind(IndexT index, IndexT unit);
+				void bind(std::size_t unit, Ptr<Texture> texture);
 				
 				/// Bind a set of textures as specified.
 				void bind(const TextureBindingsT & bindings);
+								
+				/// Bind the current texture for modification/upload.
+				Binding & bind(Ptr<Texture> texture);
 				
 				/// If you are using multiple texture managers, you should call this to reset internal state tracking.
-				void invalidate ();
+				void invalidate();
 			};
 			
+			/// This class exists to manage the life-cycle of a texture which may be used in many different places.
+			class Texture : public Object {
+			protected:
+				GLuint _handle;
+				
+				TextureParameters _parameters;
+				
+				Vec3u _size;
+				GLenum _format;
+				GLenum _data_type;
+				
+				friend class TextureManager::Binding;
+				
+				void load_pixel_data(const Vector<3, unsigned> & size, const ByteT * pixels, GLenum format, GLenum data_type);
+				void set_parameters(const TextureParameters & parameters) { _parameters = parameters; }
+				
+			public:
+				// The texture will take ownership of the handle:
+				Texture(const TextureParameters & parameters, GLuint handle);
+				
+				// The texture will be allocated internally:
+				Texture(const TextureParameters & parameters);
+				
+				// The texture will be released:
+				virtual ~Texture();
+				
+				GLenum target() const { return _parameters.target; }
+				GLuint handle() const { return _handle; }
+				
+				const TextureParameters & parameters() const { return _parameters; }
+				
+				const Vec3u size() const { return _size; }
+				GLenum format() const { return _format; }
+				GLenum data_type() const { return _data_type; }
+			};
 		}
 	}
 }

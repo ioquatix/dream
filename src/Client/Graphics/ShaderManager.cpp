@@ -126,10 +126,10 @@ namespace Dream {
 				const GLchar * source = (GLchar*)buffer->begin();
 				GLint length = (GLint)buffer->size();
 				glShaderSource(shader, 1, &source, &length);
-				check_error();
+				check_graphics_error();
 				
 				glCompileShader(shader);
-				check_error();
+				check_graphics_error();
 				
 				GLint log_length;
 				glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_length);
@@ -154,10 +154,9 @@ namespace Dream {
 					return 0;
 				}
 				
-				check_error();
+				check_graphics_error();
 				
 				return shader;
-
 			}
 		}
 	}

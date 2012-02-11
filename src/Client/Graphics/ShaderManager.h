@@ -51,6 +51,10 @@ namespace Dream {
 					glBindAttribLocation(_handle, location, name);
 				}
 				
+				void set_texture_unit(const char * name, GLuint unit) {
+					glUniform1i(uniform_location(name), unit);
+				}
+				
 				GLuint attribute_location(const char * name);
 				GLuint uniform_location(const char * name);
 				

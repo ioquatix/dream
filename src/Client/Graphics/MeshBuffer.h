@@ -15,7 +15,8 @@
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
-			
+						
+			/// Manages a set of vertices.
 			class VertexArray : private NonCopyable {
 			protected:
 				GLuint _handle;
@@ -23,42 +24,36 @@ namespace Dream {
 			public:
 				GLuint handle() const { return _handle; }
 				
-				VertexArray() {
-					glGenVertexArrays(1, &_handle);
+				VertexArray();
+				~VertexArray();
+				
+				void bind();
+				void unbind();
+				
+				void enable(GLuint index) {			
+					glEnableVertexAttribArray(index);
 					
-					check_error();
+					check_graphics_error();
 				}
 				
-				~VertexArray() {
-					glDeleteVertexArrays(1, &_handle);
+				void disable(GLuint index) {
+					glDisableVertexAttribArray(index);
 					
-					check_error();
-				}
-				
-				void bind() {
-					glBindVertexArray(_handle);
-					
-					check_error();
-				}
-				
-				void unbind() {
-					glBindVertexArray(0);
-					
-					check_error();
+					check_graphics_error();
 				}
 				
 				// These functions facilitate canonical usage where data is stored in vertex buffers.
-				void draw(GLenum mode, GLsizei count, GLenum type) {
-					glDrawElements(mode, count, type, 0);
-					
-					check_error();
-				}
+				void draw_elements(GLenum mode, GLsizei count, GLenum type);
+				void draw_arrays(GLenum mode, GLint first, GLsizei count);
 				
-				void set_attribute(GLuint index, GLuint size, GLenum type, GLboolean normalized, GLsizei stride, std::ptrdiff_t offset) {
-					glVertexAttribPointer(index, size, type, normalized, stride, (const GLvoid *)offset);
-					
-					check_error();
-				}
+				void set_attribute(GLuint index, GLuint size, GLenum type, GLboolean normalized, GLsizei stride, std::ptrdiff_t offset);
+				
+				class Attributes;
+			};
+			
+			template <typename ElementT>
+			struct BasicVertex {
+				ElementT element;
 			};
 			
 			class VertexBuffer : private NonCopyable {
@@ -70,40 +65,112 @@ namespace Dream {
 				GLuint handle() const { return _handle; }
 				GLenum target() const { return _target; }
 				
-				template <typename ArrayT>
-				void buffer_data(const ArrayT & array, GLenum usage) {
-					glBufferData(_target, array.length(), array.data(), usage);
-					
-					check_error();
-				}
-				
-				VertexBuffer(GLenum target) : _target(target) {
+				VertexBuffer(GLenum target = GL_ARRAY_BUFFER) : _target(target) {
 					glGenBuffers(1, &_handle);
 					
-					check_error();
+					check_graphics_error();
 				}
 				
 				~VertexBuffer() {
 					glDeleteBuffers(1, &_handle);
 					
-					check_error();
+					check_graphics_error();
+				}
+				
+				void buffer_data(std::size_t size, GLenum usage) {
+					glBufferData(_target, size, NULL, usage);
+				}
+				
+				void buffer_data(std::size_t size, ByteT * data, GLenum usage) {
+					glBufferData(_target, size, data, usage);
+				}
+				
+				void buffer_data(std::size_t offset, std::size_t size, ByteT * data) {
+					glBufferSubData(_target, offset, size, data);
+				}
+				
+				ByteT * map_data(GLenum access = GL_WRITE_ONLY) {
+					return (ByteT *)glMapBuffer(_target, access);
+				}
+				
+				ByteT * map_data(std::size_t offset, std::size_t size, GLenum access = GL_WRITE_ONLY) {
+					return (ByteT *)glMapBufferRange(_target, offset, size, access);
+				}
+				
+				void unmap_data() {
+					glUnmapBuffer(_target);
+				}
+				
+				template <typename ArrayT>
+				void buffer_data(const ArrayT & array, GLenum usage) {
+					glBufferData(_target, array.data_size(), array.data(), usage);
+					
+					check_graphics_error();
 				}
 				
 				void attach(VertexArray & vertex_array) {
 					glBindBuffer(_target, _handle);
 					
-					check_error();
+					check_graphics_error();
 				}
 			};
 			
-			template <typename MeshBufferT>
-			class Associations;
+			class IndexBuffer : public VertexBuffer {
+			public:
+				IndexBuffer() : VertexBuffer(GL_ELEMENT_ARRAY_BUFFER) {
+				}
+			};
+			
+			class VertexArray::Attributes : private NonCopyable {
+			protected:
+				VertexArray & _vertex_array;
+				VertexBuffer & _vertex_buffer;
+				
+				void bind() {
+					_vertex_array.bind();
+					_vertex_buffer.attach(_vertex_array);
+				}
+				
+			public:
+				Attributes(VertexArray & vertex_array, VertexBuffer & vertex_buffer) : _vertex_array(vertex_array), _vertex_buffer(vertex_buffer) {
+					bind();
+				}
+				
+				template <typename MeshBufferT>
+				Attributes(MeshBufferT mesh_buffer) : _vertex_array(mesh_buffer->vertex_array()), _vertex_buffer(mesh_buffer->vertex_buffer()) {
+					bind();
+				}
+				
+				~Attributes() {
+					_vertex_array.unbind();
+				}
+				
+				struct Location {
+					Attributes & attributes;
+					GLuint index;
+					
+					template <class T, typename U>
+					void operator=(U T::* member) {
+						attributes.associate(index, member);
+					}
+				};
+				
+				Location operator[](GLuint index) {
+					return (Location){*this, index};
+				}
+				
+				template<class T, typename U>
+				void associate(GLuint index, U T::* member, bool normalized = false) {
+					_vertex_array.set_attribute(index, U::ELEMENTS, GLTypeTraits<typename U::ElementT>::TYPE, normalized, sizeof(T), member_offset(member));
+					
+					// We assume that the attributes are enabled by default:
+					_vertex_array.enable(index);
+				}
+			};
 			
 			template <typename MeshT>
 			class MeshBuffer : public Object {
 			protected:
-				friend class Associations<MeshBuffer>;
-				
 				Shared<MeshT> _mesh;
 				
 				VertexArray _vertex_array;
@@ -117,40 +184,20 @@ namespace Dream {
 				
 				bool _invalid;
 				
-				void start_associations() {
-					_vertex_array.bind();
-					_vertex_buffer.attach(_vertex_array);
-				}
-				
-				template<class T, typename U>
-				void associate(GLuint index, U T::* member, bool normalized = false) {
-					_vertex_array.set_attribute(index, U::ELEMENTS, GLTypeTraits<typename U::ElementT>::TYPE, normalized, sizeof(T), member_offset(member));
-					
-					// We assume that the attributes are enabled by default:
-					enable(index);
-				}
-				
-				
-				void finish_associations() {
-					_vertex_array.unbind();
-				}
-				
 				void upload_buffers() {
-					if (_mesh) {
-						_index_buffer.attach(_vertex_array);
-						_index_buffer.buffer_data(_mesh->indices, _index_buffer_usage);
-						
-						_vertex_buffer.attach(_vertex_array);
-						_vertex_buffer.buffer_data(_mesh->vertices, _vertex_buffer_usage);
-						
-						_vertex_array.unbind();
-						
-						// Keep track of the number of indices uploaded for drawing:
-						_count = _mesh->indices.size();
-						
-						// The mesh buffer is now okay for drawing:
-						_invalid = false;
-					}
+					ensure(_mesh != NULL);
+					
+					_index_buffer.attach(_vertex_array);
+					_index_buffer.buffer_data(_mesh->indices, _index_buffer_usage);
+					
+					_vertex_buffer.attach(_vertex_array);
+					_vertex_buffer.buffer_data(_mesh->vertices, _vertex_buffer_usage);
+											
+					// Keep track of the number of indices uploaded for drawing:
+					_count = _mesh->indices.size();
+					
+					// The mesh buffer is now okay for drawing:
+					_invalid = false;
 				}
 				
 			public:
@@ -162,27 +209,9 @@ namespace Dream {
 					
 				}
 				
-				Associations<MeshBuffer> associations() {
-					return Associations<MeshBuffer>(*this);
-				}
-				
-				void prepare() {
-					// Doing this here multiple times for multiple associations seems inefficient...
-					_vertex_array.bind();
-					_vertex_buffer.attach(_vertex_array);
-				}
-				
-				void enable(GLuint index) {			
-					glEnableVertexAttribArray(index);
-					
-					check_error();
-				}
-				
-				void disable(GLuint index) {
-					glDisableVertexAttribArray(index);
-					
-					check_error();
-				}
+				VertexArray & vertex_array() { return _vertex_array; }
+				VertexBuffer & index_buffer() { return _index_buffer; }
+				VertexBuffer & vertex_buffer() { return _vertex_buffer; }
 				
 				void set_default_draw_mode(GLenum mode) {
 					_default_draw_mode = mode;
@@ -244,46 +273,10 @@ namespace Dream {
 					}
 					
 					if (!_invalid) {
-						_vertex_array.bind();
-						_vertex_array.draw(mode, (GLsizei)_count, GLTypeTraits<typename MeshT::IndexT>::TYPE);
-						_vertex_array.unbind();
+						_vertex_array.draw_elements(mode, (GLsizei)_count, GLTypeTraits<typename MeshT::IndexT>::TYPE);
 					}
 					
 					_vertex_array.unbind();
-				}
-			};
-			
-			template <typename MeshBufferT>
-			class Associations {
-			protected:
-				MeshBufferT & _mesh_buffer;
-				
-			public:
-				Associations(MeshBufferT & mesh_buffer) : _mesh_buffer(mesh_buffer) {
-					_mesh_buffer.start_associations();
-				}
-				
-				~Associations() {
-					_mesh_buffer.finish_associations();
-				}
-				
-				struct Location {
-					Associations & associations;
-					GLuint index;
-					
-					template<class T, typename U>
-					void operator=(U T::* member) {
-						associations._mesh_buffer.associate(index, member);
-					}
-				};
-				
-				Location operator[](GLuint index) {
-					return (Location){*this, index};
-				}
-				
-				template<class T, typename U>
-				void associate(GLuint index, U T::* member, bool normalized = false) {
-					_mesh_buffer.associate(index, member, normalized);
 				}
 			};
 			

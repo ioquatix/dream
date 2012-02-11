@@ -40,7 +40,7 @@ namespace Dream
 			using namespace Dream::Numerics;
 			using namespace Dream::Client::Display;
 			
-			void check_error();
+			void check_graphics_error();
 			
 			template <typename TypeT>
 			struct GLTypeTraits {};
