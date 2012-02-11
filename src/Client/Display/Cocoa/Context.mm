@@ -222,11 +222,11 @@ namespace Dream
 							//attributes.push_back(NSOpenGLPFANoRecovery);
 							
 							// Anti-aliasing
-							//attributes.push_back(NSOpenGLPFASampleBuffers);
-							//attributes.push_back(3);
+							attributes.push_back(NSOpenGLPFASampleBuffers);
+							attributes.push_back(3);
 							
-							//attributes.push_back(NSOpenGLPFASamples);
-							//attributes.push_back(4);
+							attributes.push_back(NSOpenGLPFASamples);
+							attributes.push_back(6);
 							
 							// Buffer size
 							attributes.push_back(NSOpenGLPFAColorSize);
