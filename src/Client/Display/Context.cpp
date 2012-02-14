@@ -34,6 +34,10 @@ namespace Dream {
 			{
 			}
 			
+			Context::Context() : _cursor_mode(CURSOR_NORMAL) {
+				
+			}
+			
 			Context::~Context ()
 			{
 			}

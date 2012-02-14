@@ -54,7 +54,9 @@ namespace Dream {
 			
 			/** Simple generic method of showing a window for use with 3D graphics.
 			 
-			 It turns out that creating a cross-platform API is fairly difficult
+			 It turns out that creating a cross-platform API is fairly difficult.
+			 
+			 Interesting discussion about multi-threaded OpenGL: http://labs.qt.nokia.com/2011/06/03/threaded-opengl-in-4-8/
 			 */
 			class IContext : implements IObject {				
 			public:
@@ -90,13 +92,14 @@ namespace Dream {
 				CursorMode _cursor_mode;
 				
 			public:
+				Context();
+				virtual ~Context();
+				
 				// Process some input
 				virtual bool process (const Input & input);
 				
 				// Render a frame
 				virtual void render_frame_for_time (TimeT time);
-			
-				virtual ~Context();
 				
 				virtual void set_delegate(Ptr<IContextDelegate> context_delegate);
 				

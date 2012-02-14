@@ -175,10 +175,14 @@ namespace Dream
 				}
 				
 				void ViewContext::set_cursor_mode(CursorMode mode) {
+					if (mode == cursor_mode())
+						return;
+					
 					Context::set_cursor_mode(mode);
 					
 					if (mode == CURSOR_GRAB) {
 						CGDisplayHideCursor(kCGNullDirectDisplay);
+						
 						CGAssociateMouseAndMouseCursorPosition(false);
 						
 						// Warp the mouse cursor to the center of the view.
@@ -302,6 +306,7 @@ namespace Dream
 					[_window setDelegate:_window_delegate];
 					
 					[_window setDisplaysWhenScreenProfileChanges:NO];
+					[_window setRestorable:NO];
 					
 					setup_graphics_view(config, window_rect);
 					DREAM_ASSERT(_graphics_view);
