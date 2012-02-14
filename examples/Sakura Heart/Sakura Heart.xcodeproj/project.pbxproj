@@ -1,0 +1,287 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		7E0DE9BB14E663A4009EEF7E /* Shaders in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E0DE9BA14E6314F009EEF7E /* Shaders */; };
+		7E14F8401422FAA300AB80F1 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E14F83F1422FAA300AB80F1 /* main.cpp */; };
+		7E9EA73C142306E300F8BC49 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E9EA73B142306E300F8BC49 /* OpenGL.framework */; };
+		7EA4D10714E93FB800D5C4C6 /* Textures in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7EA4D10614E92C2000D5C4C6 /* Textures */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		7E14F8391422FAA200AB80F1 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				7E0DE9BB14E663A4009EEF7E /* Shaders in CopyFiles */,
+				7EA4D10714E93FB800D5C4C6 /* Textures in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		7E0DE9BA14E6314F009EEF7E /* Shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Shaders; sourceTree = "<group>"; };
+		7E14F83B1422FAA200AB80F1 /* Sakura Heart */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "Sakura Heart"; path = "Sakura Heart"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E14F83F1422FAA300AB80F1 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		7E14F84D1422FB0000AB80F1 /* Dream.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Dream.xcconfig; sourceTree = "<group>"; };
+		7E9E41CD14286DCF0061260C /* iOS Sakura Heart-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iOS Sakura Heart-Info.plist"; sourceTree = "<group>"; };
+		7E9E41CF14286DCF0061260C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		7E9E41EB14286DF60061260C /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/System/Library/Frameworks/OpenGLES.framework; sourceTree = DEVELOPER_DIR; };
+		7E9E422A1428907E0061260C /* shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = shader.fsh; sourceTree = "<group>"; };
+		7E9E422B1428907E0061260C /* shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = shader.vsh; sourceTree = "<group>"; };
+		7E9E4237142988760061260C /* Dream Icon (57x57).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Dream Icon (57x57).png"; path = "../../../inf/Dream Icon (57x57).png"; sourceTree = "<group>"; };
+		7E9E4238142988760061260C /* Dream Icon (114x114).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Dream Icon (114x114).png"; path = "../../../inf/Dream Icon (114x114).png"; sourceTree = "<group>"; };
+		7E9EA73B142306E300F8BC49 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		7EA4D10614E92C2000D5C4C6 /* Textures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Textures; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7E14F8381422FAA200AB80F1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7E9EA73C142306E300F8BC49 /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		7E14F8301422FAA200AB80F1 = {
+			isa = PBXGroup;
+			children = (
+				7E14F84C1422FB0000AB80F1 /* inf */,
+				7E14F83E1422FAA200AB80F1 /* Sakura Heart */,
+				7E9E41CB14286DCF0061260C /* iOS Demo */,
+				7E9E41C014286DCF0061260C /* Frameworks */,
+				7E14F83C1422FAA200AB80F1 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		7E14F83C1422FAA200AB80F1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7E14F83B1422FAA200AB80F1 /* Demo */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7E14F83E1422FAA200AB80F1 /* Sakura Heart */ = {
+			isa = PBXGroup;
+			children = (
+				7E14F83F1422FAA300AB80F1 /* main.cpp */,
+				7E9E423F1429BB830061260C /* Supporting Files */,
+				7EA4D10614E92C2000D5C4C6 /* Textures */,
+				7E0DE9BA14E6314F009EEF7E /* Shaders */,
+			);
+			path = "Sakura Heart";
+			sourceTree = "<group>";
+		};
+		7E14F84C1422FB0000AB80F1 /* inf */ = {
+			isa = PBXGroup;
+			children = (
+				7E14F84D1422FB0000AB80F1 /* Dream.xcconfig */,
+			);
+			path = inf;
+			sourceTree = "<group>";
+		};
+		7E9E41C014286DCF0061260C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7E9E41EB14286DF60061260C /* OpenGLES.framework */,
+				7E9EA73B142306E300F8BC49 /* OpenGL.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		7E9E41CB14286DCF0061260C /* iOS Demo */ = {
+			isa = PBXGroup;
+			children = (
+				7E9E422B1428907E0061260C /* shader.vsh */,
+				7E9E422A1428907E0061260C /* shader.fsh */,
+				7E9E41CC14286DCF0061260C /* Supporting Files */,
+			);
+			path = "iOS Demo";
+			sourceTree = "<group>";
+		};
+		7E9E41CC14286DCF0061260C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				7E9E4237142988760061260C /* Dream Icon (57x57).png */,
+				7E9E4238142988760061260C /* Dream Icon (114x114).png */,
+				7E9E41CD14286DCF0061260C /* iOS Sakura Heart-Info.plist */,
+				7E9E41CE14286DCF0061260C /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		7E9E423F1429BB830061260C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		7E14F83A1422FAA200AB80F1 /* Sakura Heart */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7E14F8451422FAA300AB80F1 /* Build configuration list for PBXNativeTarget "Sakura Heart" */;
+			buildPhases = (
+				7E14F8371422FAA200AB80F1 /* Sources */,
+				7E14F8381422FAA200AB80F1 /* Frameworks */,
+				7E14F8391422FAA200AB80F1 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Sakura Heart";
+			productName = Demo;
+			productReference = 7E14F83B1422FAA200AB80F1 /* Demo */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7E14F8321422FAA200AB80F1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+				ORGANIZATIONNAME = "Orion Transfer Ltd";
+			};
+			buildConfigurationList = 7E14F8351422FAA200AB80F1 /* Build configuration list for PBXProject "Sakura Heart" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 7E14F8301422FAA200AB80F1;
+			productRefGroup = 7E14F83C1422FAA200AB80F1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				7E14F83A1422FAA200AB80F1 /* Sakura Heart */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7E14F8371422FAA200AB80F1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7E14F8401422FAA300AB80F1 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		7E9E41CE14286DCF0061260C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7E9E41CF14286DCF0061260C /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		7E14F8431422FAA300AB80F1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7E14F84D1422FB0000AB80F1 /* Dream.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		7E14F8441422FAA300AB80F1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7E14F84D1422FB0000AB80F1 /* Dream.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		7E14F8461422FAA300AB80F1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "Sakura Heart";
+			};
+			name = Debug;
+		};
+		7E14F8471422FAA300AB80F1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "Sakura Heart";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7E14F8351422FAA200AB80F1 /* Build configuration list for PBXProject "Sakura Heart" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7E14F8431422FAA300AB80F1 /* Debug */,
+				7E14F8441422FAA300AB80F1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7E14F8451422FAA300AB80F1 /* Build configuration list for PBXNativeTarget "Sakura Heart" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7E14F8461422FAA300AB80F1 /* Debug */,
+				7E14F8471422FAA300AB80F1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7E14F8321422FAA200AB80F1 /* Project object */;
+}
