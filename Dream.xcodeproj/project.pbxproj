@@ -90,6 +90,15 @@
 		7EA2BD731265902B001B6FE9 /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E6F28591229551000E51772 /* Mesh.cpp */; };
 		7EA2BD741265902B001B6FE9 /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E6F28591229551000E51772 /* Mesh.cpp */; };
 		7EA2BD751265902B001B6FE9 /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E6F28591229551000E51772 /* Mesh.cpp */; };
+		7EA4D0DC14E7CBCD00D5C4C6 /* View.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED6415314D78C3C00653B22 /* View.cpp */; };
+		7EA4D0DD14E7CBCD00D5C4C6 /* View.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED6415314D78C3C00653B22 /* View.cpp */; };
+		7EA4D0DE14E7CBCE00D5C4C6 /* View.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED6415314D78C3C00653B22 /* View.cpp */; };
+		7EA4D0DF14E7E44600D5C4C6 /* WireframeRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED6414E14D78C1C00653B22 /* WireframeRenderer.cpp */; };
+		7EA4D0E014E7E44600D5C4C6 /* WireframeRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED6414E14D78C1C00653B22 /* WireframeRenderer.cpp */; };
+		7EA4D0E114E7E44700D5C4C6 /* WireframeRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED6414E14D78C1C00653B22 /* WireframeRenderer.cpp */; };
+		7EA4D10314E928D200D5C4C6 /* ParticleRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED6414914D78C0300653B22 /* ParticleRenderer.cpp */; };
+		7EA4D10414E928D300D5C4C6 /* ParticleRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED6414914D78C0300653B22 /* ParticleRenderer.cpp */; };
+		7EA4D10514E928D300D5C4C6 /* ParticleRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED6414914D78C0300653B22 /* ParticleRenderer.cpp */; };
 		7EB132C2123002D100372052 /* Path-Unix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB132C1123002D100372052 /* Path-Unix.cpp */; };
 		7EB132DC1230127100372052 /* Path-Mac.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EB132D712300A0500372052 /* Path-Mac.mm */; };
 		7EB132DD1230127200372052 /* Path-Mac.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EB132D712300A0500372052 /* Path-Mac.mm */; };
@@ -529,6 +538,8 @@
 		7EA2821E139A1BB000AB1E1F /* UnitTests.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = UnitTests.xcconfig; sourceTree = "<group>"; };
 		7EA2822A139A545500AB1E1F /* Library.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Library.xcconfig; sourceTree = "<group>"; };
 		7EA2822B139A549500AB1E1F /* Dream.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Dream.xcconfig; sourceTree = "<group>"; };
+		7EA4D10814EA380800D5C4C6 /* WorkQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WorkQueue.cpp; sourceTree = "<group>"; };
+		7EA4D10914EA380800D5C4C6 /* WorkQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WorkQueue.h; sourceTree = "<group>"; };
 		7EA911FC0EB414FB0080E66D /* Strings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Strings.cpp; sourceTree = "<group>"; };
 		7EA911FE0EB414FB0080E66D /* Class.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Class.cpp; sourceTree = "<group>"; };
 		7EA912000EB414FB0080E66D /* Value.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Value.cpp; sourceTree = "<group>"; };
@@ -737,6 +748,8 @@
 				7E3F2C010EF366230051D321 /* Console.cpp */,
 				7EF8EBEE141E56F000FE753A /* Thread.h */,
 				7EF8EBEF141E56FA00FE753A /* Thread.cpp */,
+				7EA4D10914EA380800D5C4C6 /* WorkQueue.h */,
+				7EA4D10814EA380800D5C4C6 /* WorkQueue.cpp */,
 				7ED448B514CE6041000D5865 /* Logger.h */,
 				7ED448B614CE6049000D5865 /* Logger.cpp */,
 			);
@@ -1396,6 +1409,9 @@
 				7EBE520014D39E2F0054B478 /* FrameBuffer.cpp in Sources */,
 				7ED6414714D6DF8A00653B22 /* Renderer.cpp in Sources */,
 				7ED6415F14D809FA00653B22 /* PixelBufferRenderer.cpp in Sources */,
+				7EA4D0DC14E7CBCD00D5C4C6 /* View.cpp in Sources */,
+				7EA4D0E014E7E44600D5C4C6 /* WireframeRenderer.cpp in Sources */,
+				7EA4D10314E928D200D5C4C6 /* ParticleRenderer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1492,6 +1508,9 @@
 				7EBE520114D39E2F0054B478 /* FrameBuffer.cpp in Sources */,
 				7ED6414814D6DF8A00653B22 /* Renderer.cpp in Sources */,
 				7ED6415E14D809F900653B22 /* PixelBufferRenderer.cpp in Sources */,
+				7EA4D0DD14E7CBCD00D5C4C6 /* View.cpp in Sources */,
+				7EA4D0DF14E7E44600D5C4C6 /* WireframeRenderer.cpp in Sources */,
+				7EA4D10414E928D300D5C4C6 /* ParticleRenderer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1587,6 +1606,9 @@
 				7EBE51FF14D39E2F0054B478 /* FrameBuffer.cpp in Sources */,
 				7ED6414614D6DF8A00653B22 /* Renderer.cpp in Sources */,
 				7ED6416014D809FA00653B22 /* PixelBufferRenderer.cpp in Sources */,
+				7EA4D0DE14E7CBCE00D5C4C6 /* View.cpp in Sources */,
+				7EA4D0E114E7E44700D5C4C6 /* WireframeRenderer.cpp in Sources */,
+				7EA4D10514E928D300D5C4C6 /* ParticleRenderer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
