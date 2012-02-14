@@ -16,12 +16,12 @@ namespace Dream {
 #pragma mark -
 #pragma mark Startup Message
 
-			void _showStartupMessagesIfNeeded ()
+			void _show_startup_message_if_needed()
 			{
-				static bool _startupMessagesDisplayed = false;
+				static bool _startup_messages_displayed = false;
 			
-				if (_startupMessagesDisplayed == false) {
-					_startupMessagesDisplayed = true;
+				if (_startup_messages_displayed == false) {
+					_startup_messages_displayed = true;
 
 					std::cout << "Dream Framework. Copyright © 2006-2011 Samuel Williams. All Rights Reserved." << std::endl;
 					std::cout << "For more information visit http://www.oriontransfer.co.nz/research/dream" << std::endl;
@@ -36,6 +36,8 @@ namespace Dream {
 			IApplication::IApplication()
 			{
 				logger()->set_thread_name("Application");
+				
+				_show_startup_message_if_needed();
 			}
 			
 			IApplicationDelegate::~IApplicationDelegate ()
@@ -44,7 +46,6 @@ namespace Dream {
 					
 			void IApplicationDelegate::application_did_finish_launching (IApplication * application)
 			{
-				_showStartupMessagesIfNeeded();
 			}
 			
 			void IApplicationDelegate::application_will_terminate (IApplication * application)
