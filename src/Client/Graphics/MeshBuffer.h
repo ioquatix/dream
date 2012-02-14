@@ -83,13 +83,13 @@ namespace Dream {
 					check_graphics_error();
 				}
 				
-				void assign(ByteT * data, std::size_t size, GLenum usage) {
+				void assign(void * data, std::size_t size, GLenum usage) {
 					glBufferData(_target, size, data, usage);
 					
 					check_graphics_error();
 				}
 				
-				void assign_partial(ByteT * data, std::size_t offset, std::size_t size) {
+				void assign_partial(void * data, std::size_t offset, std::size_t size) {
 					glBufferSubData(_target, offset, size, data);
 					
 					check_graphics_error();
@@ -97,15 +97,15 @@ namespace Dream {
 				
 				template <typename ArrayT>
 				void assign(const ArrayT & array, GLenum usage = GL_STREAM_DRAW) {
-					assign((ByteT *)array.data(), array.size() * sizeof(typename ArrayT::value_type), usage);
+					assign((void *)array.data(), array.size() * sizeof(typename ArrayT::value_type), usage);
 				}
 				
-				ByteT * map(GLenum access = GL_WRITE_ONLY) {
-					return (ByteT *)glMapBuffer(_target, access);
+				void * map(GLenum access = GL_WRITE_ONLY) {
+					return glMapBuffer(_target, access);
 				}
 				
-				ByteT * map_partial(std::size_t offset, std::size_t size, GLenum access = GL_WRITE_ONLY) {
-					return (ByteT *)glMapBufferRange(_target, offset, size, access);
+				void * map_partial(std::size_t offset, std::size_t size, GLenum access = GL_WRITE_ONLY) {
+					return glMapBufferRange(_target, offset, size, access);
 				}
 				
 				void unmap() {
@@ -127,6 +127,7 @@ namespace Dream {
 				}
 			};
 			
+			// http://www.opengl.org/wiki/Buffer_Object_Streaming
 			class VertexArray::Attributes : private NonCopyable {
 			protected:
 				VertexArray & _vertex_array;
