@@ -52,4 +52,16 @@
 	[window makeFirstResponder:window];
 }
 
+- (void)windowDidChangeScreen:(NSNotification *)notification {
+	NSLog(@"Window did change screen...");
+	//_window_context->stop();
+	//_window_context->screen_configuration_changed();
+	//_window_context->start();
+}
+
+- (void)windowDidChangeScreenProfile:(NSNotification *)notification {
+	NSLog(@"Window did change screen profile...");
+	//_window_context->screen_configuration_changed();	
+}
+
 @end

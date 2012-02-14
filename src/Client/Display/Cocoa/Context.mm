@@ -69,7 +69,9 @@ namespace Dream
 						CGLUnlockContext((CGLContextObj)_graphics_view.openGLContext.CGLContextObj);
 					}
 					
-					//logger()->log(LOG_DEBUG, "... Finished rendering frame.");
+					if (CVGetCurrentHostTime() > output_time->hostTime) {
+						logger()->log(LOG_DEBUG, "Frame missed vertical sync.");	
+					}
 					
 					_frame_refresh.notify_all();
 					
@@ -119,6 +121,13 @@ namespace Dream
 					}
 				}
 				
+				void ViewContext::setup_for_current_display() {
+					// Set the display link for the current renderer
+					CGLContextObj cglContext = (CGLContextObj)_graphics_view.openGLContext.CGLContextObj;
+					CGLPixelFormatObj cglPixelFormat = (CGLPixelFormatObj)_graphics_view.pixelFormat.CGLPixelFormatObj;
+					CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(_display_link, cglContext, cglPixelFormat);
+				}
+				
 				void ViewContext::setup_display_link ()
 				{
 					if (!_display_link) {
@@ -132,10 +141,7 @@ namespace Dream
 						// Set the renderer output callback function
 						CVDisplayLinkSetOutputCallback(_display_link, &ViewContext::display_link_callback, this);
 					
-						// Set the display link for the current renderer
-						CGLContextObj cglContext = (CGLContextObj)_graphics_view.openGLContext.CGLContextObj;
-						CGLPixelFormatObj cglPixelFormat = (CGLPixelFormatObj)_graphics_view.pixelFormat.CGLPixelFormatObj;
-						CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(_display_link, cglContext, cglPixelFormat);
+						setup_for_current_display();
 						
 						logger()->log(LOG_DEBUG, LogBuffer() << "Creating display link " << _display_link);
 					}
@@ -197,6 +203,10 @@ namespace Dream
 						CGAssociateMouseAndMouseCursorPosition(true);
 						CGDisplayShowCursor(kCGNullDirectDisplay);
 					}
+				}
+				
+				void ViewContext::screen_configuration_changed() {
+					setup_for_current_display();
 				}
 				
 #pragma mark -
@@ -292,6 +302,8 @@ namespace Dream
 					[_window_delegate setDisplayContext:this];
 										
 					[_window setDelegate:_window_delegate];
+					
+					[_window setDisplaysWhenScreenProfileChanges:NO];
 					
 					setup_graphics_view(config, window_rect);
 					ensure(_graphics_view);

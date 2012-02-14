@@ -48,6 +48,7 @@ namespace Dream
 						
 						// Display link state for managing rendering thread
 						CVDisplayLinkRef _display_link;
+						void setup_for_current_display();
 						void setup_display_link ();
 						
 						// Need to manually set _graphics_view and call setup_display_link()
@@ -65,6 +66,7 @@ namespace Dream
 						virtual void set_cursor_mode(CursorMode mode);
 					
 						void wait_for_refresh();
+						void screen_configuration_changed();
 				};
 				
 				/// This context manages a window which can be used to display content.
