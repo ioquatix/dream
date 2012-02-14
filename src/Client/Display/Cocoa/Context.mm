@@ -48,6 +48,12 @@ namespace Dream
 						_initialized = true;
 					}
 					
+					if (_skip_frame) {
+						_skip_frame = false;
+						// Eat the first frame (or subsequent frames), which may not be an entire time slice.
+						return kCVReturnSuccess;
+					}
+					
 					//logger()->log(LOG_DEBUG, LogBuffer() << "*** Rendering frame for context " << _graphics_view.openGLContext.CGLContextObj);
 					
 					TimeT time = (TimeT)(output_time->hostTime) / (TimeT)CVGetHostClockFrequency();
@@ -70,7 +76,8 @@ namespace Dream
 					}
 					
 					if (CVGetCurrentHostTime() > output_time->hostTime) {
-						logger()->log(LOG_DEBUG, "Frame missed vertical sync.");	
+						logger()->log(LOG_DEBUG, "Frame missed vertical sync.");
+						_skip_frame = true;
 					}
 					
 					_frame_refresh.notify_all();
@@ -79,11 +86,10 @@ namespace Dream
 				}
 				
 				void ViewContext::start() {
-					logger()->log(LOG_DEBUG, "Enter ViewContext::start");
-					
 					setup_display_link();
 					
 					_initialized = false;
+					_skip_frame = true;
 					
 					DREAM_ASSERT(_display_link != nil);
 					DREAM_ASSERT(_graphics_view != nil);
@@ -326,7 +332,7 @@ namespace Dream
 					if (![_window isVisible]) {
 						[_window makeKeyAndOrderFront:nil];
 					}
-					
+										
 					ViewContext::start();
 				}
 			}

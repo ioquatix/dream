@@ -39,7 +39,7 @@ namespace Dream
 						std::condition_variable _frame_refresh;
 						std::mutex _frame_refresh_mutex;
 					
-						bool _initialized;
+						bool _initialized, _skip_frame;
 						DOpenGLView * _graphics_view;
 						
 						// Display link callback
