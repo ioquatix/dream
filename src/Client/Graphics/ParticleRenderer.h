@@ -38,19 +38,28 @@ namespace Dream
 			
 			/// Setup an array of indices for rendering quadrilaterals as triangles
 			template <typename IndexT>
-			void setup_triangle_indicies(std::size_t count, std::vector<IndexT> & indices) {
+			std::size_t setup_triangle_indicies(std::size_t count, std::vector<IndexT> & indices) {
 				IndexT INDICES[] = {0, 1, 3, 1, 3, 2};
 				
 				std::size_t base = indices.size() / 6;
-				std::ptrdiff_t diff = count - base;
 				
-				while (diff > 0) {
-					for (unsigned j = 0; j < 6; j += 1) {
-						indices.push_back((base * 4) + INDICES[j]);
+				if (count > base) {
+					count += 256;
+					
+					logger()->log(LOG_DEBUG, LogBuffer() << "Generating " << (count - base) << " indices");
+					
+					std::size_t added = 0;
+					
+					while (base < count) {
+						for (unsigned j = 0; j < 6; j += 1) {
+							indices.push_back((base * 4) + INDICES[j]);
+						}
+						
+						added += 6;
+						base += 1;
 					}
 					
-					base += 1;
-					diff -= 1;
+					return added;
 				}
 			}
 			
@@ -149,19 +158,23 @@ namespace Dream
 					
 					inline bool update_time (RealT dt, const Vec3 & force = ZERO) {
 						_life -= dt;
-						_color_modulator += dt;
 						
-						_position += (_velocity * dt) + (force * dt * dt * 0.5);
-						
-						// Update vertex position:
-						for (std::size_t i = 0; i < 4; i += 1) {
-							_vertices[i].position = _position;
+						if (_life > 0) {
+							_color_modulator += dt;
+							
+							_position += (_velocity * dt) + (force * dt * dt * 0.5);
+							
+							// Update vertex position:
+							for (std::size_t i = 0; i < 4; i += 1) {
+								_vertices[i].position = _position;
+							}
+							
+							_velocity += force * dt;
+							
+							return true;
 						}
 						
-						_velocity += force * dt;
-						
-						// If still alive -> true
-						return _life > 0;
+						return false;
 					}
 					
 					RealT calculate_alpha (RealT timeout) {
@@ -193,12 +206,18 @@ namespace Dream
 				};
 				
 				ParticleRenderer() {
-					// Setup the vertex associations:
-					VertexArray::Attributes attributes(_vertex_array, _vertex_buffer);
-					attributes[POSITION] = &Vertex::position;
-					attributes[OFFSET] = &Vertex::offset;
-					attributes[MAPPING] = &Vertex::mapping;
-					attributes[COLOR] = &Vertex::color;
+					{
+						// Setup the vertex associations:
+						VertexArray::Attributes attributes(_vertex_array, _vertex_buffer);
+						attributes[POSITION] = &Vertex::position;
+						attributes[OFFSET] = &Vertex::offset;
+						attributes[MAPPING] = &Vertex::mapping;
+						attributes[COLOR] = &Vertex::color;
+					}
+					
+					_vertex_array.bind();
+					_indices_buffer.attach(_vertex_array);
+					_vertex_array.unbind();
 				}
 				
 				virtual ~ParticleRenderer() {	
@@ -219,11 +238,13 @@ namespace Dream
 					std::size_t count = _vertices.size() / 4;
 					
 					// Setup indices for drawing quadrilaterals as triangles:
-					setup_triangle_indicies(count, _indices);
+					std::size_t additions = setup_triangle_indicies(count, _indices);
 					
-					_indices_buffer.attach(_vertex_array);
-					_indices_buffer.assign(_indices);
-										
+					if (additions) {
+						_indices_buffer.attach(_vertex_array);
+						_indices_buffer.assign(_indices);
+					}
+					
 					_vertex_buffer.attach(_vertex_array);
 					_vertex_buffer.assign(_vertices);
 					
