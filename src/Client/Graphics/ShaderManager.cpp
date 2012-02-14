@@ -63,14 +63,18 @@ namespace Dream {
 				return status != 0;
 			}
 			
-			GLuint Program::attribute_location(const char * name)
+			GLint Program::attribute_location(const char * name)
 			{
 				return glGetAttribLocation(_handle, name);
 			}
 			
-			GLuint Program::uniform_location(const char * name)
+			GLint Program::uniform_location(const char * name)
 			{
 				return glGetUniformLocation(_handle, name);
+			}
+			
+			GLint Program::uniform_block_index(const char * name) {
+				return glGetUniformBlockIndex(_handle, name);
 			}
 			
 			void Program::bind_fragment_location(const char * name, GLuint output)

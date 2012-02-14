@@ -1,0 +1,243 @@
+/*
+ *  ParticleRenderer.h
+ *  Dream
+ *
+ *  Created by Samuel Williams on 13/08/10.
+ *  Copyright 2010 Orion Transfer Ltd. All rights reserved.
+ *
+ */
+
+#ifndef _DREAM_CLIENT_GRAPHICS_PARTICLERENDERER_H
+#define _DREAM_CLIENT_GRAPHICS_PARTICLERENDERER_H
+
+#include "Graphics.h"
+#include "MeshBuffer.h"
+#include "ShaderManager.h"
+#include "../../Core/Timer.h"
+
+namespace Dream
+{
+	namespace Client
+	{
+		namespace Graphics
+		{
+			
+			/// Provides an efficient way to erase elements from an unsorted std::vector
+			template <typename t>
+			bool erase_element_at_index (std::size_t index, std::vector<t> & array)
+			{
+				if (array.size() == (index+1)) {
+					array.pop_back();
+					return false;
+				} else {
+					array[index] = array.back();
+					array.pop_back();
+					return true;
+				}
+			}
+			
+			/// Setup an array of indices for rendering quadrilaterals as triangles
+			template <typename IndexT>
+			void setup_triangle_indicies(std::size_t count, std::vector<IndexT> & indices) {
+				IndexT INDICES[] = {0, 1, 3, 1, 3, 2};
+				
+				std::size_t base = indices.size() / 6;
+				std::ptrdiff_t diff = count - base;
+				
+				while (diff > 0) {
+					for (unsigned j = 0; j < 6; j += 1) {
+						indices.push_back((base * 4) + INDICES[j]);
+					}
+					
+					base += 1;
+					diff -= 1;
+				}
+			}
+			
+			inline RealT real_random () {
+				return (RealT)rand() / (RealT)RAND_MAX;
+			}
+			
+			inline RealT real_random(RealT min, RealT max) {
+				return min + (real_random() * (max - min));
+			}
+			
+			inline unsigned integral_random (unsigned max) {
+				return unsigned(real_random() * max) % max;
+			}
+			
+			template <typename ParticlesT>
+			class ParticleRenderer : public Object, public TimedSystem<ParticlesT> {
+			protected:				
+				struct Vertex {
+					Vec3 position;
+					Vec3 offset;
+					Vec2 mapping;
+					Vec4 color;
+				};
+				
+				class Physics : public ParticlesT::Particle {
+				protected:
+					Vec3 _velocity;
+					Vec3 _position;
+					
+					Vertex _vertices[4];
+					
+					Vec3 _color;
+					RealT _color_modulator;
+					
+					RealT _life;
+				
+				public:
+					Physics() : _velocity(ZERO), _color(1.0), _life(0) {
+						_color_modulator = real_random();
+					}
+					
+					void set_mapping(const Vec2u & count, const Vec2u index) {
+						Vec2 size = Vec2(IDENTITY) / count;
+						Vec2 offset = size * index;
+						
+						_vertices[0].mapping = offset; offset[X] += size[X];
+						_vertices[1].mapping = offset; offset[Y] += size[Y];
+						_vertices[2].mapping = offset; offset[X] -= size[X];
+						_vertices[3].mapping = offset;
+					}
+					
+					void set_random_mapping(const Vec2u & count) {
+						set_mapping(count, Vec2u(integral_random(count[X]), integral_random(count[Y])));
+					}
+					
+					void set_velocity(const Vec3 & velocity) {
+						_velocity = velocity;
+					}
+					
+					void set_position(Vec3 position, Vec3 up, Vec3 forward, RealT rotation) {
+						using Dream::Numerics::Mat44;
+						
+						_position = position;
+						
+						if (rotation != 0.0) {
+							up = Mat44::rotating_matrix(rotation, forward) * up;
+						}
+						
+						Mat44 transform = Mat44::rotating_matrix(R90, forward);
+						for (std::size_t i = 0; i < 4; i += 1) {
+							_vertices[i].position = _position;
+							_vertices[i].offset = up;
+							up = transform * up;
+						}
+					}
+					
+					void set_color(const Vec3 & color) {
+						_color = color;
+					}
+					
+					void update_vertex_color(const Vec4 & color) {
+						Vec4 sum = (_color << 0.0) + color;
+						
+						for (std::size_t i = 0; i < 4; i += 1)
+							_vertices[i].color = sum;
+					}
+					
+					void add_life(const RealT & amount) {
+						_life += amount;
+					}
+					
+					RealT color_modulation(RealT factor = 1.0) const {
+						return Math::sin(_color_modulator * R360 * factor);
+					}
+					
+					inline bool update_time (RealT dt, const Vec3 & force = ZERO) {
+						_life -= dt;
+						_color_modulator += dt;
+						
+						_position += (_velocity * dt) + (force * dt * dt * 0.5);
+						
+						// Update vertex position:
+						for (std::size_t i = 0; i < 4; i += 1) {
+							_vertices[i].position = _position;
+						}
+						
+						_velocity += force * dt;
+						
+						// If still alive -> true
+						return _life > 0;
+					}
+					
+					RealT calculate_alpha (RealT timeout) {
+						if (_life < timeout)
+							return _life / timeout;
+						else 
+							return 1.0;
+					}
+					
+					void queue(std::vector<Vertex> & vertices) {
+						std::copy(begin(_vertices), end(_vertices), std::back_inserter(vertices));
+					}
+				};
+				
+				std::vector<Physics> _physics;
+				std::vector<Vertex> _vertices;
+				std::vector<GLushort> _indices;
+				
+				VertexArray _vertex_array;
+				IndexBuffer _indices_buffer;
+				VertexBuffer _vertex_buffer;
+				
+			public:
+				enum Attributes {
+					POSITION = 0,
+					OFFSET = 1,
+					MAPPING = 2,
+					COLOR = 3
+				};
+				
+				ParticleRenderer() {
+					// Setup the vertex associations:
+					VertexArray::Attributes attributes(_vertex_array, _vertex_buffer);
+					attributes[POSITION] = &Vertex::position;
+					attributes[OFFSET] = &Vertex::offset;
+					attributes[MAPPING] = &Vertex::mapping;
+					attributes[COLOR] = &Vertex::color;
+				}
+				
+				virtual ~ParticleRenderer() {	
+				}
+								
+				void clear() {
+					_vertices.clear();
+				}
+				
+				void queue(Physics & physics) {
+					physics.queue(_vertices);
+				}
+				
+				void draw() {					
+					_vertex_array.bind();
+					
+					// Number of particles to draw:
+					std::size_t count = _vertices.size() / 4;
+					
+					// Setup indices for drawing quadrilaterals as triangles:
+					setup_triangle_indicies(count, _indices);
+					
+					_indices_buffer.attach(_vertex_array);
+					_indices_buffer.assign(_indices);
+										
+					_vertex_buffer.attach(_vertex_array);
+					_vertex_buffer.assign(_vertices);
+					
+					_vertex_array.draw_elements(GL_TRIANGLES, (GLsizei)count * 6, GL_UNSIGNED_SHORT);
+					
+					_vertex_array.unbind();					
+				}
+				
+				struct Particle
+				{
+				};
+			};
+		}
+	}
+}
+									   
+#endif

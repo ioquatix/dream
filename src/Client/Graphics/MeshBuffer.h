@@ -77,33 +77,39 @@ namespace Dream {
 					check_graphics_error();
 				}
 				
-				void buffer_data(std::size_t size, GLenum usage) {
+				void resize(std::size_t size, GLenum usage) {
 					glBufferData(_target, size, NULL, usage);
+					
+					check_graphics_error();
 				}
 				
-				void buffer_data(std::size_t size, ByteT * data, GLenum usage) {
+				void assign(ByteT * data, std::size_t size, GLenum usage) {
 					glBufferData(_target, size, data, usage);
+					
+					check_graphics_error();
 				}
 				
-				void buffer_data(std::size_t offset, std::size_t size, ByteT * data) {
+				void assign_partial(ByteT * data, std::size_t offset, std::size_t size) {
 					glBufferSubData(_target, offset, size, data);
-				}
-				
-				ByteT * map_data(GLenum access = GL_WRITE_ONLY) {
-					return (ByteT *)glMapBuffer(_target, access);
-				}
-				
-				ByteT * map_data(std::size_t offset, std::size_t size, GLenum access = GL_WRITE_ONLY) {
-					return (ByteT *)glMapBufferRange(_target, offset, size, access);
-				}
-				
-				void unmap_data() {
-					glUnmapBuffer(_target);
+					
+					check_graphics_error();
 				}
 				
 				template <typename ArrayT>
-				void buffer_data(const ArrayT & array, GLenum usage) {
-					glBufferData(_target, array.data_size(), array.data(), usage);
+				void assign(const ArrayT & array, GLenum usage = GL_STREAM_DRAW) {
+					assign((ByteT *)array.data(), array.size() * sizeof(typename ArrayT::value_type), usage);
+				}
+				
+				ByteT * map(GLenum access = GL_WRITE_ONLY) {
+					return (ByteT *)glMapBuffer(_target, access);
+				}
+				
+				ByteT * map_partial(std::size_t offset, std::size_t size, GLenum access = GL_WRITE_ONLY) {
+					return (ByteT *)glMapBufferRange(_target, offset, size, access);
+				}
+				
+				void unmap() {
+					glUnmapBuffer(_target);
 					
 					check_graphics_error();
 				}
@@ -188,10 +194,10 @@ namespace Dream {
 					ensure(_mesh != NULL);
 					
 					_index_buffer.attach(_vertex_array);
-					_index_buffer.buffer_data(_mesh->indices, _index_buffer_usage);
+					_index_buffer.assign(_mesh->indices, _index_buffer_usage);
 					
 					_vertex_buffer.attach(_vertex_array);
-					_vertex_buffer.buffer_data(_mesh->vertices, _vertex_buffer_usage);
+					_vertex_buffer.assign(_mesh->vertices, _vertex_buffer_usage);
 											
 					// Keep track of the number of indices uploaded for drawing:
 					_count = _mesh->indices.size();

@@ -16,15 +16,74 @@ namespace Dream {
 		namespace Graphics {
 			
 			/*
-				Ref<ShaderManager> shader_manager = new ShaderManager;
-				vertex_shader = shader_manager->compile(GL_VERTEX_SHADER, resource_loader()->...);
-				fragment_shader = shader_manager->compile(GL_VERTEX_SHADER, resource_loader()->...);
-				Ref<Program> program = new Program();
-				program->attach(vertex_shader);
-				program->attach(fragment_shader);
-				program->link();
+			void test() {
+				Ref<Program> program = ...;
+				Shared<UniformBuffer> lighting_buffer;
+			 
+				UniformBuffer::Binding uniform_binding(0);
+				
+				program->set_uniform_block(uniform_binding);
+				buffer->bind_range(uniform_binding);
+			}
 			 */
+			
+			class UniformBuffer : private NonCopyable {
+			protected:
+				GLuint _handle;
+				
+			public:
+				UniformBuffer(std::size_t size = 0, GLenum mode = GL_STREAM_DRAW) {
+					glGenBuffers(1, &_handle);
+					
+					if (size) {
+						bind();
+						resize(size, mode);
+						unbind();
+					}
+				}
+				
+				~UniformBuffer() {
+					glDeleteBuffers(1, &_handle);
+				}
+				
+				void bind() {
+					glBindBuffer(GL_UNIFORM_BUFFER, _handle);
+				}
+				
+				void unbind() {
+					glBindBuffer(GL_UNIFORM_BUFFER, 0);
+				}
+				
+				void resize(std::size_t size, GLenum mode = GL_STREAM_DRAW) {
+					glBufferData(GL_UNIFORM_BUFFER, (GLsizeiptr)size, NULL, mode);
+				}
+				
+				void bind_range(GLuint bindingIndex, GLintptr size, GLintptr offset = 0) {
+					bind();
+					glBindBufferRange(GL_UNIFORM_BUFFER, bindingIndex, _handle, offset, size);
+					unbind();
+				}
+				
+				class Binding {
+				protected:
+					GLuint _index;
+					
+				public:
+					Binding(GLuint index) : _index(index) {
+					}
+					
+					GLuint index() const { return _index; }
+				};
+			};
+			
+			template<unsigned E>
+			class GLUniformTraits {
+			};
 
+			template<unsigned R, unsigned C>
+			class GLUniformMatrixTraits {	
+			};
+			
 			class ShaderError : public std::exception
 			{
 			protected:
@@ -47,18 +106,45 @@ namespace Dream {
 				void attach(GLenum shader);
 				bool link();
 				
+				GLint attribute_location(const char * name);
+				GLint uniform_location(const char * name);				
+				GLint uniform_block_index(const char * name);
+				
+				void bind_fragment_location(const char * name, GLuint output = 0);
+				
+			protected:
+				GLuint location_of(GLuint location) {
+					return location;
+				}
+				
+				GLuint location_of(const char * name) {
+					return uniform_location(name);
+				}
+				
+			public:
 				void set_attribute_location(const char * name, GLuint location) {
 					glBindAttribLocation(_handle, location, name);
 				}
 				
-				void set_texture_unit(const char * name, GLuint unit) {
-					glUniform1i(uniform_location(name), unit);
+				template <typename LocationT>
+				void set_texture_unit(LocationT name, GLuint unit) {
+					glUniform1i(location_of(name), unit);
 				}
 				
-				GLuint attribute_location(const char * name);
-				GLuint uniform_location(const char * name);
+				template <typename LocationT, unsigned E, typename T>
+				void set_uniform(LocationT name, const Vector<E, T> & vector) {
+					GLUniformTraits<E>::set(location_of(name), 1, vector.value());
+				}
 				
-				void bind_fragment_location(const char * name, GLuint output = 0);
+				template <typename LocationT, unsigned E, typename T, unsigned N>
+				void set_uniform(LocationT name, const Vector<E, T>(& vector)[N]) {
+					GLUniformTraits<E>::set(location_of(name), N, vector[0].value());
+				}
+				
+				template <typename LocationT, unsigned R, unsigned C, typename T>
+				void set_uniform(LocationT name, const Matrix<R, C, T> & matrix, bool transpose = false) {
+					GLUniformMatrixTraits<R, C>::set(location_of(name), 1, transpose, matrix.value());
+				}
 				
 				void property(GLenum name, GLint * value) {
 					glGetProgramiv(_handle, name, value);
@@ -84,6 +170,144 @@ namespace Dream {
 				GLenum compile(GLenum type, const Buffer * buffer);
 			};
 			
+#pragma mark -
+#pragma mark Uniform Specialisations
+			
+			template<>
+			class GLUniformTraits<1> {
+			public:
+				static void set(GLint location, const GLsizei count, const GLuint * value) {
+					glUniform1uiv(location, count, value);
+				}
+				
+				static void set(GLint location, const GLsizei count, const GLint * value) {
+					glUniform1iv(location, count, value);
+				}
+				
+				static void set(GLint location, const GLsizei count, const GLfloat * value) {
+					glUniform1fv(location, count, value);
+				}
+			};
+			
+			template<>
+			class GLUniformTraits<2> {
+			public:
+				static void set(GLint location, const GLsizei count, const GLuint * value) {
+					glUniform2uiv(location, count, value);
+				}
+				
+				static void set(GLint location, const GLsizei count, const GLint * value) {
+					glUniform2iv(location, count, value);
+				}
+				
+				static void set(GLint location, const GLsizei count, const GLfloat * value) {
+					glUniform2fv(location, count, value);
+				}
+			};
+			
+			template<>
+			class GLUniformTraits<3> {
+			public:
+				static void set(GLint location, const GLsizei count, const GLuint * value) {
+					glUniform3uiv(location, count, value);
+				}
+				
+				static void set(GLint location, const GLsizei count, const GLint * value) {
+					glUniform3iv(location, count, value);
+				}
+				
+				static void set(GLint location, const GLsizei count, const GLfloat * value) {
+					glUniform3fv(location, count, value);
+				}
+			};
+			
+			template<>
+			class GLUniformTraits<4> {
+			public:
+				static void set(GLint location, const GLsizei count, const GLuint * value) {
+					glUniform4uiv(location, count, value);
+				}
+				
+				static void set(GLint location, const GLsizei count, const GLint * value) {
+					glUniform4iv(location, count, value);
+				}
+				
+				static void set(GLint location, const GLsizei count, const GLfloat * value) {
+					glUniform4fv(location, count, value);
+				}
+			};
+			
+			template<>
+			class GLUniformMatrixTraits<2, 2> {
+			public:
+				static void set(GLint location, const GLsizei count, GLboolean transpose, const GLfloat * value) {
+					glUniformMatrix2fv(location, count, transpose, value);
+				}
+			};
+			
+			template<>
+			class GLUniformMatrixTraits<2, 3> {
+			public:
+				static void set(GLint location, const GLsizei count, GLboolean transpose, const GLfloat * value) {
+					glUniformMatrix2x3fv(location, count, transpose, value);
+				}
+			};
+			
+			template<>
+			class GLUniformMatrixTraits<2, 4> {
+			public:
+				static void set(GLint location, const GLsizei count, GLboolean transpose, const GLfloat * value) {
+					glUniformMatrix2x4fv(location, count, transpose, value);
+				}
+			};
+			
+			template<>
+			class GLUniformMatrixTraits<3, 2> {
+			public:
+				static void set(GLint location, const GLsizei count, GLboolean transpose, const GLfloat * value) {
+					glUniformMatrix3x2fv(location, count, transpose, value);
+				}
+			};
+			
+			template<>
+			class GLUniformMatrixTraits<3, 3> {
+			public:
+				static void set(GLint location, const GLsizei count, GLboolean transpose, const GLfloat * value) {
+					glUniformMatrix3fv(location, count, transpose, value);
+				}
+			};
+			
+			template<>
+			class GLUniformMatrixTraits<3, 4> {
+			public:
+				static void set(GLint location, const GLsizei count, GLboolean transpose, const GLfloat * value) {
+					glUniformMatrix3x4fv(location, count, transpose, value);
+				}
+			};
+			
+			template<>
+			class GLUniformMatrixTraits<4, 2> {
+			public:
+				static void set(GLint location, const GLsizei count, GLboolean transpose, const GLfloat * value) {
+					glUniformMatrix4x2fv(location, count, transpose, value);
+				}
+			};
+			
+			template<>
+			class GLUniformMatrixTraits<4, 3> {
+			public:
+				static void set(GLint location, const GLsizei count, GLboolean transpose, const GLfloat * value) {
+					glUniformMatrix4x3fv(location, count, transpose, value);
+				}
+			};
+			
+			template<>
+			class GLUniformMatrixTraits<4, 4> {
+			public:
+				static void set(GLint location, const GLsizei count, GLboolean transpose, const GLfloat * value) {
+					glUniformMatrix4fv(location, count, transpose, value);
+				}
+			};
 		}
 	}
 }

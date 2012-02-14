@@ -96,7 +96,7 @@ namespace Dream {
 					
 					check_graphics_error();
 					
-					_vertex_buffer.buffer_data(vertices.data_size(), (ByteT *)vertices.data(), GL_STREAM_DRAW);
+					_vertex_buffer.assign(vertices);
 					_vertex_array.draw_arrays(GL_TRIANGLE_STRIP, 0, vertices.size());
 					_vertex_array.unbind();
 				}
