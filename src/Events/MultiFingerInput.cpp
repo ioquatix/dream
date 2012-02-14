@@ -56,7 +56,7 @@ namespace Dream
 		const FingerTracking & MultiFingerInput::update_motion (FingerID finger, Vec3 position)
 		{
 			FingersMap::iterator it = _fingers.find(finger);
-			ensure(it != _fingers.end());
+			DREAM_ASSERT(it != _fingers.end());
 			
 			FingerTracking & ft = it->second;
 			ft.motion = ft.position - position;
@@ -70,7 +70,7 @@ namespace Dream
 		const FingerTracking MultiFingerInput::finish_motion (FingerID finger, Vec3 position)
 		{
 			FingersMap::iterator it = _fingers.find(finger);
-			ensure(it != _fingers.end());
+			DREAM_ASSERT(it != _fingers.end());
 			
 			FingerTracking ft = it->second;
 			ft.motion = ft.position - position;

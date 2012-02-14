@@ -114,7 +114,7 @@ namespace Dream {
 				n = pixel_format_channel_count(pixel_format());
 			}
 			
-			ensure((data_typeByteSize(pixfmt) * n) > 0 && "bytes_per_pixel is obviously incorrect!");
+			DREAM_ASSERT((data_typeByteSize(pixfmt) * n) > 0 && "bytes_per_pixel is obviously incorrect!");
 			return data_typeByteSize(pixfmt) * n;
 		}
 		
@@ -205,7 +205,7 @@ namespace Dream {
 		{
 			unsigned bps = bytes_per_pixel();
 			
-			ensure(pixel_data() != NULL && "Cannot zero null buffer!");
+			DREAM_ASSERT(pixel_data() != NULL && "Cannot zero null buffer!");
 			
 			if (px == 0) {
 				bzero(pixel_data(), pixel_dataLength());
@@ -220,12 +220,12 @@ namespace Dream {
 		template <unsigned D, typename NumericT>
 		void IMutablePixelBuffer::write_pixel (const Vector<3, unsigned> &at, const Vector<D, NumericT> &input)
 		{
-			ensure(!is_packed_format() && "Packed pixel formats not supported for reading!");
-			ensure(D == this->channel_count());
+			DREAM_ASSERT(!is_packed_format() && "Packed pixel formats not supported for reading!");
+			DREAM_ASSERT(D == this->channel_count());
 			
 			unsigned from = pixel_offset(at);
 			unsigned sub_pixel_size = bytes_per_pixel() / channel_count();
-			ensure(sizeof(NumericT) == sub_pixel_size);
+			DREAM_ASSERT(sizeof(NumericT) == sub_pixel_size);
 			
 			for (unsigned i = 0; i < D; i += 1) {
 				write_data_at(from + (i * bytes_per_pixel()), input[i]);
@@ -236,19 +236,19 @@ namespace Dream {
 		void IMutablePixelBuffer::copy_pixels_from (const IPixelBuffer & buf, const Vector<3, unsigned> &from, const Vector<3, unsigned> &to, 
 												  const Vector<3, unsigned> &size, CopyFlags copy_flags) 
 		{
-			ensure(!is_packed_format() && "Packed pixel formats not supported for reading!");
-			ensure(this->channel_count() == buf.channel_count());
-			ensure(this->pixel_dataType() == buf.pixel_dataType());
+			DREAM_ASSERT(!is_packed_format() && "Packed pixel formats not supported for reading!");
+			DREAM_ASSERT(this->channel_count() == buf.channel_count());
+			DREAM_ASSERT(this->pixel_dataType() == buf.pixel_dataType());
 			
 			//std::cout << from << " -> " << to << " : " << size << std::endl;
 			//std::cout << buf.size() << " -> " << this->size() << std::endl;
 			
-			ensure(from.less_than(buf.size()));
-			ensure(to.less_than(this->size()));
-			ensure((from+size).less_than_or_equal(buf.size()));
+			DREAM_ASSERT(from.less_than(buf.size()));
+			DREAM_ASSERT(to.less_than(this->size()));
+			DREAM_ASSERT((from+size).less_than_or_equal(buf.size()));
 			
 			//std::cout <<  (to+size) << ": " << this->size() << std::endl;
-			ensure((to+size).less_than_or_equal(this->size()));
+			DREAM_ASSERT((to+size).less_than_or_equal(this->size()));
 					
 			const unsigned pixel_size = this->bytes_per_pixel();
 			Vector<3, unsigned> s, d;

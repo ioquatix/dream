@@ -108,7 +108,7 @@ namespace Dream
 			{
 				// Make sure max_ulps is non-negative and small enough that the
 				// default NAN won't compare as equal to anything.
-				ensure(max_ulps < 4 * 1024 * 1024);
+				DREAM_ASSERT(max_ulps < 4 * 1024 * 1024);
 
 				// Make lexicographically ordered as a twos-complement int
 				FIntT a_int = convert_to_integer(a);

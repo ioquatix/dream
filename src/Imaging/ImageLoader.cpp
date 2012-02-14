@@ -69,7 +69,7 @@ namespace Dream {
 		 */
 
 		void jpeg_skip_input_data (j_decompress_ptr cinfo, long num_bytes) {
-			//ensure(num_bytes < cinfo->src.bytes_in_buffer && "jpeglib tried to skip further than the end of file!!");
+			//DREAM_ASSERT(num_bytes < cinfo->src.bytes_in_buffer && "jpeglib tried to skip further than the end of file!!");
 			
 			if (num_bytes > 0 && num_bytes < (long)cinfo->src->bytes_in_buffer) {
 				cinfo->src->next_input_byte += (IndexT) num_bytes;
@@ -180,10 +180,10 @@ namespace Dream {
 			
 			try {
 				png_reader = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, png_error, NULL);
-				ensure(png_reader != NULL && "png_create_read_struct returned NULL!");
+				DREAM_ASSERT(png_reader != NULL && "png_create_read_struct returned NULL!");
 				
 				png_info = png_create_info_struct(png_reader);
-				ensure(png_info != NULL && "png_create_info_struct returned NULL!");
+				DREAM_ASSERT(png_info != NULL && "png_create_info_struct returned NULL!");
 				
 				// We will use this function to read data from Data class
 				png_set_read_fn (png_reader, (void *)&df, DataFile::png_read_data);
@@ -238,7 +238,7 @@ namespace Dream {
 				// Allocate the image_data buffer.
 				result_image = new Image(Vector<3, unsigned>(width, height, 1), format, data_type);
 				ByteT *image_bytes = result_image->pixel_data();
-				ensure(image_bytes != NULL);
+				DREAM_ASSERT(image_bytes != NULL);
 				
 				//ByteT * image_data = (unsigned char *) malloc(rowbytes * height);
 				ppb_row_pointers = (png_bytepp)malloc(height * sizeof(png_bytep));

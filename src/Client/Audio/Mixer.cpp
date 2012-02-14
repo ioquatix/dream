@@ -389,7 +389,7 @@ namespace Dream
 				set_listener_velocity(Vec3(ZERO));
 				set_listener_orientation(Vec3(0.0, 0.0, -1.0), Vec3(0.0, 1.0, 0.0));
 				
-				ensure(result && "Failed to initialize audio hardware!?");
+				DREAM_ASSERT(result && "Failed to initialize audio hardware!?");
 			}
 			
 			Mixer::~Mixer ()

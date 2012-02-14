@@ -177,7 +177,7 @@ namespace Dream
 		template <unsigned N, typename NumericT> template <unsigned K>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::scaling_matrix (const Vector<K, NumericT> & amount)
 		{
-			static_ensure((K <= N));
+			DREAM_STATIC_ASSERT((K <= N));
 
 			Matrix<N, N, NumericT> result;
 			result.load_identity();
@@ -191,7 +191,7 @@ namespace Dream
 		template <unsigned N, typename NumericT> template <unsigned K>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::translating_matrix (const Vector<K, NumericT> & amount)
 		{
-			static_ensure((K <= N));
+			DREAM_STATIC_ASSERT((K <= N));
 
 			Matrix<N, N, NumericT> result;
 			result.load_identity();
@@ -206,7 +206,7 @@ namespace Dream
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotating_matrix (const NumericT & angle, const Vector<3, NumericT> & p)
 		{
 			// Typically used for N == 3, N == 4 size matricies
-			static_ensure((N > 2));
+			DREAM_STATIC_ASSERT((N > 2));
 
 			Matrix<N, N, NumericT> result;
 			result.load_identity();
@@ -278,7 +278,7 @@ namespace Dream
 		template <unsigned N, typename NumericT>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotating_matrix_around_x (const NumericT & radians)
 		{
-			static_ensure((N >= 3));
+			DREAM_STATIC_ASSERT((N >= 3));
 
 			NumericT ca = Number<NumericT>::cos(radians);
 			NumericT sa = Number<NumericT>::sin(radians);
@@ -298,7 +298,7 @@ namespace Dream
 		template <unsigned N, typename NumericT>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotating_matrix_around_y (const NumericT & radians)
 		{
-			static_ensure((N >= 3));
+			DREAM_STATIC_ASSERT((N >= 3));
 
 			NumericT ca = Number<NumericT>::cos(radians);
 			NumericT sa = Number<NumericT>::sin(radians);
@@ -319,7 +319,7 @@ namespace Dream
 		template <unsigned N, typename NumericT>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotating_matrix_around_z (const NumericT & radians)
 		{
-			static_ensure((N >= 2));
+			DREAM_STATIC_ASSERT((N >= 2));
 
 			NumericT ca = Number<NumericT>::cos(radians);
 			NumericT sa = Number<NumericT>::sin(radians);
@@ -447,7 +447,7 @@ namespace Dream
 		template <unsigned R, unsigned C, typename N>
 		void Matrix<R, C, N>::load_identity (const NumericT & n)
 		{
-			static_ensure((unsigned)R == (unsigned)C);
+			DREAM_STATIC_ASSERT((unsigned)R == (unsigned)C);
 
 			zero();
 

@@ -131,8 +131,8 @@ namespace Dream {
 		}
 		
 		void Address::set_address_data(const sockaddr * sa, IndexT size) {
-			ensure(sa != NULL); // wtf?
-			ensure(size <= sizeof(_address_data));
+			DREAM_ASSERT(sa != NULL); // wtf?
+			DREAM_ASSERT(size <= sizeof(_address_data));
 			
 			memcpy (&_address_data, sa, size);
 			_address_dataSize = size;
@@ -144,7 +144,7 @@ namespace Dream {
 		}
 		
 		void Address::copy_from_addressInfo (const addrinfo * ai) {
-			ensure(ai != NULL);
+			DREAM_ASSERT(ai != NULL);
 			
 			set_address_data(ai->ai_addr, ai->ai_addrlen);
 			

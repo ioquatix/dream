@@ -148,7 +148,7 @@ namespace Dream
 				AlignedBox2u box = t.process_character(c);
 				
 				// Ensure box calculation is correct
-				ensure(box.size()[WIDTH] == t.extents()[X] - extents()[X]);
+				DREAM_ASSERT(box.size()[WIDTH] == t.extents()[X] - extents()[X]);
 				
 				return t.extents()[X] - extents()[X];
 			}
@@ -250,11 +250,11 @@ namespace Dream
 		
 		void TextBlock::set_text_direction (TextDirection char_dir, TextDirection line_dir)
 		{
-			ensure(char_dir & (LR|RL) && line_dir & (TB|BT)
+			DREAM_ASSERT(char_dir & (LR|RL) && line_dir & (TB|BT)
 				   || char_dir & (TB|BT) && line_dir & (LR|RL));
 			
-			//if (char_dir & (LR|RL)) ensure(FT_HAS_HORIZONTAL(_face));
-			//if (char_dir & (TB|BT)) ensure(FT_HAS_VERTICAL(_face));
+			//if (char_dir & (LR|RL)) DREAM_ASSERT(FT_HAS_HORIZONTAL(_face));
+			//if (char_dir & (TB|BT)) DREAM_ASSERT(FT_HAS_VERTICAL(_face));
 			
 			//std::cout << "char_dir: " << char_dir << " line_dir: " << line_dir << std::endl;
 			
@@ -356,7 +356,7 @@ namespace Dream
 					line = new TextLine(this);
 					_lines.push_back(line);
 					
-					ensure(line->can_add_character(*current));
+					DREAM_ASSERT(line->can_add_character(*current));
 					line->add_character(*current);
 				}
 				

@@ -209,19 +209,19 @@ namespace Dream
 			// Accessors
 			const NumericT & at (unsigned r, unsigned c) const
 			{
-				ensure(row_major_offset(r, c, C) < R*C);
+				DREAM_ASSERT(row_major_offset(r, c, C) < R*C);
 				return _matrix[row_major_offset(r, c, C)];
 			}
 
 			NumericT & at (unsigned r, unsigned c)
 			{
-				ensure(row_major_offset(r, c, C) < R*C);
+				DREAM_ASSERT(row_major_offset(r, c, C) < R*C);
 				return _matrix[row_major_offset(r, c, C)];
 			}
 			
 			const NumericT & at (unsigned i) const
 			{
-				ensure(i < R*C);
+				DREAM_ASSERT(i < R*C);
 				return _matrix[i];
 			}
 			
@@ -237,7 +237,7 @@ namespace Dream
 			
 			NumericT & at (unsigned i)
 			{
-				ensure(i < R*C);
+				DREAM_ASSERT(i < R*C);
 				return _matrix[i];
 			}
 

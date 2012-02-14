@@ -53,7 +53,7 @@ namespace Dream {
 				
 				std::cerr << "Starting server container..." << std::endl;
 				
-				ensure(!_thread);
+				DREAM_ASSERT(!_thread);
 				
 				_thread = new std::thread(std::bind(&ServerContainer::run, this));
 			}

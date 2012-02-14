@@ -48,7 +48,7 @@ namespace Dream {
 				_current_path = application_working_path() + in;
 			
 			// Check that the path is actually a directory that exists.
-			ensure(_current_path.file_status() == Path::DIRECTORY);
+			DREAM_ASSERT(_current_path.file_status() == Path::DIRECTORY);
 		}
 		
 		Loader::~Loader ()

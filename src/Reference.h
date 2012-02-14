@@ -97,12 +97,12 @@ namespace Dream {
 			}
 			
 			ObjectT* operator-> () const {
-				ensure(_object != NULL);
+				DREAM_ASSERT(_object != NULL);
 				return _object;
 			}
 						
 			ObjectT& operator* () const {
-				ensure(_object != NULL);
+				DREAM_ASSERT(_object != NULL);
 				return *_object;
 			}
 			
@@ -356,12 +356,12 @@ namespace Dream {
 			}
 			
 			ValueT* operator-> () const {
-				ensure(_value != NULL);
+				DREAM_ASSERT(_value != NULL);
 				return _value;
 			}
 						
 			ValueT& operator* () const {
-				ensure(_value != NULL);
+				DREAM_ASSERT(_value != NULL);
 				return *_value;
 			}
 			

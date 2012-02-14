@@ -110,7 +110,7 @@ namespace Dream {
 			}
 			
 			void View::Controller::did_become_current (ISceneManager * manager, IScene * scene) {
-				ensure(_principal);
+				DREAM_ASSERT(_principal);
 				
 				_principal->did_become_current(manager, scene);
 			}

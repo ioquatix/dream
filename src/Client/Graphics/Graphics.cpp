@@ -22,7 +22,7 @@ namespace Dream
 					logger()->log(LOG_ERROR, LogBuffer() << "OpenGL Error #" << error);
 					
 					// Abort due to error
-					// ensure(error == GL_NO_ERROR);
+					// DREAM_ASSERT(error == GL_NO_ERROR);
 				}
 			}
 		}

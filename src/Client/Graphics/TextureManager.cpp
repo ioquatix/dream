@@ -194,7 +194,7 @@ namespace Dream {
 			}
 			
 			void TextureManager::bind(std::size_t unit, Ptr<Texture> texture) {
-				ensure(unit < _image_unit_count);
+				DREAM_ASSERT(unit < _image_unit_count);
 				
 				if (_state[unit] == texture)
 					return;

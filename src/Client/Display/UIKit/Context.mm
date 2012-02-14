@@ -109,7 +109,7 @@ namespace Dream
 					// Create the OpenGLES context:
 					EAGLContext *graphicsContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 					
-					ensure(graphicsContext != NULL);
+					DREAM_ASSERT(graphicsContext != NULL);
 					
 					[_graphics_view setContext:graphicsContext];
 					[graphicsContext release];

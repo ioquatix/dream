@@ -234,7 +234,7 @@ namespace Dream
 		template <unsigned E, typename NumericT>
 		Vector<E, NumericT>::Vector (const NumericT & x, const NumericT & y)
 		{
-			static_ensure(E == 2);
+			DREAM_STATIC_ASSERT(E == 2);
 		
 			_vector[0] = x;
 			_vector[1] = y;
@@ -243,7 +243,7 @@ namespace Dream
 		template <unsigned E, typename NumericT>
 		Vector<E, NumericT>::Vector (const NumericT & x, const NumericT & y, const NumericT & z)
 		{
-			static_ensure(E == 3);
+			DREAM_STATIC_ASSERT(E == 3);
 		
 			_vector[0] = x;
 			_vector[1] = y;
@@ -253,7 +253,7 @@ namespace Dream
 		template <unsigned E, typename NumericT>
 		Vector<E, NumericT>::Vector (const NumericT & x, const NumericT & y, const NumericT & z, const NumericT & w)
 		{
-			static_ensure(E == 4);
+			DREAM_STATIC_ASSERT(E == 4);
 			
 			_vector[0] = x;
 			_vector[1] = y;
@@ -447,7 +447,7 @@ namespace Dream
 			Vector r(ZERO);
 			NumericT m = this->product();
 
-			ensure(m);
+			DREAM_ASSERT(m);
 
 			for (unsigned i = E; i > 0; i -= 1)
 			{
@@ -456,7 +456,7 @@ namespace Dream
 				k = Number<NumericT>::mod(k, m);
 			}
 
-			ensure(m == 1);
+			DREAM_ASSERT(m == 1);
 
 			return r;
 		}
@@ -544,7 +544,7 @@ namespace Dream
 				return *this;
 			}
 
-			//ensure(n > 0 && "Trying to normalize zero-length vector!");
+			//DREAM_ASSERT(n > 0 && "Trying to normalize zero-length vector!");
 
 			if (to_length != n)
 			{

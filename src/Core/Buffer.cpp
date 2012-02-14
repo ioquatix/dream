@@ -37,7 +37,7 @@ namespace Dream
 
 		const ByteT * Buffer::at (IndexT loc) const
 		{
-			ensure(loc <= size());
+			DREAM_ASSERT(loc <= size());
 			return begin() + loc;
 		}
 		
@@ -92,7 +92,7 @@ namespace Dream
 			if (size() < 4) return UNKNOWN;
 
 			const ByteT * buffer = begin();
-			ensure(buffer != NULL);
+			DREAM_ASSERT(buffer != NULL);
 
 			if (buffer[0] == 0xFF && buffer[1] == 0xD8)
 				return IMAGE_JPEG;
@@ -200,19 +200,19 @@ namespace Dream
 			mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 			
 			fd = open(p.to_local_path().c_str(), O_RDWR | O_CREAT | O_TRUNC, mode);
-			ensure(fd >= 0);
+			DREAM_ASSERT(fd >= 0);
 			
 			// Seek to the end
 			result = lseek(fd, size() - 1, SEEK_SET);
-			ensure(result != -1);
+			DREAM_ASSERT(result != -1);
 			
 			// Write a byte to give the file appropriate size
 			result = write(fd, "", 1);
-			ensure(result != -1);
+			DREAM_ASSERT(result != -1);
 			
 			// mmap the file
 			ByteT * dst = (ByteT *)mmap(0, size(), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-			ensure(dst != (ByteT *)-1);
+			DREAM_ASSERT(dst != (ByteT *)-1);
 						
 			madvise(dst, size(), MADV_SEQUENTIAL);
 			
@@ -233,7 +233,7 @@ namespace Dream
 
 		ByteT * MutableBuffer::at (IndexT loc)
 		{
-			ensure(loc < size());
+			DREAM_ASSERT(loc < size());
 			return begin() + loc;
 		}
 
@@ -249,14 +249,14 @@ namespace Dream
 
 		void MutableBuffer::assign (IndexT count, const ByteT & value, IndexT offset)
 		{
-			ensure((count + offset) <= size());
+			DREAM_ASSERT((count + offset) <= size());
 
 			memset(begin() + offset, value, count);
 		}
 
 		void MutableBuffer::assign (const ByteT * other_begin, const ByteT * other_end, IndexT offset)
 		{
-			ensure((other_end - other_begin) + offset <= size());
+			DREAM_ASSERT((other_end - other_begin) + offset <= size());
 
 			memcpy(begin() + offset, other_begin, other_end - other_begin);
 		}
@@ -333,12 +333,12 @@ namespace Dream
 			if (input == -1)
 				perror(__PRETTY_FUNCTION__);
 			
-			ensure(input != -1);
+			DREAM_ASSERT(input != -1);
 			
 			_size = lseek(input, 0, SEEK_END);
 			
 			_buf = mmap(0, _size, PROT_READ, MAP_SHARED, input, 0);
-			ensure(_buf != (ByteT *)-1);
+			DREAM_ASSERT(_buf != (ByteT *)-1);
 		}
 		
 		FileBuffer::~FileBuffer ()
@@ -364,7 +364,7 @@ namespace Dream
 			if (size != _capacity)
 			{
 				_buf = (ByteT*)realloc(_buf, size);
-				ensure(_buf != NULL);
+				DREAM_ASSERT(_buf != NULL);
 
 				_capacity = size;
 			}

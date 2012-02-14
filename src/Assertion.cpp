@@ -70,7 +70,7 @@ namespace Dream
 		exception_thrown = false;
 		try
 		{
-			ensure(1 == 0);
+			DREAM_ASSERT(1 == 0);
 		}
 		catch (AssertionError & err)
 		{
@@ -82,7 +82,7 @@ namespace Dream
 		exception_thrown = false;
 		try
 		{
-			ensure(1 == 1);
+			DREAM_ASSERT(1 == 1);
 		}
 		catch (AssertionError & err)
 		{

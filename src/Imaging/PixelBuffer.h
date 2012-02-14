@@ -126,7 +126,7 @@ namespace Dream {
 			// This does not do _any_ sanity checking what-so-ever.
 			template <unsigned D, typename NumericT>
 			void read_pixel (const Vector<3, unsigned> &at, Vector<D, NumericT> &output) const {
-				ensure(!is_packed_format() && "Packed pixel formats not supported for reading!");
+				DREAM_ASSERT(!is_packed_format() && "Packed pixel formats not supported for reading!");
 				
 				unsigned from = pixel_offset(at);
 				

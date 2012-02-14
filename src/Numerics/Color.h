@@ -111,7 +111,7 @@ namespace Dream {
 			const NumericT ONE_SIXTH = 1.0/6.0;
 			const NumericT TWO_THIRD = 2.0/3.0;
 			
-			ensure(hue >= -1.0 && hue <= 1.0);			
+			DREAM_ASSERT(hue >= -1.0 && hue <= 1.0);			
 			if (hue < 0.0) hue += 1.0;
 
 			if (hue < ONE_SIXTH)

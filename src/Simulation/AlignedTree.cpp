@@ -28,7 +28,7 @@ namespace Dream {
 		}
 		
 		Vec2 Quadrants::normal_origin_for_partition_index(const IndexT &i) {
-			ensure(i < Q && "Invalid partition index!");
+			DREAM_ASSERT(i < Q && "Invalid partition index!");
 			
 			switch (i) {
 			case 0:
@@ -41,7 +41,7 @@ namespace Dream {
 				return Vec2 (0.5, 0.5);
 			}
 			
-			ensure(false && "Invalid partition index!");
+			DREAM_ASSERT(false && "Invalid partition index!");
 
 			return ZERO;
 		}
@@ -64,7 +64,7 @@ namespace Dream {
 				break;
 			}
 			
-			ensure(false && "Invalid partition direction!");
+			DREAM_ASSERT(false && "Invalid partition direction!");
 			
 			return BottomLeft;			
 		}
@@ -105,7 +105,7 @@ namespace Dream {
 				return Vec3 (0.5, 0.5, 0.5);
 			}
 			
-			ensure(false && "Invalid partition index!");
+			DREAM_ASSERT(false && "Invalid partition index!");
 			
 			return ZERO;
 		}
@@ -138,7 +138,7 @@ namespace Dream {
 				break;
 			}
 			
-			ensure(false && "Invalid partition direction!");
+			DREAM_ASSERT(false && "Invalid partition direction!");
 			
 			return BottomLeftNear;
 		}

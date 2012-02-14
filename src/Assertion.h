@@ -13,11 +13,15 @@
 #include <string>
 #include <exception>
 
-/// Similar to assert, however will throw an AssertionError on failure.
-#define ensure(e) ::Dream::AssertionError::assert_handler(e, #e, __FILE__, __LINE__)
+#if DREAM_DEBUG
+	/// Similar to assert, however will throw an AssertionError on failure.
+	#define DREAM_ASSERT(e) ::Dream::AssertionError::assert_handler(e, #e, __FILE__, __LINE__)
+#else
+	#define DREAM_ASSERT(e)
+#endif
 
 /// Similar to ensure, but works statically, e.g. on consts, template arguments, etc.
-#define static_ensure(e) ::Dream::StaticAssertion<(e) != 0>::failed()
+#define DREAM_STATIC_ASSERT(e) ::Dream::StaticAssertion<(e) != 0>::failed()
 
 namespace Dream
 {
@@ -44,7 +48,7 @@ namespace Dream
 		/// A descriptive string relating to the assertion that failed.
 		virtual const char * what () const throw ();
 
-		/// The ensure() macro calls this function to handle throwing the actual exception.
+		/// The DREAM_ASSERT() macro calls this function to handle throwing the actual exception.
 		static void assert_handler (bool condition, const char * expression, const char * file, unsigned line);
 	};
 	

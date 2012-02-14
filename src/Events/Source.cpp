@@ -191,7 +191,7 @@ namespace Dream
 		NotificationPipeSource::NotificationPipeSource ()
 		{
 			int result = pipe(_filedes);
-			ensure(result == 0);
+			DREAM_ASSERT(result == 0);
 		}
 		
 		NotificationPipeSource::~NotificationPipeSource ()

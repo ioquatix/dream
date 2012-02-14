@@ -191,7 +191,7 @@ namespace Dream {
 				bool _invalid;
 				
 				void upload_buffers() {
-					ensure(_mesh != NULL);
+					DREAM_ASSERT(_mesh != NULL);
 					
 					_index_buffer.attach(_vertex_array);
 					_index_buffer.assign(_mesh->indices, _index_buffer_usage);

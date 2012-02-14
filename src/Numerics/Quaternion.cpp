@@ -189,7 +189,7 @@ namespace Dream
 		{
 			Matrix<4, 4, NumericT> matrix(IDENTITY);
 
-			ensure (Numerics::equal_within_tolerance(_vector.length2(), (NumericT)1.0)
+			DREAM_ASSERT(Numerics::equal_within_tolerance(_vector.length2(), (NumericT)1.0)
 					&& "Quaternion.rotating_matrix magnitude must be 1");
 
 			NumericT x = _vector[X], y = _vector[Y], z = _vector[Z], w = _vector[W];

@@ -20,13 +20,13 @@ namespace Dream {
 		
 		
 		const MessageHeader * Message::header () const {
-			ensure(header_complete());
+			DREAM_ASSERT(header_complete());
 			
 			return (const MessageHeader*)_packet.begin();
 		}
 		
 		MessageHeader * Message::header () {
-			ensure(header_complete());
+			DREAM_ASSERT(header_complete());
 			
 			return (MessageHeader*)&(_packet[0]);
 		}
@@ -70,7 +70,7 @@ namespace Dream {
 		}
 		
 		void Message::update_size () {
-			ensure(_packet.size() >= header_length());
+			DREAM_ASSERT(_packet.size() >= header_length());
 			
 			header()->length = data_length();
 		}
@@ -96,7 +96,7 @@ namespace Dream {
 		}
 		
 		void MessageSender::reset (Ref<Message> msg) {
-			ensure(msg->is_valid());
+			DREAM_ASSERT(msg->is_valid());
 			
 			_message = msg;
 			_offset = 0;
@@ -111,8 +111,8 @@ namespace Dream {
 		}
 		
 		bool MessageSender::send_via_socket(ClientSocket * socket) {
-			ensure(has_message_to_send());
-			ensure(socket->is_valid());
+			DREAM_ASSERT(has_message_to_send());
+			DREAM_ASSERT(socket->is_valid());
 			
 			BufferT &packet = _message->packet();
 			

@@ -18,7 +18,7 @@ namespace Dream
 	{
 		using namespace Dream::Imaging;
 	
-		/* Use std::stringstream to easily manage dynamic strings */
+		// Could be worth checking out http://branan.github.com/gltext/
 		
 		class TypographyException : public std::exception {
 		protected:

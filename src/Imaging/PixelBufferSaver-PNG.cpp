@@ -64,8 +64,8 @@ namespace Dream
 		{
 			Vec3u size = pixel_buffer->size();
 		
-			ensure(!pixel_buffer->is_packed_format());
-			ensure(size[Z] == 1);
+			DREAM_ASSERT(!pixel_buffer->is_packed_format());
+			DREAM_ASSERT(size[Z] == 1);
 			
 			Shared<DynamicBuffer> result_data(new DynamicBuffer);
 			
@@ -79,10 +79,10 @@ namespace Dream
 			
 			try {
 				png_writer = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, png_error, NULL);
-				ensure(png_writer != NULL && "png_create_write_struct returned NULL!");
+				DREAM_ASSERT(png_writer != NULL && "png_create_write_struct returned NULL!");
 				
 				png_info = png_create_info_struct(png_writer);
-				ensure(png_info != NULL && "png_create_info_struct returned NULL!");
+				DREAM_ASSERT(png_info != NULL && "png_create_info_struct returned NULL!");
 				
 				png_set_write_fn(png_writer, (void *)(result_data.get()), png_write_to_buffer, png_flush_buffer);
 				

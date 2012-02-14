@@ -132,7 +132,7 @@ namespace Dream
 						
 						StaticBuffer sample_data(&(*buffer)[i], chunk_length);
 						
-						ensure(decoder != NULL);
+						DREAM_ASSERT(decoder != NULL);
 						return decoder(&sample_data, channel_count, bits_per_sample, sample_frequency);
 					} else {
 						// Unknown header

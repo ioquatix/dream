@@ -47,7 +47,7 @@ namespace Dream
 			int file_mode = fcntl(fd, F_GETFL) & O_ACCMODE;
 			int events;
 			
-			ensure(file_mode != -1);
+			DREAM_ASSERT(file_mode != -1);
 			
 			switch(file_mode)
 			{
@@ -466,7 +466,7 @@ namespace Dream
 			
 		void Loop::monitor (Ptr<IFileDescriptorSource> source)
 		{
-			ensure(source->file_descriptor() != -1);
+			DREAM_ASSERT(source->file_descriptor() != -1);
 			//std::cerr << this << " monitoring fd: " << fd << std::endl;
 			//IFileDescriptorSource::debug_file_descriptor_flags(fd);
 			
@@ -475,7 +475,7 @@ namespace Dream
 		
 		void Loop::stop_monitoring_file_descriptor (Ptr<IFileDescriptorSource> source)
 		{
-			ensure(source->file_descriptor() != -1);
+			DREAM_ASSERT(source->file_descriptor() != -1);
 			
 			//std::cerr << this << " removing fd: " << fd << std::endl;
 			//IFileDescriptorSource::debug_file_descriptor_flags(fd);
@@ -653,7 +653,7 @@ namespace Dream
 		
 		TimeT Loop::run_until_timeout (TimeT timeout)
 		{
-			ensure(timeout > 0);
+			DREAM_ASSERT(timeout > 0);
 			
 			using Core::EggTimer;
 			

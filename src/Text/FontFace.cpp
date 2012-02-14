@@ -28,7 +28,7 @@ namespace Dream
 			
 			void FontGlyph::composite_to_buffer(Vector<2,unsigned> origin, Ref<IMutablePixelBuffer> img) const
 			{
-				ensure(is_bitmap());
+				DREAM_ASSERT(is_bitmap());
 				FT_BitmapGlyph bm = (FT_BitmapGlyph)glyph;
 				
 				if (bm->bitmap.buffer != NULL) {
@@ -44,7 +44,7 @@ namespace Dream
 			
 			Vector<2,unsigned> FontGlyph::calculate_character_origin (Vector<2,unsigned> pen) const
 			{
-				ensure(is_bitmap());
+				DREAM_ASSERT(is_bitmap());
 				FT_BitmapGlyph bm = (FT_BitmapGlyph)glyph;
 				
 				Vector<2,unsigned> origin;

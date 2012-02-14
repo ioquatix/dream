@@ -85,8 +85,8 @@ namespace Dream
 					
 					_initialized = false;
 					
-					ensure(_display_link != nil);
-					ensure(_graphics_view != nil);
+					DREAM_ASSERT(_display_link != nil);
+					DREAM_ASSERT(_graphics_view != nil);
 					
 					CVReturn result = CVDisplayLinkStart(_display_link);
 										
@@ -94,13 +94,11 @@ namespace Dream
 						logger()->log(LOG_ERROR, LogBuffer() << "CVDisplayLinkStart error #" << result);
 					}
 					
-					logger()->log(LOG_DEBUG, "Exit ViewContext::start");
+					logger()->log(LOG_DEBUG, "Starting context...");
 				}
 				
-				void ViewContext::stop() {
-					logger()->log(LOG_DEBUG, "Enter ViewContext::stop");
-										
-					ensure(_display_link != nil);
+				void ViewContext::stop() {										
+					DREAM_ASSERT(_display_link != nil);
 					
 					CVReturn result = CVDisplayLinkStop(_display_link);
 										
@@ -108,7 +106,7 @@ namespace Dream
 						logger()->log(LOG_ERROR, LogBuffer() << "CVDisplayLinkStop error #" << result);
 					}
 					
-					logger()->log(LOG_DEBUG, "Exit ViewContext::stop");
+					logger()->log(LOG_DEBUG, "Stopping context...");
 				}
 				
 				void ViewContext::wait_for_refresh()
@@ -306,7 +304,7 @@ namespace Dream
 					[_window setDisplaysWhenScreenProfileChanges:NO];
 					
 					setup_graphics_view(config, window_rect);
-					ensure(_graphics_view);
+					DREAM_ASSERT(_graphics_view);
 					
 					[_window setContentView:_graphics_view];
 					[_window setInitialFirstResponder:_graphics_view];

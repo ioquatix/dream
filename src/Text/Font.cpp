@@ -106,23 +106,23 @@ namespace Dream
 		
 		void Font::set_pixel_size(unsigned size)
 		{
-			ensure(_face != NULL);
+			DREAM_ASSERT(_face != NULL);
 			
 			FT_Error err = FT_Set_Pixel_Sizes(_face->face(), size, size);
 			
-			ensure(err == 0);
+			DREAM_ASSERT(err == 0);
 		}
 		
 		Vector<2, unsigned> Font::compute_bounding_box (const std::string &text) const
 		{
-			ensure(_face != NULL);
+			DREAM_ASSERT(_face != NULL);
 			
 			return _face->process_text(text, Ref<Image>());
 		}
 		
 		Ref<Image> Font::render_text (const std::string & text)
 		{
-			ensure(_face != NULL);
+			DREAM_ASSERT(_face != NULL);
 			
 			Ref<Image> img = new Image(compute_bounding_box(text) << 1U, _face->pixel_format(), UBYTE);
 			img->zero();

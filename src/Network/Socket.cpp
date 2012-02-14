@@ -61,7 +61,7 @@ namespace Dream {
 		}
 		
 		void Socket::open_socket (AddressFamily af, SocketType st, SocketProtocol sp) {
-			ensure(_socket == -1);
+			DREAM_ASSERT(_socket == -1);
 			
 			_socket = ::socket(af, st, sp);
 			// std::cerr << "=====> Opening socket " << _socket << std::endl;
@@ -80,7 +80,7 @@ namespace Dream {
 		}
 		
 		void Socket::shutdown (int mode) {
-			ensure(is_valid());
+			DREAM_ASSERT(is_valid());
 			
 			if (::shutdown(_socket, mode) == -1) {
 				perror("Socket::shutdown");
@@ -88,7 +88,7 @@ namespace Dream {
 		}
 		
 		void Socket::close () {
-			ensure(is_valid());
+			DREAM_ASSERT(is_valid());
 						
 			if (::close(_socket) == -1) {
 				logger()->system_error("close()");
@@ -114,7 +114,7 @@ namespace Dream {
 		}
 		
 		int Socket::socket_specific_error () const {
-			ensure(is_valid());
+			DREAM_ASSERT(is_valid());
 			
 			int error = 0;
 			socklen_t len = sizeof(error);
@@ -153,8 +153,8 @@ namespace Dream {
 		}
 		
 		IndexT Socket::send (const Core::Buffer & buf, IndexT offset, int flags) {
-			ensure(buf.size() > 0); 
-			ensure(offset < buf.size());
+			DREAM_ASSERT(buf.size() > 0); 
+			DREAM_ASSERT(offset < buf.size());
 			
 			//std::cout << "Sending " << buf.size() << " bytes..." << std::endl;
 			
@@ -180,7 +180,7 @@ namespace Dream {
 		}
 		
 		IndexT Socket::recv (Core::ResizableBuffer & buf, int flags) {
-			ensure(buf.size() < buf.capacity() && "Please make sure you have reserved space for incoming data");
+			DREAM_ASSERT(buf.size() < buf.capacity() && "Please make sure you have reserved space for incoming data");
 			
 			//std::cout << "Receiving " << (buf.capacity() - buf.size()) << " bytes..." << std::endl;
 			
@@ -231,7 +231,7 @@ namespace Dream {
 		{
 			if (events & Events::READ_READY)
 			{
-				ensure(connection_callback);
+				DREAM_ASSERT(connection_callback);
 				
 				SocketHandleT socket_handle;
 				Address address;
@@ -244,7 +244,7 @@ namespace Dream {
 		bool ServerSocket::bind (const Address & na, bool reuse_addr) {
 			open_socket(na);
 			
-			ensure(is_valid() && na.is_valid());
+			DREAM_ASSERT(is_valid() && na.is_valid());
 			
 			if (reuse_addr) {
 				set_reuse_address(true);
@@ -273,7 +273,7 @@ namespace Dream {
 		}
 		
 		bool ServerSocket::accept (SocketHandleT & h, Address & na) {
-			ensure(is_valid());
+			DREAM_ASSERT(is_valid());
 			
 			socklen_t len = sizeof(sockaddr_storage);
 			sockaddr_storage ss;
@@ -295,7 +295,7 @@ namespace Dream {
 		}
 		
 		void ServerSocket::set_reuse_address (bool enabled) {
-			ensure(is_valid());
+			DREAM_ASSERT(is_valid());
 			
 			int val = (int)enabled;
 			int r = setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(int));
@@ -329,11 +329,11 @@ namespace Dream {
 		}
 		
 		bool ClientSocket::connect (const Address & na) {
-			ensure(!is_valid());
+			DREAM_ASSERT(!is_valid());
 			
 			open_socket(na);
 			
-			ensure(is_valid() && na.is_valid());
+			DREAM_ASSERT(is_valid() && na.is_valid());
 			
 			if (::connect(_socket, na.address_data(), na.address_dataSize()) == -1)
 			{
