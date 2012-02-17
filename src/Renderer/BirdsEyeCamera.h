@@ -32,6 +32,8 @@ namespace Dream
 			
 			Vec3 _multiplier;
 			
+			bool _reverse;
+			
 			void regenerate ();
 		public:
 			BirdsEyeCamera ();
@@ -39,6 +41,9 @@ namespace Dream
 			
 			virtual bool button(const ButtonInput &);
 			virtual bool motion(const MotionInput &);
+			
+			bool reverse() { return _reverse; }
+			void set_reverse(bool reverse) { _reverse = reverse; }
 			
 			virtual Mat44 view_matrix () const;
 			

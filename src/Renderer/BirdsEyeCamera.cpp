@@ -8,13 +8,14 @@
 //
 
 #include "BirdsEyeCamera.h"
+#include "../Events/Logger.h"
 
-namespace Dream
-{
-	namespace Renderer
-	{
+namespace Dream {
+	namespace Renderer {
 		
-		BirdsEyeCamera::BirdsEyeCamera() : _up(0.0, 0.0, 1.0), _right(1.0, 0.0, 0.0), _center(ZERO), _multiplier(IDENTITY, 1) {
+		using namespace Events::Logging;
+		
+		BirdsEyeCamera::BirdsEyeCamera() : _up(0.0, 0.0, 1.0), _right(1.0, 0.0, 0.0), _center(ZERO), _multiplier(IDENTITY, 1), _reverse(false) {
 			_distance = 100;
 			_azimuth = R45;
 			_incidence = R45;
@@ -60,15 +61,17 @@ namespace Dream
 				if (i < 0) i += R360;
 				
 				// Reverse motion if we are upside down:
-				if (i > R180 && i < R360)
+				if (_reverse && i > R180 && i < R360)
 					k *= -1.0;
 				
 				// Find the relative position of the mouse, if it is in the lower half,
 				// reverse the rotation.
 				Vec2 relative = input.bounds().relative_offset_of(input.current_position().reduce());
 				
+				//logger()->log(LOG_DEBUG, LogBuffer() << "Motion: " << d);
+				
 				// If mouse button is in lower half of view:
-				if (relative[Y] < 0.5)
+				if (relative[Y] <= 0.5)
 					k *= -1.0;
 					
 				_azimuth += (k * d[X] * _multiplier[X] * (R90 / 90));
