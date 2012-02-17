@@ -13,7 +13,7 @@
 #include <string>
 #include <exception>
 
-#if DREAM_DEBUG
+#ifdef DREAM_DEBUG
 	/// Similar to assert, however will throw an AssertionError on failure.
 	#define DREAM_ASSERT(e) ::Dream::AssertionError::assert_handler(e, #e, __FILE__, __LINE__)
 #else
