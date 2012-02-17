@@ -263,14 +263,11 @@ namespace Dream
 		{
 			NumericT angle = to.angle_between(from);
 
-			if (equal_within_tolerance(angle, (NumericT)0.0))
-			{
+			if (equal_within_tolerance(angle, (NumericT)0.0)) {
 				return Matrix<N, N, NumericT>(Identity());
-			} else if (Math::abs(angle) == R180)
-			{
+			} else if (Math::abs(angle) == R180) {
 				return Matrix<N, N, NumericT>::rotating_matrix(angle, from.cross(normal).normalize());
-			} else
-			{
+			} else {
 				return Matrix<N, N, NumericT>::rotating_matrix(angle, from.cross(to).normalize());
 			}
 		}
