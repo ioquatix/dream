@@ -34,7 +34,7 @@ namespace Dream {
 				};
 				
 				VertexArray _vertex_array;
-				VertexBuffer _vertex_buffer;
+				VertexBuffer<Vertex> _vertex_buffer;
 
 			public:
 				typedef int RotationT;

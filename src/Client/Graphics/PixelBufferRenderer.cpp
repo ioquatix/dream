@@ -19,7 +19,8 @@ namespace Dream {
 				_texture_parameters.generate_mip_maps = false;
 				
 				// Setup the vertex associations:
-				VertexArray::Attributes attributes(_vertex_array, _vertex_buffer);
+				auto binding = _vertex_array.binding();
+				auto attributes = binding.attach(_vertex_buffer);
 				attributes[0] = &Vertex::position;
 				attributes[1] = &Vertex::mapping;
 			}
@@ -54,14 +55,14 @@ namespace Dream {
 			}
 			
 			void PixelBufferRenderer::render(AlignedBox2 box, Ptr<IPixelBuffer> pixel_buffer) {
-				render(box, pixel_buffer, Vec2b(false, false), 0);
+				render(box, pixel_buffer, Vec2b(false, true), 0);
 			}
 			
 			void PixelBufferRenderer::render(AlignedBox2 box, Ptr<IPixelBuffer> pixel_buffer, Vec2b flip, RotationT rotation) {
 				const Vec2b CORNERS[] = {
 					Vec2b(false, false),
-					Vec2b(false, true),
 					Vec2b(true, false),
+					Vec2b(false, true),
 					Vec2b(true, true)
 				};
 				
@@ -79,26 +80,26 @@ namespace Dream {
 					vertices.push_back(vertex);
 				}
 				
-				/*
-				LogBuffer buffer;
-				buffer << "Vertices:" << std::endl;
-				for (auto & vertex : vertices) {
-					buffer << "Vertex: " << vertex.position << "; " << vertex.mapping << std::endl;
+				if (flip[X]) {
+					std::swap(vertices[0].mapping, vertices[1].mapping);
+					std::swap(vertices[2].mapping, vertices[3].mapping);
 				}
-				logger()->log(LOG_DEBUG, buffer);
-				*/
+				
+				if (flip[Y]) {
+					std::swap(vertices[0].mapping, vertices[2].mapping);
+					std::swap(vertices[1].mapping, vertices[3].mapping);
+				}
 				
 				_texture_manager->bind(0, texture);
 				
 				{
-					_vertex_array.bind();
-					_vertex_buffer.attach(_vertex_array);
+					auto binding = _vertex_array.binding();
+					auto buffer_binding = _vertex_buffer.binding();
 					
 					check_graphics_error();
 					
-					_vertex_buffer.assign(vertices);
-					_vertex_array.draw_arrays(GL_TRIANGLE_STRIP, 0, vertices.size());
-					_vertex_array.unbind();
+					buffer_binding.set_data(vertices);
+					binding.draw_arrays(GL_TRIANGLE_STRIP, 0, vertices.size());
 				}
 			}
 		}

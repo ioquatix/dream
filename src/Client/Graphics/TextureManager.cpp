@@ -123,8 +123,9 @@ namespace Dream {
 				_format = format;
 				_data_type = data_type;
 				
-				if (_parameters.generate_mip_maps)
+				if (_parameters.generate_mip_maps) {
 					glGenerateMipmap(_parameters.target);
+				}
 				
 				check_graphics_error();
 			}

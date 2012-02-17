@@ -6,8 +6,13 @@
 //  Copyright (c) 2012 Orion Transfer Ltd. All rights reserved.
 //
 
-#ifndef Dream_Renderer_h
-#define Dream_Renderer_h
+#ifndef _DREAM_CLIENT_GRAPHICS_RENDERER_H
+#define _DREAM_CLIENT_GRAPHICS_RENDERER_H
+
+#include "TextureManager.h"
+#include "ShaderManager.h"
+#include "../Display/Scene.h"
+#include "../../Renderer/Viewport.h"
 
 namespace Dream {
 	namespace Client {
@@ -24,9 +29,6 @@ namespace Dream {
 			 */
 			
 			class IRenderer;
-			
-			class ISceneManager;
-			class IScene;
 			
 			class INode {
 			public:
@@ -48,12 +50,26 @@ namespace Dream {
 				
 				// Call this function to begin the graph traversal.
 				virtual void traverse(INode * node);
+			};
+			
+			/// This case encapsulates basic state common to many renderers - it may not be suitable for all types of renderers.
+			class BasicRenderer : public Object, implements IRenderer {
+			protected:
+				Ref<Resources::Loader> _resource_loader;
+				Ref<TextureManager> _texture_manager;
+				Ref<ShaderManager> _shader_manager;
 				
-				// Prepare the renderer with any required resources.
-				virtual void did_become_current(ISceneManager * manager, IScene * scene);
+				Ref<Renderer::Viewport> _viewport;
 				
-				// Release any resources that are no longer needed.
-				virtual void will_revoke_current(ISceneManager * manager, IScene * scene);
+				// These are essentially helper methods to load shader programs:
+				GLuint compile_shader_of_type (GLenum type, StringT name);
+				Ref<Program> load_program(StringT name);
+				
+			public:
+				BasicRenderer(Ptr<Resources::Loader> resource_loader, Ptr<TextureManager> texture_manager, Ptr<ShaderManager> shader_manager, Ptr<Renderer::Viewport> viewport);
+				virtual ~BasicRenderer();
+				
+				// By default, we can render nothing in particular.
 			};
 			
 		}

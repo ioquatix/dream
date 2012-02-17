@@ -61,6 +61,8 @@ namespace Dream
 					
 					return added;
 				}
+				
+				return 0;
 			}
 			
 			inline RealT real_random () {
@@ -96,7 +98,7 @@ namespace Dream
 					RealT _color_modulator;
 					
 					RealT _life;
-				
+					
 				public:
 					Physics() : _velocity(ZERO), _color(1.0), _life(0) {
 						_color_modulator = real_random();
@@ -194,8 +196,8 @@ namespace Dream
 				std::vector<GLushort> _indices;
 				
 				VertexArray _vertex_array;
-				IndexBuffer _indices_buffer;
-				VertexBuffer _vertex_buffer;
+				IndexBuffer<GLushort> _indices_buffer;
+				VertexBuffer<Vertex> _vertex_buffer;
 				
 			public:
 				enum Attributes {
@@ -206,23 +208,22 @@ namespace Dream
 				};
 				
 				ParticleRenderer() {
-					{
-						// Setup the vertex associations:
-						VertexArray::Attributes attributes(_vertex_array, _vertex_buffer);
-						attributes[POSITION] = &Vertex::position;
-						attributes[OFFSET] = &Vertex::offset;
-						attributes[MAPPING] = &Vertex::mapping;
-						attributes[COLOR] = &Vertex::color;
-					}
+					auto binding = _vertex_array.binding();
 					
-					_vertex_array.bind();
-					_indices_buffer.attach(_vertex_array);
-					_vertex_array.unbind();
+					// Attach vertices buffer:
+					auto attributes = binding.attach(_vertex_buffer);
+					attributes[POSITION] = &Vertex::position;
+					attributes[OFFSET] = &Vertex::offset;
+					attributes[MAPPING] = &Vertex::mapping;
+					attributes[COLOR] = &Vertex::color;
+					
+					// Attach indices buffer:
+					binding.attach(_indices_buffer);
 				}
 				
 				virtual ~ParticleRenderer() {	
 				}
-								
+				
 				void clear() {
 					_vertices.clear();
 				}
@@ -231,9 +232,7 @@ namespace Dream
 					physics.queue(_vertices);
 				}
 				
-				void draw() {					
-					_vertex_array.bind();
-					
+				void draw() {										
 					// Number of particles to draw:
 					std::size_t count = _vertices.size() / 4;
 					
@@ -241,16 +240,19 @@ namespace Dream
 					std::size_t additions = setup_triangle_indicies(count, _indices);
 					
 					if (additions) {
-						_indices_buffer.attach(_vertex_array);
-						_indices_buffer.assign(_indices);
+						auto binding = _indices_buffer.binding();
+						binding.set_data(_indices);
 					}
 					
-					_vertex_buffer.attach(_vertex_array);
-					_vertex_buffer.assign(_vertices);
+					{
+						auto binding = _vertex_buffer.binding();
+						binding.set_data(_vertices);
+					}
 					
-					_vertex_array.draw_elements(GL_TRIANGLES, (GLsizei)count * 6, GL_UNSIGNED_SHORT);
-					
-					_vertex_array.unbind();					
+					{
+						auto binding = _vertex_array.binding();
+						binding.draw_elements(GL_TRIANGLES, count * 6, GLTypeTraits<GLushort>::TYPE);
+					}
 				}
 				
 				struct Particle
@@ -260,5 +262,5 @@ namespace Dream
 		}
 	}
 }
-									   
+
 #endif

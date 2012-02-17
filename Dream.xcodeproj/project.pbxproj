@@ -103,6 +103,14 @@
 		7EB132DC1230127100372052 /* Path-Mac.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EB132D712300A0500372052 /* Path-Mac.mm */; };
 		7EB132DD1230127200372052 /* Path-Mac.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EB132D712300A0500372052 /* Path-Mac.mm */; };
 		7EB133D312302AA300372052 /* Path-Unix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB132C1123002D100372052 /* Path-Unix.cpp */; };
+		7EB4EDEC14EBA05900C69A1B /* Buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4EDEA14EBA05800C69A1B /* Buffer.cpp */; };
+		7EB4EDED14EBA05900C69A1B /* Buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4EDEA14EBA05800C69A1B /* Buffer.cpp */; };
+		7EB4EDEE14EBA05900C69A1B /* Buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4EDEA14EBA05800C69A1B /* Buffer.cpp */; };
+		7EB4EDEF14EBA05900C69A1B /* Buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4EDEA14EBA05800C69A1B /* Buffer.cpp */; };
+		7EB4EDF214EBD47100C69A1B /* VertexArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4EDF014EBD47100C69A1B /* VertexArray.cpp */; };
+		7EB4EDF314EBD47100C69A1B /* VertexArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4EDF014EBD47100C69A1B /* VertexArray.cpp */; };
+		7EB4EDF414EBD47100C69A1B /* VertexArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4EDF014EBD47100C69A1B /* VertexArray.cpp */; };
+		7EB4EDF514EBD47100C69A1B /* VertexArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4EDF014EBD47100C69A1B /* VertexArray.cpp */; };
 		7EB5FFDE12CD9FEC00B704E3 /* Fader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB5FFDD12CD9FEC00B704E3 /* Fader.cpp */; };
 		7EB5FFDF12CD9FEC00B704E3 /* Fader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB5FFDD12CD9FEC00B704E3 /* Fader.cpp */; };
 		7EB5FFE012CD9FEC00B704E3 /* Fader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB5FFDD12CD9FEC00B704E3 /* Fader.cpp */; };
@@ -552,6 +560,10 @@
 		7EAF95270ED141BD007E1BAD /* Intersection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Intersection.cpp; sourceTree = "<group>"; };
 		7EB132C1123002D100372052 /* Path-Unix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Path-Unix.cpp"; sourceTree = "<group>"; };
 		7EB132D712300A0500372052 /* Path-Mac.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "Path-Mac.mm"; sourceTree = "<group>"; };
+		7EB4EDEA14EBA05800C69A1B /* Buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Buffer.cpp; sourceTree = "<group>"; };
+		7EB4EDEB14EBA05800C69A1B /* Buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Buffer.h; sourceTree = "<group>"; };
+		7EB4EDF014EBD47100C69A1B /* VertexArray.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VertexArray.cpp; sourceTree = "<group>"; };
+		7EB4EDF114EBD47100C69A1B /* VertexArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VertexArray.h; sourceTree = "<group>"; };
 		7EB5FFDC12CD9FEC00B704E3 /* Fader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Fader.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		7EB5FFDD12CD9FEC00B704E3 /* Fader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Fader.cpp; sourceTree = "<group>"; };
 		7EB7BBB60F9B0DE400452BDE /* libDream-Darwin-iPhoneOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libDream-Darwin-iPhoneOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -937,8 +949,10 @@
 			children = (
 				7E3B8B2E0F9C0BD8002B6541 /* Graphics.h */,
 				7EF7AEA4148B9E99008A9BD7 /* Graphics.cpp */,
-				7ED6414414D6DD7F00653B22 /* Renderer.h */,
-				7ED6414514D6DF8A00653B22 /* Renderer.cpp */,
+				7EB4EDEB14EBA05800C69A1B /* Buffer.h */,
+				7EB4EDEA14EBA05800C69A1B /* Buffer.cpp */,
+				7EB4EDF114EBD47100C69A1B /* VertexArray.h */,
+				7EB4EDF014EBD47100C69A1B /* VertexArray.cpp */,
 				7EF7AE69148B65D9008A9BD7 /* TextureManager.h */,
 				7EF7AE64148B65CB008A9BD7 /* TextureManager.cpp */,
 				7ED6413914D6CCBE00653B22 /* PixelBufferRenderer.h */,
@@ -953,6 +967,8 @@
 				7ED6414914D78C0300653B22 /* ParticleRenderer.cpp */,
 				7EBE51FC14D39E250054B478 /* FrameBuffer.h */,
 				7EBE51FD14D39E2F0054B478 /* FrameBuffer.cpp */,
+				7ED6414414D6DD7F00653B22 /* Renderer.h */,
+				7ED6414514D6DF8A00653B22 /* Renderer.cpp */,
 				7ED6415414D78C3C00653B22 /* View.h */,
 				7ED6415314D78C3C00653B22 /* View.cpp */,
 			);
@@ -1313,6 +1329,8 @@
 				7ED448B714CE6049000D5865 /* Logger.cpp in Sources */,
 				7EFA166414D1A38D006B4D06 /* MeshBuffer.cpp in Sources */,
 				7EBE51FE14D39E2F0054B478 /* FrameBuffer.cpp in Sources */,
+				7EB4EDEC14EBA05900C69A1B /* Buffer.cpp in Sources */,
+				7EB4EDF214EBD47100C69A1B /* VertexArray.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1412,6 +1430,8 @@
 				7EA4D0DC14E7CBCD00D5C4C6 /* View.cpp in Sources */,
 				7EA4D0E014E7E44600D5C4C6 /* WireframeRenderer.cpp in Sources */,
 				7EA4D10314E928D200D5C4C6 /* ParticleRenderer.cpp in Sources */,
+				7EB4EDEE14EBA05900C69A1B /* Buffer.cpp in Sources */,
+				7EB4EDF414EBD47100C69A1B /* VertexArray.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1511,6 +1531,8 @@
 				7EA4D0DD14E7CBCD00D5C4C6 /* View.cpp in Sources */,
 				7EA4D0DF14E7E44600D5C4C6 /* WireframeRenderer.cpp in Sources */,
 				7EA4D10414E928D300D5C4C6 /* ParticleRenderer.cpp in Sources */,
+				7EB4EDEF14EBA05900C69A1B /* Buffer.cpp in Sources */,
+				7EB4EDF514EBD47100C69A1B /* VertexArray.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1609,6 +1631,8 @@
 				7EA4D0DE14E7CBCE00D5C4C6 /* View.cpp in Sources */,
 				7EA4D0E114E7E44700D5C4C6 /* WireframeRenderer.cpp in Sources */,
 				7EA4D10514E928D300D5C4C6 /* ParticleRenderer.cpp in Sources */,
+				7EB4EDED14EBA05900C69A1B /* Buffer.cpp in Sources */,
+				7EB4EDF314EBD47100C69A1B /* VertexArray.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
