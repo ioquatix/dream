@@ -69,6 +69,9 @@ namespace Dream
 			/// Get the rotation from a matrix
 			static Quaternion from_matrix (const Mat44 & m);
 
+			/// Calculate the rotation from Euler angles
+			static Quaternion from_euler(Vec3T angles);
+			
 			/// Proxy function for convenience
 			const NumericT & operator[] (unsigned i) const;
 			/// Proxy function for convenience

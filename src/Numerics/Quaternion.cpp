@@ -108,6 +108,15 @@ namespace Dream
 
 			return Quaternion(e.normalized_vector(1));
 		}
+		
+		template <typename _NumericT>
+		Quaternion<_NumericT> Quaternion<_NumericT>::from_euler(Vec3T angles) {
+			Quaternion x_rotation(angles[X], Vec3T(1.0, 0.0, 0.0));
+			Quaternion y_rotation(angles[Y], Vec3T(0.0, 1.0, 0.0));
+			Quaternion z_rotation(angles[Z], Vec3T(0.0, 0.0, 1.0));
+			
+			return x_rotation * y_rotation * z_rotation;
+		}
 
 		template <typename _NumericT>
 		const _NumericT & Quaternion<_NumericT>::operator[] (unsigned i) const
