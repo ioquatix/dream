@@ -56,6 +56,7 @@ namespace Dream
 					
 					//logger()->log(LOG_DEBUG, LogBuffer() << "*** Rendering frame for context " << _graphics_view.openGLContext.CGLContextObj);
 					
+					uint64_t start_host_time = CVGetCurrentHostTime(), end_host_time;
 					TimeT time = (TimeT)(output_time->hostTime) / (TimeT)CVGetHostClockFrequency();
 					
 					@autoreleasepool {
@@ -68,6 +69,8 @@ namespace Dream
 						// Ask the client to render a frame:
 						_context_delegate->render_frame_for_time(this, time);
 						
+						end_host_time = CVGetCurrentHostTime();
+						
 						// Flush the buffer:
 						[[_graphics_view openGLContext] flushBuffer];
 						
@@ -75,14 +78,35 @@ namespace Dream
 						CGLUnlockContext((CGLContextObj)_graphics_view.openGLContext.CGLContextObj);
 					}
 					
-					if (CVGetCurrentHostTime() > output_time->hostTime) {
-						logger()->log(LOG_DEBUG, "Frame missed vertical sync.");
+					//uint64_t end_host_time = CVGetCurrentHostTime();
+					if (end_host_time > output_time->hostTime) {
+						// We calculate these times in seconds:
+						TimeT frame_period = (TimeT)output_time->videoRefreshPeriod / (TimeT)output_time->videoTimeScale;
+						
+						TimeT start_frame_offset = (TimeT)(output_time->hostTime - start_host_time) / CVGetHostClockFrequency();
+						TimeT end_frame_offset = (TimeT)(end_host_time - output_time->hostTime) / CVGetHostClockFrequency();
+						
+						TimeT end_offset = end_frame_offset / frame_period;
+						TimeT start_offset = start_frame_offset / frame_period;
+						
+						logger()->log(LOG_DEBUG, LogBuffer() << "Frame missed vertical sync (start=" << start_offset << "%, end=" << end_offset << "%)");
 						_skip_frame = true;
 					}
 					
 					_frame_refresh.notify_all();
 					
 					return kCVReturnSuccess;
+				}
+				
+				void ViewContext::setup_render_thread() {
+					CGLContextObj context = CGLGetCurrentContext();
+					
+					// Enable the multi-threading
+					CGLError error = CGLEnable(context, kCGLCEMPEngine);
+					
+					if (error != kCGLNoError) {
+						logger()->log(LOG_WARN, "Multi-threading OpenGL not available!");
+					}    
 				}
 				
 				void ViewContext::start() {
@@ -186,29 +210,15 @@ namespace Dream
 					
 					Context::set_cursor_mode(mode);
 					
-					if (mode == CURSOR_GRAB) {
+					if (mode == CURSOR_GRAB) {						
 						CGDisplayHideCursor(kCGNullDirectDisplay);
 						
 						CGAssociateMouseAndMouseCursorPosition(false);
 						
-						// Warp the mouse cursor to the center of the view.
-						NSRect bounds = _graphics_view.bounds;
-						NSPoint view_center = NSMakePoint(bounds.origin.x + bounds.size.width / 2.0, bounds.origin.y + bounds.size.height / 2.0);
-						NSPoint window_center = [_graphics_view convertPoint:view_center toView:nil];
-						NSPoint screen_offset = [[_graphics_view window] convertBaseToScreen:window_center];
-						
-						NSScreen * screen = [[_graphics_view window] screen];
-						
-						CGPoint newCursorPosition = CGPointMake(screen_offset.x, screen.frame.size.height - screen_offset.y);
-						
-						// What is the difference between these two functions?
-						// CGDirectDisplayID display = [[screen.deviceDescription objectForKey:@"NSScreenNumber"] unsignedIntValue];
-						// CGDisplayMoveCursorToPoint(display, newCursorPosition);
-						
-						// Alternative approach - doesn't generate events?
-						CGWarpMouseCursorPosition(newCursorPosition);
+						[_graphics_view warpCursorToCenter];
 					} else {
 						CGAssociateMouseAndMouseCursorPosition(true);
+						
 						CGDisplayShowCursor(kCGNullDirectDisplay);
 					}
 				}
@@ -241,10 +251,10 @@ namespace Dream
 							
 							// Anti-aliasing
 							attributes.push_back(NSOpenGLPFASampleBuffers);
-							attributes.push_back(3);
+							attributes.push_back(2);
 							
 							attributes.push_back(NSOpenGLPFASamples);
-							attributes.push_back(6);
+							attributes.push_back(4);
 							
 							// Buffer size
 							attributes.push_back(NSOpenGLPFAColorSize);
@@ -271,6 +281,9 @@ namespace Dream
 					// Tight alignment
 					CGLLockContext((CGLContextObj)_graphics_view.openGLContext.CGLContextObj);
 					[[_graphics_view openGLContext] makeCurrentContext];
+					
+					// Enable multiple-threaded OpenGL if possible.
+					// setup_render_thread();
 					
 					glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 					glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -318,7 +331,11 @@ namespace Dream
 					DREAM_ASSERT(_graphics_view);
 					
 					[_window setContentView:_graphics_view];
-					[_window setInitialFirstResponder:_graphics_view];
+					
+					
+					[_window orderBack:nil];
+					[_window makeFirstResponder:_window];
+					//[_window setInitialFirstResponder:_window.contentView];
 				}
 				
 				WindowContext::~WindowContext ()
@@ -330,6 +347,7 @@ namespace Dream
 				{					
 					// It is essential that the window is shown _AFTER_ the display link is started.
 					if (![_window isVisible]) {
+						[_window makeFirstResponder:_window];
 						[_window makeKeyAndOrderFront:nil];
 					}
 										

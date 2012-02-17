@@ -50,7 +50,8 @@ namespace Dream
 						CVDisplayLinkRef _display_link;
 						void setup_for_current_display();
 						void setup_display_link ();
-						
+						void setup_render_thread();
+										
 						// Need to manually set _graphics_view and call setup_display_link()
 						ViewContext();
 						

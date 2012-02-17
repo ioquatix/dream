@@ -7,6 +7,7 @@
 //
 
 #import "DWindowDelegate.h"
+#import "DOpenGLView.h"
 
 @implementation DWindowDelegate
 
@@ -62,6 +63,15 @@
 - (void)windowDidChangeScreenProfile:(NSNotification *)notification {
 	NSLog(@"Window did change screen profile...");
 	//_window_context->screen_configuration_changed();	
+}
+
+- (void)windowWillExitFullScreen:(NSNotification *)notification {
+	using namespace Dream::Client::Display;
+	
+	_window_context->set_cursor_mode(CURSOR_NORMAL);
+	
+	NSWindow * window = (NSWindow *)[notification object];
+	[window makeFirstResponder:window];
 }
 
 @end

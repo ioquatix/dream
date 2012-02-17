@@ -10,10 +10,14 @@
 #include "Context.h"
 
 @interface DOpenGLView : NSOpenGLView {
-	Dream::Client::Display::Cocoa::ViewContext * _display_context;	
+	Dream::Client::Display::Cocoa::ViewContext * _display_context;
+	
+	BOOL _skip_next_motion_event;
 }
 
 @property(nonatomic,assign) Dream::Client::Display::Cocoa::ViewContext * displayContext;
+
+- (void) warpCursorToCenter;
 
 - (BOOL) handleEvent:(NSEvent *)event;
 

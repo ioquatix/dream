@@ -32,7 +32,33 @@ using namespace Dream::Client::Display;
 	
 	_display_context->process(event_input);
 	
+	_skip_next_motion_event = NO;
+	
 	return YES;
+}
+
+- (void) warpCursorToCenter {
+	// Warp the mouse cursor to the center of the view.
+	NSRect bounds = self.bounds;
+	NSPoint view_center = NSMakePoint(bounds.origin.x + bounds.size.width / 2.0, bounds.origin.y + bounds.size.height / 2.0);
+	NSPoint window_center = [self convertPoint:view_center toView:nil];
+	
+	NSRect window_center_rect = {window_center, {0, 0}};
+	NSRect screen_offset_rect = [self.window convertRectToScreen:window_center_rect];
+	NSPoint screen_offset = screen_offset_rect.origin;
+	//NSLog(@"Screen offset: %@", NSStringFromPoint(screen_offset));
+	
+	NSScreen * screen = self.window.screen;
+	//NSLog(@"Screen frame: %@", NSStringFromRect(screen.frame));
+	
+	CGFloat top = screen.frame.origin.y + screen.frame.size.height;
+	CGPoint new_cursor_position = CGPointMake(screen_offset.x, top - screen_offset.y);
+	//NSLog(@"Cursor position: %@", NSStringFromPoint((NSPoint){new_cursor_position.x, new_cursor_position.y}));
+	
+	// This is a horrible hack because CGWarpMouseCursorPosition causes a spurious motion event delta:
+	_skip_next_motion_event = YES;
+	
+	CGWarpMouseCursorPosition(new_cursor_position);
 }
 
 - (void)reshape
@@ -41,7 +67,7 @@ using namespace Dream::Client::Display;
 	
 	if (!_display_context) return;
 	
-	//logger()->log(LOG_DEBUG, LogBuffer() << "Reshape for context: " << self.openGLContext.CGLContextObj);
+	logger()->log(LOG_DEBUG, LogBuffer() << "Reshape for context: " << self.openGLContext.CGLContextObj);
 	
 	using namespace Dream::Client::Display;
 	
@@ -74,6 +100,7 @@ using namespace Dream::Client::Display;
 
 - (BOOL) handleMouseEvent:(NSEvent *)event withButton:(Dream::Events::ButtonT)button
 {
+	NSEventMask mouse_motion_mask = NSMouseMovedMask | NSLeftMouseDraggedMask | NSRightMouseDraggedMask | NSOtherMouseDraggedMask;
 	//NSLog(@"Handling mouse event: %@", event);
 	
 	Vec3 position, movement;
@@ -83,7 +110,13 @@ using namespace Dream::Client::Display;
 	
 	// Convert the point from window base coordinates to view coordinates
 	NSPoint current_point = [self convertPoint:window_point fromView:nil];
-		
+	
+	// This is due to a bug in CGWarpMouseCursorPosition - what a horrible hack.
+	if (_skip_next_motion_event && (NSEventMaskFromType([event type]) & mouse_motion_mask)) {		
+		_skip_next_motion_event = NO;
+		return YES;
+	}
+	
 	position[X] = current_point.x;
 	position[Y] = current_point.y;
 	position[Z] = 0;
