@@ -186,15 +186,15 @@ namespace Dream
 							return 1.0;
 					}
 					
-					void queue(std::vector<Vertex> & vertices) {
-						std::copy(begin(_vertices), end(_vertices), std::back_inserter(vertices));
+					void queue(Vertex * destination) {
+						memcpy(destination, _vertices, sizeof(_vertices));
 					}
 				};
 				
 				std::vector<Physics> _physics;
-				std::vector<Vertex> _vertices;
 				std::vector<GLushort> _indices;
 				
+				std::size_t _count;
 				VertexArray _vertex_array;
 				IndexBuffer<GLushort> _indices_buffer;
 				VertexBuffer<Vertex> _vertex_buffer;
@@ -207,7 +207,7 @@ namespace Dream
 					COLOR = 3
 				};
 				
-				ParticleRenderer() {
+				ParticleRenderer() : _count(0) {
 					auto binding = _vertex_array.binding();
 					
 					// Attach vertices buffer:
@@ -224,20 +224,13 @@ namespace Dream
 				virtual ~ParticleRenderer() {	
 				}
 				
-				void clear() {
-					_vertices.clear();
-				}
-				
-				void queue(Physics & physics) {
-					physics.queue(_vertices);
-				}
-				
-				void draw() {										
-					// Number of particles to draw:
-					std::size_t count = _vertices.size() / 4;
+				void draw() {
+					// If there is nothing to draw, bail out quickly.
+					if (_count == 0)
+						return;
 					
 					// Setup indices for drawing quadrilaterals as triangles:
-					std::size_t additions = setup_triangle_indicies(count, _indices);
+					std::size_t additions = setup_triangle_indicies(_count, _indices);
 					
 					if (additions) {
 						auto binding = _indices_buffer.binding();
@@ -245,13 +238,8 @@ namespace Dream
 					}
 					
 					{
-						auto binding = _vertex_buffer.binding();
-						binding.set_data(_vertices);
-					}
-					
-					{
 						auto binding = _vertex_array.binding();
-						binding.draw_elements(GL_TRIANGLES, count * 6, GLTypeTraits<GLushort>::TYPE);
+						binding.draw_elements(GL_TRIANGLES, _count * 6, GLTypeTraits<GLushort>::TYPE);
 					}
 				}
 				

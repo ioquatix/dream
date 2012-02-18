@@ -74,9 +74,14 @@ namespace Dream {
 					return _usage;
 				}
 				
+				template <typename ElementT>
 				class Binding : private NonCopyable {
 				protected:
 					BufferHandle * _buffer_handle;
+					
+					GLsizeiptr byte_offset(std::size_t offset) {
+						return (GLsizeiptr)(sizeof(ElementT) * offset);
+					}
 					
 				public:
 					Binding(BufferHandle * buffer_handle) : _buffer_handle(buffer_handle) {
@@ -92,48 +97,65 @@ namespace Dream {
 							_buffer_handle->unbind();
 					}
 					
+					void size() {
+						return _buffer_handle->_size / sizeof(ElementT);
+					}
+					
 					void resize(std::size_t size) {
-						_buffer_handle->_size = size;
+						std::size_t data_size = byte_offset(size);
 						
-						glBufferData(TARGET, (GLsizeiptr)size, NULL, _buffer_handle->usage());
+						_buffer_handle->_size = data_size;
+						
+						glBufferData(TARGET, data_size, NULL, _buffer_handle->usage());
 					}
 					
 					void resize(std::size_t size, GLenum usage) {
 						_buffer_handle->_usage = usage;
+						
 						resize(size);
 					}
 					
-					void set_data(void * data, std::size_t size) {
+					void set_data(const ElementT * data, std::size_t size) {
 						_buffer_handle->_size = size;
 						
-						glBufferData(TARGET, (GLsizeiptr)size, data, _buffer_handle->usage());
+						glBufferData(TARGET, byte_offset(size), data, _buffer_handle->usage());
 					}
 					
 					template <typename ArrayT> 
 					void set_data (const ArrayT & array) {
-						set_data((void *)array.data(), array.size() * sizeof(typename ArrayT::value_type));
+						set_data(array.data(), array.size());
 					}
 					
-					void set_partial_data(void * data, std::size_t offset, std::size_t size) {
-						glBufferSubData(TARGET, (GLsizeiptr)offset, (GLsizeiptr)size, data);
+					void set_partial_data(const void * data, std::size_t offset, std::size_t size) {
+						glBufferSubData(TARGET, byte_offset(offset), byte_offset(size), data);
 					}
 					
-					void * map_data(GLenum access = GL_WRITE_ONLY) {
-						return glMapBuffer(TARGET, access);
+					ElementT * map(GLenum access = GL_WRITE_ONLY) {
+						return (ElementT *)glMapBuffer(TARGET, access);
 					}
 					
-					void unmap_data() {
+					ElementT * map(std::size_t offset, std::size_t size, GLenum access = GL_WRITE_ONLY) {
+						DREAM_ASSERT(offset + size < _buffer_handle->size());
+						
+						return (ElementT *)glMapBufferRange(TARGET, byte_offset(offset), byte_offset(size), access);
+					}
+					
+					void unmap() {
 						glUnmapBuffer(TARGET);
 					}
 					
-					template <typename ElementT>
-					BufferedArray<ElementT> map_array(GLenum access = GL_WRITE_ONLY) {
-						return BufferedArray<ElementT>(map_data(access), _buffer_handle->size());
+					BufferedArray<ElementT> array(GLenum access = GL_WRITE_ONLY) {
+						return BufferedArray<ElementT>((ElementT *)map(access), _buffer_handle->size());
+					}
+					
+					BufferedArray<ElementT> array(std::size_t offset, std::size_t size, GLenum acccess = GL_WRITE_ONLY) {
+						return BufferedArray<ElementT>(map(offset, size), size);
 					}
 				};
 				
-				Binding binding() {
-					Binding binding(this);
+				template <typename ElementT>
+				Binding<ElementT> binding() {
+					Binding<ElementT> binding(this);
 					
 					return std::move(binding);
 				}
@@ -142,17 +164,18 @@ namespace Dream {
 			template <GLenum TARGET, typename ElementT>
 			class GraphicsBuffer : public BufferHandle<TARGET> {
 			public:
+				// Wow...
+				typedef typename BufferHandle<TARGET>::template Binding<ElementT> BindingT;
+				
 				GraphicsBuffer(GLenum usage) : BufferHandle<TARGET>(usage) {
 				}
 				
-				BufferedArray<ElementT> map(GLenum access = GL_WRITE_ONLY) {
-					auto binding = this->binding();
-					return binding.template map_array<ElementT>(access);
-				}
+				using BufferHandle<TARGET>::binding;
 				
-				void commit() {
-					auto binding = this->binding();
-					binding.unmap_data();
+				BindingT binding() {
+					BindingT binding(this);
+					
+					return std::move(binding);
 				}
 			};
 			

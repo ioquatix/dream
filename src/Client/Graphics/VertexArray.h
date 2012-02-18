@@ -15,6 +15,11 @@ namespace Dream {
 	namespace Client {
 		namespace Graphics {
 			
+			template <typename ElementT>
+			struct BasicVertex {
+				ElementT element;
+			};
+			
 			class VertexArray : private NonCopyable {
 			protected:
 				GLuint _handle;

@@ -29,7 +29,7 @@
 
 /* Begin PBXFileReference section */
 		7E0DE9BA14E6314F009EEF7E /* Shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Shaders; sourceTree = "<group>"; };
-		7E14F83B1422FAA200AB80F1 /* Sakura Heart */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "Sakura Heart"; path = "Sakura Heart"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E14F83B1422FAA200AB80F1 /* Sakura Heart */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Sakura Heart"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E14F83F1422FAA300AB80F1 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		7E14F84D1422FB0000AB80F1 /* Dream.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Dream.xcconfig; sourceTree = "<group>"; };
 		7E9E41CD14286DCF0061260C /* iOS Sakura Heart-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iOS Sakura Heart-Info.plist"; sourceTree = "<group>"; };
@@ -69,7 +69,7 @@
 		7E14F83C1422FAA200AB80F1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7E14F83B1422FAA200AB80F1 /* Demo */,
+				7E14F83B1422FAA200AB80F1 /* Sakura Heart */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -147,7 +147,7 @@
 			);
 			name = "Sakura Heart";
 			productName = Demo;
-			productReference = 7E14F83B1422FAA200AB80F1 /* Demo */;
+			productReference = 7E14F83B1422FAA200AB80F1 /* Sakura Heart */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -256,6 +256,11 @@
 		7E14F8471422FAA300AB80F1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_DYNAMIC_NO_PIC = YES;
+				GCC_FAST_MATH = YES;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_UNROLL_LOOPS = YES;
+				LLVM_LTO = YES;
 				PRODUCT_NAME = "Sakura Heart";
 			};
 			name = Release;

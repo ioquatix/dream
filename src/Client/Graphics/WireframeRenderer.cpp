@@ -58,7 +58,7 @@ namespace Dream {
 				
 				{
 					// Upload data:
-					auto binding = _vertex_buffer.binding();
+					auto binding = _vertex_buffer.binding<Vec3>();
 					binding.set_data(line);
 				}
 				
