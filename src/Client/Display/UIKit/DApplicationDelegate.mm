@@ -11,12 +11,12 @@
 
 #include "Context.h"
 
-Dream::Client::Display::IApplication * g_application = NULL;
+Dream::Client::Display::IApplication * global_application = NULL;
 
 @implementation DApplicationDelegate
 
 + (void) startWithApplication: (Dream::Client::Display::IApplication*)application {
-	g_application = application;
+	global_application = application;
 	
 	int argc = 0;
 	char ** argv = {NULL};
@@ -30,19 +30,19 @@ Dream::Client::Display::IApplication * g_application = NULL;
 
 	//[self performSelector:@selector(runApplicationCallback:) withObject:nil afterDelay:0.0];
 	
-	g_application->delegate()->application_did_finish_launching(g_application);
+	global_application->delegate()->application_did_finish_launching(global_application);
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-	g_application->delegate()->application_will_enter_background(g_application);
+	global_application->delegate()->application_will_enter_background(global_application);
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-	g_application->delegate()->application_did_enter_foreground(g_application);
+	global_application->delegate()->application_did_enter_foreground(global_application);
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-	g_application->delegate()->application_did_finish_launching(g_application);
+	global_application->delegate()->application_did_finish_launching(global_application);
 }
 
 @end
