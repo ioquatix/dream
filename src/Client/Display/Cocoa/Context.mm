@@ -48,49 +48,58 @@ namespace Dream
 						_initialized = true;
 					}
 					
-					if (_skip_frame) {
-						_skip_frame = false;
+					if (_skip_frame) {						
+						_skip_frame -= 1;
 						// Eat the first frame (or subsequent frames), which may not be an entire time slice.
 						return kCVReturnSuccess;
 					}
 					
 					//logger()->log(LOG_DEBUG, LogBuffer() << "*** Rendering frame for context " << _graphics_view.openGLContext.CGLContextObj);
 					
-					uint64_t start_host_time = CVGetCurrentHostTime(), end_host_time;
+					uint64_t start_host_time, submit_host_time, end_host_time;
 					TimeT time = (TimeT)(output_time->hostTime) / (TimeT)CVGetHostClockFrequency();
 					
 					@autoreleasepool {
+						CGLContextObj graphicsContext = (CGLContextObj)_graphics_view.openGLContext.CGLContextObj;
+						
 						// Lock the context so that no other thread can be accessing it:
-						CGLLockContext((CGLContextObj)_graphics_view.openGLContext.CGLContextObj);
-
+						CGLLockContext(graphicsContext);
+						
 						// Prepare the context for rendering:
-						[_graphics_view.openGLContext makeCurrentContext];
+						CGLSetCurrentContext(graphicsContext);
+						
+						start_host_time = CVGetCurrentHostTime();
 						
 						// Ask the client to render a frame:
 						_context_delegate->render_frame_for_time(this, time);
 						
-						end_host_time = CVGetCurrentHostTime();
+						submit_host_time = CVGetCurrentHostTime();
 						
 						// Flush the buffer:
-						[[_graphics_view openGLContext] flushBuffer];
+						CGLFlushDrawable(graphicsContext);
+						
+						end_host_time = CVGetCurrentHostTime();
 						
 						// Unlock the context:
 						CGLUnlockContext((CGLContextObj)_graphics_view.openGLContext.CGLContextObj);
 					}
 					
-					//uint64_t end_host_time = CVGetCurrentHostTime();
+					// Print out information relating to the missed frame:
 					if (end_host_time > output_time->hostTime) {
 						// We calculate these times in seconds:
 						TimeT frame_period = (TimeT)output_time->videoRefreshPeriod / (TimeT)output_time->videoTimeScale;
 						
-						TimeT start_frame_offset = (TimeT)(output_time->hostTime - start_host_time) / CVGetHostClockFrequency();
-						TimeT end_frame_offset = (TimeT)(end_host_time - output_time->hostTime) / CVGetHostClockFrequency();
+						TimeT start_frame_offset = ((TimeT)start_host_time - output_time->hostTime) / CVGetHostClockFrequency();
+						TimeT submit_frame_offset = ((TimeT)submit_host_time - output_time->hostTime) / CVGetHostClockFrequency();
+						TimeT end_frame_offset = ((TimeT)end_host_time - output_time->hostTime) / CVGetHostClockFrequency();
 						
-						TimeT end_offset = end_frame_offset / frame_period;
-						TimeT start_offset = start_frame_offset / frame_period;
+						TimeT end_offset = (end_frame_offset / frame_period) * 100.0;
+						TimeT submit_offset = (submit_frame_offset / frame_period) * 100.0;
+						TimeT start_offset = (start_frame_offset / frame_period) * 100.0;
 						
-						logger()->log(LOG_DEBUG, LogBuffer() << "Frame missed vertical sync (start=" << start_offset << "%, end=" << end_offset << "%)");
-						_skip_frame = true;
+						logger()->log(LOG_DEBUG, LogBuffer() << std::setprecision(3) << "Frame missed vertical sync (start=" << start_offset << "%, submit=" << submit_offset << "%, end=" << end_offset << "%)");
+						
+						_skip_frame = 1;
 					}
 					
 					_frame_refresh.notify_all();
@@ -113,7 +122,7 @@ namespace Dream
 					setup_display_link();
 					
 					_initialized = false;
-					_skip_frame = true;
+					_skip_frame = 1;
 					
 					DREAM_ASSERT(_display_link != nil);
 					DREAM_ASSERT(_graphics_view != nil);
@@ -160,8 +169,8 @@ namespace Dream
 				{
 					if (!_display_link) {
 						// Synchronize buffer swaps with vertical refresh rate
-						GLint swap = 1;
-						[[_graphics_view openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
+						//GLint swap = 1;
+						//[[_graphics_view openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
 						
 						// Create a display link capable of being used with all active displays
 						CVDisplayLinkCreateWithActiveCGDisplays(&_display_link);
@@ -250,11 +259,10 @@ namespace Dream
 							//attributes.push_back(NSOpenGLPFANoRecovery);
 							
 							// Anti-aliasing
-							attributes.push_back(NSOpenGLPFASampleBuffers);
-							attributes.push_back(2);
-							
-							attributes.push_back(NSOpenGLPFASamples);
-							attributes.push_back(4);
+							//attributes.push_back(NSOpenGLPFASampleBuffers);
+							//attributes.push_back(2);
+							//attributes.push_back(NSOpenGLPFASamples);
+							//attributes.push_back(4);
 							
 							// Buffer size
 							attributes.push_back(NSOpenGLPFAColorSize);
