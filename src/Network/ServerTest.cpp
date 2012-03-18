@@ -25,8 +25,8 @@ namespace Dream
 		
 		const unsigned PK_PING = 0xAF;
 		
-		Numerics::Average<TimeT> g_latency;
-		std::mutex g_latencyLock, g_outputLock;
+		Numerics::Average<TimeT> global_latency;
+		std::mutex global_latency_lock, global_output_lock;
 		typedef std::lock_guard<std::mutex> scoped_lock;
 
 		class Pinger : public MessageClientSocket {
@@ -48,13 +48,13 @@ namespace Dream
 			
 			virtual ~Pinger () {
 				//{
-				//	scoped_lock _s(g_outputLock);
+				//	scoped_lock _s(global_output_lock);
 				//	std::cout << "Individual average is: " << (_avg.average() * 1000.0) << "ms" << std::endl;
 				//}
 				
 				if (_avg.has_samples()) {
-					scoped_lock lock(g_latencyLock);
-					g_latency.add_samples(_avg);
+					scoped_lock lock(global_latency_lock);
+					global_latency.add_samples(_avg);
 				}
 			}
 			
@@ -73,7 +73,7 @@ namespace Dream
 				Ref<Message> recv_msg = received_messages().front();
 				received_messages().pop();
 								
-				if (recv_msg->header()->ptype == PK_PING) {					
+				if (recv_msg->header()->packet_type == PK_PING) {					
 					_avg.add_sample(total);
 				}
 				
@@ -89,7 +89,7 @@ namespace Dream
 				Ref<Message> send_msg (new Message);
 				
 				send_msg->reset_header();
-				send_msg->header()->ptype = PK_PING;
+				send_msg->header()->packet_type = PK_PING;
 				
 				send_message(send_msg);
 				
@@ -129,7 +129,7 @@ namespace Dream
 					
 					Ref<Message> pong_msg = new Message;
 					pong_msg->reset_header();
-					pong_msg->header()->ptype = PK_PING;
+					pong_msg->header()->packet_type = PK_PING;
 					
 					client->send_message(pong_msg);
 				}
@@ -140,7 +140,7 @@ namespace Dream
 				Ref<MessageClientSocket> client_socket = new MessageClientSocket(h, a);
 				
 				//std::cerr << "Accepted connection " << client_socket << " from " << client_socket->remote_address().description();
-				//std::cerr << " (" << client_socket->remote_address().address_familyName() << ")" << std::endl;
+				//std::cerr << " (" << client_socket->remote_address().address_family_name() << ")" << std::endl;
 				
 				client_socket->message_received_callback = std::bind(&PingPongServer::message_received, this, std::placeholders::_1);
 				
@@ -170,7 +170,7 @@ namespace Dream
 			{	
 				std::cerr << "Run " << i << std::endl;
 				
-				//g_latency = Numerics::Average<TimeT>();
+				//global_latency = Numerics::Average<TimeT>();
 				
 				Ref<ServerContainer> container(new ServerContainer);
 				
@@ -198,8 +198,8 @@ namespace Dream
 				container->stop();
 				
 				{
-					scoped_lock lock(g_latencyLock);
-					std::cout << "Average latency (whole time): " << g_latency.average() * 1000.0 << "ms" << std::endl;
+					scoped_lock lock(global_latency_lock);
+					std::cout << "Average latency (whole time): " << global_latency.average() * 1000.0 << "ms" << std::endl;
 				}
 			}
 		}

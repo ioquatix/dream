@@ -24,21 +24,8 @@ namespace Dream {
 			protected:
 				GLuint _handle;
 				
-				void bind() {
-					//logger()->log(LOG_DEBUG, LogBuffer() << "Binding " << _handle);
-					
-					glBindVertexArray(_handle);
-					
-					check_graphics_error();
-				}
-				
-				void unbind() {
-					//logger()->log(LOG_DEBUG, LogBuffer() << "Unbinding " << _handle);
-					
-					glBindVertexArray(0);
-					
-					check_graphics_error();
-				}
+				void bind();
+				void unbind();
 				
 			public:
 				VertexArray();

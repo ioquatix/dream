@@ -31,6 +31,22 @@ namespace Dream {
 				check_graphics_error();
 			}
 			
+			void VertexArray::bind() {
+				//logger()->log(LOG_DEBUG, LogBuffer() << "Binding array " << _handle);
+				
+				glBindVertexArray(_handle);
+				
+				check_graphics_error();
+			}
+			
+			void VertexArray::unbind() {
+				//logger()->log(LOG_DEBUG, LogBuffer() << "Unbinding array " << _handle);
+				
+				glBindVertexArray(0);
+				
+				check_graphics_error();
+			}
+			
 			void VertexArray::Binding::enable(GLuint index) {			
 				glEnableVertexAttribArray(index);
 				

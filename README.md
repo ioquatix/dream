@@ -108,6 +108,11 @@ When an object has ownership of a resource, it should use a `Dream::Ref<Object>`
 
 When passing objects to a function, you don't need to incur the performance cost of memory management. Therefore, you should use `Dream::Ptr<Object>`. Return values should still be `Dream::Ref<Object>`. Return value optimization ensures that reference counting overhead is minimized.
 
+Related Links
+-------------
+
+* [Perspective Correct Texturing][http://chrishecker.com/Miscellaneous_Technical_Articles]
+
 License
 -------
 

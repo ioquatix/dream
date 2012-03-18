@@ -19,7 +19,7 @@ namespace Dream
 			typedef const StringT::value_type * IteratorT;
 			
 			struct Authority {
-				IteratorT user_infoBegin, user_infoEnd;
+				IteratorT user_info_begin, user_info_end;
 				IteratorT host_begin, host_end;
 				IteratorT port_begin, port_end;
 			};
@@ -103,7 +103,7 @@ namespace Dream
 					return (*i >= 'a' && *i <= 'z') || (*i >= 'A' && *i <= 'Z');
 				}
 				
-				static bool is_alphaNumeric(IteratorT i) {
+				static bool is_alpha_numeric(IteratorT i) {
 					return is_numeric(i) || is_alpha(i);
 				}
 				
@@ -117,7 +117,7 @@ namespace Dream
 				
 				//   unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
 				static bool is_unreserved(IteratorT i) {
-					return is_alphaNumeric(i) || *i == '-' || *i == '.' || *i == '_' || *i == '~';
+					return is_alpha_numeric(i) || *i == '-' || *i == '.' || *i == '_' || *i == '~';
 				}
 				
 				//   gen-delims    = ":" / "/" / "?" / "#" / "[" / "]" / "@"
@@ -187,7 +187,7 @@ namespace Dream
 				//   IPvFuture     = "v" 1*HEXDIG "." 1*( unreserved / sub-delims / ":" )
 				//   IPv4address   = dec-octet "." dec-octet "." dec-octet "." dec-octet
 				//   reg-name      = *( unreserved / pct-encoded / sub-delims )
-				static IteratorT parse_hostCharacter(IteratorT begin, IteratorT end) {
+				static IteratorT parse_host_character(IteratorT begin, IteratorT end) {
 					IteratorT next = begin;
 					
 					next = parse_predicate(is_unreserved, next, end);
@@ -199,20 +199,24 @@ namespace Dream
 				
 				static IteratorT parse_host(IteratorT begin, IteratorT end) {
 					// For convenience we shortcut this parsing for now.
-					return parse_string(parse_hostCharacter, begin, end);
+					return parse_string(parse_host_character, begin, end);
 				}
 				
 				//   authority     = [ userinfo "@" ] host [ ":" port ]
 				//   port          = *DIGIT
 				static IteratorT parse_authority(IteratorT begin, IteratorT end, Authority & authority) {
-					IteratorT user_infoBegin = begin;
-					IteratorT user_infoEnd = parse_string(parse_user_info_character, begin, end);
+					IteratorT user_info_begin = begin;
 					
-					IteratorT host_begin = parse_constant("@", user_infoEnd, end);
-					if (host_begin != user_infoEnd) {
+					IteratorT user_info_end = parse_string(parse_user_info_character, begin, end);
+					IteratorT host_begin = parse_constant("@", user_info_end, end);
+					
+					// Can we parse the "@" symbol?
+					if (host_begin != user_info_end) {
 						// Valid user info was found:
-						authority.user_infoBegin = user_infoBegin;
-						authority.user_infoEnd = user_infoEnd;
+						authority.user_info_begin = user_info_begin;
+						authority.user_info_end = user_info_end;
+					} else {
+						host_begin = begin;
 					}
 					
 					IteratorT host_end = parse_host(host_begin, end);
@@ -292,7 +296,7 @@ namespace Dream
 				
 				//   scheme        = ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
 				static bool is_scheme_character(IteratorT i) {
-					return is_alphaNumeric(i) || *i == '+' || *i == '-' || *i == '.';
+					return is_alpha_numeric(i) || *i == '+' || *i == '-' || *i == '.';
 				}
 				
 				static IteratorT parse_scheme(IteratorT begin, IteratorT end) {
@@ -398,7 +402,7 @@ namespace Dream
 			return _message.c_str();
 		}
 		
-		URI::URI(const StringT & s) : _url(s)
+		URI::URI(const StringT & s) : _url(s), _port(0)
 		{
 			URIImpl::Components components;
 			
@@ -416,8 +420,8 @@ namespace Dream
 				if (components.hierarchy.authority_begin != NULL) {
 					_authority = StringT(components.hierarchy.authority_begin, components.hierarchy.authority_end);
 					
-					if (components.hierarchy.authority.user_infoBegin != NULL) {
-						StringT user_info(components.hierarchy.authority.user_infoBegin, components.hierarchy.authority.user_infoEnd);
+					if (components.hierarchy.authority.user_info_begin != NULL) {
+						StringT user_info(components.hierarchy.authority.user_info_begin, components.hierarchy.authority.user_info_end);
 						split(user_info, ':', std::back_inserter(_user_info));
 					}
 					
@@ -444,8 +448,7 @@ namespace Dream
 			}
 		}
 
-		URI::URI (const StringT & scheme, const Path & path)
-		: _scheme(scheme), _path(path.to_local_path())
+		URI::URI (const StringT & scheme, const Path & path) : _scheme(scheme), _path(path.to_local_path()), _port(0)
 		{
 			
 		}
@@ -548,6 +551,10 @@ namespace Dream
 			check(a.path() == "/blah") << "Path is correct";
 			check(a.query() == "?bob=2") << "Query is correct";
 
+			URI a2("http://localhost");
+			check(a2.scheme() == "http") << "scheme " << a2.scheme() << " should be 'http'";
+			check(a2.hostname() == "localhost") << "hostname " << a2.hostname() << " should be 'localhost'";
+			
 			testing("Mailto URI");
 			URI b("mailto:blah@blah.com");
 			check(b.scheme() == "mailto") << "Scheme is correct";

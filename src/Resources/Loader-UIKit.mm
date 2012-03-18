@@ -12,22 +12,22 @@
 
 namespace Dream {
 	namespace Resources {
-		Shared<Path> g_workingPath;
-				
-		Path applicationWorkingPath () {
+		Shared<Path> _working_path;
+		
+		Path application_working_path () {
 			// Cache the path result
-			if (!g_workingPath) {
+			if (!_working_path) {
 				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 				// I don't think this is the right way to handle resource paths.
 				// One main resource search path is not enough - need to implement
 				// a list of paths.
-				NSString *resPath = [[NSBundle mainBundle] resourcePath];
+				NSString * resource_path = [[NSBundle mainBundle] resourcePath];
 				
-				g_workingPath = new Path([resPath UTF8String]);
+				_working_path = new Path([resource_path UTF8String]);
 				[pool release];
 			}
 			
-			return *g_workingPath;
+			return *_working_path;
 		}
 	}
 }

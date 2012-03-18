@@ -22,6 +22,7 @@
 	#define DREAM_OPENGLES2
 #elif TARGET_OS_MAC
 	#include <OpenGL/gl3.h>
+	#include <OpenGL/gl3ext.h>
 
 	#define DREAM_OPENGL32
 #elif TARGET_OS_ANDROID

@@ -58,13 +58,13 @@ namespace Dream {
 			LUMINANCE_ALPHA = 0x190A
 		};
 			
-		unsigned data_typeByteSize(ImageDataType type);
+		unsigned data_type_byte_size(ImageDataType type);
 		unsigned packed_pixel_channel_count (ImagePixelPacking type);
 		unsigned pixel_format_channel_count (ImagePixelFormat type);
 		
 		// This type is guaranteed to be big enough to hold even RGBA16.
 		// This is useful when you want a generic representation of a pixel
-		typedef unsigned long long PixelT;
+		typedef uint64_t PixelT;
 		
 		class IPixelBuffer : implements IObject
 		{
@@ -79,9 +79,9 @@ namespace Dream {
 			};
 						
 			virtual ImagePixelFormat pixel_format () const abstract; // eg GL_RGBA
-			virtual ImageDataType pixel_dataType () const; // eg GL_UNSIGNED_BYTE
+			virtual ImageDataType pixel_data_type () const; // eg GL_UNSIGNED_BYTE
 			
-			unsigned pixel_dataLength () const { return size().product() * bytes_per_pixel(); }
+			unsigned pixel_data_length () const { return size().product() * bytes_per_pixel(); }
 			
 			// Returns the equivalent pixel type, ie GL_UNSIGNED_INT_8_8_8_8 -> GL_UNSIGNED_INT
 			ImageDataType packed_type () const;
@@ -109,18 +109,18 @@ namespace Dream {
 			}
 			
 			// pixbuf->at(vec<unsigned>(43, 12));
-			const ByteT* pixel_dataAt (const Vector<3, unsigned> &at) const {
+			const ByteT* pixel_data_at (const Vector<3, unsigned> &at) const {
 				return pixel_data() + pixel_offset(at);
 			}
 			
 			// Helper to read pixel data
 			// This may convert between the pixbuf format and the output pixel
 			// void read_pixel (const Vector<3, unsigned> &at, Vector<4, float> &output) const;
-			template <typename data_t>
-			void read_data_at (const unsigned &idx, data_t &val) {
+			template <typename DataT>
+			void read_data_at (const unsigned &idx, DataT &val) const {
 				const ByteT *data = pixel_data();
 				
-				val = *(data_t*)(&data[idx]);
+				val = *(DataT*)(&data[idx]);
 			}
 			
 			// This does not do _any_ sanity checking what-so-ever.
@@ -153,7 +153,7 @@ namespace Dream {
 			
 			void zero (PixelT px = 0);
 			
-			ByteT* pixel_dataAt (const Vector<3, unsigned> &at)
+			ByteT* pixel_data_at (const Vector<3, unsigned> &at)
 			{
 				return pixel_data() + pixel_offset(at);
 			}
@@ -180,7 +180,7 @@ namespace Dream {
 			
 			void copy_pixels_from(const IPixelBuffer& buf, const Vector<3, unsigned> &to, CopyFlags copy_flags = CopyNormal)
 			{
-				copy_pixels_from(buf, vec<unsigned>(0, 0, 0), to, buf.size(), copy_flags);
+				copy_pixels_from(buf, Vec3u(0, 0, 0), to, buf.size(), copy_flags);
 			}
 		};
 		

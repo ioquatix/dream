@@ -111,7 +111,7 @@ namespace Dream
 			};
 			
 			typedef std::priority_queue<TimerHandle> TimerHandlesT;
-			TimerHandlesT _timerHandles;
+			TimerHandlesT _timer_handles;
 			
 			bool next_timeout (TimeT &);
 			

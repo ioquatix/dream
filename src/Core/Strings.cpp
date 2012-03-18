@@ -50,7 +50,7 @@ namespace Dream
 		
 #pragma mark -
 
-		StringT::value_type convert_toDigit(char c) {
+		StringT::value_type convert_to_digit(char c) {
 			StringT::value_type d = c - '0';
 			if (d < 10) {
 				return d;
@@ -65,7 +65,7 @@ namespace Dream
 			throw std::range_error("Could not convert character to digit - out of range!");
 		}
 		
-		char convert_toChar(StringT::value_type d) {
+		char convert_to_character(StringT::value_type d) {
 			if (d < 10) {
 				return '0' + d;
 			} else if (d < 36) {
@@ -109,8 +109,8 @@ namespace Dream
 							continue;
 						case 'x':
 							if ((end - i) >= 2) {
-								StringT::value_type value = convert_toDigit(*(++i)) << 4;
-								value |= convert_toDigit(*(++i));
+								StringT::value_type value = convert_to_digit(*(++i)) << 4;
+								value |= convert_to_digit(*(++i));
 								buffer << (StringT::value_type)value;
 								continue;
 							} else {

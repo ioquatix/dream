@@ -86,8 +86,8 @@ namespace Dream
 			// Only inserts key-values that don't already exist.
 			void insert (const Ptr<Dictionary> other);
 			
-			Ref<IData> serialize () const;
-			void deserialize (Ref<IData> data);
+			Ref<IData> serialize() const;
+			void deserialize(Ref<IData> data);
 			
 			void debug (std::ostream &) const;
 		};

@@ -32,7 +32,7 @@ namespace Dream
 		
 		class FixedProjection : public Object, implements IProjection {
 		protected:
-			Mat44 _projectionMatrix;
+			Mat44 _projection_matrix;
 			
 		public:
 			FixedProjection(const Mat44 projection_matrix);
@@ -58,7 +58,7 @@ namespace Dream
 		
 		class ScaledOrthographicProjection : public OrthographicProjection {
 		protected:
-			IndexT _scaleAxis;
+			IndexT _scale_axis;
 			
 		public:
 			/// Provide a scale_axis to control how the orthographic projection should be resized

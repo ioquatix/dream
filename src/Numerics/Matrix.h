@@ -197,8 +197,7 @@ namespace Dream
 			template <typename AnyT>
 			void set (const AnyT * data)
 			{
-				for (unsigned i = 0; i < R*C; i++)
-				{
+				for (unsigned i = 0; i < R*C; i++) {
 					_matrix[i] = data[i];
 				}
 			}

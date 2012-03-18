@@ -33,7 +33,7 @@ namespace Dream {
 				return _format;
 			}
 			
-			virtual ImageDataType pixel_dataType () const
+			virtual ImageDataType pixel_data_type () const
 			{
 				return _data_type;
 			}

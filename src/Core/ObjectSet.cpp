@@ -107,11 +107,11 @@ namespace Dream
 			oid._value = NULL;
 		}
 		
-		ObjectSet::Iterator::Iterator(ObjectSet * ctx, IdentT index, Placement placement) : _objectContext(ctx), _index(index), _placement(placement)
+		ObjectSet::Iterator::Iterator(ObjectSet * ctx, IdentT index, Placement placement) : _object_context(ctx), _index(index), _placement(placement)
 		{
 		}
 		
-		ObjectSet::Iterator::Iterator(ObjectSet * ctx, Placement placement) : _objectContext(ctx), _index(-1), _placement(placement)
+		ObjectSet::Iterator::Iterator(ObjectSet * ctx, Placement placement) : _object_context(ctx), _index(-1), _placement(placement)
 		{
 		}
 		
@@ -134,7 +134,7 @@ namespace Dream
 		ObjectSet::ObjectID ObjectSet::Iterator::operator* ()
 		{
 			if ((_placement & END) == 0)
-				return _objectContext->fetch(_index);
+				return _object_context->fetch(_index);
 			else
 			{
 				throw std::out_of_range("Trying to deRef the end iterator!");
@@ -178,7 +178,7 @@ namespace Dream
 		
 		void ObjectSet::Iterator::move_forward ()
 		{
-			IndexT top = _objectContext->_objects.size () - 1;
+			IndexT top = _object_context->_objects.size () - 1;
 			
 			do
 			{
@@ -191,7 +191,7 @@ namespace Dream
 				}
 				
 				_index += 1;
-			} while (!_objectContext->_objects[_index]);
+			} while (!_object_context->_objects[_index]);
 		}
 		
 		void ObjectSet::Iterator::move_reverse ()
@@ -207,7 +207,7 @@ namespace Dream
 				}
 				
 				_index -= 1;
-			} while (!_objectContext->_objects[_index]);
+			} while (!_object_context->_objects[_index]);
 		}
 
 #pragma mark -

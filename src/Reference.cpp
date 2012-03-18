@@ -17,24 +17,6 @@
 
 namespace Dream {
 	
-	// #define TRACK_ALLOCATIONS 1
-	
-	#ifdef TRACK_ALLOCATIONS
-	enum AllocationStatus {
-		ALLOCATED,
-		DELETED,
-		STATIC
-	};
-	
-	typedef std::map<const void *, AllocationStatus> AllocationsT;
-	AllocationsT s_allocations;
-	double s_refCountBumps = 0;
-	
-	void mark_static_allocation (void * object) {
-		s_allocations[object] = STATIC;
-	}
-	#endif
-
 	SharedObject::SharedObject () : _count(0) {
 		#ifdef TRACK_ALLOCATIONS
 		s_allocations[this] = ALLOCATED;
@@ -46,7 +28,7 @@ namespace Dream {
 	}
 			
 	SharedObject & SharedObject::operator= (const SharedObject & other) {
-		// Don't touch Ref count.
+		// Don't touch reference count.
 		
 		return *this;
 	}
@@ -56,22 +38,10 @@ namespace Dream {
 	}
 	
 	void SharedObject::retain () const {
-		// std::cout << "Ref Increment @ " << this << " -> " << (_count+1) << std::endl;
-
-		#ifdef TRACK_ALLOCATIONS
-		s_refCountBumps += 1;
-		#endif
-
 		OSAtomicIncrement32(&_count);
 	}
 	
 	bool SharedObject::release () const {
-		// std::cout << "Ref Decrement @ " << this << " -> " << (_count-1) << std::endl;
-		
-		#ifdef TRACK_ALLOCATIONS
-		s_refCountBumps += 1;
-		#endif
-		
 		int32_t count = OSAtomicDecrement32(&_count);
 
 		if (count == 0) {
@@ -83,33 +53,11 @@ namespace Dream {
 	}
 	
 	void SharedObject::deallocate () const {
-		//std::cout << "Deleting Object @ " << this << std::endl;
-		
-		#ifdef TRACK_ALLOCATIONS
-		s_allocations[this] = DELETED;
-		#endif
-		
 		delete this;
 	}
 	
 	int32_t SharedObject::reference_count () const {
 		return _count;
-	}
-	
-	void debug_allocations () {
-		#ifdef TRACK_ALLOCATIONS
-		int total_allocations = 0;
-		
-		for (AllocationsT::iterator i = s_allocations.begin(); i != s_allocations.end(); ++i) {
-			if (i->second == ALLOCATED)
-				std::cerr << "\t" << i->first << " has not been freed!" << std::endl;
-			
-			total_allocations += 1;
-		}
-		
-		std::cerr << "Total Allocations: " << total_allocations << std::endl;
-		std::cerr << "Ref Count Bumps: " << s_refCountBumps << std::endl;
-		#endif
 	}
 	
 #pragma mark -

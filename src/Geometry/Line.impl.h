@@ -118,7 +118,7 @@ namespace Dream
 		}
 		
 		template <typename NumericT>
-		bool line_intersectionTest (const Line<2, NumericT> & lhs, const Line<2, NumericT> & rhs, NumericT & left_time, NumericT & right_time)
+		bool line_intersection_test (const Line<2, NumericT> & lhs, const Line<2, NumericT> & rhs, NumericT & left_time, NumericT & right_time)
 		{
 			Vector<2, NumericT> t = lhs.direction();
 			Vector<2, NumericT> o = rhs.direction();
@@ -139,7 +139,7 @@ namespace Dream
 		}
 		
 		template <unsigned D, typename NumericT>
-		bool line_intersectionTest (const Line<D, NumericT> & lhs, const Line<D, NumericT> & rhs, NumericT & left_time, NumericT & right_time)
+		bool line_intersection_test (const Line<D, NumericT> & lhs, const Line<D, NumericT> & rhs, NumericT & left_time, NumericT & right_time)
 		{
 			Vector<2, NumericT> lhs_point, lhs_dir, rhs_point, rhs_dir;
 			lhs_point.set(lhs.point());
@@ -149,7 +149,7 @@ namespace Dream
 			rhs_dir.set(rhs.direction());
 			
 			Line<2, NumericT> lhs2d(lhs_point, lhs_dir), rhs2d(rhs_point, rhs_dir);
-			if (line_intersectionTest(lhs2d, rhs2d, left_time, right_time))
+			if (line_intersection_test(lhs2d, rhs2d, left_time, right_time))
 			{
 				// Collision occurred in 2-space, check in n-space
 				Vector<D, NumericT> lhs_pt, rhs_pt;
@@ -169,7 +169,7 @@ namespace Dream
 		template <unsigned D, typename NumericT>
 		bool Line<D, NumericT>::intersects_with (const Line<D, NumericT> & other, NumericT & this_time, NumericT & other_time) const
 		{
-			return line_intersectionTest(*this, other, this_time, other_time);
+			return line_intersection_test(*this, other, this_time, other_time);
 		}
 		
 		template <typename NumericT>
@@ -256,7 +256,7 @@ namespace Dream
 		}
 				
 		template <typename NumericT>
-		bool line_intersectionTest (const LineSegment<1, NumericT> & lhs, const LineSegment<1, NumericT> & rhs, LineSegment<1, NumericT> & overlap)
+		bool line_intersection_test (const LineSegment<1, NumericT> & lhs, const LineSegment<1, NumericT> & rhs, LineSegment<1, NumericT> & overlap)
 		{
 			NumericT lmin, lmax, rmin, rmax;
 			
@@ -283,7 +283,7 @@ namespace Dream
 		}
 		
 		template <typename NumericT>
-		bool line_intersectionTest (const LineSegment<2, NumericT> & lhs, const LineSegment<2, NumericT> & rhs, NumericT & left_time, NumericT & right_time)
+		bool line_intersection_test (const LineSegment<2, NumericT> & lhs, const LineSegment<2, NumericT> & rhs, NumericT & left_time, NumericT & right_time)
 		{
 			Vector<2, NumericT> t = lhs.offset();
 			Vector<2, NumericT> o = rhs.offset();
@@ -310,7 +310,7 @@ namespace Dream
 		}
 		
 		template <unsigned D, typename NumericT>
-		bool line_intersectionTest (const LineSegment<D, NumericT> & lhs, const LineSegment<D, NumericT> & rhs, NumericT & left_time, NumericT & right_time)
+		bool line_intersection_test (const LineSegment<D, NumericT> & lhs, const LineSegment<D, NumericT> & rhs, NumericT & left_time, NumericT & right_time)
 		{
 			Vector<2, NumericT> lhs_start, lhs_end, rhs_start, rhs_end;
 			lhs_start.set(lhs.start());
@@ -320,7 +320,7 @@ namespace Dream
 			rhs_end.set(rhs.end());
 			
 			LineSegment<2, NumericT> lhs2d(lhs_start, lhs_end), rhs2d(rhs_start, rhs_end);
-			if (line_intersectionTest(lhs2d, rhs2d, left_time, right_time))
+			if (line_intersection_test(lhs2d, rhs2d, left_time, right_time))
 			{
 				// Collision occurred in 2-space, check in n-space
 				Vector<D, NumericT> lhs_pt, rhs_pt;
@@ -340,13 +340,13 @@ namespace Dream
 		template <unsigned D, typename NumericT>
 		bool LineSegment<D, NumericT>::intersects_with (const LineSegment<D, NumericT> & other, LineSegment<D, NumericT> & overlap) const
 		{
-			return line_intersectionTest(*this, other, overlap);
+			return line_intersection_test(*this, other, overlap);
 		}
 		
 		template <unsigned D, typename NumericT>
 		bool LineSegment<D, NumericT>::intersects_with (const LineSegment<D, NumericT> & other, NumericT & left_time, NumericT & right_time) const
 		{
-			return line_intersectionTest(*this, other, left_time, right_time);
+			return line_intersection_test(*this, other, left_time, right_time);
 		}
 		
 	}

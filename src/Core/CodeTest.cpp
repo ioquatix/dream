@@ -28,13 +28,13 @@ namespace Dream
 #pragma mark -
 		
 		CodeTestRegistry * shared_code_test_registry () {
-			static CodeTestRegistry * s_codeTestRegistry = NULL;
+			static CodeTestRegistry * code_test_registry = NULL;
 			
-			if (!s_codeTestRegistry) {
-				s_codeTestRegistry = new CodeTestRegistry;
+			if (!code_test_registry) {
+				code_test_registry = new CodeTestRegistry;
 			}
 			
-			return s_codeTestRegistry;
+			return code_test_registry;
 		}
 
 		CodeTestRegistry::CodeTestRegistry ()

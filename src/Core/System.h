@@ -23,7 +23,7 @@ namespace Dream
 		class SystemError
 		{
 			protected:
-				ErrorNumberT _errorNumber;
+				ErrorNumberT _error_number;
 				StringT _message;
 				StringT _formatted_message;
 			

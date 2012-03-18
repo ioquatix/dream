@@ -34,6 +34,9 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		7E0F411515084BBD00F66DE0 /* HeightMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E0F411315084BBD00F66DE0 /* HeightMap.cpp */; };
+		7E0F411615084BBD00F66DE0 /* HeightMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E0F411315084BBD00F66DE0 /* HeightMap.cpp */; };
+		7E0F411715084BBD00F66DE0 /* HeightMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E0F411315084BBD00F66DE0 /* HeightMap.cpp */; };
 		7E14F82A142243E400AB80F1 /* Application.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7E14F82D142243E400AB80F1 /* Application.mm */; };
 		7E257E030FBEA5360060BD2E /* PixelBufferSaver-PNG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E257CBF0FBD38490060BD2E /* PixelBufferSaver-PNG.cpp */; };
 		7E257E040FBEA5370060BD2E /* PixelBufferSaver-PNG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E257CBF0FBD38490060BD2E /* PixelBufferSaver-PNG.cpp */; };
@@ -103,11 +106,9 @@
 		7EB132DC1230127100372052 /* Path-Mac.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EB132D712300A0500372052 /* Path-Mac.mm */; };
 		7EB132DD1230127200372052 /* Path-Mac.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EB132D712300A0500372052 /* Path-Mac.mm */; };
 		7EB133D312302AA300372052 /* Path-Unix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB132C1123002D100372052 /* Path-Unix.cpp */; };
-		7EB4EDEC14EBA05900C69A1B /* Buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4EDEA14EBA05800C69A1B /* Buffer.cpp */; };
 		7EB4EDED14EBA05900C69A1B /* Buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4EDEA14EBA05800C69A1B /* Buffer.cpp */; };
 		7EB4EDEE14EBA05900C69A1B /* Buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4EDEA14EBA05800C69A1B /* Buffer.cpp */; };
 		7EB4EDEF14EBA05900C69A1B /* Buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4EDEA14EBA05800C69A1B /* Buffer.cpp */; };
-		7EB4EDF214EBD47100C69A1B /* VertexArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4EDF014EBD47100C69A1B /* VertexArray.cpp */; };
 		7EB4EDF314EBD47100C69A1B /* VertexArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4EDF014EBD47100C69A1B /* VertexArray.cpp */; };
 		7EB4EDF414EBD47100C69A1B /* VertexArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4EDF014EBD47100C69A1B /* VertexArray.cpp */; };
 		7EB4EDF514EBD47100C69A1B /* VertexArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4EDF014EBD47100C69A1B /* VertexArray.cpp */; };
@@ -244,7 +245,6 @@
 		7EBC1F280FA5179E00D2CA1D /* UnitTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EBC1F270FA5179E00D2CA1D /* UnitTests.cpp */; };
 		7EBC22120FA7F6F100D2CA1D /* MultiFingerInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EBC22100FA7F6F100D2CA1D /* MultiFingerInput.cpp */; };
 		7EBC22140FA7F6F100D2CA1D /* MultiFingerInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EBC22100FA7F6F100D2CA1D /* MultiFingerInput.cpp */; };
-		7EBE51FE14D39E2F0054B478 /* FrameBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE51FD14D39E2F0054B478 /* FrameBuffer.cpp */; };
 		7EBE51FF14D39E2F0054B478 /* FrameBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE51FD14D39E2F0054B478 /* FrameBuffer.cpp */; };
 		7EBE520014D39E2F0054B478 /* FrameBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE51FD14D39E2F0054B478 /* FrameBuffer.cpp */; };
 		7EBE520114D39E2F0054B478 /* FrameBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE51FD14D39E2F0054B478 /* FrameBuffer.cpp */; };
@@ -320,7 +320,9 @@
 		7ED6415E14D809F900653B22 /* PixelBufferRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED6413514D6CCAE00653B22 /* PixelBufferRenderer.cpp */; };
 		7ED6415F14D809FA00653B22 /* PixelBufferRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED6413514D6CCAE00653B22 /* PixelBufferRenderer.cpp */; };
 		7ED6416014D809FA00653B22 /* PixelBufferRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED6413514D6CCAE00653B22 /* PixelBufferRenderer.cpp */; };
-		7EF7AE65148B65CB008A9BD7 /* TextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7AE64148B65CB008A9BD7 /* TextureManager.cpp */; };
+		7EEE48C1150E018F004C9A5B /* Axis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EEE48BF150E018F004C9A5B /* Axis.cpp */; };
+		7EEE48C2150E018F004C9A5B /* Axis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EEE48BF150E018F004C9A5B /* Axis.cpp */; };
+		7EEE48C3150E018F004C9A5B /* Axis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EEE48BF150E018F004C9A5B /* Axis.cpp */; };
 		7EF7AE66148B65CB008A9BD7 /* TextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7AE64148B65CB008A9BD7 /* TextureManager.cpp */; };
 		7EF7AE67148B65CB008A9BD7 /* TextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7AE64148B65CB008A9BD7 /* TextureManager.cpp */; };
 		7EF7AE68148B65CB008A9BD7 /* TextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7AE64148B65CB008A9BD7 /* TextureManager.cpp */; };
@@ -368,7 +370,6 @@
 		7EF8EC0E1420A22C00FE753A /* DOpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EF8EC0D1420A22B00FE753A /* DOpenGLView.mm */; };
 		7EF8EC111420CF2000FE753A /* DWindowDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EF8EC101420CF1E00FE753A /* DWindowDelegate.mm */; };
 		7EF8EC1D1420EC5F00FE753A /* DApplicationDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EF8EC1C1420EC5E00FE753A /* DApplicationDelegate.mm */; };
-		7EFA166414D1A38D006B4D06 /* MeshBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EFA166314D1A38D006B4D06 /* MeshBuffer.cpp */; };
 		7EFA166514D1A38D006B4D06 /* MeshBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EFA166314D1A38D006B4D06 /* MeshBuffer.cpp */; };
 		7EFA166614D1A38D006B4D06 /* MeshBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EFA166314D1A38D006B4D06 /* MeshBuffer.cpp */; };
 		7EFA166714D1A38D006B4D06 /* MeshBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EFA166314D1A38D006B4D06 /* MeshBuffer.cpp */; };
@@ -427,6 +428,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7E0F411315084BBD00F66DE0 /* HeightMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HeightMap.cpp; sourceTree = "<group>"; };
+		7E0F411415084BBD00F66DE0 /* HeightMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeightMap.h; sourceTree = "<group>"; };
 		7E14F82D142243E400AB80F1 /* Application.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = Application.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		7E14F82E1422467300AB80F1 /* DWindowDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DWindowDelegate.h; sourceTree = "<group>"; };
 		7E14F82F142248F200AB80F1 /* DOpenGLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOpenGLView.h; sourceTree = "<group>"; };
@@ -621,6 +624,8 @@
 		7ED6414F14D78C1C00653B22 /* WireframeRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WireframeRenderer.h; sourceTree = "<group>"; };
 		7ED6415314D78C3C00653B22 /* View.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = View.cpp; sourceTree = "<group>"; };
 		7ED6415414D78C3C00653B22 /* View.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = View.h; sourceTree = "<group>"; };
+		7EEE48BF150E018F004C9A5B /* Axis.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Axis.cpp; sourceTree = "<group>"; };
+		7EEE48C0150E018F004C9A5B /* Axis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Axis.h; sourceTree = "<group>"; };
 		7EF7AE64148B65CB008A9BD7 /* TextureManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureManager.cpp; sourceTree = "<group>"; };
 		7EF7AE69148B65D9008A9BD7 /* TextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureManager.h; sourceTree = "<group>"; };
 		7EF7AE6B148B680F008A9BD7 /* BirdsEyeCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BirdsEyeCamera.cpp; sourceTree = "<group>"; };
@@ -775,6 +780,8 @@
 				7E6F282B1229534A00E51772 /* AlignedTree.cpp */,
 				7E6F2823122952BB00E51772 /* PathFinder.h */,
 				7E6F2822122952BB00E51772 /* PathFinder.cpp */,
+				7E0F411415084BBD00F66DE0 /* HeightMap.h */,
+				7E0F411315084BBD00F66DE0 /* HeightMap.cpp */,
 			);
 			path = Simulation;
 			sourceTree = "<group>";
@@ -1034,6 +1041,8 @@
 				7E3B8ACE0F9C0A2A002B6541 /* Line.h */,
 				7E3B8AC40F9C0A2A002B6541 /* Line.impl.h */,
 				7EC986790EC96DB000530A13 /* Line.cpp */,
+				7EEE48C0150E018F004C9A5B /* Axis.h */,
+				7EEE48BF150E018F004C9A5B /* Axis.cpp */,
 				7E3B8AC60F9C0A2A002B6541 /* Plane.h */,
 				7E3B8ACD0F9C0A2A002B6541 /* Plane.impl.h */,
 				7EC986750EC96DB000530A13 /* Plane.cpp */,
@@ -1325,12 +1334,7 @@
 				7EB5FFE112CD9FEC00B704E3 /* Fader.cpp in Sources */,
 				7EF8EBF3141E5F0300FE753A /* Thread.cpp in Sources */,
 				7E8ADD21147B5D7700BB929D /* Spline.cpp in Sources */,
-				7EF7AE65148B65CB008A9BD7 /* TextureManager.cpp in Sources */,
 				7ED448B714CE6049000D5865 /* Logger.cpp in Sources */,
-				7EFA166414D1A38D006B4D06 /* MeshBuffer.cpp in Sources */,
-				7EBE51FE14D39E2F0054B478 /* FrameBuffer.cpp in Sources */,
-				7EB4EDEC14EBA05900C69A1B /* Buffer.cpp in Sources */,
-				7EB4EDF214EBD47100C69A1B /* VertexArray.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1432,6 +1436,8 @@
 				7EA4D10314E928D200D5C4C6 /* ParticleRenderer.cpp in Sources */,
 				7EB4EDEE14EBA05900C69A1B /* Buffer.cpp in Sources */,
 				7EB4EDF414EBD47100C69A1B /* VertexArray.cpp in Sources */,
+				7E0F411615084BBD00F66DE0 /* HeightMap.cpp in Sources */,
+				7EEE48C2150E018F004C9A5B /* Axis.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1533,6 +1539,8 @@
 				7EA4D10414E928D300D5C4C6 /* ParticleRenderer.cpp in Sources */,
 				7EB4EDEF14EBA05900C69A1B /* Buffer.cpp in Sources */,
 				7EB4EDF514EBD47100C69A1B /* VertexArray.cpp in Sources */,
+				7E0F411715084BBD00F66DE0 /* HeightMap.cpp in Sources */,
+				7EEE48C3150E018F004C9A5B /* Axis.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1633,6 +1641,8 @@
 				7EA4D10514E928D300D5C4C6 /* ParticleRenderer.cpp in Sources */,
 				7EB4EDED14EBA05900C69A1B /* Buffer.cpp in Sources */,
 				7EB4EDF314EBD47100C69A1B /* VertexArray.cpp in Sources */,
+				7E0F411515084BBD00F66DE0 /* HeightMap.cpp in Sources */,
+				7EEE48C1150E018F004C9A5B /* Axis.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1793,6 +1803,7 @@
 			baseConfigurationReference = 7EA2822A139A545500AB1E1F /* Library.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COPY_PHASE_STRIP = NO;
 				PRODUCT_NAME = "Dream-Darwin-MacOSX";
 				SDKROOT = macosx;
 			};

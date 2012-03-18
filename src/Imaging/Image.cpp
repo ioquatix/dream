@@ -64,7 +64,7 @@ namespace Dream {
 			_format = format;
 			_data_type = data_type;
 
-			_data.resize(pixel_dataLength());
+			_data.resize(pixel_data_length());
 		}
 		
 		const ByteT * Image::pixel_data () const

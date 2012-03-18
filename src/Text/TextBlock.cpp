@@ -217,7 +217,7 @@ namespace Dream
 		{
 			clear();
 			
-			_lineWidth = 0;
+			_line_width = 0;
 			_horizontal_padding.zero();
 			_vertical_padding.zero();
 							
@@ -258,18 +258,18 @@ namespace Dream
 			
 			//std::cout << "char_dir: " << char_dir << " line_dir: " << line_dir << std::endl;
 			
-			_char_dir = char_dir;
-			_lineDir = line_dir;
+			_character_direction = char_dir;
+			_line_direction = line_dir;
 		}
 		
 		bool TextBlock::is_horizontal () const
 		{
-			return _char_dir & (LR|RL);
+			return _character_direction & (LR|RL);
 		}
 		
 		bool TextBlock::is_vertical () const
 		{
-			return _char_dir & (BT|TB);
+			return _character_direction & (BT|TB);
 		}
 		
 		Vector<2, unsigned> TextBlock::text_origin ()
@@ -277,7 +277,7 @@ namespace Dream
 			// {0, 0} is bottom left hand corner
 			Vector<2, unsigned> v;
 			
-			TextDirection c = (TextDirection)(_char_dir|_lineDir);
+			TextDirection c = (TextDirection)(_character_direction|_line_direction);
 			
 			if (c & LR) {
 				v[0] = 0;
@@ -306,17 +306,17 @@ namespace Dream
 		
 		void TextBlock::set_line_width (const unsigned &w)
 		{
-			_lineWidth = w;
+			_line_width = w;
 		}
 		
 		bool TextBlock::is_line_width_fixed () const
 		{
-			return _lineWidth != 0;
+			return _line_width != 0;
 		}
 		
 		unsigned TextBlock::line_width () const
 		{
-			return _lineWidth;
+			return _line_width;
 		}
 		
 		void TextBlock::clear ()
@@ -391,7 +391,7 @@ namespace Dream
 			//std::cout << "Ascender: " << ascender_offset() << std::endl;
 			
 			 // Removes unnecessary space
-			if (_lineDir == TB) {
+			if (_line_direction == TB) {
 				pen[Y] += _face->line_offset();
 				pen[Y] -= _face->descender_offset();
 			} else {
@@ -401,7 +401,7 @@ namespace Dream
 			//std::cout << "Text Origin: " << text_origin() << std::endl;
 			
 			foreach (line, _lines) {
-				if (_lineDir == TB) {
+				if (_line_direction == TB) {
 					//std::cerr << "Line Origin: " << origin - pen << std::endl;
 					(*line)->composite_to_image(pbuf, origin - pen, boxes);
 				} else {

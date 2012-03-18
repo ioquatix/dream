@@ -229,12 +229,12 @@ namespace Dream {
 			void View::render_view (IScene * scene, TimeT time) {
 				WireframeRenderer bounding_box_renderer;
 				
-				if (has_static_focus())
-					bounding_box_renderer.set_major_color(Vec4(1.0, 0.0, 0.0, 0.2));
-				else if (has_dynamic_focus())
-					bounding_box_renderer.set_major_color(Vec4(1.0, 1.0, 0.0, 0.2));
-				else
-					bounding_box_renderer.set_major_color(Vec4(0.0, 1.0, 0.0, 0.2));
+				//if (has_static_focus())
+					//bounding_box_renderer.set_major_color(Vec4(1.0, 0.0, 0.0, 0.2));
+				//else if (has_dynamic_focus())
+					//bounding_box_renderer.set_major_color(Vec4(1.0, 1.0, 0.0, 0.2));
+				//else
+					//bounding_box_renderer.set_major_color(Vec4(0.0, 1.0, 0.0, 0.2));
 				
 				if (_controller->debug_mode())
 					bounding_box_renderer.render(_bounds);

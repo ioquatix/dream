@@ -80,7 +80,7 @@ namespace Dream {
 					Ref<Dictionary> _config;
 					Ref<Context> _context;
 					Ref<Events::Thread> _thread;
-					Ref<SceneManager> _sceneManager;
+					Ref<SceneManager> _scene_manager;
 					
 					virtual void application_did_finish_launching (IApplication * application);
 					
@@ -107,8 +107,8 @@ namespace Dream {
 				_thread = new Events::Thread;
 				Ref<ILoader> loader = SceneManager::default_resource_loader();
 				
-				_sceneManager = new SceneManager(_context, _thread->loop(), loader);
-				_sceneManager->push_scene(_scene);
+				_scene_manager = new SceneManager(_context, _thread->loop(), loader);
+				_scene_manager->push_scene(_scene);
 				
 				_thread->start();
 				_context->start();
@@ -119,7 +119,7 @@ namespace Dream {
 				logger()->log(LOG_INFO, "Application entering background...");
 				
 				EventInput suspend_event(EventInput::PAUSE);
-				_sceneManager->process_input(_context, suspend_event);
+				_scene_manager->process_input(_context, suspend_event);
 				
 				//_context->stop();
 				//_thread->stop();
@@ -133,7 +133,7 @@ namespace Dream {
 				//_context->start();
 				
 				EventInput resume_event(EventInput::RESUME);
-				_sceneManager->process_input(_context, resume_event);
+				_scene_manager->process_input(_context, resume_event);
 			}
 			
 			void IApplication::run_scene(Ptr<IScene> scene, Ptr<Dictionary> config)

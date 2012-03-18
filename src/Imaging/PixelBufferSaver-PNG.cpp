@@ -74,7 +74,7 @@ namespace Dream
 			std::vector<png_bytep> rows(size[HEIGHT]);
 			
 			for (IndexT y = 0; y < size[HEIGHT]; y += 1) {
-				rows[y] = (png_bytep)pixel_buffer->pixel_dataAt(Vec3u(0, y, 0));
+				rows[y] = (png_bytep)pixel_buffer->pixel_data_at(Vec3u(0, y, 0));
 			}
 			
 			try {

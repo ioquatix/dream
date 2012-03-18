@@ -33,7 +33,7 @@ namespace Dream
 			return BIG;
 		}
 #else
-		inline bool _isBigEndian ()
+		inline bool _is_big_endian ()
 		{
 			unsigned x = 1;
 			return !(*(char * )( & x));
@@ -41,7 +41,7 @@ namespace Dream
 
 		inline Endian host_endian ()
 		{
-			if (_isBigEndian())
+			if (_is_big_endian())
 				return BIG;
 			else
 				return LITTLE;

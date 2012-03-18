@@ -41,7 +41,7 @@ namespace Dream
 		}
 
 		template <unsigned E>
-		bool VectorEqualityTraits<E, double>::equal_within_tolerance (const Vector<E, double> & other, const unsigned & ulps) const
+		bool VectorEqualityTraits<E, double>::equal_within_tolerance(const Vector<E, double> & other, const unsigned & ulps) const
 		{
 			const Vector<E, double> &v = static_cast<const Vector<E, double> &>(*this);
 

@@ -50,7 +50,7 @@ namespace Dream
 			}
 			
 			SceneManager::SceneManager (Ref<IContext> display_context, Ref<Loop> event_loop, Ref<ILoader> resource_loader)
-				: _display_context(display_context), _event_loop(event_loop), _resource_loader(resource_loader), _current_sceneIsFinished(true)
+				: _display_context(display_context), _event_loop(event_loop), _resource_loader(resource_loader), _current_scene_is_finished(true)
 			{
 				_display_context->set_delegate(this);
 				
@@ -110,12 +110,12 @@ namespace Dream
 			
 			void SceneManager::current_scene_is_finished ()
 			{
-				_current_sceneIsFinished = true;
+				_current_scene_is_finished = true;
 			}
 			
 			void SceneManager::update_current_scene ()
 			{
-				_current_sceneIsFinished = false;
+				_current_scene_is_finished = false;
 				
 				Ref<IScene> s = provide_next_scene();
 				
@@ -149,16 +149,19 @@ namespace Dream
 			{
 				_stats.begin_timer(_stopwatch.time());
 
-				if (!_current_scene || _current_sceneIsFinished)
+				if (!_current_scene || _current_scene_is_finished)
 					update_current_scene();
 				
 				ISceneManager::render_frame_for_time(time);
 								
 				_stats.update(_stopwatch.time());
 				
-				if (_stats.update_count() > (60 * 20))
-				{
-					logger()->log(LOG_INFO, LogBuffer() << "FPS: " << _stats.updates_per_second());
+				if (_stats.update_count() > (60 * 10)) {
+					LogBuffer buffer;
+					buffer << "FPS: " << _stats.updates_per_second();
+					buffer << std::setw(4) << " (Max: " << (1.0 / _stats.minimum_duration()) << " Min: " << (1.0 / _stats.maximum_duration()) << ")";
+					logger()->log(LOG_INFO, buffer);
+					
 					_stats.reset();
 				}				
 			}
@@ -270,7 +273,7 @@ namespace Dream
 			
 #pragma mark -
 			
-			Scene::Scene () : _sceneManager(NULL), _first_frame(true), _startTime(0), _current_time(0)
+			Scene::Scene () : _scene_manager(NULL), _first_frame(true), _start_time(0), _current_time(0)
 			{
 				
 			}
@@ -282,36 +285,36 @@ namespace Dream
 			
 			ISceneManager * Scene::manager ()
 			{
-				return _sceneManager;
+				return _scene_manager;
 			}
 			
 			ILoader * Scene::resource_loader ()
 			{
-				return _sceneManager->resource_loader().get();
+				return _scene_manager->resource_loader().get();
 			}
 			
 			void Scene::will_become_current(ISceneManager * scene_manager)
 			{
-				_sceneManager = scene_manager;
+				_scene_manager = scene_manager;
 				_first_frame = true;
 			}
 			
 			void Scene::did_become_current() {
-				Display::ResizeInput initial_size(_sceneManager->display_context()->size());
-				process(initial_size);
+				Group::did_become_current(_scene_manager, this);
 				
-				Group::did_become_current(_sceneManager, this);
+				Display::ResizeInput initial_size(_scene_manager->display_context()->size());
+				process(initial_size);
 			}
 			
 			void Scene::will_revoke_current(ISceneManager * scene_manager)
 			{
-				_sceneManager = NULL;
+				_scene_manager = NULL;
 			}
 			
-			void Scene::render_frame_for_time (TimeT time)
+			void Scene::render_frame_for_time(TimeT time)
 			{
 				if (_first_frame) {
-					_startTime = time;
+					_start_time = time;
 					_first_frame = false;
 				}
 				
@@ -322,7 +325,7 @@ namespace Dream
 			
 			TimeT Scene::current_time () const
 			{
-				return _current_time - _startTime;
+				return _current_time - _start_time;
 			}
 			
 	#pragma mark -
@@ -349,12 +352,13 @@ namespace Dream
 			
 			Ref<VoidScene> VoidScene::shared_instance ()
 			{
-				static Ref<VoidScene> s_voidSceneSharedInstance;
+				static Ref<VoidScene> _shared_instance;
 				
-				if (!s_voidSceneSharedInstance)
-					s_voidSceneSharedInstance = new VoidScene;
+				if (!_shared_instance) {
+					_shared_instance = new VoidScene;
+				}
 				
-				return s_voidSceneSharedInstance;
+				return _shared_instance;
 			}
 			
 		}

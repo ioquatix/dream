@@ -106,9 +106,7 @@ namespace Dream {
 				
 				AlignedBox<2> _bounds;
 				RealT _rotation;
-				
-				//RealT _boundsRotation, _frameRotation;
-				
+								
 				virtual bool intersects_with (const Vec2 &point);
 			
 				virtual void render_view (IScene * scene, TimeT time);
@@ -158,10 +156,6 @@ namespace Dream {
 				// Viewport in normalized coordinates 0.0 ... 1.0
 				virtual const AlignedBox<2> & bounds () const { return _bounds; }
 				virtual RealT rotation () const { return _rotation; }
-				
-				// Location with reference to superframe in normalized coordinates
-				//virtual const AlignedBox<2> & frame () const { return _frame; }
-				//virtual RealT frameRotation () const { return _frameRotation; }
 				
 				// Input Processing
 				virtual bool resize (const ResizeInput &);

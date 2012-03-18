@@ -35,7 +35,7 @@ namespace Dream
 			
 			class AudioError {
 			protected:
-				ALint _errorNumber;
+				ALint _error_number;
 				StringT _message;
 			
 			public:
@@ -50,7 +50,7 @@ namespace Dream
 			class Source : public Object
 			{
 			protected:
-				ALuint _sourceID;
+				ALuint _source_id;
 				Ref<Sound> _sound;
 				
 			public:

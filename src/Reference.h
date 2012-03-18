@@ -274,8 +274,7 @@ namespace Dream {
 				return _controller;
 			}
 			
-			Shared ()
-				: _controller(NULL), _value(NULL)
+			Shared () : _controller(NULL), _value(NULL)
 			{
 			
 			}
@@ -288,21 +287,18 @@ namespace Dream {
 				}
 			}
 			
-			Shared (ValueT * value)
-				: _controller(new SharedObject), _value(value)
+			Shared (ValueT * value) : _controller(new SharedObject), _value(value)
 			{
 				
 			}
 			
-			Shared (const Shared & other)
-				: _controller(other._controller), _value(other._value)
+			Shared (const Shared & other) : _controller(other._controller), _value(other._value)
 			{
 				
 			}
 			
 			template <typename OtherValueT>
-			Shared (OtherValueT * object)
-				: _controller(new SharedObject), _value(dynamic_cast<ValueT*>(object))
+			Shared (OtherValueT * object) : _controller(new SharedObject), _value(dynamic_cast<ValueT*>(object))
 			{
 			
 			}

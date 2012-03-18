@@ -66,7 +66,7 @@ namespace Dream {
 					Vec2b(true, true)
 				};
 				
-				Array<Vertex> vertices;
+				std::vector<Vertex> vertices;
 								
 				Ref<Texture> texture = fetch(pixel_buffer);
 				AlignedBox2 mapping_box(ZERO, pixel_buffer->size().reduce() / texture->size().reduce());

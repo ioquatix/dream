@@ -59,11 +59,6 @@ namespace Dream
 					return Vec2u(frame.size.width, frame.size.height);
 				}
 				
-				void ViewContext::make_current ()
-				{
-					[_graphics_view makeCurrentContext];
-				}
-				
 				const char * getSymbolicError (GLenum error) {
 					switch (error) {
 						case GL_NO_ERROR:
@@ -84,16 +79,6 @@ namespace Dream
 							return "An unknown error has occurred!";
 					}
 				}
-				
-				void ViewContext::flush_buffers ()
-				{
-					[_graphics_view flushBuffers];
-				
-					GLenum error;
-					
-					while ((error = glGetError()) != GL_NO_ERROR)
-						logger()->log(LOG_ERROR, LogBuffer() << "OpenGL Error " << "#" << error << ": " << getSymbolicError(error));
-				}
 			
 #pragma mark -
 			
@@ -113,8 +98,8 @@ namespace Dream
 					
 					[_graphics_view setContext:graphicsContext];
 					[graphicsContext release];
-
-					this->make_current();
+					
+					[EAGLContext setCurrentContext:graphicsContext];
 					
 					glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 					glPixelStorei(GL_PACK_ALIGNMENT, 1);

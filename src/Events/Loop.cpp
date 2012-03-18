@@ -432,7 +432,7 @@ namespace Dream
 				
 				th.source = source;
 				
-				_timerHandles.push(th);
+				_timer_handles.push(th);
 			} else {
 				// Add the timer via a notification which is passed across the thread.
 				Ref<ScheduleTimerNotificationSource> note = new ScheduleTimerNotificationSource(source);
@@ -487,11 +487,11 @@ namespace Dream
 		/// If there isn't a timeout, returns false and -1 in s.
 		bool Loop::next_timeout (TimeT & s)
 		{
-			if (_timerHandles.empty()) {
+			if (_timer_handles.empty()) {
 				s = -1;
 				return false;
 			} else {
-				s = _timerHandles.top().timeout - _stopwatch.time();
+				s = _timer_handles.top().timeout - _stopwatch.time();
 				return true;
 			}
 		}
@@ -570,15 +570,15 @@ namespace Dream
 				//if (timeout < -0.1)
 				//	std::cerr << "Timeout was late: " << timeout << std::endl;
 				
-				TimerHandle th = _timerHandles.top();
-				_timerHandles.pop();
+				TimerHandle th = _timer_handles.top();
+				_timer_handles.pop();
 				
 				th.source->process_events(this, TIMEOUT);
 				
 				if (th.source->repeats()) {
 					// Calculate the next time to schedule.
 					th.timeout = th.source->next_timeout(th.timeout, _stopwatch.time());
-					_timerHandles.push(th);
+					_timer_handles.push(th);
 				}
 			}
 			
@@ -610,7 +610,7 @@ namespace Dream
 			process_notifications();
 			
 			// We have 1 "hidden" source: _urgent_notification_pipe..
-			if (_stop_when_idle && _file_descriptor_monitor->source_count() == 1 && _timerHandles.size() == 0)
+			if (_stop_when_idle && _file_descriptor_monitor->source_count() == 1 && _timer_handles.size() == 0)
 				stop();
 			
 			// A timer may have stopped the runloop. We should check here before we possibly block indefinitely.

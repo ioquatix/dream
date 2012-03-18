@@ -27,7 +27,7 @@ namespace Dream {
 			// The cost to get to a certain location
 			virtual void notify_cost (const StepT& location, const CostT& cost_from_start, const CostT& cost_to_end) {}
 			
-			virtual void add_stepsFrom (const Node *node, PathFinder & pf) const abstract;
+			virtual void add_steps_from (const Node *node, PathFinder & pf) const abstract;
 			
 			// The cost from one location to another
 			virtual CostT estimate_path_cost (const StepT& from, const StepT& to) const abstract;
@@ -109,8 +109,8 @@ namespace Dream {
 			OpenT _open;
 			ClosedT _closed;
 
-			const StepT _startLocation;
-			const StepT _endLocation;
+			const StepT _start_location;
+			const StepT _end_location;
 			
 			InterfaceT* _interface;
 			
@@ -124,7 +124,7 @@ namespace Dream {
 
 	public:
 			PathFinder (const StepT& start_location, const StepT& end_location, InterfaceT* interface)
-			: _startLocation(start_location), _endLocation(end_location), _interface(interface) {
+			: _start_location(start_location), _end_location(end_location), _interface(interface) {
 				CostT estimate_to_goal = _interface->estimate_path_cost(start_location, end_location);
 				
 				open_push (new Node(start_location, 0, estimate_to_goal));
@@ -159,11 +159,11 @@ namespace Dream {
 			}
 			
 			StepT goal () {
-				return _endLocation;
+				return _end_location;
 			}
 			
 			void add_step (const StepT & step, const Node * top) {
-				CostT estimate_to_goal = _interface->estimate_path_cost(step, _endLocation);
+				CostT estimate_to_goal = _interface->estimate_path_cost(step, _end_location);
 				CostT step_cost = _interface->exact_path_cost(top->step, step);
 				CostT cost_from_start = top->cost_from_start + step_cost;
 				
@@ -205,14 +205,14 @@ namespace Dream {
 						open_pop();
 
 					} else {
-						if (_interface->is_goal_state(*this, top->step, _endLocation)) {
+						if (_interface->is_goal_state(*this, top->step, _end_location)) {
 							/* We have reached the goal and no longer need to do any searching */
 							return true;
 						}
 						
 						/* We are going to process this node, so remove it from the open list */
 						open_pop();
-						_interface->add_stepsFrom(top, *this);
+						_interface->add_steps_from(top, *this);
 						
 						//std::set<StepT> next_steps = _interface->steps_from(top);
 						

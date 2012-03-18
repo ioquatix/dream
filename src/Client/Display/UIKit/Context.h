@@ -45,9 +45,6 @@ namespace Dream
 						virtual void stop ();
 						
 						virtual Vec2u size ();
-						
-						virtual void make_current ();
-						virtual void flush_buffers ();
 				};
 				
 				/// This context manages a window which can be used to display content.

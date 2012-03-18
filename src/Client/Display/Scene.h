@@ -183,7 +183,7 @@ namespace Dream
 				
 				FinishedCallbackT _finished_callback;
 				
-				bool _current_sceneIsFinished;
+				bool _current_scene_is_finished;
 				
 				void update_current_scene ();
 				
@@ -231,10 +231,10 @@ namespace Dream
 			class Scene : public Group, implements IScene
 			{
 			protected:
-				ISceneManager * _sceneManager;
+				ISceneManager * _scene_manager;
 				
 				bool _first_frame;
-				TimeT _startTime, _current_time;
+				TimeT _start_time, _current_time;
 				
 			public:
 				Scene ();

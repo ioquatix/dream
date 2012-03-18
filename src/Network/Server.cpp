@@ -112,7 +112,7 @@ namespace Dream {
 		
 #ifdef ENABLE_TESTING
 		
-		int g_message_receivedCount;
+		int global_message_received_count;
 		class TestServerClientSocket : public ClientSocket
 		{
 			public:
@@ -127,11 +127,11 @@ namespace Dream {
 						
 						recv(buf);
 						
-						std::string incoming_message(buf.begin(), buf.end());
+						std::string incominglobal_message(buf.begin(), buf.end());
 						
-						g_message_receivedCount += 1;
+						global_message_received_count += 1;
 						
-						std::cerr << "Message received by " << this << " fd " << this->file_descriptor() << " : " << incoming_message << std::endl;
+						std::cerr << "Message received by " << this << " fd " << this->file_descriptor() << " : " << incominglobal_message << std::endl;
 						
 						event_loop->stop_monitoring_file_descriptor(this);
 					}
@@ -147,7 +147,7 @@ namespace Dream {
 				Ref<ClientSocket> client_socket(new TestServerClientSocket(h, a));
 				
 				std::cerr << "Accepted connection " << client_socket << " from " << client_socket->remote_address().description();
-				std::cerr << " (" << client_socket->remote_address().address_familyName() << ")" << std::endl;
+				std::cerr << " (" << client_socket->remote_address().address_family_name() << ")" << std::endl;
 				
 				event_loop->monitor(client_socket);
 			}
@@ -164,15 +164,15 @@ namespace Dream {
 			}
 		};
 		
-		Ref<TimerSource> g_timer1, g_timer2, g_timer3;
+		Ref<TimerSource> global_timers[3];
 		
 		static void stop_timers_callback (Loop * event_loop, TimerSource *, Event event)
 		{
 			std::cerr << "Stoping connection timers..." << std::endl;
 			
-			g_timer1->cancel();
-			g_timer2->cancel();
-			g_timer3->cancel();	
+			global_timers[0]->cancel();
+			global_timers[1]->cancel();
+			global_timers[2]->cancel();	
 		}
 		
 		static void stop_callback (Loop * event_loop, TimerSource *, Event event)
@@ -181,18 +181,18 @@ namespace Dream {
 			event_loop->stop();
 		}
 		
-		int g_messageSentCount;
-		int g_addressIndex;
-		AddressesT g_connectAddresses;
+		int global_message_sent_count;
+		int global_address_index;
+		AddressesT global_connect_addresses;
 		static void connect_callback (Loop * event_loop, TimerSource *, Event event)
 		{
 			Ref<ClientSocket> test_connection(new ClientSocket);
 			
-			test_connection->connect(g_connectAddresses[g_addressIndex++ % g_connectAddresses.size()]);
+			test_connection->connect(global_connect_addresses[global_address_index++ % global_connect_addresses.size()]);
 			
 			StaticBuffer buf = StaticBuffer::for_cstring("Hello World?", false);
 
-			g_messageSentCount += 1;
+			global_message_sent_count += 1;
 			test_connection->send(buf);
 			
 			test_connection->close();
@@ -204,28 +204,28 @@ namespace Dream {
 			Ref<Loop> event_loop = new Loop;
 			Ref<TestServer> server = new TestServer(event_loop, "7979", SOCK_STREAM);
 						
-			g_addressIndex = 0;
-			g_message_receivedCount = 0;
-			g_messageSentCount = 0;
+			global_address_index = 0;
+			global_message_received_count = 0;
+			global_message_sent_count = 0;
 			
-			g_connectAddresses = Address::addresses_for_name("localhost", "7979", SOCK_STREAM);
+			global_connect_addresses = Address::addresses_for_name("localhost", "7979", SOCK_STREAM);
 
 			event_loop->schedule_timer(new TimerSource(stop_timers_callback, 0.4));
 			event_loop->schedule_timer(new TimerSource(stop_callback, 0.5));
 			
-			g_timer1 = new TimerSource(connect_callback, 0.05, true);
-			event_loop->schedule_timer(g_timer1);
+			global_timers[0] = new TimerSource(connect_callback, 0.05, true);
+			event_loop->schedule_timer(global_timers[0]);
 			
-			g_timer2 = new TimerSource(connect_callback, 0.1, true);
-			event_loop->schedule_timer(g_timer2);
+			global_timers[1] = new TimerSource(connect_callback, 0.1, true);
+			event_loop->schedule_timer(global_timers[1]);
 			
-			g_timer3 = new TimerSource(connect_callback, 0.11, true);
-			event_loop->schedule_timer(g_timer3);
+			global_timers[2] = new TimerSource(connect_callback, 0.11, true);
+			event_loop->schedule_timer(global_timers[2]);
 
 			event_loop->run_forever();
 			
-			check(g_messageSentCount >= 1) << "Messages sent";
-			check(g_messageSentCount == g_message_receivedCount) << "Messages sent and received successfully";
+			check(global_message_sent_count >= 1) << "Messages sent";
+			check(global_message_sent_count == global_message_received_count) << "Messages sent and received successfully";
 		}
 		
 #endif

@@ -63,7 +63,7 @@ namespace Dream {
 			_protocol_family = 0;
 			_socket_type = 0;
 			
-			_address_dataSize = 0;
+			_address_data_size = 0;
 		}
 		
 		Address::Address (const Address & copy, sockaddr * sa, IndexT size)
@@ -73,7 +73,7 @@ namespace Dream {
 		}
 		
 		Address::Address (const addrinfo * ai) {
-			copy_from_addressInfo(ai);
+			copy_from_address_info(ai);
 		}
 		
 		void Address::copy_from_address (const Address & na) {
@@ -85,19 +85,19 @@ namespace Dream {
 		
 		Address::Address (const Address & na) {
 			copy_from_address(na);
-			set_address_data(na.address_data(), na.address_dataSize());
+			set_address_data(na.address_data(), na.address_data_size());
 		}
 		
 		Address & Address::operator= (const Address & na) {
 			copy_from_address(na);
-			set_address_data(na.address_data(), na.address_dataSize());
+			set_address_data(na.address_data(), na.address_data_size());
 			
 			return *this;
 		}
 		
-		IndexT Address::address_dataSize () const
+		IndexT Address::address_data_size () const
 		{
-			return _address_dataSize;
+			return _address_data_size;
 		}
 		
 		sockaddr * Address::address_data ()
@@ -135,7 +135,7 @@ namespace Dream {
 			DREAM_ASSERT(size <= sizeof(_address_data));
 			
 			memcpy (&_address_data, sa, size);
-			_address_dataSize = size;
+			_address_data_size = size;
 		}
 		
 		bool Address::is_valid () const
@@ -143,7 +143,7 @@ namespace Dream {
 			return _address_data.ss_family != 0;
 		}
 		
-		void Address::copy_from_addressInfo (const addrinfo * ai) {
+		void Address::copy_from_address_info (const addrinfo * ai) {
 			DREAM_ASSERT(ai != NULL);
 			
 			set_address_data(ai->ai_addr, ai->ai_addrlen);
@@ -153,15 +153,15 @@ namespace Dream {
 			this->_socket_type = ai->ai_socktype;
 		}
 		
-		const char * Address::address_familyName() const {
-			return address_familyName(address_family());
+		const char * Address::address_family_name() const {
+			return address_family_name(address_family());
 		}
 		
-		const char * Address::socket_typeName() const {
-			return socket_typeName(socket_type());
+		const char * Address::socket_type_name() const {
+			return socket_type_name(socket_type());
 		}
 		
-		SocketType Address::socket_typeForString(const std::string & s) {
+		SocketType Address::socket_type_for_string(const std::string & s) {
 			if (s == "tcp" || s == "STREAM") {
 				return SOCK_STREAM;
 			} else if (s == "udp" || s == "DGRAM") {
@@ -177,7 +177,7 @@ namespace Dream {
 			return addresses_for_name(uri.hostname().c_str(), uri.service().c_str(), socket_type);
 		}
 		
-		const char * Address::socket_typeName(SocketType st) {
+		const char * Address::socket_type_name(SocketType st) {
 			switch (st) {
 				case SOCK_STREAM:
 					return "STREAM";
@@ -194,7 +194,7 @@ namespace Dream {
 			}
 		}
 		
-		const char * Address::address_familyName(AddressFamily af) {
+		const char * Address::address_family_name(AddressFamily af) {
 			switch (af) {
 #ifdef AF_8022
 				case AF_8022:		return "802.2";
@@ -259,7 +259,7 @@ namespace Dream {
 					res = res->ai_next;
 				}
 				
-				freeaddrinfo (res0);
+				freeaddrinfo(res0);
 			}
 			
 			return addrs;
@@ -278,35 +278,32 @@ namespace Dream {
 			return addrs;
 		}
 		
-		int Address::name_infoForAddress(std::string * name, std::string * service, int flags) const {
-			int err;
-			char _name_buf[NI_MAXHOST];
-			char _service_buf[NI_MAXSERV];
+		int Address::name_info_for_address(std::string * name, std::string * service, int flags) const {
+			int error;
 			
-			char *name_buf = _name_buf, *service_buf = _service_buf;
+			char * name_buffer = nullptr, * service_buffer = nullptr;
+			int name_buffer_size = 0, service_buffer_size = 0;
 			
-			int name_bufSz = NI_MAXHOST, service_buf_sz = NI_MAXSERV;
-			
-			if (name == NULL) {
-				name_buf = NULL;
-				name_bufSz = 0;
+			if (name != NULL) {
+				name_buffer = (char *)alloca(NI_MAXHOST);
+				name_buffer_size = NI_MAXHOST;
 			}
 			
-			if (service == NULL) {
-				service_buf = NULL;
-				service_buf_sz = 0;
+			if (service != NULL) {
+				service_buffer = (char *)alloca(NI_MAXSERV);
+				service_buffer_size = NI_MAXSERV;
 			}
 			
 			/* getnameinfo() case. NI_NUMERICHOST avoids DNS lookup. */
-			err = getnameinfo(address_data(), address_dataSize(), name_buf, name_bufSz, service_buf, service_buf_sz, flags);
+			error = getnameinfo(address_data(), address_data_size(), name_buffer, name_buffer_size, service_buffer, service_buffer_size, flags);
 			
-			if (err != 0) return err;
+			if (error != 0) return error;
 			
-			if (name_buf)
-				*name = std::string(name_buf);
+			if (name_buffer)
+				*name = std::string(name_buffer);
 			
-			if (service_buf)
-				*service = std::string(service_buf);
+			if (service_buffer)
+				*service = std::string(service_buffer);
 			
 			/* no error */
 			return 0;
@@ -323,7 +320,7 @@ namespace Dream {
 			std::string port_string;
 			PortNumber port = 0;
 			
-			int err = name_infoForAddress(NULL, &port_string, NI_NUMERICSERV);
+			int err = name_info_for_address(NULL, &port_string, NI_NUMERICSERV);
 			
 			if (err) {
 				perror(gai_strerror(err));
@@ -340,10 +337,10 @@ namespace Dream {
 		std::string Address::service_name () const {
 			std::string port_string;
 			
-			int err = name_infoForAddress(NULL, &port_string, NI_NAMEREQD);
+			int err = name_info_for_address(NULL, &port_string, NI_NAMEREQD);
 			
 			if (err == EAI_NONAME) {
-				err = name_infoForAddress(NULL, &port_string, NI_NUMERICSERV);
+				err = name_info_for_address(NULL, &port_string, NI_NUMERICSERV);
 			}
 			
 			if (err) {
@@ -358,10 +355,10 @@ namespace Dream {
 		std::string Address::canonical_name () const {
 			std::string host_string;
 			
-			int err = name_infoForAddress(&host_string, NULL, NI_NAMEREQD);
+			int err = name_info_for_address(&host_string, NULL, NI_NAMEREQD);
 			
 			if (err == EAI_NONAME) {
-				err = name_infoForAddress(&host_string, NULL, NI_NUMERICHOST);
+				err = name_info_for_address(&host_string, NULL, NI_NUMERICHOST);
 			}
 			
 			if (err) {
@@ -376,7 +373,7 @@ namespace Dream {
 		std::string Address::canonical_numeric_name () const {
 			std::string host_string;
 			
-			int err = name_infoForAddress(&host_string, NULL, NI_NUMERICHOST);
+			int err = name_info_for_address(&host_string, NULL, NI_NUMERICHOST);
 			
 			if (err) {
 				perror(gai_strerror(err));

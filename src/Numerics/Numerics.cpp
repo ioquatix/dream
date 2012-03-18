@@ -156,7 +156,7 @@ namespace Dream
 			return n;
 		}
 
-		bool is_power_of2 (uint32_t k)
+		bool is_power_of_2 (uint32_t k)
 		{
 			return (k & k-1) == 0;
 		}

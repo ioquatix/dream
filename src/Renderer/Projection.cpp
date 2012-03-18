@@ -24,12 +24,12 @@ namespace Dream
 		}
 		
 		FixedProjection::FixedProjection(const Mat44 projection_matrix)
-		: _projectionMatrix(projection_matrix) {
+		: _projection_matrix(projection_matrix) {
 			
 		}
 		
 		Mat44 FixedProjection::projection_matrix_for_viewport(const IViewport & viewport) {
-			return _projectionMatrix;
+			return _projection_matrix;
 		}
 		
 		Mat44 OrthographicProjection::projection_matrix_for_viewport(const IViewport & viewport) {
@@ -45,7 +45,7 @@ namespace Dream
 		}
 		
 		ScaledOrthographicProjection::ScaledOrthographicProjection(const AlignedBox<3> & box, IndexT scale_axis) 
-		: OrthographicProjection(box), _scaleAxis(scale_axis){
+		: OrthographicProjection(box), _scale_axis(scale_axis){
 			
 		}
 		
@@ -53,9 +53,9 @@ namespace Dream
 			Vec3 scaled_size = _box.size();
 			RealT aspect_ratio = viewport.bounds().size().aspect_ratio();
 			
-			if (_scaleAxis == X) {
+			if (_scale_axis == X) {
 				scaled_size[X] *= aspect_ratio;
-			} else if (_scaleAxis == Y) {
+			} else if (_scale_axis == Y) {
 				scaled_size[Y] *= 1.0 / aspect_ratio;
 			}
 			

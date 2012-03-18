@@ -97,7 +97,7 @@ namespace Dream
 					REVERSE_END = REVERSE | END
 				};
 				
-				ObjectSet * _objectContext;
+				ObjectSet * _object_context;
 				IdentT _index;
 				unsigned _placement;
 				

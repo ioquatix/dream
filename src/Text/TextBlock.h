@@ -38,13 +38,13 @@ namespace Dream
 		class TextBlock {
 		protected:
 			Vector<2,unsigned> _extents;
-			unsigned _lineWidth;
+			unsigned _line_width;
 			std::vector<TextLine*> _lines;
 			
 			Vector<2,unsigned> _horizontal_padding;
 			Vector<2,unsigned> _vertical_padding;
 			
-			TextDirection _char_dir, _lineDir;
+			TextDirection _character_direction, _line_direction;
 			
 			// Freetype
 			bool _kerning;

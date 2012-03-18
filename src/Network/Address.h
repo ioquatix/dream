@@ -64,10 +64,10 @@ namespace Dream {
 		private:
 			void copy_from_address (const Address &);
 			void set_address_data (const sockaddr *, IndexT size);
-			void copy_from_addressInfo (const addrinfo *);
-			int name_infoForAddress(std::string *, std::string *, int) const;
+			void copy_from_address_info (const addrinfo *);
+			int name_info_for_address(std::string *, std::string *, int) const;
 			
-			static SocketType socket_typeForString(const std::string &);
+			static SocketType socket_type_for_string(const std::string &);
 		
 		protected:
 			/// PF_xxx eg PF_INET
@@ -81,7 +81,7 @@ namespace Dream {
 			/// Address data (sockaddr)
 			sockaddr_storage _address_data;
 			/// Address data length
-			unsigned _address_dataSize;
+			unsigned _address_data_size;
 			
 		public:
 			/// Blank constructor. is_valid() returns false.
@@ -101,7 +101,7 @@ namespace Dream {
 			bool is_valid () const;
 			
 			/// The size of the actual address data.
-			IndexT address_dataSize () const;
+			IndexT address_data_size () const;
 			/// A pointer to the <tt>sockaddr *</tt>
 			sockaddr * address_data ();
 			/// A const pointer to the <tt>sockaddr *</tt>
@@ -110,9 +110,9 @@ namespace Dream {
 			/// The address family, such as AF_INET
 			AddressFamily address_family () const;
 			/// A string representation of the address family, such as "IPv4"
-			const char * address_familyName () const;
+			const char * address_family_name () const;
 			/// A string representation of the address family, such as "IPv4". Need to supply the AddressFamily value.
-			static const char * address_familyName (AddressFamily);
+			static const char * address_family_name (AddressFamily);
 			
 			/// The protocol family, such as PF_INET. Typically equal in value to the address_family().
 			ProtocolFamily protocol_family () const;
@@ -120,9 +120,9 @@ namespace Dream {
 			/// The socket type, such as SOCK_STREAM or SOCK_DGRAM. Represents whether the address represents TCP or UDP connections, for example.
 			SocketType socket_type () const;
 			/// The string representation of the socket type. Such as "STREAM" or "DGRAM"
-			const char * socket_typeName () const;
+			const char * socket_type_name () const;
 			/// The string representation of the socket type. Such as "STREAM" or "DGRAM". Need to supply the SocketType value. 
-			static const char * socket_typeName (SocketType);	
+			static const char * socket_type_name (SocketType);	
 			
 			/// The socket protocol, such as IPPROTO_TCP
 			SocketProtocol socket_protocol () const;

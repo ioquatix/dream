@@ -7,9 +7,6 @@
 //
 //
 
-// Include quickdraw for Cocoa
-#define __INCLUDE_QD__
-
 #import <Cocoa/Cocoa.h>
 #include "Loadable.h"
 

@@ -48,11 +48,19 @@ namespace Dream {
 				std::size_t _size;
 				
 				void bind() {
+					//logger()->log(LOG_DEBUG, LogBuffer() << "Binding buffer " << _handle);
+					
 					glBindBuffer(TARGET, _handle);
+					
+					check_graphics_error();
 				}
 				
 				void unbind() {
+					//logger()->log(LOG_DEBUG, LogBuffer() << "Unbinding buffer " << _handle);
+					
 					glBindBuffer(TARGET, 0);
+					
+					check_graphics_error();
 				}
 				
 				friend class VertexArray;
@@ -72,6 +80,10 @@ namespace Dream {
 				
 				GLenum usage() const {
 					return _usage;
+				}
+				
+				void set_usage(GLenum usage) {
+					_usage = usage;
 				}
 				
 				template <typename ElementT>

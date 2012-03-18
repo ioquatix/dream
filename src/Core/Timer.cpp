@@ -141,6 +141,10 @@ namespace Dream {
 		void TimerStatistics::reset ()
 		{
 			_perform_reset = true;
+			
+			// Reset minimum and maximum durations:
+			_min = std::numeric_limits<RealT>::max();
+			_max = 0.0;
 		}
 		
 		void TimerStatistics::begin_timer (const TimeT & start_time)

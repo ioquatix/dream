@@ -15,7 +15,7 @@
 namespace Dream {
 	namespace Imaging {
 		
-		unsigned data_typeByteSize(ImageDataType type) {
+		unsigned data_type_byte_size(ImageDataType type) {
 			switch(type) {
 				case UBYTE:
 				case BYTE:
@@ -89,7 +89,7 @@ namespace Dream {
 #pragma mark class IPixelBuffer
 		
 		PixelT IPixelBuffer::read_pixel (const Vector<3, unsigned> &at) {
-			const ByteT * src = this->pixel_dataAt(at);
+			const ByteT * src = this->pixel_data_at(at);
 			PixelT px = 0;
 			ByteT * dst = (ByteT*)&px;
 			memcpy(dst, src, this->bytes_per_pixel());
@@ -97,7 +97,7 @@ namespace Dream {
 			return px;
 		}
 		
-		ImageDataType IPixelBuffer::pixel_dataType () const
+		ImageDataType IPixelBuffer::pixel_data_type () const
 		{
 			return UBYTE; /* Suits most pixel formats */
 		}
@@ -110,12 +110,12 @@ namespace Dream {
 				pixfmt = packed_type();
 				// Packed formats only use one element (n = 1)
 			} else {
-				pixfmt = pixel_dataType();
+				pixfmt = pixel_data_type();
 				n = pixel_format_channel_count(pixel_format());
 			}
 			
-			DREAM_ASSERT((data_typeByteSize(pixfmt) * n) > 0 && "bytes_per_pixel is obviously incorrect!");
-			return data_typeByteSize(pixfmt) * n;
+			DREAM_ASSERT((data_type_byte_size(pixfmt) * n) > 0 && "bytes_per_pixel is obviously incorrect!");
+			return data_type_byte_size(pixfmt) * n;
 		}
 		
 		unsigned IPixelBuffer::channel_count () const {
@@ -125,7 +125,7 @@ namespace Dream {
 		// Components read from MSB to LSB
 		// (ie, host-ordered data formats rather than byte ordered formats).
 		bool IPixelBuffer::is_byte_order_reversed () const {		
-			switch(pixel_dataType()) {			
+			switch(pixel_data_type()) {			
 				case UBYTE_2_3_3_REV:
 				case USHORT_5_6_5_REV:
 				case USHORT_4_4_4_4_REV:
@@ -139,7 +139,7 @@ namespace Dream {
 		}
 		
 		bool IPixelBuffer::is_packed_format () const {
-			switch(pixel_dataType()) {
+			switch(pixel_data_type()) {
 				case UBYTE_3_3_2:
 				case USHORT_4_4_4_4:
 				case USHORT_5_5_5_1:
@@ -161,7 +161,7 @@ namespace Dream {
 		}
 		
 		ImageDataType IPixelBuffer::packed_type () const {
-			switch(pixel_dataType()) {
+			switch(pixel_data_type()) {
 				case UBYTE_3_3_2:
 				case UBYTE_2_3_3_REV:
 					return UBYTE;
@@ -191,12 +191,12 @@ namespace Dream {
 		void IMutablePixelBuffer::clear ()
 		{
 			ByteT * buffer = pixel_data();
-			bzero(buffer, pixel_dataLength());
+			bzero(buffer, pixel_data_length());
 		}
 		
 		void IMutablePixelBuffer::write_pixel (const Vector<3, unsigned> &at, const PixelT &px)
 		{
-			ByteT * dst = this->pixel_dataAt(at);
+			ByteT * dst = this->pixel_data_at(at);
 			const ByteT * src = (const ByteT *)&px;
 			memcpy(dst, src, this->bytes_per_pixel());
 		}
@@ -208,9 +208,9 @@ namespace Dream {
 			DREAM_ASSERT(pixel_data() != NULL && "Cannot zero null buffer!");
 			
 			if (px == 0) {
-				bzero(pixel_data(), pixel_dataLength());
+				bzero(pixel_data(), pixel_data_length());
 			} else {
-				for (IndexT s = 0; s < pixel_dataLength(); s += bps) {
+				for (IndexT s = 0; s < pixel_data_length(); s += bps) {
 					write (px, pixel_data() + s, bps);
 				}
 			}
@@ -238,7 +238,7 @@ namespace Dream {
 		{
 			DREAM_ASSERT(!is_packed_format() && "Packed pixel formats not supported for reading!");
 			DREAM_ASSERT(this->channel_count() == buf.channel_count());
-			DREAM_ASSERT(this->pixel_dataType() == buf.pixel_dataType());
+			DREAM_ASSERT(this->pixel_data_type() == buf.pixel_data_type());
 			
 			//std::cout << from << " -> " << to << " : " << size << std::endl;
 			//std::cout << buf.size() << " -> " << this->size() << std::endl;
@@ -267,7 +267,7 @@ namespace Dream {
 					}
 					
 					memcpy(dst + this->pixel_offset(to + d), src + buf.pixel_offset(from + s), pixel_size * size[X]);
-					//memcpy(this->pixel_dataAt(to + d), buf.pixel_dataAt(from + s), pixel_size * size[X]);
+					//memcpy(this->pixel_data_at(to + d), buf.pixel_data_at(from + s), pixel_size * size[X]);
 				}
 		}
 		

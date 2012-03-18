@@ -250,7 +250,7 @@ namespace Dream {
 				set_reuse_address(true);
 			}
 			
-			if (::bind(_socket, na.address_data(), na.address_dataSize()) == -1) {
+			if (::bind(_socket, na.address_data(), na.address_data_size()) == -1) {
 				logger()->system_error("bind()");
 				
 				return false;
@@ -335,7 +335,7 @@ namespace Dream {
 			
 			DREAM_ASSERT(is_valid() && na.is_valid());
 			
-			if (::connect(_socket, na.address_data(), na.address_dataSize()) == -1)
+			if (::connect(_socket, na.address_data(), na.address_data_size()) == -1)
 			{
 				if (errno == ECONNRESET) {
 					throw ConnectionResetByPeer("connect error");
@@ -371,26 +371,26 @@ namespace Dream {
 		
 #ifdef ENABLE_TESTING
 		
-		bool g_messageSent;
-		IndexT g_messageLengthSent, g_messageLengthReceived;
-		bool g_clientConnected;
-		bool g_message_received;
+		bool global_message_sent;
+		IndexT global_message_length_sent, global_message_length_received;
+		bool global_client_connected;
+		bool global_message_received;
 		
-		const std::string g_message("Hello World!");
+		const std::string global_message("Hello World!");
 		
 		class TestClientSocket : public ClientSocket
 		{
 			public:
 				TestClientSocket (const SocketHandleT & h, const Address & address) : ClientSocket(h, address)
 				{				
-					Core::StaticBuffer buf = Core::StaticBuffer::for_cstring(g_message.c_str(), false);
+					Core::StaticBuffer buf = Core::StaticBuffer::for_cstring(global_message.c_str(), false);
 					
 					std::cerr << "Sending message from " << this << "..." << std::endl;
 					
-					g_messageLengthSent = send(buf);
+					global_message_length_sent = send(buf);
 					
-					std::cerr << g_messageLengthSent << " bytes sent" << std::endl;
-					g_messageSent = true;
+					std::cerr << global_message_length_sent << " bytes sent" << std::endl;
+					global_message_sent = true;
 				}
 				
 				TestClientSocket ()
@@ -404,14 +404,14 @@ namespace Dream {
 						
 						recv(buf);
 						
-						g_message_received = true;
-						g_messageLengthReceived = buf.size();
+						global_message_received = true;
+						global_message_length_received = buf.size();
 						
-						std::string incoming_message(buf.begin(), buf.end());
+						std::string incominglobal_message(buf.begin(), buf.end());
 						
-						std::cerr << "Message received by " << this << " fd " << this->file_descriptor() << " : " << incoming_message << std::endl;
+						std::cerr << "Message received by " << this << " fd " << this->file_descriptor() << " : " << incominglobal_message << std::endl;
 						
-						g_message_received = (g_message == incoming_message);
+						global_message_received = (global_message == incominglobal_message);
 						
 						event_loop->stop_monitoring_file_descriptor(this);
 					}
@@ -427,7 +427,7 @@ namespace Dream {
 			{
 				if (events & Events::READ_READY & !_test_socket) {
 					std::cerr << "Test server has received connection..." << std::endl;
-					g_clientConnected = true;
+					global_client_connected = true;
 					
 					SocketHandleT h;
 					Address a;
@@ -462,8 +462,8 @@ namespace Dream {
 		
 		UNIT_TEST(Socket) {
 			testing("Network Communication");
-			g_clientConnected = g_messageSent = g_message_received = false;
-			g_messageLengthSent = g_messageLengthReceived = 0;
+			global_client_connected = global_message_sent = global_message_received = false;
+			global_message_length_sent = global_message_length_received = 0;
 			
 			Ref<Events::Loop> event_loop = new Events::Loop;
 			
@@ -488,10 +488,10 @@ namespace Dream {
 			event_loop->run_forever ();
 			event_loop = NULL;
 			
-			check(g_clientConnected) << "Client connected";
-			check(g_messageSent) << "Message sent";
-			check(g_messageLengthSent == g_messageLengthReceived) << "Message length is correct";
-			check(g_message_received) << "Message received";
+			check(global_client_connected) << "Client connected";
+			check(global_message_sent) << "Message sent";
+			check(global_message_length_sent == global_message_length_received) << "Message length is correct";
+			check(global_message_received) << "Message received";
 		}
 #endif
 		

@@ -74,10 +74,9 @@ namespace Dream
 		uint32_t next_highest_power_of_2 (uint32_t);
 
 		/// Checks if an unsigned int is a power of 2.
-		bool is_power_of2 (uint32_t);
+		bool is_power_of_2 (uint32_t);
 
-		enum
-		{
+		enum {
 			DEFAULT_ULPS = 100
 		};
 
@@ -101,16 +100,30 @@ namespace Dream
 
 		/// Helper to get floating point type from a fixed point type
 		template <typename t>
-		struct RealType
-		{
+		struct RealType {
 			typedef float RealT;
 		};
 
 		/// Helper to get floating point type from a fixed point type
 		template <>
-		struct RealType<double>
-		{
+		struct RealType<double> {
 			typedef double RealT;
+		};
+		
+		/// Helper to print numbers
+		template <typename AnyT>
+		struct NumericType {
+			typedef AnyT NumericT;
+		};
+		
+		template <>
+		struct NumericType<unsigned char> {
+			typedef unsigned int NumericT;
+		};
+		
+		template <>
+		struct NumericType<char> {
+			typedef int NumericT;
 		};
 	}
 }

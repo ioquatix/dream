@@ -23,7 +23,7 @@ namespace Dream {
 			NumericT _distance;
 			VectorT _normal;
 			
-			void convert_fromPointNormalForm (const VectorT & point, const VectorT & normal)
+			void convert_from_point_normal_form (const VectorT & point, const VectorT & normal)
 			{
 				_normal = normal;
 				_distance = (-normal).dot(point);
@@ -36,12 +36,12 @@ namespace Dream {
 			/// Point is a point on the plain, and direction is the normal
 			Plane (const Line<D, NumericT> & line)
 			{
-				convert_fromPointNormalForm(line.point(), line.direction());
+				convert_from_point_normal_form(line.point(), line.direction());
 			}
 			
 			Plane (const VectorT & point, const VectorT & normal)
 			{
-				convert_fromPointNormalForm(point, normal);
+				convert_from_point_normal_form(point, normal);
 			}
 			
 			Plane (const NumericT & d, const VectorT & n) : _distance(d), _normal(n)
