@@ -17,6 +17,7 @@ namespace Dream {
 	namespace Geometry {
 		namespace Generate {
 			
+			/// Size is actually a mesure from the center to the outside.
 			template <typename MeshT>
 			void plane(MeshT & mesh, Vec2 size) {
 				// Draw with GL_TRIANGLE_FAN
@@ -57,6 +58,37 @@ namespace Dream {
 				};
 				
 				std::copy(indices, indices + (sizeof(indices) / sizeof(*indices)), std::back_inserter(mesh.indices));
+			}
+			
+			template <typename MeshT>
+			void plane(MeshT & mesh, AlignedBox2 box, Vec2u divisions) {
+				for (std::size_t y = 0; y <= divisions[Y]; y += 1) {
+					for (std::size_t x = 0; x <= divisions[X]; x += 1) {
+						typename MeshT::VertexT vertex;
+						
+						vertex.position = box.min() + ((box.size() / divisions) * Vec2u(x, y));
+						vertex.mapping = Vec2(x, y);
+						
+						mesh.vertices.push_back(vertex);
+					}
+				}
+				
+				std::size_t width = divisions[Y] + 1;
+				
+				for (std::size_t y = 0; y < divisions[Y]; y += 1) {
+					if (y != 0) {
+						// Create two degenerate triangles for the move from the end of the row back to the start:
+						mesh.indices.push_back(row_major_offset(y, divisions[X], width));
+						mesh.indices.push_back(row_major_offset(y, 0, width));
+					}
+					
+					for (std::size_t x = 0; x < divisions[X]; x += 1) {
+						mesh.indices.push_back(row_major_offset(y, x, width));
+						mesh.indices.push_back(row_major_offset(y+1, x, width));
+						mesh.indices.push_back(row_major_offset(y, x+1, width));
+						mesh.indices.push_back(row_major_offset(y+1, x+1, width));
+					}					
+				}
 			}
 			
 			template <typename MeshT>
@@ -175,12 +207,19 @@ namespace Dream {
 				}
 			}
 			
-			template <typename VertexT, typename ColorT>
-			void solid_color(Mesh<VertexT> & mesh, const ColorT & color)
+			template <typename MeshT, typename ColorT>
+			void solid_color(MeshT & mesh, const ColorT & color)
 			{
-				for (auto vertex : mesh.vertices) {
+				for (auto & vertex : mesh.vertices) {
 					vertex.color = color;
 				}				
+			}
+			
+			template <typename MeshT, typename NormalT>
+			void solid_normal(MeshT & mesh, const NormalT & normal) {
+				for (auto & vertex : mesh.vertices) {
+					vertex.normal = normal;
+				}
 			}
 		}
 	}

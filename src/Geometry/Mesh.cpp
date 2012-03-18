@@ -14,7 +14,7 @@
 
 namespace Dream {
 	namespace Geometry {			
-		void Vertex::apply(const Mat44 & transform) {
+		void VertexP3N3M2::apply(const Mat44 & transform) {
 			Vec3 new_position = transform * position;
 			normal = ((transform * (position + normal)) - new_position).normalize();
 			position = new_position;

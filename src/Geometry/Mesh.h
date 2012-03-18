@@ -20,44 +20,42 @@ namespace Dream {
 	namespace Geometry {
 	
 		template <typename ElementT, unsigned N>
-		std::size_t count_of(const ElementT(&)[N]) {
+		std::size_t array_count(const ElementT(&)[N]) {
 			return N;
 		}
 		
-		template <typename ElementT, unsigned N>
-		const ElementT * begin(const ElementT(& array)[N]) {
-			return array;
-		}
-		
-		template <typename ElementT, unsigned N>
-		const ElementT * end(const ElementT(& array)[N]) {
-			return array + N;
-		}
-		
-		struct Vertex {
+		struct VertexP3N3M2 {
 			Vec3 position;
 			Vec3 normal;
-			Vec4 color;
 			Vec2 mapping;
 			
 			void apply(const Mat44 & position);
 		};
 		
-		template <typename ValueT>
-		class Array : public std::vector<ValueT> {
-		public:
-			std::size_t data_size() const { return this->size() * sizeof(ValueT); }
+		struct VertexP3N3M2C4 : public VertexP3N3M2 {
+			Vec4 color;
+		};
+		
+		enum Layout {
+			POINTS = 0,
+			LINES = 1,
+			LINE_LOOP = 2,
+			LINE_STRIP = 3,
+			TRIANGLES = 4,
+			TRIANGLE_STRIP = 5,
+			TRIANGLE_FAN = 6
 		};
 		
 		/// A mesh is a list of vertices and an ordered list of indices which make up a set of triangles. We assume that all meshes are made up of triangle strips. These assumptions and limitations are primarily to keep the generation of Mesh objects simple.
-		template <typename _VertexT = Vertex, typename _IndexT = uint16_t>
+		template <typename _VertexT = VertexP3N3M2, typename _IndexT = uint16_t>
 		class Mesh {
 		public:
 			typedef _IndexT IndexT;
 			typedef _VertexT VertexT;
 			
-			Array<IndexT> indices;
-			Array<VertexT> vertices;
+			Layout layout;
+			std::vector<IndexT> indices;
+			std::vector<VertexT> vertices;
 			
 			// Apply some kind of tranform to all vertices.
 			template <typename TransformT>
