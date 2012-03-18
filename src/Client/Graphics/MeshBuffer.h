@@ -22,9 +22,7 @@ namespace Dream {
 				Shared<MeshT> _mesh;
 				
 				VertexArray _vertex_array;
-				
-				GLenum _index_buffer_usage, _vertex_buffer_usage, _default_draw_mode;
-				
+								
 				typedef IndexBuffer<typename MeshT::IndexT> IndexBufferT;
 				typedef VertexBuffer<typename MeshT::VertexT> VertexBufferT;
 				
@@ -35,45 +33,43 @@ namespace Dream {
 				
 				bool _invalid;
 				
-				void upload_buffers(VertexArray::Binding & binding) {
+				void upload_buffers() {
 					DREAM_ASSERT(_mesh != NULL);
 					
-					_index_buffer.attach(_vertex_array);
-					_index_buffer.assign(_mesh->indices, _index_buffer_usage);
+					{
+						auto binding = _index_buffer.binding();
+						binding.set_data(_mesh->indices);
+						
+						check_graphics_error();
+					}
 					
-					_vertex_buffer.attach(_vertex_array);
-					_vertex_buffer.assign(_mesh->vertices, _vertex_buffer_usage);
+					{
+						auto binding = _vertex_buffer.binding();
+						binding.set_data(_mesh->vertices);
+						
+						check_graphics_error();
+					}
 					
 					// Keep track of the number of indices uploaded for drawing:
 					_count = _mesh->indices.size();
 					
 					// The mesh buffer is now okay for drawing:
 					_invalid = false;
+					
+					check_graphics_error();
 				}
 				
 			public:
-				MeshBuffer(Shared<MeshT> mesh = NULL) : _mesh(mesh), _index_buffer_usage(GL_STATIC_DRAW), _vertex_buffer_usage(GL_STATIC_DRAW), _index_buffer(GL_ELEMENT_ARRAY_BUFFER), _default_draw_mode(GL_TRIANGLE_STRIP), _vertex_buffer(GL_ARRAY_BUFFER), _invalid(true) {
-					
+				MeshBuffer(Shared<MeshT> mesh = NULL) : _mesh(mesh), _invalid(true) {
 				}
 				
 				virtual ~MeshBuffer() {
 					
 				}
 				
-				void set_default_draw_mode(GLenum mode) {
-					_default_draw_mode = mode;
-				}
-				
 				void set_usage(GLenum usage) {
-					_index_buffer_usage = _vertex_buffer_usage = usage;
-				}
-				
-				void set_index_buffer_usage(GLenum usage) {
-					_index_buffer_usage = usage;
-				}
-				
-				void set_vertex_buffer_usage(GLenum usage) {
-					_vertex_buffer_usage = usage;
+					_index_buffer.set_usage(usage);
+					_vertex_buffer.set_usage(usage);
 				}
 				
 				void set_mesh(Shared<MeshT> & mesh) {
@@ -82,12 +78,6 @@ namespace Dream {
 					}
 					
 					_invalid = true;
-				}
-				
-				void set_mesh(Shared<MeshT> & mesh, GLenum default_draw_mode) {
-					set_mesh(mesh);
-					
-					set_default_draw_mode(default_draw_mode);
 				}
 				
 				void invalidate() {
@@ -100,24 +90,18 @@ namespace Dream {
 				
 				void upload() {
 					if (_invalid && _mesh) {
-						auto binding = _vertex_array.binding();
-						upload_buffers(binding);
+						upload_buffers();
 					}
 				}
 				
 				void draw() {
-					draw(_default_draw_mode);
-				}
-				
-				void draw(GLenum mode) {
-					auto binding = _vertex_array.binding();
-					
 					if (_invalid) {
-						upload_buffers(binding);
+						upload_buffers();
 					}
 					
 					if (!_invalid) {
-						binding.draw_elements(mode, (GLsizei)_count, GLTypeTraits<typename MeshT::IndexT>::TYPE);
+						auto binding = _vertex_array.binding();
+						binding.draw_elements(_mesh->layout, (GLsizei)_count, GLTypeTraits<typename MeshT::IndexT>::TYPE);
 					}
 				}
 				
