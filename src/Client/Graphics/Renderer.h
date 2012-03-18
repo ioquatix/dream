@@ -52,7 +52,22 @@ namespace Dream {
 				virtual void traverse(INode * node);
 			};
 			
-			/// This case encapsulates basic state common to many renderers - it may not be suitable for all types of renderers.
+			/// This state encapsulates the global state for many types of renderers.
+			struct RendererState : public Object {
+				virtual ~RendererState();
+				
+				Ref<Resources::Loader> resource_loader;
+				Ref<TextureManager> texture_manager;
+				Ref<ShaderManager> shader_manager;
+				Ref<Renderer::Viewport> viewport;
+				
+				// These are essentially helper methods to load shader programs:
+				GLuint compile_shader_of_type (GLenum type, StringT name);
+				Ref<Program> load_program(StringT name);
+				Ref<Texture> load_texture(const TextureParameters & parameters, StringT name);
+			};
+			
+			/// This case encapsulates basic state common to many renderers - it may not be suitable for all types of renderers. This class is deprecated and will be removed.
 			class BasicRenderer : public Object, implements IRenderer {
 			protected:
 				Ref<Resources::Loader> _resource_loader;
@@ -66,6 +81,15 @@ namespace Dream {
 				Ref<Program> load_program(StringT name);
 				
 			public:
+				struct State {
+					Ref<Resources::Loader> resource_loader;
+					Ref<TextureManager> texture_manager;
+					Ref<ShaderManager> shader_manager;
+					Ref<Renderer::Viewport> viewport;
+				};
+				
+				BasicRenderer(State & state);
+				
 				BasicRenderer(Ptr<Resources::Loader> resource_loader, Ptr<TextureManager> texture_manager, Ptr<ShaderManager> shader_manager, Ptr<Renderer::Viewport> viewport);
 				virtual ~BasicRenderer();
 				
