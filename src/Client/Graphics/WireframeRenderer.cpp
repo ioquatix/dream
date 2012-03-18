@@ -28,34 +28,7 @@ namespace Dream {
 				
 			}
 			
-			void WireframeRenderer::set_program(Ptr<Program> program) {
-				_program = program;
-				
-				if (_program) {
-					_major_color_uniform = _program->uniform_location("major_color");
-					_minor_color_uniform = _program->uniform_location("minor_color");
-					
-					_program->set_attribute_location("position", POSITION);
-					
-					set_major_color(Vec4(1.0, 1.0, 1.0, 1.0));
-					set_minor_color(Vec4(0.4, 0.4, 0.4, 1.0));
-				}
-			}
-			
-			void WireframeRenderer::set_major_color(const Vec4 & color) {
-				_major_color = color;
-			}
-			
-			void WireframeRenderer::set_minor_color(const Vec4 & color) {
-				_minor_color = color;
-			}
-			
 			void WireframeRenderer::render(const std::vector<Vec3> & line) {
-				_program->enable();
-				
-				_program->set_uniform(_major_color_uniform, _major_color);
-				_program->set_uniform(_minor_color_uniform, _minor_color);
-				
 				{
 					// Upload data:
 					auto binding = _vertex_buffer.binding<Vec3>();
@@ -67,8 +40,6 @@ namespace Dream {
 					auto binding = _vertex_array.binding();
 					binding.draw_arrays(GL_LINE_LOOP, 0, line.size());
 				}
-				
-				_program->disable();
 			}
 			
 			void WireframeRenderer::render(const Geometry::LineSegment<2> & segment) {
@@ -103,18 +74,9 @@ namespace Dream {
 			}
 			
 			void WireframeRenderer::render_axis() {
-				Vec4 major_color = _major_color;
-				
-				set_major_color(Vec4(1.0, 0.0, 0.0, 1.0));
 				render(LineSegment<3>(ZERO, Vec3(1.0, 0.0, 0.0)));
-				
-				set_major_color(Vec4(0.0, 1.0, 0.0, 1.0));
 				render(LineSegment<3>(ZERO, Vec3(0.0, 1.0, 0.0)));
-				
-				set_major_color(Vec4(0.0, 0.0, 1.0, 1.0));
-				render(LineSegment<3>(ZERO, Vec3(0.0, 0.0, 1.0)));
-				
-				set_major_color(major_color);
+				render(LineSegment<3>(ZERO, Vec3(0.0, 0.0, 1.0)));				
 			}
 		}
 	}

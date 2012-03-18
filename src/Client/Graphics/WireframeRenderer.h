@@ -26,11 +26,7 @@ namespace Dream
 			
 			/// These primatives are really designed for debugging purposes.
 			class WireframeRenderer : public Object {
-			protected:				
-				Ref<Program> _program;
-				GLuint _major_color_uniform;
-				GLuint _minor_color_uniform;
-				
+			public:				
 				enum Attributes {
 					POSITION = 0
 				};
@@ -39,20 +35,13 @@ namespace Dream
 					Vec3 position;
 				};
 				
-				Vec4 _major_color, _minor_color;
-				
+			protected:
 				VertexArray _vertex_array;
 				VertexBuffer<Vertex> _vertex_buffer;
 				
 			public:
 				WireframeRenderer();
 				virtual ~WireframeRenderer();
-				
-				void set_program(Ptr<Program> program);
-				Ref<Program> program() { return _program; }
-				
-				void set_major_color(const Vec4 & color);
-				void set_minor_color(const Vec4 & color);
 				
 				void render(const std::vector<Vec3> &);
 				
