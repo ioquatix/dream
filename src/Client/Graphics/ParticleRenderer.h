@@ -97,10 +97,10 @@ namespace Dream
 					Vec3 _color;
 					RealT _color_modulator;
 					
-					RealT _life;
+					RealT _life, _age;
 					
 				public:
-					Physics() : _velocity(ZERO), _color(1.0), _life(0) {
+					Physics() : _velocity(ZERO), _color(1.0), _life(0), _age(0) {
 						_color_modulator = real_random();
 					}
 					
@@ -139,6 +139,13 @@ namespace Dream
 						}
 					}
 					
+					template <typename TransformT>
+					void transform_offsets(const TransformT & transform) {
+						for (std::size_t i = 0; i < 4; i += 1) {
+							_vertices[i].offset = transform * _vertices[i].offset;
+						}
+					}
+					
 					void set_color(const Vec3 & color) {
 						_color = color;
 					}
@@ -159,9 +166,9 @@ namespace Dream
 					}
 					
 					inline bool update_time (RealT dt, const Vec3 & force = ZERO) {
-						_life -= dt;
+						_age += dt;
 						
-						if (_life > 0) {
+						if (_age < _life) {
 							_color_modulator += dt;
 							
 							_position += (_velocity * dt) + (force * dt * dt * 0.5);
@@ -180,10 +187,20 @@ namespace Dream
 					}
 					
 					RealT calculate_alpha (RealT timeout) {
-						if (_life < timeout)
-							return _life / timeout;
+						RealT remaining = _life - _age;
+						
+						if (remaining < timeout)
+							return remaining / timeout;
 						else 
 							return 1.0;
+					}
+					
+					RealT calculate_alpha (RealT timeout, RealT ramp) {
+						if (_age < ramp) {
+							return _age / ramp;
+						}
+						
+						return calculate_alpha(timeout);
 					}
 					
 					void queue(Vertex * destination) {
@@ -198,6 +215,10 @@ namespace Dream
 				VertexArray _vertex_array;
 				IndexBuffer<GLushort> _indices_buffer;
 				VertexBuffer<Vertex> _vertex_buffer;
+				
+				std::size_t required_size() {
+					return _physics.size() * 4 * sizeof(Vertex);
+				}
 				
 			public:
 				enum Attributes {
@@ -243,8 +264,7 @@ namespace Dream
 					}
 				}
 				
-				struct Particle
-				{
+				struct Particle {
 				};
 			};
 		}
