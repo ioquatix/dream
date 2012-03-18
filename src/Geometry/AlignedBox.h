@@ -68,6 +68,10 @@ namespace Dream {
 			{
 			}
 			
+			AlignedBox (const VectorT & size) : _min(ZERO), _max(size) {
+				
+			}
+			
 			AlignedBox (const VectorT &min, const VectorT &max) : _min(min), _max(max)
 			{
 			}
