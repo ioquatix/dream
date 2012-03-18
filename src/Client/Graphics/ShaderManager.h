@@ -99,6 +99,9 @@ namespace Dream {
 				// This is actually a program handle.
 				GLenum _handle;
 				
+				void enable();
+				void disable();
+				
 			public:
 				Program();
 				~Program();
@@ -112,38 +115,63 @@ namespace Dream {
 				
 				void bind_fragment_location(const char * name, GLuint output = 0);
 				
-			protected:
-				GLuint location_of(GLuint location) {
-					return location;
-				}
-				
-				GLuint location_of(const char * name) {
-					return uniform_location(name);
-				}
-				
 			public:
 				void set_attribute_location(const char * name, GLuint location) {
 					glBindAttribLocation(_handle, location, name);
 				}
 				
-				template <typename LocationT>
-				void set_texture_unit(LocationT name, GLuint unit) {
-					glUniform1i(location_of(name), unit);
-				}
+				class Binding {
+				protected:
+					Program * _program;
 				
-				template <typename LocationT, unsigned E, typename T>
-				void set_uniform(LocationT name, const Vector<E, T> & vector) {
-					GLUniformTraits<E>::set(location_of(name), 1, vector.value());
-				}
+					GLuint location_of(GLuint location) {
+						return location;
+					}
+					
+					GLuint location_of(const char * name) {
+						return _program->uniform_location(name);
+					}
+					
+				public:
+					Binding(Program * program) : _program(program) {
+						_program->enable();
+					}
+					
+					Binding(Binding && other) : _program(other._program) {
+						other._program = NULL;
+					}
+					
+					~Binding() {
+						if (_program)
+							_program->disable();
+					}
+					
+					template <typename LocationT>
+					void set_texture_unit(LocationT name, GLuint unit) {
+						glUniform1i(location_of(name), unit);
+					}
+					
+					template <typename LocationT, unsigned E, typename T>
+					void set_uniform(LocationT name, const Vector<E, T> & vector) {
+						GLUniformTraits<E>::set(location_of(name), 1, vector.value());
+					}
+					
+					template <typename LocationT, unsigned E, typename T, unsigned N>
+					void set_uniform(LocationT name, const Vector<E, T>(& vector)[N]) {
+						GLUniformTraits<E>::set(location_of(name), N, vector[0].value());
+					}
+					
+					template <typename LocationT, unsigned R, unsigned C, typename T>
+					void set_uniform(LocationT name, const Matrix<R, C, T> & matrix, bool transpose = false) {
+						GLUniformMatrixTraits<R, C>::set(location_of(name), 1, transpose, matrix.value());
+					}
+				};
 				
-				template <typename LocationT, unsigned E, typename T, unsigned N>
-				void set_uniform(LocationT name, const Vector<E, T>(& vector)[N]) {
-					GLUniformTraits<E>::set(location_of(name), N, vector[0].value());
-				}
-				
-				template <typename LocationT, unsigned R, unsigned C, typename T>
-				void set_uniform(LocationT name, const Matrix<R, C, T> & matrix, bool transpose = false) {
-					GLUniformMatrixTraits<R, C>::set(location_of(name), 1, transpose, matrix.value());
+				Binding binding() {
+					Binding binding(this);
+					
+					// Is this approach really efficient?
+					return std::move(binding);
 				}
 				
 				void property(GLenum name, GLint * value) {
@@ -151,9 +179,6 @@ namespace Dream {
 				}
 				
 				Shared<Buffer> info_log();
-				
-				void enable();
-				void disable();
 			};
 			
 			/*
