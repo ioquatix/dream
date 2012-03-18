@@ -117,6 +117,13 @@ namespace Dream
 			
 			return x_rotation * y_rotation * z_rotation;
 		}
+		
+		template <typename _NumericT>
+		Quaternion<_NumericT> Quaternion<_NumericT>::from_1ijk(Vec4T r4) {
+			Vec4T vector(r4[1], r4[2], r4[3], r4[0]);
+			
+			return Quaternion(vector);
+		}
 
 		template <typename _NumericT>
 		const _NumericT & Quaternion<_NumericT>::operator[] (unsigned i) const

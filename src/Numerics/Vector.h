@@ -275,6 +275,19 @@ namespace Dream
 
 				return *this;
 			}
+			
+			/// Assignment of a Vec<N> to a Vec<E> results in copying as much as possible and setting remaining elements to zero.
+			template <unsigned N, typename OtherNumericT>
+			Vector & operator=(const Vector<N, OtherNumericT> & other) {
+				for (std::size_t i = 0; i < E; i += 1) {
+					if (i < N)
+						_vector[i] = other[i];
+					else
+						_vector[i] = 0;
+				}
+				
+				return *this;
+			}
 
 			/// Assign components from another vector to this vector.
 			template <typename OtherNumericT>
@@ -599,14 +612,14 @@ Vector<E, NumericT> & operator OP (Vector<E, NumericT> & lhs, const OtherNumeric
 		template <unsigned E, typename NumericT>
 		std::ostream & operator<<(std::ostream & out, const Vector<E, NumericT> & vec)
 		{
-			for (unsigned int i = 0; i < E; ++i)
-			{
-				out << vec[i] << ((i + 1) != E ? " " : "");
+			for (unsigned int i = 0; i < E; ++i) {
+				// We use this helper to ensure that char and unsigned char are printed correctly.
+				out << (typename NumericType<NumericT>::NumericT)(vec[i]) << ((i + 1) != E ? " " : "");
 			}
 
 			return out;
 		}
-
+		
 		/// Read a vector from a std::istream
 		template <unsigned E, typename NumericT>
 		std::istream & operator>> (std::istream & in, Vector<E, NumericT> & vec)

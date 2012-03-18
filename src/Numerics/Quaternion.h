@@ -72,6 +72,8 @@ namespace Dream
 			/// Calculate the rotation from Euler angles
 			static Quaternion from_euler(Vec3T angles);
 			
+			static Quaternion from_1ijk(Vec4T);
+			
 			/// Proxy function for convenience
 			const NumericT & operator[] (unsigned i) const;
 			/// Proxy function for convenience
