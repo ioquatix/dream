@@ -24,8 +24,9 @@ namespace Dream {
 			 A set of parameters which determines the way a texture is loaded and used.
 			 
 			 */
-			struct TextureParameters
-			{					
+			struct TextureParameters {
+				inline void set_defaults();
+				
 				/// Whether or not mip-maps are used
 				bool generate_mip_maps;
 				
@@ -34,6 +35,9 @@ namespace Dream {
 				
 				/// The magnification filter. This determins how a texture is sampled when a texture pixel covers more than one screen space pixel.
 				GLenum mag_filter;
+				
+				/// Anisotropy level
+				GLfloat anisotropy;
 				
 				/// The texture target.
 				GLenum target;
@@ -44,7 +48,8 @@ namespace Dream {
 				/// Construct a TextureParameters object to use default values unless specified.
 				/// @todo Maybe make constructor for TextureParameters have an argument
 				/// i.e. TextureParameters tp(LOW_QUALITY || HIGH_QUALITY || TEXT_QUALITY) etc
-				TextureParameters () : generate_mip_maps(true), min_filter(0), mag_filter(0), target(0), internal_format(0) {
+				TextureParameters () {
+					set_defaults();
 				}
 				
 				/// Returns the specified minification filter or the default if none was specified.
@@ -53,9 +58,18 @@ namespace Dream {
 				GLenum get_mag_filter () const;
 				
 				/// Returns the target if specified or default_target if none was given.
-				GLenum get_target(GLenum default_target) const;
+				GLenum get_target(GLenum default_target = GL_TEXTURE_2D) const;
 				
 				GLenum get_internal_format (GLenum default_internal_format) const;
+				
+				enum Quality {
+					NEAREST = 0,
+					LINEAR = 1,
+					MIPMAP = 2,
+					FILTERED = 3,
+				};
+				
+				TextureParameters(Quality quality);
 			};
 			
 			class Texture;
@@ -98,7 +112,7 @@ namespace Dream {
 				std::size_t _image_unit_count;
 				Binding _binding;
 				
-			public:				
+			public:
 				TextureManager();
 				virtual ~TextureManager();
 				
@@ -144,7 +158,7 @@ namespace Dream {
 				// The texture will be released:
 				virtual ~Texture();
 				
-				GLenum target() const { return _parameters.target; }
+				GLenum target() const { return _parameters.get_target(); }
 				GLuint handle() const { return _handle; }
 				
 				const TextureParameters & parameters() const { return _parameters; }

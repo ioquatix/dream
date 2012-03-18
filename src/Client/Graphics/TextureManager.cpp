@@ -50,7 +50,44 @@ namespace Dream {
 			}
 			
 #pragma mark -
+			
+			void TextureParameters::set_defaults() {
+				generate_mip_maps = true;
+				min_filter = 0;
+				mag_filter = 0;
+				anisotropy = 1.0;
+				target = 0;
+				internal_format = 0;
+			}
 
+			TextureParameters::TextureParameters(Quality quality) {
+				set_defaults();
+				
+				switch (quality) {
+					case NEAREST:
+						min_filter = GL_NEAREST;
+						mag_filter = GL_NEAREST;
+						break;
+					
+					case LINEAR:
+						min_filter = GL_LINEAR;
+						mag_filter = GL_LINEAR;
+						break;
+					
+					case FILTERED:
+						anisotropy = 4.0;
+						
+					case MIPMAP:
+						min_filter = GL_LINEAR_MIPMAP_LINEAR;
+						mag_filter = GL_LINEAR;
+						generate_mip_maps = true;
+						break;
+						
+					default:
+						break;
+				}
+			}
+			
 			GLenum TextureParameters::get_min_filter () const {
 				if (min_filter)
 					return min_filter;
@@ -98,20 +135,21 @@ namespace Dream {
 			
 			void Texture::load_pixel_data(const Vector<3, unsigned> & size, const ByteT * pixels, GLenum format, GLenum data_type) {
 				GLenum internal_format = _parameters.get_internal_format(format);
+				GLenum target = _parameters.get_target();
 				
 				// Upload the texture data:
-				switch (_parameters.target) {
+				switch (target) {
 #ifdef GL_TEXTURE_1D
 					case GL_TEXTURE_1D:
-						glTexImage1D(_parameters.target, 0, internal_format, size[WIDTH], 0, format, data_type, pixels);
+						glTexImage1D(target, 0, internal_format, size[WIDTH], 0, format, data_type, pixels);
 						break;
 #endif
 					case GL_TEXTURE_2D:
-						glTexImage2D(_parameters.target, 0, internal_format, size[WIDTH], size[HEIGHT], 0, format, data_type, pixels);
+						glTexImage2D(target, 0, internal_format, size[WIDTH], size[HEIGHT], 0, format, data_type, pixels);
 						break;
 #ifdef GL_TEXTURE_3D
 					case GL_TEXTURE_3D:
-						glTexImage3D(_parameters.target, 0, internal_format, size[WIDTH], size[HEIGHT], size[DEPTH], 0, format, data_type, pixels);
+						glTexImage3D(target, 0, internal_format, size[WIDTH], size[HEIGHT], size[DEPTH], 0, format, data_type, pixels);
 						break;
 #endif
 					default:
@@ -124,7 +162,7 @@ namespace Dream {
 				_data_type = data_type;
 				
 				if (_parameters.generate_mip_maps) {
-					glGenerateMipmap(_parameters.target);
+					glGenerateMipmap(target);
 				}
 				
 				check_graphics_error();
@@ -137,7 +175,7 @@ namespace Dream {
 			}
 			
 			void TextureManager::Binding::update(Ptr<IPixelBuffer> pixel_buffer) {
-				_texture->load_pixel_data(pixel_buffer->size(), pixel_buffer->pixel_data(), pixel_buffer->pixel_format(), pixel_buffer->pixel_dataType());
+				_texture->load_pixel_data(pixel_buffer->size(), pixel_buffer->pixel_data(), pixel_buffer->pixel_format(), pixel_buffer->pixel_data_type());
 			}
 			
 			void TextureManager::Binding::update(const TextureParameters & parameters, Ptr<IPixelBuffer> pixel_buffer) {
@@ -213,6 +251,10 @@ namespace Dream {
 				glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_REPEAT);
 				glTexParameteri(target, GL_TEXTURE_MAG_FILTER, parameters.get_mag_filter());
 				glTexParameteri(target, GL_TEXTURE_MIN_FILTER, parameters.get_min_filter());
+				
+				if (parameters.anisotropy != 1.0) {
+					glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, parameters.anisotropy);
+				}
 				
 				check_graphics_error();
 			}
