@@ -129,9 +129,10 @@ namespace Dream {
 				DREAM_ASSERT(!is_packed_format() && "Packed pixel formats not supported for reading!");
 				
 				unsigned from = pixel_offset(at);
+				unsigned bytes_per_component = bytes_per_pixel() / channel_count();
 				
 				for (unsigned i = 0; i < D; i += 1) {
-					read_data_at(from + (i * bytes_per_pixel()), output[i]);
+					read_data_at(from + (i * bytes_per_component), output[i]);
 				}
 			}
 			
@@ -178,8 +179,7 @@ namespace Dream {
 			// Copy from buf to this
 			void copy_pixels_from(const IPixelBuffer& buf, const Vector<3, unsigned> &from, const Vector<3, unsigned> &to, const Vector<3, unsigned> &size, CopyFlags copy_flags = CopyNormal);
 			
-			void copy_pixels_from(const IPixelBuffer& buf, const Vector<3, unsigned> &to, CopyFlags copy_flags = CopyNormal)
-			{
+			void copy_pixels_from(const IPixelBuffer& buf, const Vector<3, unsigned> &to, CopyFlags copy_flags = CopyNormal) {
 				copy_pixels_from(buf, Vec3u(0, 0, 0), to, buf.size(), copy_flags);
 			}
 		};
@@ -187,6 +187,5 @@ namespace Dream {
 
 	}
 }
-
 
 #endif

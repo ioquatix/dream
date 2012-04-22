@@ -224,11 +224,12 @@ namespace Dream {
 			DREAM_ASSERT(D == this->channel_count());
 			
 			unsigned from = pixel_offset(at);
-			unsigned sub_pixel_size = bytes_per_pixel() / channel_count();
-			DREAM_ASSERT(sizeof(NumericT) == sub_pixel_size);
+			unsigned bytes_per_component = bytes_per_pixel() / channel_count();
+			
+			DREAM_ASSERT(sizeof(NumericT) == bytes_per_component);
 			
 			for (unsigned i = 0; i < D; i += 1) {
-				write_data_at(from + (i * bytes_per_pixel()), input[i]);
+				write_data_at(from + (i * bytes_per_component), input[i]);
 			}
 		}
 		
