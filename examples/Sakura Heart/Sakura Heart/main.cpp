@@ -79,7 +79,7 @@ namespace SakuraHeart {
 	}
 	
 	void HeartParticles::add() {
-		const std::size_t DENSITY = 256 * 2.0;
+		const std::size_t DENSITY = 256;
 		
 		for (std::size_t i = 0; i < DENSITY; i += 1) {
 			RealT t = real_random(0, R360);
@@ -108,7 +108,7 @@ namespace SakuraHeart {
 			_physics.push_back(particle);
 		}
 		
-		logger()->log(LOG_DEBUG, LogBuffer() << "Particles: " << _physics.size());
+		//logger()->log(LOG_DEBUG, LogBuffer() << "Particles: " << _physics.size());
 	}
 	
 	// The high level renderer that manages associated textures/shaders:
@@ -138,9 +138,10 @@ namespace SakuraHeart {
 			_particle_program->set_attribute_location("color", HeartParticles::COLOR);
 			_particle_program->link();
 			
-			_particle_program->enable();
-			_particle_program->set_texture_unit("diffuse_texture", 0);
-			_particle_program->disable();
+			{
+				auto binding = _particle_program->binding();
+				binding.set_texture_unit("diffuse_texture", 0);
+			}
 		}
 		
 		virtual ~SakuraHeartRenderer() {
@@ -153,13 +154,14 @@ namespace SakuraHeart {
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			
-			_particle_program->enable();
-			_particle_program->set_uniform("display_matrix", _viewport->display_matrix());
+			{
+				auto binding = _particle_program->binding();
+				binding.set_uniform("display_matrix", _viewport->display_matrix());
+				
+				_texture_manager->bind(0, _sakura_texture);
+				heart_particles->draw();
+			}
 			
-			_texture_manager->bind(0, _sakura_texture);
-			heart_particles->draw();
-			
-			_particle_program->disable();
 			glDisable(GL_BLEND);
 			
 			glDepthMask(GL_TRUE);		
