@@ -551,6 +551,8 @@ inline Vector<E, NumericT> operator OP (const Vector<E, NumericT> & lhs, const A
 		OPERATOR(*, *=)
 		OPERATOR(/, /=)
 		OPERATOR(%, %=)
+		OPERATOR(&, &=)
+		OPERATOR(|, |=)
 
 #undef OPERATOR
 
@@ -570,6 +572,8 @@ Vector<E, NumericT> & operator OP (Vector<E, NumericT> & lhs, const Vector<E, Ot
 		OPERATOR(-=)
 		OPERATOR(*=)
 		OPERATOR(/=)
+		OPERATOR(&=)
+		OPERATOR(|=)
 
 		template <unsigned E, typename NumericT, typename OtherNumericT>
 		Vector<E, NumericT> & operator%= (Vector<E, NumericT> & lhs, const Vector<E, OtherNumericT> & n)
@@ -594,6 +598,8 @@ Vector<E, NumericT> & operator OP (Vector<E, NumericT> & lhs, const OtherNumeric
 		OPERATOR(-=)
 		OPERATOR(*=)
 		OPERATOR(/=)
+		OPERATOR(&=)
+		OPERATOR(|=)
 
 		template <unsigned E, typename NumericT, typename OtherNumericT>
 		Vector<E, NumericT> & operator%= (Vector<E, NumericT> & lhs, const OtherNumericT & n)
