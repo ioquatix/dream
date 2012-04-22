@@ -520,7 +520,6 @@
 		7E6F282C1229534A00E51772 /* AlignedTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = AlignedTree.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		7E6F28591229551000E51772 /* Mesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Mesh.cpp; sourceTree = "<group>"; };
 		7E6F285A1229551000E51772 /* Mesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mesh.h; sourceTree = "<group>"; };
-		7E6F285E1229551000E51772 /* Mesh.impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mesh.impl.h; sourceTree = "<group>"; };
 		7E6F28971229560000E51772 /* RandomSequence.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RandomSequence.cpp; sourceTree = "<group>"; };
 		7E6F28981229560000E51772 /* RandomSequence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RandomSequence.h; sourceTree = "<group>"; };
 		7E6F28C012296D3700E51772 /* Base.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
@@ -624,6 +623,11 @@
 		7ED6414F14D78C1C00653B22 /* WireframeRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WireframeRenderer.h; sourceTree = "<group>"; };
 		7ED6415314D78C3C00653B22 /* View.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = View.cpp; sourceTree = "<group>"; };
 		7ED6415414D78C3C00653B22 /* View.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = View.h; sourceTree = "<group>"; };
+		7EDADD6A1538A00F00FB6255 /* Cube.h */ = {isa = PBXFileReference; fileEncoding = 4; path = Cube.h; sourceTree = "<group>"; };
+		7EDADD6B1538A02E00FB6255 /* Basic.h */ = {isa = PBXFileReference; path = Basic.h; sourceTree = "<group>"; };
+		7EDADD6C1538A09000FB6255 /* Planar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Planar.h; sourceTree = "<group>"; };
+		7EDADD6D1538A09000FB6255 /* Sphere.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sphere.h; sourceTree = "<group>"; };
+		7EDADD6E1538A15300FB6255 /* Cylinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cylinder.h; sourceTree = "<group>"; };
 		7EEE48BF150E018F004C9A5B /* Axis.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Axis.cpp; sourceTree = "<group>"; };
 		7EEE48C0150E018F004C9A5B /* Axis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Axis.h; sourceTree = "<group>"; };
 		7EF7AE64148B65CB008A9BD7 /* TextureManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureManager.cpp; sourceTree = "<group>"; };
@@ -1058,10 +1062,22 @@
 				7E6F280F1229529D00E51772 /* Spline.h */,
 				7E6F280E1229529D00E51772 /* Spline.cpp */,
 				7E6F285A1229551000E51772 /* Mesh.h */,
-				7E6F285E1229551000E51772 /* Mesh.impl.h */,
 				7E6F28591229551000E51772 /* Mesh.cpp */,
+				7EDADD691538A00F00FB6255 /* Generate */,
 			);
 			path = Geometry;
+			sourceTree = "<group>";
+		};
+		7EDADD691538A00F00FB6255 /* Generate */ = {
+			isa = PBXGroup;
+			children = (
+				7EDADD6B1538A02E00FB6255 /* Basic.h */,
+				7EDADD6A1538A00F00FB6255 /* Cube.h */,
+				7EDADD6C1538A09000FB6255 /* Planar.h */,
+				7EDADD6D1538A09000FB6255 /* Sphere.h */,
+				7EDADD6E1538A15300FB6255 /* Cylinder.h */,
+			);
+			path = Generate;
 			sourceTree = "<group>";
 		};
 		7EF7AE6A148B67C0008A9BD7 /* Renderer */ = {
@@ -1740,6 +1756,7 @@
 					"$(OTHER_CFLAGS)",
 				);
 				PRODUCT_NAME = "Unit Tests";
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -1753,6 +1770,7 @@
 					"$(OTHER_CFLAGS)",
 				);
 				PRODUCT_NAME = "Unit Tests";
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
