@@ -28,7 +28,7 @@ namespace Dream {
 				
 			}
 			
-			void WireframeRenderer::render(const std::vector<Vec3> & line) {
+			void WireframeRenderer::render(const std::vector<Vec3> & line, Layout layout) {
 				{
 					// Upload data:
 					auto binding = _vertex_buffer.binding<Vec3>();
@@ -38,7 +38,7 @@ namespace Dream {
 				{
 					// Render data:
 					auto binding = _vertex_array.binding();
-					binding.draw_arrays(GL_LINE_LOOP, 0, line.size());
+					binding.draw_arrays((GLenum)layout, 0, line.size());
 				}
 			}
 			

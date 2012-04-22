@@ -43,7 +43,7 @@ namespace Dream
 				WireframeRenderer();
 				virtual ~WireframeRenderer();
 				
-				void render(const std::vector<Vec3> &);
+				void render(const std::vector<Vec3> &, Layout layout = LINE_LOOP);
 				
 				void render(const Geometry::LineSegment<2> &);
 				void render(const Geometry::LineSegment<3> &);

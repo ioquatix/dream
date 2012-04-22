@@ -80,6 +80,10 @@ namespace Dream {
 					_invalid = true;
 				}
 				
+				Shared<MeshT> mesh() {
+					return _mesh;
+				}
+				
 				void invalidate() {
 					_invalid = true;
 				}
