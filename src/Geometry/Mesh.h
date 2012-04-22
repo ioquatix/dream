@@ -64,9 +64,9 @@ namespace Dream {
 					vertices[i].apply(transform);
 			}
 		};
+		
+		
 	}
 }
-
-#include "Mesh.impl.h"
 
 #endif

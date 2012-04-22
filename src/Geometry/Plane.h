@@ -11,6 +11,7 @@
 #define _DREAM_GEOMETRY_PLANE_H
 
 #include "Geometry.h"
+#include "Line.h"
 
 namespace Dream {
 	namespace Geometry {
@@ -60,8 +61,7 @@ namespace Dream {
 			bool intersects_with (const Line<3, NumericT> & line, VectorT & at) const;
 			
 			/// Finds the closed point on a plane to another point
-			VectorT closest_point (const VectorT & point) const
-			{
+			VectorT closest_point (const VectorT & point) const {
 				Vec3 at;
 				
 				intersects_with(Line<3,NumericT>(point, _normal), at);
