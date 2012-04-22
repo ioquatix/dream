@@ -12,6 +12,8 @@
 namespace Dream {
 	namespace Events {
 	
+		// http://athile.net/library/blog/?p=847
+		
 		template <typename ElementT>
 		class WorkQueue {
 		protected:

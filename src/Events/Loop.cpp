@@ -645,8 +645,7 @@ namespace Dream
 			_current_thread = std::this_thread::get_id();
 			//std::cerr << "..." << std::endl;
 			
-			while(_running)
-			{
+			while (_running) {
 				run_one_iteration(true);
 			}
 		}
@@ -663,8 +662,7 @@ namespace Dream
 			EggTimer timer(timeout);
 			
 			timer.start();
-			while(_running && (timeout = timer.remaining_time()) > 0)
-			{
+			while (_running && (timeout = timer.remaining_time()) > 0) {
 				run_one_iteration(false, timeout);
 			}
 			

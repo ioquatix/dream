@@ -45,7 +45,7 @@ namespace Dream
 			return p*(t*t*t) + q*(t*t) + r * t + s;
 		}
 
-		/** Hermite interpolation polynomical calculation function.
+		/** Hermite interpolation polynomial function.
 
 		 Tension: 1 is high, 0 normal, -1 is low
 		 Bias: 0 is even,

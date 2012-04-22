@@ -74,12 +74,12 @@ namespace Dream {
 		};
 		
 		enum Direction {
-			LEFT	= 1 << 0,	// x-axis
-			RIGHT	= 1 << 1,	// x-axis
-			TOP		= 1 << 2,	// y-axis
-			BOTTOM	= 1 << 3,	// y-axis
-			NEAR	= 1 << 4,	// z-axis
-			FAR		= 1 << 5	// z-axis
+			LEFT   = 1 << 0, // - x-axis
+			RIGHT  = 1 << 1, // + x-axis
+			BOTTOM = 1 << 2, // - y-axis
+			TOP    = 1 << 3, // + y-axis
+			NEAR   = 1 << 4, // - z-axis
+			FAR    = 1 << 5  // + z-axis
 		};
 		
 		/*
