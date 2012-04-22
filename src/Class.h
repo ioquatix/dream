@@ -13,6 +13,8 @@
 #include "Framework.h"
 #include "Reference.h"
 
+#include <map>
+
 namespace Dream
 {
 	class NonCopyable
@@ -61,14 +63,83 @@ namespace Dream
 			}
 	};
 
+	class IFinalizer;
+	
 	/** The top level concrete object class.
 
 	 Provides a basic implementation of Ref counting functionality and
 	 */
-	class Object : implements IObject
-	{
+	class Object : implements IObject {
+	private:
+		struct FinalizerReference {
+			FinalizerReference * next;
+			IFinalizer * finalizer;
+		};
+		
+		FinalizerReference * _finalizers;
+		
 	public:
-		virtual ~Object ();
+		Object();
+		virtual ~Object();
+		
+		void insert_finalizer(IFinalizer * finalizer);
+		bool erase_finalizer(IFinalizer * finalizer);
+	};
+	
+	/** Provides weak reference semantic between objects.
+	 
+	 */
+	class IFinalizer {
+	public:
+		virtual ~IFinalizer() {
+			
+		}
+		
+		// Called when the object is going to be deleted.
+		virtual void finalize(Object * object) = 0;
+	};
+	
+	/** Implements a simple weak-key value storage container which is typically useful for decoupled rendering and logic systems.
+	 
+	 */
+	template <typename ValueT>
+	class ObjectCache : public Object, virtual protected IFinalizer {
+	public:
+		typedef std::map<Object *, Ref<ValueT>> CacheMapT;
+		
+	protected:
+		CacheMapT _cache;
+		
+		virtual void finalize(Object * object) {
+			_cache.erase(object);
+		}
+		
+	public:
+		virtual ~ObjectCache() {
+			// We need to remove ourselves from the list of finalizers for each 
+			for (auto node : _cache) {
+				node.first->erase_finalizer(this);
+			}
+		}
+		
+		void set(Ptr<Object> object, Ptr<ValueT> cache) {
+			_cache[object.get()] = cache;
+			object->insert_finalizer(this);
+		}
+		
+		Ref<ValueT> lookup(Ptr<Object> object) {
+			auto i = _cache.find(object.get());
+			
+			if (i != _cache.end()) {
+				return i->second;
+			}
+			
+			return nullptr;
+		}
+		
+		const CacheMapT & objects() {
+			return _cache;
+		}
 	};
 }
 
