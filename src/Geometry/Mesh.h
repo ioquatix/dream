@@ -29,7 +29,7 @@ namespace Dream {
 			Vec3 normal;
 			Vec2 mapping;
 			
-			void apply(const Mat44 & position);
+			void apply(const Mat44 & transform);
 		};
 		
 		struct VertexP3N3M2C4 : public VertexP3N3M2 {

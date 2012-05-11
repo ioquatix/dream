@@ -69,23 +69,22 @@ namespace Dream {
 			
 #pragma mark -
 
-			class ApplicationDelegate : public Object, implements IApplicationDelegate
-			{
-				public:
-					ApplicationDelegate(Ptr<IScene> scene, Ptr<Dictionary> config);
-					virtual ~ApplicationDelegate();
-					
-				protected:
-					Ref<IScene> _scene;
-					Ref<Dictionary> _config;
-					Ref<Context> _context;
-					Ref<Events::Thread> _thread;
-					Ref<SceneManager> _scene_manager;
-					
-					virtual void application_did_finish_launching (IApplication * application);
-					
-					virtual void application_will_enter_background (IApplication * application);
-					virtual void application_did_enter_foreground (IApplication * application);
+			class ApplicationDelegate : public Object, implements IApplicationDelegate {
+			public:
+				ApplicationDelegate(Ptr<IScene> scene, Ptr<Dictionary> config);
+				virtual ~ApplicationDelegate();
+				
+			protected:
+				Ref<IScene> _scene;
+				Ref<Dictionary> _config;
+				Ref<Context> _context;
+				Ref<Events::Thread> _thread;
+				Ref<SceneManager> _scene_manager;
+				
+				virtual void application_did_finish_launching (IApplication * application);
+				
+				virtual void application_will_enter_background (IApplication * application);
+				virtual void application_did_enter_foreground (IApplication * application);
 			};
 
 			ApplicationDelegate::ApplicationDelegate(Ptr<IScene> scene, Ptr<Dictionary> config)

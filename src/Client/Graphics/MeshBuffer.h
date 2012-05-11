@@ -34,7 +34,7 @@ namespace Dream {
 				bool _invalid;
 				
 				void upload_buffers() {
-					DREAM_ASSERT(_mesh != NULL);
+					DREAM_ASSERT(_mesh);
 					
 					{
 						auto binding = _index_buffer.binding();

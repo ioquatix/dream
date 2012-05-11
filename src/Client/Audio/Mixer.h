@@ -75,7 +75,7 @@ namespace Dream
 				
 				void set_local ();
 				
-				void set_Ref_distance (float dist);
+				void set_reference_distance (float dist);
 				
 				void set_sound (ALuint buffer_id);
 				void set_sound (Ptr<Sound> sound);

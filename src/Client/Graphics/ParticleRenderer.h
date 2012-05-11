@@ -14,6 +14,7 @@
 #include "MeshBuffer.h"
 #include "ShaderManager.h"
 #include "../../Core/Timer.h"
+#include "../../Core/Algorithm.h"
 
 namespace Dream
 {
@@ -21,20 +22,6 @@ namespace Dream
 	{
 		namespace Graphics
 		{
-			
-			/// Provides an efficient way to erase elements from an unsorted std::vector
-			template <typename t>
-			bool erase_element_at_index (std::size_t index, std::vector<t> & array)
-			{
-				if (array.size() == (index+1)) {
-					array.pop_back();
-					return false;
-				} else {
-					array[index] = array.back();
-					array.pop_back();
-					return true;
-				}
-			}
 			
 			/// Setup an array of indices for rendering quadrilaterals as triangles
 			template <typename IndexT>
@@ -87,21 +74,22 @@ namespace Dream
 					Vec4 color;
 				};
 				
-				class Physics : public ParticlesT::Particle {
-				protected:
-					Vec3 _velocity;
-					Vec3 _position;
-					
+				struct Physics : public ParticlesT::Particle {
+				protected:					
 					Vertex _vertices[4];
 					
-					Vec3 _color;
-					RealT _color_modulator;
-					
-					RealT _life, _age;
-					
 				public:
-					Physics() : _velocity(ZERO), _color(1.0), _life(0), _age(0) {
-						_color_modulator = real_random();
+					Vec3 velocity;
+					Vec3 position;
+					
+					Vec3 color;
+					RealT color_modulator;
+					
+					RealT life, age;
+
+					
+					Physics() : velocity(ZERO), color(1.0), life(0), age(0) {
+						color_modulator = real_random();
 					}
 					
 					void set_mapping(const Vec2u & count, const Vec2u index) {
@@ -118,14 +106,10 @@ namespace Dream
 						set_mapping(count, Vec2u(integral_random(count[X]), integral_random(count[Y])));
 					}
 					
-					void set_velocity(const Vec3 & velocity) {
-						_velocity = velocity;
-					}
-					
-					void set_position(Vec3 position, Vec3 up, Vec3 forward, RealT rotation) {
+					void set_position(Vec3 center, Vec3 up, Vec3 forward, RealT rotation) {
 						using Dream::Numerics::Mat44;
 						
-						_position = position;
+						position = center;
 						
 						if (rotation != 0.0) {
 							up = Mat44::rotating_matrix(rotation, forward) * up;
@@ -133,7 +117,7 @@ namespace Dream
 						
 						Mat44 transform = Mat44::rotating_matrix(R90, forward);
 						for (std::size_t i = 0; i < 4; i += 1) {
-							_vertices[i].position = _position;
+							_vertices[i].position = position;
 							_vertices[i].offset = up;
 							up = transform * up;
 						}
@@ -146,39 +130,35 @@ namespace Dream
 						}
 					}
 					
-					void set_color(const Vec3 & color) {
-						_color = color;
-					}
-					
-					void update_vertex_color(const Vec4 & color) {
-						Vec4 sum = (_color << 0.0) + color;
+					void update_vertex_color(const Vec4 & offset_color) {
+						Vec4 sum = (color << 0.0) + offset_color;
 						
 						for (std::size_t i = 0; i < 4; i += 1)
 							_vertices[i].color = sum;
 					}
 					
 					void add_life(const RealT & amount) {
-						_life += amount;
+						life += amount;
 					}
 					
 					RealT color_modulation(RealT factor = 1.0) const {
-						return Math::sin(_color_modulator * R360 * factor);
+						return Math::sin(color_modulator * R360 * factor);
 					}
 					
 					inline bool update_time (RealT dt, const Vec3 & force = ZERO) {
-						_age += dt;
+						age += dt;
 						
-						if (_age < _life) {
-							_color_modulator += dt;
+						if (age < life) {
+							color_modulator += dt;
 							
-							_position += (_velocity * dt) + (force * dt * dt * 0.5);
+							position += (velocity * dt) + (force * dt * dt * 0.5);
 							
 							// Update vertex position:
 							for (std::size_t i = 0; i < 4; i += 1) {
-								_vertices[i].position = _position;
+								_vertices[i].position = position;
 							}
 							
-							_velocity += force * dt;
+							velocity += force * dt;
 							
 							return true;
 						}
@@ -187,7 +167,7 @@ namespace Dream
 					}
 					
 					RealT calculate_alpha (RealT timeout) {
-						RealT remaining = _life - _age;
+						RealT remaining = life - age;
 						
 						if (remaining < timeout)
 							return remaining / timeout;
@@ -196,8 +176,8 @@ namespace Dream
 					}
 					
 					RealT calculate_alpha (RealT timeout, RealT ramp) {
-						if (_age < ramp) {
-							return _age / ramp;
+						if (age < ramp) {
+							return age / ramp;
 						}
 						
 						return calculate_alpha(timeout);
@@ -245,6 +225,40 @@ namespace Dream
 				virtual ~ParticleRenderer() {	
 				}
 				
+				// To use this function, make sure you implement
+				// bool update_physics(Physics & physics, TimeT last_time, TimeT current_time, TimeT dt)
+				void update_for_duration (TimeT last_time, TimeT current_time, TimeT dt)
+				{
+					if (_physics.size() == 0)
+						return;
+					
+					auto binding = _vertex_buffer.binding();
+					if (_vertex_buffer.size() < required_size())
+						binding.resize(required_size());
+					
+					auto buffer = binding.array();
+					
+					std::size_t i = 0;
+					while (i < _physics.size()) {
+						Physics & physics = _physics[i];
+						
+						bool alive = static_cast<ParticlesT*>(this)->update_physics(physics, last_time, current_time, dt);
+						
+						if (alive) {
+							// Add the particle to be drawn:
+							physics.queue(&buffer[i*4]);
+							
+							i += 1;
+						} else {
+							erase_element_at_index(i, _physics);
+						}
+					}
+					
+					binding.unmap();
+					
+					_count = i;
+				}
+				
 				void draw() {
 					// If there is nothing to draw, bail out quickly.
 					if (_count == 0)
@@ -267,6 +281,7 @@ namespace Dream
 				struct Particle {
 				};
 			};
+			
 		}
 	}
 }

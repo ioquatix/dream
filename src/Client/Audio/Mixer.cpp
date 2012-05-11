@@ -62,7 +62,7 @@ namespace Dream
 				//set_gain(1.0);
 				//set_position(Vec3(ZERO));
 				//set_velocity(Vec3(ZERO));
-				//set_Ref_distance(100);
+				//set_reference_distance(100);
 				
 				AudioError::check("Allocating Source");
 			}
@@ -175,7 +175,7 @@ namespace Dream
 				alSourcei(_source_id, AL_SOURCE_RELATIVE, AL_TRUE);
 			}
 			
-			void Source::set_Ref_distance (float dist)
+			void Source::set_reference_distance (float dist)
 			{
 				alSourcef(_source_id, AL_REFERENCE_DISTANCE, dist);
 			}

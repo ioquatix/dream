@@ -18,8 +18,6 @@ namespace Dream {
 
 			template <typename MeshT>
 			void sphere(MeshT & mesh, RealT radius, std::size_t stacks = 8, std::size_t slices = 8) {
-				typename MeshT::IndexT index = 0;
-				
 				for (std::size_t stack = 0; stack <= stacks; stack += 1) {
 					for (std::size_t slice = 0; slice < slices; slice += 1) {
 						RealT theta = stack * (R180 / stacks);

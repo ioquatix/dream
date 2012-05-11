@@ -525,6 +525,7 @@
 		7E6F28C012296D3700E51772 /* Base.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		7E6F293C122A6E5B00E51772 /* PerlinNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PerlinNoise.cpp; sourceTree = "<group>"; };
 		7E6F293D122A6E5B00E51772 /* PerlinNoise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PerlinNoise.h; sourceTree = "<group>"; };
+		7E7453BD155CC40000E2F980 /* Algorithm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Algorithm.h; sourceTree = "<group>"; };
 		7E74C3731216A858006AD533 /* Client.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Client.h; sourceTree = "<group>"; };
 		7E82EBFF0EB9D09D0017567C /* Vector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vector.cpp; sourceTree = "<group>"; };
 		7E82EC010EB9D09D0017567C /* Quaternion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Quaternion.cpp; sourceTree = "<group>"; };
@@ -623,8 +624,8 @@
 		7ED6414F14D78C1C00653B22 /* WireframeRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WireframeRenderer.h; sourceTree = "<group>"; };
 		7ED6415314D78C3C00653B22 /* View.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = View.cpp; sourceTree = "<group>"; };
 		7ED6415414D78C3C00653B22 /* View.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = View.h; sourceTree = "<group>"; };
-		7EDADD6A1538A00F00FB6255 /* Cube.h */ = {isa = PBXFileReference; fileEncoding = 4; path = Cube.h; sourceTree = "<group>"; };
-		7EDADD6B1538A02E00FB6255 /* Basic.h */ = {isa = PBXFileReference; path = Basic.h; sourceTree = "<group>"; };
+		7EDADD6A1538A00F00FB6255 /* Cube.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cube.h; sourceTree = "<group>"; };
+		7EDADD6B1538A02E00FB6255 /* Basic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Basic.h; sourceTree = "<group>"; };
 		7EDADD6C1538A09000FB6255 /* Planar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Planar.h; sourceTree = "<group>"; };
 		7EDADD6D1538A09000FB6255 /* Sphere.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sphere.h; sourceTree = "<group>"; };
 		7EDADD6E1538A15300FB6255 /* Cylinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cylinder.h; sourceTree = "<group>"; };
@@ -904,6 +905,7 @@
 				7EC4545F0EE9FE35000D47C2 /* Timer.cpp */,
 				7E3B90CD0F9C18FD002B6541 /* Timer-CoreVideo.cpp */,
 				7E3B90C80F9C18DF002B6541 /* Timer-Unix.cpp */,
+				7E7453BD155CC40000E2F980 /* Algorithm.h */,
 			);
 			path = Core;
 			sourceTree = "<group>";

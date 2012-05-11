@@ -38,44 +38,21 @@ namespace SakuraHeart {
 	// The actual particle simulation/drawing code:
 	class HeartParticles : public ParticleRenderer<HeartParticles> {
 	public:
-		void update_for_duration(TimeT last_time, TimeT current_time, TimeT dt);
+		bool update_physics(Physics & physics, TimeT last_time, TimeT current_time, TimeT dt);
 		void add();
 	};
 	
-	void HeartParticles::update_for_duration(TimeT last_time, TimeT current_time, TimeT dt) {
-		if (_physics.size() == 0)
-			return;
+	bool HeartParticles::update_physics(Physics & physics, TimeT last_time, TimeT current_time, TimeT dt) {
+		const Vec3 gravity(0.0, 0.0, -9.8 / 2.0);
 		
-		std::size_t required_size = _physics.size() * 4 * sizeof(Vertex);
-		auto binding = _vertex_buffer.binding();
-		if (_vertex_buffer.size() < required_size)
-			binding.resize(required_size);
-		
-		auto buffer = binding.array();
-		
-		Vec3 gravity(0.0, 0.0, -9.8);
-		
-		std::size_t i = 0;
-		while (i < _physics.size()) {
-			Physics & physics = _physics[i];
+		if (physics.update_time(dt, gravity)) {
+			RealT alpha = physics.calculate_alpha(0.7);
+			physics.update_vertex_color(Vec3(0.2 * physics.color_modulation(2.0)) << alpha);
 			
-			if (physics.update_time(dt, gravity)) {
-				RealT alpha = physics.calculate_alpha(0.7);
-				
-				physics.update_vertex_color(Vec3(0.2 * physics.color_modulation(2.0)) << alpha);
-				
-				// Add the particle to be drawn:
-				physics.queue(&buffer[i*4]);
-				
-				i += 1;
-			} else {
-				erase_element_at_index(i, _physics);
-			}
+			return true;
+		} else {
+			return false;
 		}
-		
-		binding.unmap();
-		
-		_count = i;
 	}
 	
 	void HeartParticles::add() {
@@ -99,10 +76,10 @@ namespace SakuraHeart {
 			
 			Physics particle;
 			
-			particle.set_velocity(Vec3(0.0, 0.0, 0.0));
+			particle.velocity = Vec3(0.0, 0.0, 0.0);
 			particle.set_position(point, Vec3(-0.1, -0.1, 0.0), Vec3(0.0, 0.0, -1.0), 0.0);
 			particle.add_life(1 + real_random());
-			particle.set_color(Vec3(1.0, 1.0, 1.0));
+			particle.color = Vec3(1.0, 1.0, 1.0);
 			particle.set_random_mapping(8);
 			
 			_physics.push_back(particle);
@@ -112,25 +89,20 @@ namespace SakuraHeart {
 	}
 	
 	// The high level renderer that manages associated textures/shaders:
-	class SakuraHeartRenderer : public BasicRenderer {
+	class SakuraHeartRenderer : public Object {
 	protected:
 		Ref<Program> _particle_program;
 		Ref<Texture> _sakura_texture;
+		
+		Ref<RendererState> _renderer_state;
 
 	public:
-		SakuraHeartRenderer(Ptr<Resources::Loader> resource_loader, Ptr<TextureManager> texture_manager, Ptr<ShaderManager> shader_manager, Ptr<Viewport> viewport) : BasicRenderer(resource_loader, texture_manager, shader_manager, viewport) {
+		SakuraHeartRenderer(Ptr<RendererState> renderer_state) : _renderer_state(renderer_state) {
 			// Load sakura texture:
-			TextureParameters parameters;
-			parameters.generate_mip_maps = true;
-			parameters.min_filter = GL_LINEAR_MIPMAP_LINEAR;
-			parameters.mag_filter = GL_LINEAR;
-			parameters.target = GL_TEXTURE_2D;
-			
-			Ref<IPixelBuffer> sakura_image = _resource_loader->load<IPixelBuffer>("Textures/Sakura");
-			_sakura_texture = _texture_manager->allocate(parameters, sakura_image);
-			
+			_sakura_texture = _renderer_state->load_texture(TextureParameters::LINEAR, "Textures/Sakura");
+						
 			// Load particle program:
-			_particle_program = load_program("Shaders/particle");
+			_particle_program = _renderer_state->load_program("Shaders/particle");
 			
 			_particle_program->set_attribute_location("position", HeartParticles::POSITION);
 			_particle_program->set_attribute_location("offset", HeartParticles::OFFSET);
@@ -150,20 +122,18 @@ namespace SakuraHeart {
 		
 		void render(Ptr<HeartParticles> heart_particles) {
 			glDepthMask(GL_FALSE);
-			
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			
 			{
 				auto binding = _particle_program->binding();
-				binding.set_uniform("display_matrix", _viewport->display_matrix());
+				binding.set_uniform("display_matrix", _renderer_state->viewport->display_matrix());
 				
-				_texture_manager->bind(0, _sakura_texture);
+				_renderer_state->texture_manager->bind(0, _sakura_texture);
 				heart_particles->draw();
 			}
 			
 			glDisable(GL_BLEND);
-			
 			glDepthMask(GL_TRUE);		
 		}
 	};
@@ -214,7 +184,13 @@ namespace SakuraHeart {
 		auto texture_manager = new TextureManager;
 		auto shader_manager = new ShaderManager;
 		
-		_sakura_heart_renderer = new SakuraHeartRenderer(resource_loader(), texture_manager, shader_manager, _viewport);
+		Ref<RendererState> renderer_state = new RendererState;
+		renderer_state->resource_loader = resource_loader();
+		renderer_state->viewport = _viewport;
+		renderer_state->texture_manager = texture_manager;
+		renderer_state->shader_manager = shader_manager;
+		
+		_sakura_heart_renderer = new SakuraHeartRenderer(renderer_state);
 		_heart_particles = new HeartParticles;
 		
 		glClearColor(0.0, 0.0, 0.0, 1.0);

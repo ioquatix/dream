@@ -67,35 +67,6 @@ namespace Dream {
 				Ref<Texture> load_texture(const TextureParameters & parameters, StringT name);
 			};
 			
-			/// This case encapsulates basic state common to many renderers - it may not be suitable for all types of renderers. This class is deprecated and will be removed.
-			class BasicRenderer : public Object, implements IRenderer {
-			protected:
-				Ref<Resources::Loader> _resource_loader;
-				Ref<TextureManager> _texture_manager;
-				Ref<ShaderManager> _shader_manager;
-				
-				Ref<Renderer::Viewport> _viewport;
-				
-				// These are essentially helper methods to load shader programs:
-				GLuint compile_shader_of_type (GLenum type, StringT name);
-				Ref<Program> load_program(StringT name);
-				
-			public:
-				struct State {
-					Ref<Resources::Loader> resource_loader;
-					Ref<TextureManager> texture_manager;
-					Ref<ShaderManager> shader_manager;
-					Ref<Renderer::Viewport> viewport;
-				};
-				
-				BasicRenderer(State & state);
-				
-				BasicRenderer(Ptr<Resources::Loader> resource_loader, Ptr<TextureManager> texture_manager, Ptr<ShaderManager> shader_manager, Ptr<Renderer::Viewport> viewport);
-				virtual ~BasicRenderer();
-				
-				// By default, we can render nothing in particular.
-			};
-			
 		}
 	}
 }
