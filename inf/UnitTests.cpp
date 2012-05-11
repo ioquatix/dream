@@ -15,5 +15,5 @@ int main (int argc, char** args)
 
 	cout << "Performing Unit Tests..." << endl;
 
-	Dream::Core::CodeTestRegistry::performAllTests ();
+	Dream::Core::CodeTestRegistry::perform_all_tests();
 }
