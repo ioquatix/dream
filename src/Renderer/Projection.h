@@ -57,13 +57,9 @@ namespace Dream
 		};
 		
 		class ScaledOrthographicProjection : public OrthographicProjection {
-		protected:
-			IndexT _scale_axis;
-			
 		public:
-			/// Provide a scale_axis to control how the orthographic projection should be resized
-			/// when the window is non-square.
-			ScaledOrthographicProjection(const AlignedBox<3> & box, IndexT scale_axis);		
+			/// The scaled orthographic projection ensures that the box will always be the correct aspect ratio and visible.
+			ScaledOrthographicProjection(const AlignedBox<3> & box);		
 			
 			virtual Mat44 projection_matrix_for_viewport(const IViewport & viewport);
 		};

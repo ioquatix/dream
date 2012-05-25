@@ -44,26 +44,25 @@ namespace Dream
 			return _box;
 		}
 		
-		ScaledOrthographicProjection::ScaledOrthographicProjection(const AlignedBox<3> & box, IndexT scale_axis) 
-		: OrthographicProjection(box), _scale_axis(scale_axis){
+		ScaledOrthographicProjection::ScaledOrthographicProjection(const AlignedBox<3> & box) : OrthographicProjection(box) {
 			
 		}
 		
 		Mat44 ScaledOrthographicProjection::projection_matrix_for_viewport(const IViewport & viewport) {
 			Vec3 scaled_size = _box.size();
+			RealT desired_aspect_ratio = scaled_size.reduce().aspect_ratio();
 			RealT aspect_ratio = viewport.bounds().size().aspect_ratio();
 			
-			if (_scale_axis == X) {
-				scaled_size[X] *= aspect_ratio;
-			} else if (_scale_axis == Y) {
-				scaled_size[Y] *= 1.0 / aspect_ratio;
+			if (desired_aspect_ratio < aspect_ratio) {
+				scaled_size[X] = scaled_size[Y] * aspect_ratio;
+			} else {
+				scaled_size[Y] = scaled_size[X] * (1.0 / aspect_ratio);
 			}
 			
 			return orthographic_matrix<RealT>(_box.center(), scaled_size);
 		}
 		
-		PerspectiveProjection::PerspectiveProjection(RealT field_of_view, RealT near, RealT far)
-		: _field_of_view(field_of_view), _near(near), _far(far) {
+		PerspectiveProjection::PerspectiveProjection(RealT field_of_view, RealT near, RealT far) : _field_of_view(field_of_view), _near(near), _far(far) {
 			
 		}
 		

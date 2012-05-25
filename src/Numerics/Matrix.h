@@ -343,7 +343,7 @@ namespace Dream
 		}
 		
 		template <typename NumericT>
-		Matrix<4, 4, NumericT> orthographic_matrix (const Vec3 & translation, const Vec3 & size) {
+		Matrix<4, 4, NumericT> orthographic_matrix (const Vector<3, NumericT> & translation, const Vector<3, NumericT> & size) {
 			Matrix<4, 4, NumericT> result(ZERO);
 			
 			result.at(0) = 2.0 / size[X];
