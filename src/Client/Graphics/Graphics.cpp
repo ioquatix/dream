@@ -16,6 +16,7 @@ namespace Dream
 		{
 			void check_graphics_error()
 			{
+#ifdef DREAM_DEBUG
 				GLenum error = GL_NO_ERROR;
 				
 				while ((error = glGetError()) != GL_NO_ERROR) {
@@ -24,6 +25,7 @@ namespace Dream
 					// Abort due to error
 					DREAM_ASSERT(error == GL_NO_ERROR);
 				}
+#endif
 			}
 		}
 	}
