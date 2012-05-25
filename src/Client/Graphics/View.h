@@ -22,10 +22,7 @@
 
 namespace Dream {
 	namespace Client {
-		namespace Graphics {			
-			
-			// The basic view renderer which supports all views listed here.
-			class IViewRenderer;
+		namespace Graphics {
 			
 			/** Implements the basic structure of user interface layout and display.
 			*/
@@ -39,8 +36,6 @@ namespace Dream {
 					
 					Ref<View> _principal;
 					View *_static_focused_view, *_dynamic_focused_view;
-					
-					Ref<IViewRenderer> _renderer;
 					
 					void views_to_point (const Vec2 &point, std::vector<View*> &views);
 					void set_principal_view (View *p);
@@ -227,28 +222,6 @@ namespace Dream {
 				virtual bool motion (const MotionInput &);
 			};
 			
-#pragma mark -
-#pragma mark View Renderer
-			
-			class IViewRenderer : implements IObject, implements IRenderer {
-			public:
-				virtual void render(View * view) abstract;
-				virtual void render(ImageView * image_view) abstract;
-				virtual void render(TextView * text_view) abstract;
-			};
-			
-			class ViewRenderer : public Object, implements IViewRenderer {
-			protected:
-				Ref<PixelBufferRenderer> _image_renderer;
-				Ref<TextureManager> _texture_manager;
-				
-			public:
-				ViewRenderer();
-				
-				virtual void render(View * view);
-				virtual void render(ImageView * image_view);
-				virtual void render(TextView * text_view);
-			};
 		}
 	}
 }

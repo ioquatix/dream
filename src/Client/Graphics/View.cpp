@@ -112,6 +112,10 @@ namespace Dream {
 			void View::Controller::did_become_current (ISceneManager * manager, IScene * scene) {
 				DREAM_ASSERT(_principal);
 				
+				// Fire the initial resize event:
+				ResizeInput initial_layout_size(manager->display_context()->size());
+				process(initial_layout_size);
+				
 				_principal->did_become_current(manager, scene);
 			}
 			
@@ -464,25 +468,6 @@ namespace Dream {
 			
 			bool TextView::motion (const MotionInput & input) {
 				return View::motion(input);
-			}
-			
-#pragma mark -
-#pragma mark View Renderer
-			
-			ViewRenderer::ViewRenderer() {
-				
-			}
-			
-			void ViewRenderer::render(View * view) {
-				
-			}
-			
-			void ViewRenderer::render(ImageView * image_view) {
-				
-			}
-			
-			void ViewRenderer::render(TextView * text_view) {
-				
 			}
 			
 		}
