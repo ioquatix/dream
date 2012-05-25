@@ -22,7 +22,7 @@ namespace Dream {
 				Shared<MeshT> _mesh;
 				
 				VertexArray _vertex_array;
-								
+				
 				typedef IndexBuffer<typename MeshT::IndexT> IndexBufferT;
 				typedef VertexBuffer<typename MeshT::VertexT> VertexBufferT;
 				
@@ -57,6 +57,13 @@ namespace Dream {
 					_invalid = false;
 					
 					check_graphics_error();
+				}
+				
+				void draw_elements(std::size_t count) {
+					if (!_invalid) {
+						auto binding = _vertex_array.binding();
+						binding.draw_elements(_mesh->layout, (GLsizei)count, GLTypeTraits<typename MeshT::IndexT>::TYPE);
+					}
 				}
 				
 			public:
@@ -98,15 +105,20 @@ namespace Dream {
 					}
 				}
 				
+				void draw(std::size_t count) {
+					if (_invalid) {
+						upload_buffers();
+					}
+					
+					draw_elements(count);
+				}
+				
 				void draw() {
 					if (_invalid) {
 						upload_buffers();
 					}
 					
-					if (!_invalid) {
-						auto binding = _vertex_array.binding();
-						binding.draw_elements(_mesh->layout, (GLsizei)_count, GLTypeTraits<typename MeshT::IndexT>::TYPE);
-					}
+					draw_elements(_count);
 				}
 				
 				VertexArray & vertex_array() {
