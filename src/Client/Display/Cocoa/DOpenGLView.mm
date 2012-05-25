@@ -67,7 +67,7 @@ using namespace Dream::Client::Display;
 	
 	if (!_display_context) return;
 	
-	logger()->log(LOG_DEBUG, LogBuffer() << "Reshape for context: " << self.openGLContext.CGLContextObj);
+	//logger()->log(LOG_DEBUG, LogBuffer() << "Reshape for context: " << self.openGLContext.CGLContextObj);
 	
 	using namespace Dream::Client::Display;
 	
