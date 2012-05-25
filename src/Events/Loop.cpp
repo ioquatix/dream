@@ -536,7 +536,7 @@ namespace Dream
 			
 			unsigned rate = _rate_limit;
 			
-			while (!_notifications.processing.empty()  && (rate-- || _rate_limit == 0))
+			while (!_notifications.processing.empty() && (rate-- || _rate_limit == 0))
 			{
 				Ref<INotificationSource> note = _notifications.processing.front();
 				_notifications.processing.pop();
