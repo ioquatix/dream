@@ -260,14 +260,14 @@ namespace SakuraHeart {
 	
 	class SakuraHeartApplicationDelegate : public Object, implements IApplicationDelegate
 	{
-		protected:
-			Ref<Context> _context;
+	protected:
+		Ref<Context> _context;
+	
+		virtual ~SakuraHeartApplicationDelegate ();
+		virtual void application_did_finish_launching (IApplication * application);
 		
-			virtual ~SakuraHeartApplicationDelegate ();
-			virtual void application_did_finish_launching (IApplication * application);
-			
-			virtual void application_will_enter_background (IApplication * application);
-			virtual void application_did_enter_foreground (IApplication * application);
+		virtual void application_will_enter_background (IApplication * application);
+		virtual void application_did_enter_foreground (IApplication * application);
 	};
 	
 	SakuraHeartApplicationDelegate::~SakuraHeartApplicationDelegate() {
