@@ -13,6 +13,8 @@ namespace Dream {
 		namespace Graphics {
 
 			PixelBufferRenderer::PixelBufferRenderer(Ptr<TextureManager> texture_manager) : _texture_manager(texture_manager) {
+				DREAM_ASSERT(texture_manager);
+				
 				_texture_parameters.target = GL_TEXTURE_2D;
 				_texture_parameters.min_filter = GL_NEAREST;
 				_texture_parameters.mag_filter = GL_NEAREST;
@@ -29,6 +31,8 @@ namespace Dream {
 			}
 			
 			Ref<Texture> PixelBufferRenderer::fetch(Ptr<IPixelBuffer> pixel_buffer, bool invalidate) {
+				DREAM_ASSERT(pixel_buffer);
+				
 				// We assume that the buffer doesn't need to be changed unless the pointers are different or invalidate is true.
 				// For mutable pixel buffers, this isn't such a good option - perhaps implementing a mutating count, or a running checksum?
 				
