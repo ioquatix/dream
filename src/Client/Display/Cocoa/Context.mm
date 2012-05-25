@@ -163,6 +163,10 @@ namespace Dream
 					CGLContextObj cglContext = (CGLContextObj)_graphics_view.openGLContext.CGLContextObj;
 					CGLPixelFormatObj cglPixelFormat = (CGLPixelFormatObj)_graphics_view.pixelFormat.CGLPixelFormatObj;
 					CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(_display_link, cglContext, cglPixelFormat);
+					
+					// VSync? Is this really useful with CVDisplayLink?
+					GLint value = 1;
+					CGLSetParameter(cglContext, kCGLCPSwapInterval, &value);
 				}
 				
 				void ViewContext::setup_display_link ()
