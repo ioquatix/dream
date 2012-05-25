@@ -11,3 +11,4 @@ ext/android_ndk/
 include/
 opt/
 src/Revision.h
+xcuserdata
