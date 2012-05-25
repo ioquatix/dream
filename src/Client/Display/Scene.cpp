@@ -68,7 +68,6 @@ namespace Dream
 				if (_current_scene)
 					_scenes.push_front(_current_scene);
 				
-				
 				replace_scene(scene);
 			}
 			
@@ -77,7 +76,7 @@ namespace Dream
 				_scenes.push_front(scene);
 				
 				// Clear the current scene. Any attempt to render will load up the first scene.
-				_current_scene = NULL;
+				_current_scene_is_finished = true;
 			}
 			
 			void SceneManager::append_scene (Ref<IScene> scene)
