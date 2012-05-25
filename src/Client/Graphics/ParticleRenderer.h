@@ -86,7 +86,6 @@ namespace Dream
 					RealT color_modulator;
 					
 					RealT life, age;
-
 					
 					Physics() : velocity(ZERO), color(1.0), life(0), age(0) {
 						color_modulator = real_random();
@@ -196,8 +195,8 @@ namespace Dream
 				IndexBuffer<GLushort> _indices_buffer;
 				VertexBuffer<Vertex> _vertex_buffer;
 				
-				std::size_t required_size() {
-					return _physics.size() * 4 * sizeof(Vertex);
+				std::size_t required_vertices() {
+					return _physics.size() * 4;
 				}
 				
 			public:
@@ -233,8 +232,15 @@ namespace Dream
 						return;
 					
 					auto binding = _vertex_buffer.binding();
-					if (_vertex_buffer.size() < required_size())
-						binding.resize(required_size());
+					
+					// We try to avoid resizing the buffer as it turns out this is quite an expensive operation:
+					if (binding.size() < required_vertices()) {
+						binding.resize(required_vertices() * 2);
+						
+						std::size_t byte_size = binding.size() * sizeof(Vertex);
+						
+						logger()->log(LOG_DEBUG, LogBuffer() << "Allocating " << byte_size << " bytes to particle renderer for " << _physics.size() << " particles.");
+					}
 					
 					auto buffer = binding.array();
 					

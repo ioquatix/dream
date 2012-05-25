@@ -26,6 +26,8 @@ namespace Dream {
 				}
 				
 				ElementT & operator[](std::size_t index) {
+					DREAM_ASSERT(index < _size);
+					
 					return _base[index];
 				}
 				
@@ -63,6 +65,11 @@ namespace Dream {
 					check_graphics_error();
 				}
 				
+				/// The data size in bytes.
+				std::size_t size() const {
+					return _size;
+				}
+				
 				friend class VertexArray;
 				
 			public:		
@@ -72,10 +79,6 @@ namespace Dream {
 				
 				~BufferHandle() {
 					glDeleteBuffers(1, &_handle);
-				}
-				
-				std::size_t size() const {
-					return _size;
 				}
 				
 				GLenum usage() const {
@@ -109,7 +112,8 @@ namespace Dream {
 							_buffer_handle->unbind();
 					}
 					
-					void size() {
+					/// Calculates the number of elements in the vertex buffer binding.
+					std::size_t size() {
 						return _buffer_handle->_size / sizeof(ElementT);
 					}
 					
