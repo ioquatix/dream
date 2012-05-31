@@ -251,10 +251,12 @@ namespace Dream {
 				glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_REPEAT);
 				glTexParameteri(target, GL_TEXTURE_MAG_FILTER, parameters.get_mag_filter());
 				glTexParameteri(target, GL_TEXTURE_MIN_FILTER, parameters.get_min_filter());
-				
+			
+#ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT	
 				if (parameters.anisotropy != 1.0) {
 					glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, parameters.anisotropy);
 				}
+#endif
 				
 				check_graphics_error();
 			}
