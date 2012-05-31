@@ -19,13 +19,17 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-// PollFileDescriptorMonitor
-#include <poll.h>
-
-// KQueueFileDescriptorMonitor
-#include <sys/types.h>
-#include <sys/event.h>
-#include <sys/time.h>
+#if defined(TARGET_OS_LINUX)
+	// PollFileDescriptorMonitor
+	#include <poll.h>
+#elif defined(TARGET_OS_MAC)
+	// KQueueFileDescriptorMonitor
+	#include <sys/types.h>
+	#include <sys/event.h>
+	#include <sys/time.h>
+#else
+	#error "Couldn't find file descriptor event subsystem."
+#endif
 
 namespace Dream
 {
@@ -69,9 +73,9 @@ namespace Dream
 		
 // MARK: mark File Descriptor Monitor Implementations		
 // MARK: mark -
-		
 		typedef std::set<Ref<IFileDescriptorSource>> FileDescriptorHandlesT;
 		
+#if defined(TARGET_OS_MAC)		
 		class KQueueFileDescriptorMonitor : public Object, implements IFileDescriptorMonitor
 		{
 		protected:
@@ -214,9 +218,13 @@ namespace Dream
 			
 			return count;
 		}
+
+		typedef KQueueFileDescriptorMonitor SystemFileDescriptorMonitor;
+#endif
 		
 // MARK: mark -
 		
+#if defined(TARGET_OS_LINUX)
 		class PollFileDescriptorMonitor : public Object, implements IFileDescriptorMonitor
 		{
 		protected:
@@ -347,14 +355,17 @@ namespace Dream
 			
 			return count;
 		}
-						
+
+		typedef PollFileDescriptorMonitor SystemFileDescriptorMonitor;
+#endif
+			
 // MARK: mark -
 // MARK: mark class Loop
 				
 		Loop::Loop () : _stop_when_idle(true), _rate_limit(20)
 		{
 			// Setup file descriptor monitor
-			_file_descriptor_monitor = new KQueueFileDescriptorMonitor;
+			_file_descriptor_monitor = new SystemFileDescriptorMonitor;
 			
 			// Setup timers
 			_stopwatch.start();
