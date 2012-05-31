@@ -250,8 +250,8 @@ namespace Dream
 		
 		void TextBlock::set_text_direction (TextDirection char_dir, TextDirection line_dir)
 		{
-			DREAM_ASSERT(char_dir & (LR|RL) && line_dir & (TB|BT)
-				   || char_dir & (TB|BT) && line_dir & (LR|RL));
+			DREAM_ASSERT(((char_dir & (LR|RL)) && (line_dir & (TB|BT)))
+				   || ((char_dir & (TB|BT)) && (line_dir & (LR|RL))));
 			
 			//if (char_dir & (LR|RL)) DREAM_ASSERT(FT_HAS_HORIZONTAL(_face));
 			//if (char_dir & (TB|BT)) DREAM_ASSERT(FT_HAS_VERTICAL(_face));
