@@ -12,6 +12,19 @@
 
 #include <cstddef>
 
+// MARK: -
+// MARK: Target operating system conditionals
+// http://stackoverflow.com/questions/6649936/c-compiling-on-windows-and-linux-ifdef-switch
+#ifdef __APPLE__
+#include <TargetConditionals.h>
+#elif __ANDROID_API__
+#define TARGET_OS_ANDROID 1
+#elif __linux__
+#define TARGET_OS_LINUX 1
+#elif _WIN32
+#define TARGET_OS_WIN32 1
+#endif
+
 #define abstract = 0
 #define implements virtual public
 
