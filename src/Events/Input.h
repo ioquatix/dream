@@ -186,12 +186,12 @@ namespace Dream
 			const Key & key () const { return _key; }
 			const StateT & state () const { return _state; }
 			
-			bool button_pressed (const char b) const {
-				return _state == Pressed && _key.button() == b;
+			bool button_pressed (const ButtonT button) const {
+				return _state == Pressed && _key.button() == button;
 			}
 			
-			bool button_released (const char b) const {
-				return _state == Released && _key.button() == b;
+			bool button_released (const ButtonT button) const {
+				return _state == Released && _key.button() == button;
 			}
 		};
 		
