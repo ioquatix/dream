@@ -22,8 +22,8 @@ namespace Dream
 		template <unsigned, unsigned, typename>
 		class Matrix;
 
-#pragma mark -
-#pragma mark Matrix Multiplication Traits
+// MARK: mark -
+// MARK: mark Matrix Multiplication Traits
 
 		template <unsigned R, unsigned C, typename NumericT>
 		class MatrixMultiplicationTraits
@@ -61,8 +61,8 @@ namespace Dream
 			}
 		};
 
-#pragma mark -
-#pragma mark Matrix Inverse Traits
+// MARK: mark -
+// MARK: mark Matrix Inverse Traits
 
 		template <unsigned R, unsigned C, typename NumericT>
 		class MatrixInverseTraits
@@ -81,8 +81,8 @@ namespace Dream
 			Matrix<4, 4, NumericT> inverse_matrix () const;
 		};
 
-#pragma mark -
-#pragma mark Matrix Square Traits
+// MARK: mark -
+// MARK: mark Matrix Square Traits
 
 		template <unsigned R, unsigned C, typename NumericT>
 		class MatrixSquareTraits
@@ -126,7 +126,7 @@ namespace Dream
 			MatrixT & transpose ();
 		};
 
-#pragma mark -
+// MARK: mark -
 
 		template <unsigned R, unsigned C, typename NumericT>
 		class MatrixEqualityTraits
@@ -153,8 +153,8 @@ namespace Dream
 			bool equal_within_tolerance (const MatrixT & other, const unsigned & ulps = DEFAULT_ULPS) const;
 		};
 
-#pragma mark -
-#pragma mark Matrix Class
+// MARK: mark -
+// MARK: mark Matrix Class
 
 		unsigned row_major_offset(unsigned row, unsigned col, unsigned sz);
 		unsigned column_major_offset(unsigned row, unsigned col, unsigned sz);
@@ -309,8 +309,8 @@ namespace Dream
 			}
 		};
 
-#pragma mark -
-#pragma mark Static Matrix Constructors
+// MARK: mark -
+// MARK: mark Static Matrix Constructors
 
 		/// Convenience type for matrix class
 		typedef Matrix<4, 4, RealT> Mat44;

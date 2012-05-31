@@ -18,8 +18,8 @@ namespace Dream
 	namespace Geometry
 	{
 	
-#pragma mark -
-#pragma mark class LineTranslationTraits
+// MARK: mark -
+// MARK: mark class LineTranslationTraits
 		
 		template <typename NumericT>
 		typename LineTranslationTraits<3, NumericT>::MatrixT LineTranslationTraits<3, NumericT>::transformation_to_mate_with_line (const LineT & other, const VectorT & normal) const 
@@ -74,8 +74,8 @@ namespace Dream
 			return result;
 		}
 		
-#pragma mark -
-#pragma mark class Line
+// MARK: mark -
+// MARK: mark class Line
 		
 		template <unsigned D, typename NumericT>
 		Line<D, NumericT>::Line ()
@@ -214,8 +214,8 @@ namespace Dream
 			return Line<D, NumericT>(l.point() - v, l.direction());
 		}
 		
-#pragma mark -
-#pragma mark class LineSegment
+// MARK: mark -
+// MARK: mark class LineSegment
 
 		template <unsigned D, typename NumericT>
 		LineSegment<D, NumericT>::LineSegment ()

@@ -18,14 +18,14 @@ namespace Dream
 	namespace Core
 	{
 		
-#pragma mark -
+// MARK: mark -
 		
 		std::ostream & operator<< (std::ostream & out, const std::type_info & rhs)
 		{
 			return (out << "<typeinfo for " << rhs.name() << ">");
 		}
 		
-#pragma mark -
+// MARK: mark -
 		
 		CodeTestRegistry * shared_code_test_registry () {
 			static CodeTestRegistry * code_test_registry = NULL;
@@ -54,7 +54,7 @@ namespace Dream
 			
 			foreach (test, _code_tests)
 			{
-				//if ((*test)->_name != "Thread Test") continue;
+				if ((*test)->_name != "Object Test") continue;
 				
 				(*test)->perform_tests ();
 

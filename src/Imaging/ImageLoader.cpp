@@ -47,8 +47,8 @@ namespace Dream {
 			}
 		};
 
-	#pragma mark -
-	#pragma mark JPEG Loader Code
+	// MARK: mark -
+	// MARK: mark JPEG Loader Code
 
 		void jpeg_dummy (j_decompress_ptr cinfo) {
 
@@ -151,8 +151,8 @@ namespace Dream {
 			return result_image;
 		};
 
-	#pragma mark -
-	#pragma mark PNG Loader Code
+	// MARK: mark -
+	// MARK: mark PNG Loader Code
 		static void png_error (png_structp png_reader, png_const_charp msg) {
 			throw std::runtime_error(msg);
 		}
@@ -265,8 +265,8 @@ namespace Dream {
 			return result_image;
 		}
 
-#pragma mark -
-#pragma mark Loader Multiplexer
+// MARK: mark -
+// MARK: mark Loader Multiplexer
 		
 		Ref<Image> Image::load_from_data (const Ptr<IData> data) {
 			static Stopwatch t;

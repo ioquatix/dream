@@ -19,7 +19,7 @@ namespace Dream
 		{
 			using namespace Events::Logging;
 			
-#pragma mark -
+// MARK: mark -
 			
 			FontGlyph::~FontGlyph ()
 			{
@@ -79,7 +79,7 @@ namespace Dream
 				return 0;
 			}
 				
-#pragma mark -
+// MARK: mark -
 		
 			FontFace::FontFace (FT_Face _face, ImagePixelFormat _fmt) : _face(_face), _pixel_format(_fmt)
 			{

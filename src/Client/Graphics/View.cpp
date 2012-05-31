@@ -351,7 +351,7 @@ namespace Dream {
 				}
 			}
 
-#pragma mark -
+// MARK: mark -
 
 			/*
 			
@@ -377,7 +377,7 @@ namespace Dream {
 			}
 			*/
 
-#pragma mark -
+// MARK: mark -
 
 			
 
@@ -421,7 +421,7 @@ namespace Dream {
 				return false;
 			}
 		
-#pragma mark -
+// MARK: mark -
 			
 			TextView::TextView (Ptr<View> parent, Ptr<Font> font) : View(parent), _offset(0) {
 				_text_buffer = new Text::TextBuffer(font);

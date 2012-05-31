@@ -21,8 +21,8 @@ namespace Dream
 	namespace Events
 	{
 		
-#pragma mark -
-#pragma mark class NotificationSource
+// MARK: mark -
+// MARK: mark class NotificationSource
 		
 		NotificationSource::NotificationSource (CallbackT callback) : _callback(callback)
 		{
@@ -50,8 +50,8 @@ namespace Dream
 			return new NotificationSource(stop_run_loop_callback);
 		}
 		
-#pragma mark -
-#pragma mark class TimerSource
+// MARK: mark -
+// MARK: mark class TimerSource
 				
 		TimerSource::TimerSource (CallbackT callback, TimeT duration, bool repeats, bool strict) 
 			: _cancelled(false), _repeats(repeats), _strict(strict), _duration(duration), _callback(callback)
@@ -96,8 +96,8 @@ namespace Dream
 			_cancelled = true;
 		}
 		
-#pragma mark -
-#pragma mark class IFileDescriptorSource
+// MARK: mark -
+// MARK: mark class IFileDescriptorSource
 		
 		void IFileDescriptorSource::debug_file_descriptor_flags (int fd)
 		{
@@ -147,8 +147,8 @@ namespace Dream
 			return !(fcntl(file_descriptor(), F_GETFL) & O_NONBLOCK);
 		}
 		
-#pragma mark -
-#pragma mark class FileDescriptorSource
+// MARK: mark -
+// MARK: mark class FileDescriptorSource
 		
 		FileDescriptorSource::FileDescriptorSource (CallbackT callback, int fd) : _fd(fd), _callback(callback)
 		{
@@ -185,8 +185,8 @@ namespace Dream
 			return new FileDescriptorSource(callback, STDERR_FILENO);			
 		}
 		
-#pragma mark -
-#pragma mark class NotificationPipeSource
+// MARK: mark -
+// MARK: mark class NotificationPipeSource
 		
 		NotificationPipeSource::NotificationPipeSource ()
 		{

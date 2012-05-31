@@ -73,8 +73,8 @@ namespace Dream {
 			TimeT remaining_time () const;
 		};
 		
-#pragma mark -
-#pragma mark Timer Statistics
+// MARK: mark -
+// MARK: mark Timer Statistics
 		
 		class TimerStatistics {
 		private:
@@ -109,8 +109,8 @@ namespace Dream {
 			void update (const TimeT & current_time);
 		};
 		
-#pragma mark -
-#pragma mark Timed System
+// MARK: mark -
+// MARK: mark Timed System
 
 		template <typename DerivedT>
 		class TimedSystem

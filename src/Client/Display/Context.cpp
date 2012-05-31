@@ -14,7 +14,7 @@ namespace Dream {
 	namespace Client {
 		namespace Display {
 			
-#pragma mark -
+// MARK: mark -
 
 			IContextDelegate::~IContextDelegate ()
 			{
@@ -28,7 +28,7 @@ namespace Dream {
 			{
 			}
 			
-#pragma mark -
+// MARK: mark -
 			
 			IContext::~IContext ()
 			{

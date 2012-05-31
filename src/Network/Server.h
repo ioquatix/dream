@@ -58,8 +58,8 @@ namespace Dream {
 			virtual ~Server ();			
 		};
 
-	#pragma mark -
-	#pragma mark Threaded Net Server Container
+	// MARK: mark -
+	// MARK: mark Threaded Net Server Container
 
 		/** Creates a thread to run an instance of Server.
 		 

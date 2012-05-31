@@ -20,8 +20,8 @@ namespace Dream
 		template <unsigned E, typename NumericT>
 		class Vector;
 
-#pragma mark -
-#pragma mark Vector Math
+// MARK: mark -
+// MARK: mark Vector Math
 
 		/** Vector conversion traits. Default specialization.
 		 */
@@ -138,8 +138,8 @@ namespace Dream
 			Vector<4, NumericT> cross (const Vector<4, NumericT> & v, const Vector<4, NumericT> & w);
 		};
 
-#pragma mark -
-#pragma mark Vector
+// MARK: mark -
+// MARK: mark Vector
 
 		/** A fixed-size numeric vector.
 
@@ -456,8 +456,8 @@ namespace Dream
 			void unpack (unsigned bits, const PackedT & p);
 		};
 
-#pragma mark -
-#pragma mark Static Matrix Constructors
+// MARK: mark -
+// MARK: mark Static Matrix Constructors
 
 		/// Short hand notation for 1-space vector type.
 		typedef Vector<1, RealT> Vec1;
@@ -508,8 +508,8 @@ namespace Dream
 			return Vector<4, NumericT>((NumericT)x, (NumericT)y, (NumericT)z, (NumericT)w);
 		}
 
-#pragma mark
-#pragma mark Vector Combinations
+// MARK: mark
+// MARK: mark Vector Combinations
 
 		/// Append a component to a vector
 		template <unsigned int E, typename NumericT, typename OtherNumericT>
@@ -535,8 +535,8 @@ namespace Dream
 			return result;
 		}
 
-#pragma mark -
-#pragma mark Binary Operators
+// MARK: mark -
+// MARK: mark Binary Operators
 
 #define OPERATOR(OP, OPE) \
 template <unsigned int E, typename NumericT, typename AnyT> \
@@ -556,8 +556,8 @@ inline Vector<E, NumericT> operator OP (const Vector<E, NumericT> & lhs, const A
 
 #undef OPERATOR
 
-#pragma mark -
-#pragma mark Unary Operators
+// MARK: mark -
+// MARK: mark Unary Operators
 
 #define OPERATOR(OP) \
 template <unsigned E, typename NumericT, typename OtherNumericT> \
@@ -611,8 +611,8 @@ Vector<E, NumericT> & operator OP (Vector<E, NumericT> & lhs, const OtherNumeric
 
 #undef OPERATOR
 
-#pragma mark -
-#pragma mark IO Operators
+// MARK: mark -
+// MARK: mark IO Operators
 
 		/// Write a vector to an std::ostream
 		template <unsigned E, typename NumericT>

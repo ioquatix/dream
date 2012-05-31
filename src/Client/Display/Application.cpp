@@ -13,8 +13,8 @@ namespace Dream {
 	namespace Client {
 		namespace Display {
 			
-#pragma mark -
-#pragma mark Startup Message
+// MARK: mark -
+// MARK: mark Startup Message
 
 			void _show_startup_message_if_needed()
 			{
@@ -31,7 +31,7 @@ namespace Dream {
 				}
 			}
 			
-#pragma mark -
+// MARK: mark -
 			
 			IApplication::IApplication()
 			{
@@ -67,7 +67,7 @@ namespace Dream {
 			}
 			
 			
-#pragma mark -
+// MARK: mark -
 
 			class ApplicationDelegate : public Object, implements IApplicationDelegate {
 			public:

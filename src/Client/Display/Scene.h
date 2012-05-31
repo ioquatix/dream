@@ -34,7 +34,7 @@ namespace Dream
 			
 			class ISceneManager;
 			
-#pragma mark -
+// MARK: mark -
 			
 			/** Abstract representation of graphical sequence.
 			 
@@ -115,7 +115,7 @@ namespace Dream
 				virtual void process_pending_events (IInputHandler * handler) abstract;
 			};
 			
-#pragma mark -
+// MARK: mark -
 
 			/// Scenes are composed of layers of content which can handle input and render graphics.
 			class ILayer : implements IObject, implements IInputHandler
@@ -127,7 +127,7 @@ namespace Dream
 					virtual void will_revoke_current (ISceneManager * manager, IScene * scene);
 			};
 
-#pragma mark -
+// MARK: mark -
 	
 			/** A group is a non-specific collection of children layers.
 			
@@ -159,7 +159,7 @@ namespace Dream
 					const ChildrenT & children() const { return _children; }
 			};
 			
-#pragma mark -
+// MARK: mark -
 			
 			/// A stack-based scene manager which can support typical game logic.
 			class SceneManager : public Object, implements ISceneManager, implements IContextDelegate, implements IInputHandler

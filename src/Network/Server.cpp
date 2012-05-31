@@ -18,8 +18,8 @@ namespace Dream {
 		using namespace Events;
 		using std::bind;
 		
-#pragma mark -
-#pragma mark ServerContainer
+// MARK: mark -
+// MARK: mark ServerContainer
 		
 		ServerContainer::ServerContainer () : _run(false)
 		{
@@ -73,8 +73,8 @@ namespace Dream {
 			}
 		}
 		
-#pragma mark -
-#pragma mark class Server
+// MARK: mark -
+// MARK: mark class Server
 
 		
 				
@@ -107,8 +107,8 @@ namespace Dream {
 			}
 		}
 		
-#pragma mark -
-#pragma mark Unit Tests
+// MARK: mark -
+// MARK: mark Unit Tests
 		
 #ifdef ENABLE_TESTING
 		

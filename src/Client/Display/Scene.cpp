@@ -35,7 +35,7 @@ namespace Dream
 					s->render_frame_for_time(time);
 			}
 			
-	#pragma mark -
+	// MARK: mark -
 			
 			Ref<Resources::ILoader> SceneManager::default_resource_loader ()
 			{
@@ -196,7 +196,7 @@ namespace Dream
 				_finished_callback = callback;
 			}
 			
-#pragma mark -
+// MARK: mark -
 			
 			void ILayer::render_frame_for_time (IScene * scene, TimeT time) {
 			
@@ -210,7 +210,7 @@ namespace Dream
 			
 			}
 
-#pragma mark -
+// MARK: mark -
 
 			void Group::render_frame_for_time (IScene * scene, TimeT time)
 			{
@@ -222,6 +222,8 @@ namespace Dream
 			
 			bool Group::process (const Input & input)
 			{
+				//logger()->log(LOG_DEBUG, LogBuffer() << "Processing input: " << typeid(input).name());
+				
 				bool result = false;
 				
 				for (ChildrenT::iterator i = _children.begin(); i != _children.end(); i++)
@@ -270,7 +272,7 @@ namespace Dream
 				_children.resize(0);
 			}
 			
-#pragma mark -
+// MARK: mark -
 			
 			Scene::Scene () : _scene_manager(NULL), _first_frame(true), _start_time(0), _current_time(0)
 			{
@@ -327,7 +329,7 @@ namespace Dream
 				return _current_time - _start_time;
 			}
 			
-	#pragma mark -
+	// MARK: mark -
 			
 			VoidScene::VoidScene ()
 			{

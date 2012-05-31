@@ -32,8 +32,8 @@ namespace Dream
 	namespace Events
 	{
 
-#pragma mark -
-#pragma mark Helper Functions
+// MARK: mark -
+// MARK: mark Helper Functions
 		
 		/// Returns the READ/WRITE events that may occur for a file descriptor.
 		/// @returns READ_EVENT if file is open READ ONLY.
@@ -67,8 +67,8 @@ namespace Dream
 			return events;
 		}
 		
-#pragma mark File Descriptor Monitor Implementations		
-#pragma mark -
+// MARK: mark File Descriptor Monitor Implementations		
+// MARK: mark -
 		
 		typedef std::set<Ref<IFileDescriptorSource>> FileDescriptorHandlesT;
 		
@@ -215,7 +215,7 @@ namespace Dream
 			return count;
 		}
 		
-#pragma mark -
+// MARK: mark -
 		
 		class PollFileDescriptorMonitor : public Object, implements IFileDescriptorMonitor
 		{
@@ -348,8 +348,8 @@ namespace Dream
 			return count;
 		}
 						
-#pragma mark -
-#pragma mark class Loop
+// MARK: mark -
+// MARK: mark class Loop
 				
 		Loop::Loop () : _stop_when_idle(true), _rate_limit(20)
 		{
@@ -389,7 +389,7 @@ namespace Dream
 			return _stopwatch;
 		}
 		
-#pragma mark -
+// MARK: mark -
 		
 		/// Used to schedule a timer to the loop via a notification.
 		class ScheduleTimerNotificationSource : public Object, implements INotificationSource
@@ -440,7 +440,7 @@ namespace Dream
 			}
 		}
 		
-#pragma mark -
+// MARK: mark -
 		
 		void Loop::post_notification (Ref<INotificationSource> note, bool urgent)
 		{
@@ -669,8 +669,8 @@ namespace Dream
 			return timer.remaining_time();
 		}
 		
-#pragma mark -
-#pragma mark Unit Tests
+// MARK: mark -
+// MARK: mark Unit Tests
 		
 #ifdef ENABLE_TESTING
 		int ticks;

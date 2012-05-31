@@ -157,8 +157,8 @@ namespace Dream
 			return (output << path.to_local_path());
 		}
 		
-#pragma mark -
-#pragma mark Unit Tests
+// MARK: mark -
+// MARK: mark Unit Tests
 
 #ifdef ENABLE_TESTING
 		UNIT_TEST(Path)

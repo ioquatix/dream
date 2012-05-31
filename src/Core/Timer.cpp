@@ -25,8 +25,8 @@ namespace Dream {
 			nanosleep(&ts, (struct timespec *)NULL);
 		}
 		
-#pragma mark -
-#pragma mark Timer Implementation
+// MARK: mark -
+// MARK: mark Timer Implementation
 				
 		Timer::Timer () {
 			this->reset();
@@ -48,8 +48,8 @@ namespace Dream {
 			return this->_total;
 		}
 		
-#pragma mark -
-#pragma mark Stopwatch Implementation
+// MARK: mark -
+// MARK: mark Stopwatch Implementation
 				
 		Stopwatch::Stopwatch () : _total(0), _running(false) {
 			
@@ -91,8 +91,8 @@ namespace Dream {
 			return _total;
 		}
 		
-#pragma mark -
-#pragma mark EggTimer Implementation
+// MARK: mark -
+// MARK: mark EggTimer Implementation
 
 		EggTimer::EggTimer (TimeT duration) : _duration(duration)
 		{
@@ -114,8 +114,8 @@ namespace Dream {
 			return _duration - time();
 		}
 		
-#pragma mark -
-#pragma mark class TimerStatistics
+// MARK: mark -
+// MARK: mark class TimerStatistics
 		
 		using namespace Dream::Numerics;
 		

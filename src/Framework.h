@@ -32,8 +32,8 @@
  */
 namespace Dream
 {
-#pragma mark -
-#pragma mark Types
+// MARK: mark -
+// MARK: mark Types
 
 	typedef std::size_t IndexT;
 	typedef unsigned char ByteT;

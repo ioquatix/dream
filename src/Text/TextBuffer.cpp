@@ -15,7 +15,7 @@ namespace Dream
 	namespace Text
 	{
 	
-#pragma mark -
+// MARK: mark -
 		
 		TextBuffer::TextBuffer (Ref<Font> font) : _font(font), _text_updated(true), _use_static_size(false)
 		{

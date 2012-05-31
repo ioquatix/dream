@@ -154,8 +154,8 @@ namespace Dream
 			}
 		};
 		
-#pragma mark -
-#pragma mark TextLine Implementation
+// MARK: mark -
+// MARK: mark TextLine Implementation
 		
 		TextLine::TextLine (TextBlock * b) : _block(b), _width(0)
 		{
@@ -210,8 +210,8 @@ namespace Dream
 			}
 		}
 		
-#pragma mark -
-#pragma mark TextBlock Implementation
+// MARK: mark -
+// MARK: mark TextBlock Implementation
 		
 		TextBlock::TextBlock (Detail::FontFace * face) : _face(face)
 		{

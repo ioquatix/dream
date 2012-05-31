@@ -31,8 +31,8 @@ namespace Dream
 			return row + col * sz;
 		}
 		
-#pragma mark -
-#pragma mark Matrix Multiplication
+// MARK: mark -
+// MARK: mark Matrix Multiplication
 
 		template <unsigned R, unsigned C, typename NumericT>
 		Vector<C, NumericT> MatrixMultiplicationTraits<R, C, NumericT>::multiply (const Vector<R, NumericT> & v) const
@@ -63,8 +63,8 @@ namespace Dream
 			return result;
 		}
 
-#pragma mark -
-#pragma mark Matrix Inverse
+// MARK: mark -
+// MARK: mark Matrix Inverse
 
 		template <typename NumericT>
 		void invert4x4Matrix (const NumericT * mat, NumericT * dst)
@@ -171,8 +171,8 @@ namespace Dream
 			return result;
 		}
 
-#pragma mark -
-#pragma mark Matrix Square Implementation
+// MARK: mark -
+// MARK: mark Matrix Square Implementation
 
 		template <unsigned N, typename NumericT> template <unsigned K>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::scaling_matrix (const Vector<K, NumericT> & amount)
@@ -386,8 +386,8 @@ namespace Dream
 			return *t;
 		}
 
-#pragma mark -
-#pragma mark IO Operators
+// MARK: mark -
+// MARK: mark IO Operators
 		template <unsigned R, unsigned C, typename NumericT>
 		inline std::ostream & operator<< (std::ostream & out, const Matrix<R, C, NumericT> & m)
 		{
@@ -410,8 +410,8 @@ namespace Dream
 			return out;
 		}
 
-#pragma mark -
-#pragma mark class Matrix
+// MARK: mark -
+// MARK: mark class Matrix
 		template <unsigned R, unsigned C, typename N>
 		Matrix<R, C, N>::Matrix ()
 		{

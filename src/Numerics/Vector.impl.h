@@ -15,8 +15,8 @@ namespace Dream
 {
 	namespace Numerics
 	{
-#pragma mark -
-#pragma mark Vector Traits
+// MARK: mark -
+// MARK: mark Vector Traits
 
 		template <typename NumericT>
 		VectorConversionTraits<1, NumericT>::operator NumericT () const
@@ -220,8 +220,8 @@ namespace Dream
 			return cross_product(*this, v, w);
 		}
 
-#pragma mark -
-#pragma mark Vector
+// MARK: mark -
+// MARK: mark Vector
 
 		template <unsigned E, typename NumericT>
 		Vector<E, NumericT>::Vector (const NumericT & x)

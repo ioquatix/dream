@@ -195,8 +195,8 @@ namespace Dream {
 				GLenum compile(GLenum type, const Buffer * buffer);
 			};
 			
-#pragma mark -
-#pragma mark Uniform Specialisations
+// MARK: mark -
+// MARK: mark Uniform Specialisations
 			
 			template<>
 			class GLUniformTraits<1> {

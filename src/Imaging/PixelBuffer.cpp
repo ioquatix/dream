@@ -85,8 +85,8 @@ namespace Dream {
 			}
 		}
 		
-#pragma mark -
-#pragma mark class IPixelBuffer
+// MARK: mark -
+// MARK: mark class IPixelBuffer
 		
 		PixelT IPixelBuffer::read_pixel (const Vector<3, unsigned> &at) {
 			const ByteT * src = this->pixel_data_at(at);
@@ -185,8 +185,8 @@ namespace Dream {
 			}
 		}
 		
-#pragma mark -
-#pragma mark class IMutablePixelBuffer
+// MARK: mark -
+// MARK: mark class IMutablePixelBuffer
 		
 		void IMutablePixelBuffer::clear ()
 		{

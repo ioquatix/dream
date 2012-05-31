@@ -23,8 +23,8 @@ namespace Dream
 {
 	namespace Core
 	{
-#pragma mark -
-#pragma mark class Buffer
+// MARK: mark -
+// MARK: mark class Buffer
 
 		Buffer::~Buffer ()
 		{
@@ -224,8 +224,8 @@ namespace Dream
 			close(fd);
 		}
 
-#pragma mark -
-#pragma mark class MutableBuffer
+// MARK: mark -
+// MARK: mark class MutableBuffer
 
 		MutableBuffer::~MutableBuffer ()
 		{
@@ -277,8 +277,8 @@ namespace Dream
 			assign((const ByteT *)string, (const ByteT *)string + len, offset);
 		}
 		
-#pragma mark -
-#pragma mark class Resizable
+// MARK: mark -
+// MARK: mark class Resizable
 		
 		ResizableBuffer::~ResizableBuffer ()
 		{
@@ -297,8 +297,8 @@ namespace Dream
 			memcpy(this->end() - size, data, size);
 		}
 
-#pragma mark -
-#pragma mark class StaticBuffer
+// MARK: mark -
+// MARK: mark class StaticBuffer
 
 		StaticBuffer StaticBuffer::for_cstring (const char * str, bool include_null_byte)
 		{
@@ -323,8 +323,8 @@ namespace Dream
 			return _buf;
 		}
 
-#pragma mark -
-#pragma mark class FileBuffer
+// MARK: mark -
+// MARK: mark class FileBuffer
 		
 		FileBuffer::FileBuffer (const Path & file_path)
 		{
@@ -356,8 +356,8 @@ namespace Dream
 			return (const ByteT *)_buf;
 		}
 		
-#pragma mark -
-#pragma mark class DynamicBuffer
+// MARK: mark -
+// MARK: mark class DynamicBuffer
 
 		void DynamicBuffer::allocate (IndexT size)
 		{
@@ -440,8 +440,8 @@ namespace Dream
 			return _buf;
 		}
 
-#pragma mark -
-#pragma mark class PackedData
+// MARK: mark -
+// MARK: mark class PackedData
 
 		PackedBuffer::PackedBuffer (IndexT size) : _size (size)
 		{
@@ -486,16 +486,16 @@ namespace Dream
 			return data();
 		}
 
-#pragma mark -
-#pragma mark class BufferStream
+// MARK: mark -
+// MARK: mark class BufferStream
 
 		BufferStream::BufferStream (const Buffer & buf) : std::streambuf (), std::istream (this)
 		{
 			std::streambuf::setg ((char *) buf.begin (), (char *) buf.begin (), (char *) buf.end ());
 		}
 
-#pragma mark -
-#pragma mark Unit Tests
+// MARK: mark -
+// MARK: mark Unit Tests
 
 #ifdef ENABLE_TESTING
 		UNIT_TEST(BufferRead)

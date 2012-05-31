@@ -20,8 +20,8 @@
 namespace Dream
 {
 
-#pragma mark -
-#pragma mark class Object
+// MARK: mark -
+// MARK: mark class Object
 
 	IObject::~IObject ()
 	{
@@ -79,8 +79,8 @@ namespace Dream
 		return false;
 	}
 	
-#pragma mark -
-#pragma mark Unit Tests
+// MARK: mark -
+// MARK: mark Unit Tests
 	
 #ifdef ENABLE_TESTING
 	UNIT_TEST(Object)

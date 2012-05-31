@@ -48,7 +48,7 @@ namespace Dream
 			return s.str();
 		}
 		
-#pragma mark -
+// MARK: mark -
 
 		StringT::value_type convert_to_digit(char c) {
 			StringT::value_type d = c - '0';
@@ -147,8 +147,8 @@ namespace Dream
 			return buffer.str();
 		}
 
-#pragma mark -
-#pragma mark Unit Tests
+// MARK: mark -
+// MARK: mark Unit Tests
 
 #ifdef ENABLE_TESTING
 		UNIT_TEST(Strings)

@@ -49,7 +49,7 @@ namespace Dream {
 				}
 			}
 			
-#pragma mark -
+// MARK: mark -
 			
 			void TextureParameters::set_defaults() {
 				generate_mip_maps = true;
@@ -118,7 +118,7 @@ namespace Dream {
 					return default_internal_format;
 			}
 			
-#pragma mark -
+// MARK: mark -
 			
 			Texture::Texture(const TextureParameters & parameters, GLuint handle) : _handle(handle), _parameters(parameters) {
 			}
@@ -131,7 +131,7 @@ namespace Dream {
 				glDeleteTextures(1, &_handle);
 			}
 			
-#pragma mark -
+// MARK: mark -
 			
 			void Texture::load_pixel_data(const Vector<3, unsigned> & size, const ByteT * pixels, GLenum format, GLenum data_type) {
 				GLenum internal_format = _parameters.get_internal_format(format);
@@ -184,7 +184,7 @@ namespace Dream {
 				update(pixel_buffer);
 			}
 			
-#pragma mark -
+// MARK: mark -
 			
 			TextureManager::TextureManager() {
 				/* Fetch number of texture units */ {

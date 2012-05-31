@@ -30,7 +30,7 @@ namespace Dream
 		{
 		}
 		
-#pragma mark -
+// MARK: mark -
 		
 		IInputHandler::~IInputHandler ()
 		{
@@ -41,7 +41,7 @@ namespace Dream
 			return input.act(this);
 		}
 		
-#pragma mark -
+// MARK: mark -
 		
 		EventInput::EventInput(EventName event)
 			: _event(event)
@@ -70,7 +70,7 @@ namespace Dream
 			return _event;
 		}
 		
-#pragma mark -
+// MARK: mark -
 		
 		ButtonInput::ButtonInput(const Key &e, const StateT &s) 
 			: _key(e), _state(s) 
@@ -93,7 +93,7 @@ namespace Dream
 		
 		}
 		
-#pragma mark -
+// MARK: mark -
 		
 		MotionInput::MotionInput(const Key &key, const StateT &state, const Vec3 &position, const Vec3 &motion, const AlignedBox<2> & bounds) 
 			: _key(key), _state(state), _motion(motion), _bounds(bounds)
@@ -121,7 +121,7 @@ namespace Dream
 			return MotionInput(_key, _state, _position, _motion, updated_bounds);
 		}
 		
-#pragma mark -
+// MARK: mark -
 		
 		ResizeInput::ResizeInput (const Vec2u & new_size)
 			: _new_size(new_size)
@@ -143,7 +143,7 @@ namespace Dream
 		
 		}
 		
-#pragma mark -
+// MARK: mark -
 		
 		InputQueue::~InputQueue ()
 		{

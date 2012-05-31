@@ -27,7 +27,7 @@ namespace Dream {
 				//}
 			}
 			
-#pragma mark -
+// MARK: mark -
 			
 			IRenderer::~IRenderer() {
 				
@@ -41,7 +41,7 @@ namespace Dream {
 				node->accept(this);
 			}
 			
-#pragma mark -
+// MARK: mark -
 			
 			RendererState::~RendererState() {
 				

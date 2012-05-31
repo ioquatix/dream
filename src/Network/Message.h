@@ -148,8 +148,8 @@ namespace Dream {
 			bool receive_from_socket (ClientSocket * socket);
 		};
 		
-#pragma mark -
-#pragma mark class MessageClientSocket
+// MARK: mark -
+// MARK: mark class MessageClientSocket
 		
 		/** Provides asynchronous message sending and retrival with good efficiency and reliability.
 		 

@@ -28,8 +28,8 @@ namespace Dream
 			return Mat44::rotating_matrix(from_unit_vector, to_unit_vector, around_normal);
 		}
 
-#pragma mark -
-#pragma mark Unit Tests
+// MARK: mark -
+// MARK: mark Unit Tests
 
 #ifdef ENABLE_TESTING
 		UNIT_TEST(Matrix)

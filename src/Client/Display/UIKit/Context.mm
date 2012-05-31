@@ -80,7 +80,7 @@ namespace Dream
 					}
 				}
 			
-#pragma mark -
+// MARK: mark -
 			
 				void WindowContext::setup_graphics_view (Ptr<Dictionary> config, CGRect frame)
 				{

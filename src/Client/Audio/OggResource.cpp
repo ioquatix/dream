@@ -23,8 +23,8 @@ namespace Dream
 		namespace Audio
 		{
 
-#pragma mark -
-#pragma mark OggReader
+// MARK: mark -
+// MARK: mark OggReader
 
 			class OggReader : private NonCopyable
 			{
@@ -87,8 +87,8 @@ namespace Dream
 				ov_clear(&_file);
 			}
 			
-#pragma mark -
-#pragma mark OggStream
+// MARK: mark -
+// MARK: mark OggStream
 			
 			class OggStream : public Stream {
 			protected:
@@ -161,8 +161,8 @@ namespace Dream
 				return true;
 			}
 
-#pragma mark -
-#pragma mark OggResource
+// MARK: mark -
+// MARK: mark OggResource
 
 			void OggResource::Loader::register_loader_types (ILoader * loader)
 			{

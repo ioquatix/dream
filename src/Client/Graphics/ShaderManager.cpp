@@ -24,7 +24,7 @@ namespace Dream {
 				return _message.c_str();
 			}
 			
-#pragma mark -
+// MARK: mark -
 			
 			Program::Program()
 			{
@@ -109,7 +109,7 @@ namespace Dream {
 				glUseProgram(0);
 			}
 			
-#pragma mark -
+// MARK: mark -
 			
 			ShaderManager::ShaderManager()
 			{

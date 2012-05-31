@@ -60,8 +60,8 @@ namespace Dream {
 		return _count;
 	}
 	
-#pragma mark -
-#pragma mark Unit Tests
+// MARK: mark -
+// MARK: mark Unit Tests
 
 #ifdef ENABLE_TESTING
 

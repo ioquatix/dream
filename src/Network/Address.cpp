@@ -419,8 +419,8 @@ namespace Dream {
 			return s.str();
 		}
 
-#pragma mark -
-#pragma mark Unit Tests
+// MARK: -
+// MARK: Unit Tests
 		
 #ifdef ENABLE_TESTING
 		

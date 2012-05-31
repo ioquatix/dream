@@ -14,8 +14,8 @@ namespace Dream {
 		
 		using Core::BufferT;
 		
-#pragma mark -
-#pragma mark Message
+// MARK: mark -
+// MARK: mark Message
 		
 		
 		
@@ -79,8 +79,8 @@ namespace Dream {
 			return header_complete() && data_complete();
 		}
 		
-#pragma mark -
-#pragma mark MessageSender
+// MARK: mark -
+// MARK: mark MessageSender
 		
 		MessageSender::MessageSender (Ref<Message> msg) {
 			reset(msg);
@@ -129,8 +129,8 @@ namespace Dream {
 			return transmission_complete();
 		}
 		
-#pragma mark -
-#pragma mark MessageReceiver
+// MARK: mark -
+// MARK: mark MessageReceiver
 		
 		MessageReceiver::MessageReceiver () {
 			reset();
@@ -163,8 +163,8 @@ namespace Dream {
 			return _message->data_complete();
 		}
 		
-#pragma mark -
-#pragma mark class MessageClientSocket
+// MARK: mark -
+// MARK: mark class MessageClientSocket
 		
 		
 		
@@ -272,8 +272,8 @@ namespace Dream {
 				update_sender();
 		}
 		
-#pragma mark -
-#pragma mark Unit Tests
+// MARK: mark -
+// MARK: mark Unit Tests
 		
 #ifdef ENABLE_TESTING
 		

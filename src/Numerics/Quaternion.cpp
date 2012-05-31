@@ -304,8 +304,8 @@ namespace Dream
 		template class Quaternion<float>;
 		template class Quaternion<double>;
 
-#pragma mark -
-#pragma mark Unit Tests
+// MARK: mark -
+// MARK: mark Unit Tests
 
 #ifdef ENABLE_TESTING
 		UNIT_TEST(Quaternion)

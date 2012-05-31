@@ -27,7 +27,7 @@ namespace Dream {
 			using namespace Dream::Numerics;
 			using namespace Dream::Events;
 			
-#pragma mark -
+// MARK: mark -
 			
 			enum CursorMode {
 				/// Display the cursor normally.

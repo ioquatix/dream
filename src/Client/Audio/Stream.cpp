@@ -33,7 +33,7 @@ namespace Dream
 				return 1;
 			}
 			
-#pragma mark -
+// MARK: mark -
 
 			IStreamDelegate::~IStreamDelegate ()
 			{
@@ -60,7 +60,7 @@ namespace Dream
 			
 			}
 			
-#pragma mark -
+// MARK: mark -
 			
 			Stream::Stream (Ptr<Source> source, ALenum format, ALsizei frequency) 
 				: _source(source), _format(format), _frequency(frequency)

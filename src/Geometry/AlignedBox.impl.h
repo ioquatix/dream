@@ -35,7 +35,7 @@ namespace Dream
 				_min[axis] = amnt;
 		}
 		
-#pragma mark Line Intersection Tests
+// MARK: mark Line Intersection Tests
 		
 		template <unsigned D, typename NumericT>
 		Sphere<D, NumericT> AlignedBox<D, NumericT>::bounding_sphere () const

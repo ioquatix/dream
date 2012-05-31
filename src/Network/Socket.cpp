@@ -45,8 +45,8 @@ namespace Dream {
 		 */
 		//	using namespace std;
 		
-#pragma mark -
-#pragma mark class Socket
+// MARK: mark -
+// MARK: mark class Socket
 		
 		Socket::Socket (int s) : _socket(s) {
 		}
@@ -211,8 +211,8 @@ namespace Dream {
 			return sz;
 		}
 		
-#pragma mark -
-#pragma mark class ServerSocket
+// MARK: mark -
+// MARK: mark class ServerSocket
 		
 		ServerSocket::ServerSocket (const Address &server_address, unsigned listen_count) {
 			bind(server_address);
@@ -305,8 +305,8 @@ namespace Dream {
 			}
 		}
 		
-#pragma mark -
-#pragma mark class ClientSocket
+// MARK: mark -
+// MARK: mark class ClientSocket
 		
 		
 		
@@ -366,8 +366,8 @@ namespace Dream {
 			
 		}
 		
-#pragma mark -
-#pragma mark Unit Tests
+// MARK: mark -
+// MARK: mark Unit Tests
 		
 #ifdef ENABLE_TESTING
 		

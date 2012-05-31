@@ -13,8 +13,8 @@ namespace Dream
 {
 	namespace Core
 	{
-#pragma mark -
-#pragma mark class ConversionError
+// MARK: mark -
+// MARK: mark class ConversionError
 
 		ConversionError::ConversionError (const std::type_info & convert_from, const std::type_info & convert_to) throw ()
 		{
@@ -34,8 +34,8 @@ namespace Dream
 			return _what.c_str();
 		}
 
-#pragma mark -
-#pragma mark class ValueUndefinedError
+// MARK: mark -
+// MARK: mark class ValueUndefinedError
 
 		ValueUndefinedError::ValueUndefinedError () throw ()
 		{
@@ -51,8 +51,8 @@ namespace Dream
 			return "The value is undefined";
 		}
 		
-#pragma mark -
-#pragma mark class ValueUndefinedError
+// MARK: mark -
+// MARK: mark class ValueUndefinedError
 
 		SerializationError::SerializationError () throw ()
 		{
@@ -68,8 +68,8 @@ namespace Dream
 			return "The value could not be serialized.";
 		}
 
-#pragma mark -
-#pragma mark Stream Functions
+// MARK: mark -
+// MARK: mark Stream Functions
 
 		std::ostream & operator<< (std::ostream & outs, const ITypedValue & value)
 		{
@@ -85,8 +85,8 @@ namespace Dream
 			return ins;
 		}
 
-#pragma mark -
-#pragma mark class Value
+// MARK: mark -
+// MARK: mark class Value
 
 		Value::Value ()
 		{
@@ -186,8 +186,8 @@ namespace Dream
 			return _ptr->append_to_buffer(buf);
 		}
 
-#pragma mark -
-#pragma mark Unit Tests
+// MARK: mark -
+// MARK: mark Unit Tests
 
 #ifdef ENABLE_TESTING
 		UNIT_TEST(Value)

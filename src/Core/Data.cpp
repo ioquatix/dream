@@ -18,8 +18,8 @@ namespace Dream
 	namespace Core
 	{
 		
-#pragma mark -
-#pragma mark LocalFileData
+// MARK: mark -
+// MARK: mark LocalFileData
 
 		LocalFileData::LocalFileData (const Path & path) : _path(path)
 		{
@@ -53,8 +53,8 @@ namespace Dream
 		}
 
 
-#pragma mark -
-#pragma mark BufferedData
+// MARK: mark -
+// MARK: mark BufferedData
 		
 		BufferedData::BufferedData (Shared<Buffer> buffer)
 			: _buffer(buffer)
@@ -92,8 +92,8 @@ namespace Dream
 			return _buffer->size();
 		}
 		
-#pragma mark -
-#pragma mark Unit Tests
+// MARK: mark -
+// MARK: mark Unit Tests
 
 #ifdef ENABLE_TESTING
 		UNIT_TEST(Data)

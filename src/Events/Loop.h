@@ -31,7 +31,7 @@ namespace Dream
 	namespace Events
 	{
 
-#pragma mark -
+// MARK: mark -
 		
 		class Loop;
 		
@@ -58,7 +58,7 @@ namespace Dream
 		{
 		};
 		
-#pragma mark -
+// MARK: mark -
 		
 		/**
 		 A run-loop to provide timed and io based event handling.

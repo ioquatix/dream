@@ -17,8 +17,8 @@ namespace Dream
 		namespace Audio
 		{
 		
-#pragma mark -
-#pragma mark AudioError
+// MARK: mark -
+// MARK: mark AudioError
 
 			AudioError::AudioError(ErrorNumberT error_number, StringT error_description, StringT error_target) : _error_number(error_number) {
 				StringStreamT buffer;
@@ -50,8 +50,8 @@ namespace Dream
 				}
 			}
 
-#pragma mark -
-#pragma mark Source
+// MARK: mark -
+// MARK: mark Source
 
 			Source::Source ()
 			{

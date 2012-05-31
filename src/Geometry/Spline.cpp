@@ -15,8 +15,8 @@
 
 namespace Dream {
 	namespace Geometry {	
-#pragma mark -
-#pragma mark ISpline
+// MARK: mark -
+// MARK: mark ISpline
 			
 		template <unsigned D>
 		ISpline<D>::~ISpline () {
@@ -133,8 +133,8 @@ namespace Dream {
 		template class ISpline<3>;	
 		template class ISpline<2>;
 
-#pragma mark -
-#pragma mark SplineWithNormal
+// MARK: mark -
+// MARK: mark SplineWithNormal
 
 		template <unsigned D>
 		SplineWithNormal<D>::SplineWithNormal(const SplineT * spline, const SplineT * normal_spline) :
@@ -339,8 +339,8 @@ namespace Dream {
 
 		template class SplineWithNormal<3>;	
 
-#pragma mark -
-#pragma mark Spline
+// MARK: mark -
+// MARK: mark Spline
 		
 		template <unsigned D>
 		Spline<D>::Spline () : _closed(true) {
@@ -393,8 +393,8 @@ namespace Dream {
 			return segment_points;
 		}
 		
-#pragma mark -
-#pragma mark LinearSpline
+// MARK: mark -
+// MARK: mark LinearSpline
 
 		template <unsigned D>
 		Vector<D> LinearSpline<D>::point_at_time(RealT t) const {			
@@ -405,8 +405,8 @@ namespace Dream {
 			else return linear_interpolate(fr, this->_points[sp], this->_points[sp+1]);
 		}
 
-#pragma mark -
-#pragma mark CubicSpline
+// MARK: mark -
+// MARK: mark CubicSpline
 		
 		template <unsigned D>
 		unsigned CubicSpline<D>::segments () const {
@@ -445,8 +445,8 @@ namespace Dream {
 
 		}
 
-#pragma mark -
-#pragma mark HermiteSpline
+// MARK: mark -
+// MARK: mark HermiteSpline
 		
 		template <unsigned D>
 		Vector<D> HermiteSpline<D>::point_at_time(RealT t) const {
@@ -514,7 +514,7 @@ namespace Dream {
 			return mu.normalize(sg.length());
 		}
 		
-	#pragma mark -
+	// MARK: mark -
 
 		// Explicit template instantiation
 		template class LinearSpline<3>;	
