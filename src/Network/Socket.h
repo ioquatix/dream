@@ -64,13 +64,13 @@ namespace Dream {
 			int socket_specific_error () const;
 			
 			/// Write data to the socket.
-			IndexT send (const Core::Buffer & buf, IndexT offset = 0, int flags = 0);
+			std::size_t send (const Core::Buffer & buf, std::size_t offset = 0, int flags = 0);
 
 			/// Read data from the socket.
 			/// Set buffer capacity before calling with buf.reserve(buf.size() + sz to read)
 			/// We won't explicity allocate memory in this function
 			/// @returns 0 when the remote peer has closed its end of the connection
-			IndexT recv (Core::ResizableBuffer & buf, int flags = 0);
+			std::size_t recv (Core::ResizableBuffer & buf, int flags = 0);
 
 			/// The internal file descriptor handle for the socket.
 			virtual FileDescriptorT file_descriptor () const;

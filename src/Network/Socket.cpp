@@ -18,6 +18,7 @@
 #include <sys/socket.h>
 #include <netinet/tcp.h>
 #include <errno.h>
+
 //#include <execinfo.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -152,13 +153,13 @@ namespace Dream {
 			shutdown(SHUT_WR);
 		}
 		
-		IndexT Socket::send (const Core::Buffer & buf, IndexT offset, int flags) {
+		std::size_t Socket::send (const Core::Buffer & buf, std::size_t offset, int flags) {
 			DREAM_ASSERT(buf.size() > 0); 
 			DREAM_ASSERT(offset < buf.size());
 			
 			//std::cout << "Sending " << buf.size() << " bytes..." << std::endl;
 			
-			IndexT sz = buf.size() - offset;
+			ssize_t sz = buf.size() - offset;
 			
 			const ByteT * data = buf.begin() + offset;
 			
@@ -179,19 +180,19 @@ namespace Dream {
 			return sz;
 		}
 		
-		IndexT Socket::recv (Core::ResizableBuffer & buf, int flags) {
+		std::size_t Socket::recv (Core::ResizableBuffer & buf, int flags) {
 			DREAM_ASSERT(buf.size() < buf.capacity() && "Please make sure you have reserved space for incoming data");
 			
 			//std::cout << "Receiving " << (buf.capacity() - buf.size()) << " bytes..." << std::endl;
 			
 			// Find out where we are writing data
-			IndexT offset = buf.size();
+			std::size_t offset = buf.size();
 			
 			// Firstly, we maximize size in one go
 			buf.resize(buf.capacity());
 			
 			// We read the size in the buffer
-			IndexT sz = ::recv(_socket, (void*)&buf[offset], buf.size() - offset, flags);
+			ssize_t sz = ::recv(_socket, (void*)&buf[offset], buf.size() - offset, flags);
 			
 			if (sz == 0)
 				throw ConnectionShutdown("read shutdown");
@@ -231,7 +232,7 @@ namespace Dream {
 		{
 			if (events & Events::READ_READY)
 			{
-				DREAM_ASSERT(connection_callback);
+				DREAM_ASSERT(!!connection_callback);
 				
 				SocketHandleT socket_handle;
 				Address address;
