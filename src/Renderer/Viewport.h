@@ -35,7 +35,7 @@ namespace Dream
 			static Vec4 convert_from_projection_space_to_object_space (const Mat44 & projection_matrix, const Mat44 & model_view_matrix, const Vec3 & n);
 		};
 		
-		class IViewport : implements Object {
+		class IViewport : implements IObject {
 			public:				
 				virtual Mat44 view_matrix() const abstract;
 				virtual Mat44 projection_matrix() const abstract;

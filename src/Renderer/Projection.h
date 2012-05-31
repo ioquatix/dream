@@ -22,7 +22,7 @@ namespace Dream
 		
 		class IViewport;
 		
-		class IProjection : implements Object {
+		class IProjection : implements IObject {
 		public:
 			virtual ~IProjection();
 			// This function must calculate an appropriate projection matrix for the given viewport.
