@@ -30,6 +30,13 @@
 	#include <GLES2/gl2ext.h>
 
 	#define DREAM_OPENGLES2
+#elif TARGET_OS_LINUX
+	#define GL3_PROTOTYPES
+	#include <GL/gl3.h>
+
+	#define DREAM_OPENGL32
+#else
+	#error Could not find OpenGL headers.
 #endif
 
 namespace Dream
