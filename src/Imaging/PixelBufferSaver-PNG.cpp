@@ -89,7 +89,7 @@ namespace Dream
 				int bit_depth = (pixel_buffer->bytes_per_pixel() * 8) / pixel_buffer->channel_count();
 				int color_type = png_color_type(pixel_buffer->pixel_format());
 
-				png_set_IHDR(png_writer, png_info, size[WIDTH], size[HEIGHT], bit_depth, color_type, NULL, NULL, NULL);
+				png_set_IHDR(png_writer, png_info, size[WIDTH], size[HEIGHT], bit_depth, color_type, 0, 0, 0);
 				
 				png_write_info(png_writer, png_info);
 				
