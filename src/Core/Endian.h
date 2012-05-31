@@ -80,16 +80,16 @@ namespace Dream
 		}
 
 		// This interface can be used when reading data directly from memory.
-		inline void order_copy (const unsigned char * src, unsigned char * dst, IndexT len, Endian src_type, Endian dst_type)
+		inline void order_copy (const unsigned char * src, unsigned char * dst, std::size_t len, Endian src_type, Endian dst_type)
 		{
 			if (src_type != dst_type)
 			{
 				dst += len - 1;
-				for (int i = 0; i < len; i++)
+				for (std::size_t i = 0; i < len; i++)
 					*(dst--) = *(src++);
 			} else
 			{
-				for (int i = 0; i < len; i++)
+				for (std::size_t i = 0; i < len; i++)
 					*(dst++) = *(src++);
 			}
 		}
