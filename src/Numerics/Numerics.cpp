@@ -68,8 +68,7 @@ namespace Dream
 					return c.i;
 			}
 
-			static FloatT convert_to_float (const FIntT & i)
-			{
+			static FloatT convert_to_float (const FIntT & i) {
 				Conversion c;
 				c.i = i;
 
@@ -79,29 +78,37 @@ namespace Dream
 				return c.f;
 			}
 
-			static bool is_zero (const FIntT & value, const FIntT & threshold)
-			{
+			static bool is_zero (const FIntT & value, const FIntT & threshold) {
 				if (value < 0)
 					return (value + threshold) > 0;
 				else
 					return (value - threshold) < 0;
 			}
 
-			static bool is_zero (const FloatT & value, const FIntT & threshold)
-			{
+			static bool is_zero (const FloatT & value, const FIntT & threshold) {
 				FIntT p = convert_to_integer(value);
 
 				return is_zero (p, threshold);
 			}
 
-			static bool is_zero (const FloatT & value)
-			{
+			static bool is_zero (const FloatT & value) {
 				return is_zero(value, FloatingPointIntegerTraits<t>::ACCURACY);
 			}
 
-			static bool is_zero (const FIntT & value)
-			{
+			static bool is_zero (const FIntT & value) {
 				return is_zero(value, FloatingPointIntegerTraits<t>::ACCURACY);
+			}
+
+			static unsigned integral_difference(const FloatT & a, const FloatT & b) {
+				// Make lexicographically ordered as a twos-complement int
+				FIntT a_integral = convert_to_integer(a);
+				FIntT b_integral = convert_to_integer(b);
+
+				FIntT integral_difference;
+				if (a_integral < b_integral)
+					return b_integral - a_integral;
+				else
+					return a_integral - b_integral;
 			}
 
 			static bool equal_within_tolerance (const FloatT & a, const FloatT & b, const unsigned & max_ulps)
@@ -109,14 +116,8 @@ namespace Dream
 				// Make sure max_ulps is non-negative and small enough that the
 				// default NAN won't compare as equal to anything.
 				DREAM_ASSERT(max_ulps < 4 * 1024 * 1024);
-
-				// Make lexicographically ordered as a twos-complement int
-				FIntT a_int = convert_to_integer(a);
-				FIntT b_int = convert_to_integer(b);
-
-				FIntT int_diff = Number<FIntT>::abs(a_int - b_int);
-
-				if (int_diff <= max_ulps)
+	
+				if (integral_difference(a, b) <= max_ulps)
 					return true;
 
 				return false;
@@ -125,16 +126,15 @@ namespace Dream
 			static bool equivalent (const FloatT & a, const FloatT & b)
 			{
 				// Make lexicographically ordered as a twos-complement int
-				FIntT a_int = convert_to_integer(a);
-				FIntT b_int = convert_to_integer(b);
+				FIntT a_integral = convert_to_integer(a);
+				FIntT b_integral = convert_to_integer(b);
 
-				if (a_int == b_int) return true;
+				if (a_integral == b_integral) return true;
 
-				if (is_zero(a_int) && is_zero(b_int)) return true;
+				if (is_zero(a_integral) && is_zero(b_integral)) return true;
 
-				FIntT int_diff = Number<FIntT>::abs(a_int - b_int);
-
-				if (int_diff <= 100)
+				// This is a arbitrarily chosen constant, perhaps it could be improved?
+				if (integral_difference(a, b) <= 100)
 					return true;
 
 				return false;
@@ -158,7 +158,7 @@ namespace Dream
 
 		bool is_power_of_2 (uint32_t k)
 		{
-			return (k & k-1) == 0;
+			return (k & (k-1)) == 0;
 		}
 
 		// Usable AlmostEqual function
