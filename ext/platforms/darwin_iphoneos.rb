@@ -33,4 +33,6 @@ Platform.new(:darwin_iphoneos) do |config|
 		"CFLAGS" => "#{GLOBAL_CFLAGS} #{config.cflags}",
 		"LDFLAGS" => "#{config.cflags}"
 	}
+
+	config.available = PLATFORM.include?("darwin")
 end

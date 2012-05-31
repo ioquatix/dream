@@ -1,6 +1,6 @@
 
 # The standard libraries to link with
-set(CORELIBS stdc++ freetype jpeg png ogg vorbis)
+set(CORELIBS freetype jpeg png ogg vorbis ${OPENGL_LIBRARY} ${OPENAL_LIBRARY})
 
 # % find . -name "*.cpp"
 add_library(dream STATIC

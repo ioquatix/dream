@@ -24,4 +24,6 @@ Platform.new(:darwin_iphonesimulator) do |config|
 		"CFLAGS" => "#{GLOBAL_CFLAGS} #{config.cflags}",
 		"LDFLAGS" => "#{config.cflags}"
 	}
+
+	config.available = PLATFORM.include?("darwin")
 end

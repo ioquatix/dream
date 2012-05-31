@@ -116,8 +116,12 @@ end
 class Platform
 	ALL = {}
 	
+	def available
+		return @config.available
+	end
+
 	def self.all
-		ALL.values
+		ALL.values.select{|platform| platform.available}
 	end
 	
 	class Config

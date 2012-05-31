@@ -10,6 +10,7 @@
 #ifndef _DREAM_CLIENT_AUDIO_MIXER_H
 #define _DREAM_CLIENT_AUDIO_MIXER_H
 
+#include "../Client.h"
 #include "../../Core/System.h"
 #include "../../Numerics/Numerics.h"
 #include "../../Numerics/Vector.h"
@@ -17,8 +18,15 @@
 
 #include "../../Events/Fader.h"
 
+#if defined(TARGET_OS_LINUX)
+#include <AL/al.h>
+#include <AL/alc.h>
+#elif defined(TARGET_OS_MAC)
 #include <OpenAL/al.h>
 #include <OpenAL/alc.h>
+#else
+#error Could not find OpenAL headers.
+#endif
 
 namespace Dream
 {

@@ -4,6 +4,7 @@ docs/
 ext/packages/*/*.tar.gz
 ext/packages/*/*/
 ext/platforms/*/*
+ext/linux/
 ext/darwin_macosx/
 ext/darwin_iphoneos/
 ext/darwin_iphonesimulator/
