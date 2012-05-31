@@ -11,6 +11,9 @@
 #error This header should not be included manually. Include Vector.h instead.
 #else
 
+// memset
+#include <string.h>
+
 namespace Dream
 {
 	namespace Numerics

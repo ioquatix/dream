@@ -27,6 +27,9 @@
 // getcwd
 #include <unistd.h>
 
+// memset
+#include <string.h>
+
 namespace Dream
 {
 	namespace Core

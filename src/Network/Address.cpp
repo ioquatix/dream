@@ -11,6 +11,9 @@
 
 #include <sstream>
 
+// memset
+#include <string.h>
+
 namespace Dream {
 	namespace Network {
 		AddressResolutionError::AddressResolutionError (const std::string & what, int error_code) : std::runtime_error(what), _error_code(error_code)

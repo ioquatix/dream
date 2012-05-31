@@ -11,6 +11,9 @@
 
 #include <string>
 
+// memset
+#include <string.h>
+
 namespace Dream
 {
 	namespace Core

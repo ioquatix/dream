@@ -12,6 +12,9 @@
 // For errno
 #include <sys/errno.h>
 
+// strerror_r
+#include <string.h>
+
 namespace Dream
 {
 	namespace Core

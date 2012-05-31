@@ -19,6 +19,9 @@
 #include <iomanip>
 #include <algorithm>
 
+// memcpy
+#include <string.h>
+
 namespace Dream
 {
 	namespace Core
