@@ -10,8 +10,8 @@
 
 #include "Spline.h"
 
-#include <Dream/Geometry/Triangle.h>
-#include <Dream/Geometry/Line.h>
+#include "Triangle.h"
+#include "Line.h"
 
 namespace Dream {
 	namespace Geometry {	
@@ -38,7 +38,7 @@ namespace Dream {
 		template <>
 		Vec3 ISpline<3>::normal_at_time(RealT t) const {
 			Vec3 tg = tangent_at_time(t);
-			Vec3 pt = point_at_time(t);
+			//Vec3 pt = point_at_time(t);
 			
 			Vec4 tg4 = tg << 0.0;
 			Vec4 orth (0.0, 0.0, 0.0, 1.0);

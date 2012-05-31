@@ -4,9 +4,9 @@
 #ifndef _DREAM_GEOMETRY_SPLINE_H
 #define _DREAM_GEOMETRY_SPLINE_H
 
-#include <Dream/Numerics/Vector.h>
-#include <Dream/Numerics/Interpolate.h>
-#include <Dream/Geometry/Plane.h>
+#include "../Numerics/Vector.h"
+#include "../Numerics/Interpolate.h"
+#include "Plane.h"
 
 #include <functional>
 #include <vector>
