@@ -9,7 +9,6 @@
 
 #include "Reference.h"
 
-#include <libkern/OSAtomic.h>
 #include <set>
 
 // For testing
@@ -38,11 +37,11 @@ namespace Dream {
 	}
 	
 	void SharedObject::retain () const {
-		OSAtomicIncrement32(&_count);
+		_count.fetch_add(1);
 	}
 	
 	bool SharedObject::release () const {
-		int32_t count = OSAtomicDecrement32(&_count);
+		NumberT count = _count.fetch_sub(1);
 
 		if (count == 0) {
 			deallocate();
@@ -56,8 +55,8 @@ namespace Dream {
 		delete this;
 	}
 	
-	int32_t SharedObject::reference_count () const {
-		return _count;
+	SharedObject::NumberT SharedObject::reference_count () const {
+		return _count.load();
 	}
 	
 // MARK: mark -

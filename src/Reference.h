@@ -17,6 +17,10 @@
 #include <stdint.h>
 #include <iostream>
 
+// A bit of a hack to get this to compile on 10.7 Lion.
+#define cxx_atomic cxx_nullptr
+#include <atomic>
+
 namespace Dream {
 
 	/* Why use these?
@@ -36,21 +40,15 @@ namespace Dream {
 		option is to use const Reference<> &, however you can't convert a
 		raw pointer to this type.
 	*/
-
-#ifdef DREAM_REFERENCE_NO_USING
-	// If we don't have support for alias templates, we can use the preprocessor to make the classes look identical
-#define Pointer Ptr
-#define Reference Ref
-#endif
 	
 	void debug_allocations ();
 	
 	class SharedObject {
 	public:
-		typedef int32_t NumberT;
+		typedef uint32_t NumberT;
 	protected:
 		/// The number of references to this instance.
-		mutable volatile NumberT _count;
+		mutable std::atomic<NumberT> _count;
 	
 	public:
 		/// Default constructor. Sets the reference count to 0.
