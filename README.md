@@ -87,6 +87,21 @@ Dream uses features from C++11, and therefore requires a C++11 compiler such as 
 [1]: http://clang.llvm.org/
 [2]: http://gcc.gnu.org/gcc-4.6/
 
+### Linux Build ###
+
+The bare minimum to build on linux:
+
+	sudo apt-get install rake curl zlibg1-dev
+	sudo gem install rexec
+	
+	cd $DREAM/ext
+	rake
+	
+	mkdir $DREAM/build
+	cd $DREAM/build
+	cmake ../
+	make
+
 Coding Guidelines
 -----------------
 
