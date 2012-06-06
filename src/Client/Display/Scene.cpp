@@ -127,7 +127,9 @@ namespace Dream
 					_current_scene->will_become_current(this);
 					_current_scene->did_become_current();
 				} else {
-					_finished_callback(this);
+					if (_finished_callback)
+						_finished_callback(this);
+					
 					_current_scene = NULL;
 				}
 			}
