@@ -2,7 +2,6 @@
 
 uniform vec2 point;
 uniform mat4 display_matrix;
-uniform vec4 light_positions[2];
 
 in vec4 position;
 in vec4 normal;

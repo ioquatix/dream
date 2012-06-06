@@ -1,7 +1,7 @@
 #version 150
 
-uniform vec4 light_colors[2];
-uniform vec4 light_positions[2];
+uniform vec4 light_colors[3];
+uniform vec4 light_positions[3];
 uniform sampler2D diffuse;
 
 in vec4 vertex_color;
@@ -24,6 +24,7 @@ void main(void)
 	vec4 light_contribution = vec4(0.0);
 	light_contribution += basic_light(light_positions[0], light_colors[0]);
 	light_contribution += basic_light(light_positions[1], light_colors[1]);
+	light_contribution += basic_light(light_positions[2], light_colors[2]);
 	
 	fragment_color = texture(diffuse, diffuse_mapping) * light_contribution;
 	fragment_color.w = 1.0;

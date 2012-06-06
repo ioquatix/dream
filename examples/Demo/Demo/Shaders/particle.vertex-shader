@@ -1,0 +1,24 @@
+#version 150
+
+uniform mat4 display_matrix;
+
+in vec3 offset;
+in vec3 position;
+in vec2 mapping;
+in vec4 color;
+
+out vec4 surface_color;
+out vec2 diffuse_mapping;
+
+void main () {
+	vec3 axes[2];
+	axes[0] = vec3(display_matrix[0][0], display_matrix[1][0], display_matrix[2][0]);
+	axes[1] = vec3(display_matrix[0][1], display_matrix[1][1], display_matrix[2][1]);
+	
+	vec3 corner = (offset.x * axes[0] + offset.y * axes[1]) + position;
+	
+	diffuse_mapping = mapping;
+	surface_color = color;
+	
+	gl_Position = display_matrix * vec4(corner, 1.0);
+}

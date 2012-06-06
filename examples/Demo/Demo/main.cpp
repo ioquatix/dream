@@ -11,11 +11,15 @@
 
 #include <Dream/Client/Graphics/ShaderManager.h>
 #include <Dream/Client/Graphics/TextureManager.h>
+#include <Dream/Client/Graphics/WireframeRenderer.h>
 
 #include <Dream/Renderer/Viewport.h>
 #include <Dream/Renderer/BirdsEyeCamera.h>
 #include <Dream/Renderer/PointCamera.h>
 #include <Dream/Renderer/Projection.h>
+
+#include <Dream/Geometry/Generate/Sphere.h>
+#include <Dream/Geometry/Generate/Planar.h>
 
 #include <Dream/Events/Logger.h>
 
@@ -23,6 +27,7 @@
 #include <Dream/Client/Graphics/PixelBufferRenderer.h>
 
 #include <Dream/Numerics/Quaternion.h>
+#include <Dream/Client/Graphics/ParticleRenderer.h>
 
 namespace Demo {
 	using namespace Dream;
@@ -32,9 +37,49 @@ namespace Demo {
 	using namespace Dream::Client::Display;
 	using namespace Dream::Client::Graphics;
 	
+	class TrailParticles : public ParticleRenderer<TrailParticles> {
+	public:
+		bool update_physics (Physics & physics, TimeT last_time, TimeT current_time, TimeT dt);
+		void add(LineSegment<3> line_segment, const Vec3 & color);
+	};
+	
+	bool TrailParticles::update_physics (Physics & physics, TimeT last_time, TimeT current_time, TimeT dt) {
+		if (physics.update_time(dt, Vec3(0.0, 0.0, -9.8))) {
+			RealT alpha = physics.calculate_alpha(0.7);				
+			physics.update_vertex_color(Vec3(0.2 * physics.color_modulation(2.0)) << alpha);
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	void TrailParticles::add(LineSegment<3> line_segment, const Vec3 & color) {
+		const RealT DENSITY = 2.0;
+		
+		RealT density = DENSITY;
+		
+		while ((density -= real_random()) > 0) {
+			Vec3 point = line_segment.point_at_time(density / DENSITY);
+			point[X] += real_random(-0.2, 0.2);
+			point[Y] += real_random(-0.2, 0.2);
+			point[Z] += real_random(-0.2, 0.2);
+			
+			Physics particle;
+			
+			particle.velocity = Vec3(0.0, 0.0, 0.0);
+			particle.set_position(point, Vec3(-0.1, -0.1, 0.0), Vec3(0.0, 0.0, -1.0), 0.0);
+			particle.add_life(4.0 + real_random());
+			particle.color = color;
+			particle.set_random_mapping(4);
+			
+			_physics.push_back(particle);
+		}
+	}
+	
 	struct FlowingLight {
 		Vec3 position;
-		Array<Vec3> history;
+		std::vector<Vec3> history;
 		Quat rotations[3];
 		
 		void update() {
@@ -47,7 +92,15 @@ namespace Demo {
 				history[i-1] = history[i];
 			}
 			
-			history.resize(std::min<std::size_t>(history.size(), 40));
+			history.resize(std::min<std::size_t>(history.size(), 50));
+		}
+		
+		LineSegment<3> end_segment() const {
+			if (history.size() >= 2) {
+				return LineSegment<3>(history[history.size() - 1], history[history.size() - 2]);
+			} else {
+				return LineSegment<3>(position, position);
+			}
 		}
 	};
 	
@@ -66,28 +119,30 @@ namespace Demo {
 		Ref<IProjection> _projection;
 		Ref<Viewport> _viewport;
 		
-		Ref<Program> _textured_program, _flat_program, _solid_program;
-		GLuint _position_uniform, _light_positions_uniform, _color_attribute, _position_attribute, _normal_attribute, _mapping_attribute;
+		Ref<Program> _textured_program, _flat_program, _solid_program, _particle_program, _wireframe_program;
+		GLuint _position_uniform, _light_positions_uniform;
 		
 		GLuint _diffuse_uniform;
-		Ref<Texture> _crate_texture;
+		Ref<Texture> _crate_texture, _particle_texture, _sakura_texture;
 		
 		Vec2 _point;
-		Vec4 _light_positions[2];
-		Vec4 _light_colors[2];
-		FlowingLight _flowing_lights[2];
+		Vec4 _light_positions[3];
+		Vec4 _light_colors[3];
+		FlowingLight _flowing_lights[3];
 		
 		Shared<VertexArray> _flowing_array;
-		Shared<VertexBuffer> _flowing_buffer;
+		Shared<VertexBuffer<BasicVertex<Vec3>>> _flowing_buffer;
 		
 		typedef Geometry::Mesh<> MeshT;
 		Ref<MeshBuffer<MeshT>> _object_mesh_buffer, _grid_mesh_buffer;
 		
 		Ref<ShaderManager> _shader_manager;
 		Ref<TextureManager> _texture_manager;
+		Ref<WireframeRenderer> _wireframe_renderer;
 		
-		Ref<IPixelBuffer> _image;
 		Ref<PixelBufferRenderer> _pixel_buffer_renderer;
+		
+		Ref<TrailParticles> _trail_particles;
 		
 		RealT _rotation;
 
@@ -163,12 +218,17 @@ namespace Demo {
 		_viewport->set_bounds(AlignedBox<2>(ZERO, manager->display_context()->size()));
 		
 		_point.zero();
-		_light_positions[0] = vec(-10.0, 0.0, 1.0, 1.0);
-		_light_positions[1] = vec(10.0, 0.0, 1.0, 1.0);
+		_light_positions[0].zero();
+		_light_positions[1].zero();
+		_light_positions[2].zero();
 		
 		_rotation = 0.0;
 		_light_colors[0] = Vec4(2.0, 0.8, 0.4, 0.0);
 		_light_colors[1] = Vec4(0.4, 0.8, 2.0, 0.0);
+		_light_colors[2] = Vec4(0.4, 2.0, 0.8, 0.0);
+		//_light_colors[0] = Vec4(1.2, 0.2, 0.2, 0.0);
+		//_light_colors[1] = Vec4(0.2, 0.2, 1.2, 0.0);
+		//_light_colors[2] = Vec4(0.2, 1.2, 0.2, 0.0);
 		
 		_shader_manager = new ShaderManager;
 		_texture_manager = new TextureManager;
@@ -177,14 +237,15 @@ namespace Demo {
 		parameters.generate_mip_maps = true;
 		parameters.min_filter = GL_LINEAR_MIPMAP_LINEAR;
 		parameters.mag_filter = GL_LINEAR;
-		
 		parameters.target = GL_TEXTURE_2D;
 		
-		_image = resource_loader()->load<IPixelBuffer>("Materials/Checkers");
-		Ref<IPixelBuffer> texture_image = resource_loader()->load<IPixelBuffer>("Materials/Checkers");
-		
-		_crate_texture = _texture_manager->allocate(parameters, texture_image);
-		_texture_manager->bind(0, _crate_texture);
+		{
+			Ref<IPixelBuffer> checkers_image = resource_loader()->load<IPixelBuffer>("Textures/Checkers");		
+			_crate_texture = _texture_manager->allocate(parameters, checkers_image);
+			
+			Ref<IPixelBuffer> particle_image = resource_loader()->load<IPixelBuffer>("Textures/Trail");
+			_particle_texture = _texture_manager->allocate(parameters, particle_image);
+		}
 		
 		check_graphics_error();
 		
@@ -197,19 +258,38 @@ namespace Demo {
 		}
 		
 		{
+			_wireframe_program = load_program("Shaders/wireframe");
+			_wireframe_program->set_attribute_location("position", WireframeRenderer::POSITION);
+			_wireframe_program->link();
+			
+			_wireframe_renderer = new WireframeRenderer;
+		}
+		
+		{
+			_particle_program = load_program("Shaders/particle");
+			
+			_particle_program->set_attribute_location("position", TrailParticles::POSITION);
+			_particle_program->set_attribute_location("offset", TrailParticles::OFFSET);
+			_particle_program->set_attribute_location("mapping", TrailParticles::MAPPING);
+			_particle_program->set_attribute_location("color", TrailParticles::COLOR);
+			_particle_program->link();
+			
+			auto binding = _particle_program->binding();
+			binding.set_texture_unit("diffuse_texture", 0);
+			
+			_trail_particles = new TrailParticles;
+		}
+		
+		{
 			// Setup the buffer for drawing the light trails.
 			_flowing_array = new VertexArray;
-			_flowing_buffer = new VertexBuffer;
+			_flowing_buffer = new VertexBuffer<BasicVertex<Vec3>>;
 			
-			_flowing_array->bind();
-			_flowing_buffer->attach(*_flowing_array);
-			
-			VertexArray::Attributes attributes(*_flowing_array, *_flowing_buffer);
+			auto binding = _flowing_array->binding();
+			auto attributes = binding.attach(*_flowing_buffer);
 			attributes[0] = &BasicVertex<Vec3>::element;
 			
 			check_graphics_error();
-			
-			_flowing_array->unbind();
 		}
 		
 		{
@@ -219,9 +299,8 @@ namespace Demo {
 			_flat_program->set_attribute_location("mapping", 1);
 			_flat_program->link();
 			
-			_flat_program->enable();
-			_flat_program->set_texture_unit("diffuse_texture", 0);
-			_flat_program->disable();
+			auto binding = _flat_program->binding();
+			binding.set_texture_unit("diffuse_texture", 0);
 			
 			check_graphics_error();
 		}
@@ -237,21 +316,7 @@ namespace Demo {
 			
 			_position_uniform = _textured_program->uniform_location("point");
 			_diffuse_uniform = _textured_program->uniform_location("diffuse");
-
 			_light_positions_uniform = _textured_program->uniform_location("light_positions");
-			
-			_color_attribute = _textured_program->attribute_location("color");
-			_position_attribute = _textured_program->attribute_location("position");
-			_normal_attribute = _textured_program->attribute_location("normal");
-			_mapping_attribute = _textured_program->attribute_location("mapping");
-			
-			LogBuffer buffer;
-			buffer << "Attribute positions" << std::endl;
-			buffer << "Position @ " << _position_attribute << std::endl;
-			buffer << "Normal @ " << _normal_attribute << std::endl;
-			buffer << "Color @ " << _color_attribute << std::endl;
-			buffer << "Mapping @ " << _mapping_attribute << std::endl;
-			logger()->log(LOG_DEBUG, buffer);
 			
 			check_graphics_error();
 		}
@@ -260,9 +325,9 @@ namespace Demo {
 			using namespace Geometry;
 			
 			Shared<MeshT> mesh = new MeshT;
-			
+			mesh->layout = TRIANGLE_STRIP;
 			Generate::sphere(*mesh, 4, 8*2, (16*2)+1);
-			Generate::solid_color(*mesh, Vec4(0.5, 0.5, 0.5, 1.0));
+			//Generate::solid_color(*mesh, Vec4(0.5, 0.5, 0.5, 1.0));
 			
 			/*
 			{
@@ -278,14 +343,20 @@ namespace Demo {
 			*/
 			
 			_object_mesh_buffer = new MeshBuffer<MeshT>();
-			_object_mesh_buffer->set_mesh(mesh, GL_TRIANGLE_STRIP);
+			_object_mesh_buffer->set_mesh(mesh);
 		
 			{
-				VertexArray::Attributes attributes(_object_mesh_buffer);
-				attributes[_position_attribute] = &MeshT::VertexT::position;
-				attributes[_normal_attribute] = &MeshT::VertexT::normal;
-				attributes[_color_attribute] = &MeshT::VertexT::color;
-				attributes[_mapping_attribute] = &MeshT::VertexT::mapping;
+				auto binding = _object_mesh_buffer->vertex_array().binding();
+				
+				// Attach indices
+				binding.attach(_object_mesh_buffer->index_buffer());
+				
+				// Attach attributes
+				auto attributes = binding.attach(_object_mesh_buffer->vertex_buffer());
+				attributes[POSITION] = &MeshT::VertexT::position;
+				attributes[NORMAL] = &MeshT::VertexT::normal;
+				//attributes[COLOR] = &MeshT::VertexT::color;
+				attributes[MAPPING] = &MeshT::VertexT::mapping;
 			}
 		}
 		
@@ -293,17 +364,23 @@ namespace Demo {
 			using namespace Geometry;
 			
 			Shared<MeshT> mesh = new MeshT;
+			mesh->layout = LINES;
 			Generate::grid(*mesh, 32, 2.0);
 			
 			_grid_mesh_buffer = new MeshBuffer<MeshT>();
-			_grid_mesh_buffer->set_mesh(mesh, GL_LINES);
+			_grid_mesh_buffer->set_mesh(mesh);
 			
 			{
-				VertexArray::Attributes attributes(_grid_mesh_buffer);
-				attributes[_position_attribute] = &MeshT::VertexT::position;
-				attributes[_normal_attribute] = &MeshT::VertexT::normal;
-				attributes[_color_attribute] = &MeshT::VertexT::color;
-				attributes[_mapping_attribute] = &MeshT::VertexT::mapping;
+				auto binding = _grid_mesh_buffer->vertex_array().binding();
+				
+				// Attach indices
+				binding.attach(_grid_mesh_buffer->index_buffer());
+				
+				// Attach attributes
+				auto attributes = binding.attach(_grid_mesh_buffer->vertex_buffer());
+				attributes[POSITION] = &MeshT::VertexT::position;
+				attributes[NORMAL] = &MeshT::VertexT::normal;
+				attributes[MAPPING] = &MeshT::VertexT::mapping;
 			}
 		}
 		
@@ -316,7 +393,12 @@ namespace Demo {
 			_flowing_lights[1].rotations[0].set_to_angle_axis_rotation(R90 / 25.0, Vec3(0.0, 1.0, 0.0));
 			_flowing_lights[1].rotations[1].set_to_angle_axis_rotation(R30 / 10.0, Vec3(1.0, 1.0, 0.0).normalize());
 			_flowing_lights[1].rotations[2].set_to_angle_axis_rotation(R180 / 2, Vec3(1.0, 0.0, 0.7).normalize());
-			_flowing_lights[1].position = Vec3(10, 0, 0);
+			_flowing_lights[1].position = Vec3(0, 10, 0);
+			
+			_flowing_lights[2].rotations[0].set_to_angle_axis_rotation(R90 / 25.0, Vec3(0.5, 1.0, 0.0).normalize());
+			_flowing_lights[2].rotations[1].set_to_angle_axis_rotation(R30 / 10.0, Vec3(-0.7, 0.0, 0.2).normalize());
+			_flowing_lights[2].rotations[2].set_to_angle_axis_rotation(R180 / 2, Vec3(0.4, -0.2, 0.3).normalize());
+			_flowing_lights[2].position = Vec3(0, 0, 10);
 		}
 		
 		glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -419,14 +501,20 @@ namespace Demo {
 		return false;
 	}
 	
-	void DemoScene::render_frame_for_time (TimeT time)
-	{
+	void DemoScene::render_frame_for_time (TimeT time) {
 		Scene::render_frame_for_time(time);
 		
-		_flowing_lights[0].update();
-		_light_positions[0] = _flowing_lights[0].position << 1.0;
-		_flowing_lights[1].update();
-		_light_positions[1] = _flowing_lights[1].position << 1.0;
+		_trail_particles->update(time);
+		
+		for (std::size_t i = 0; i < 3; i += 1) {
+			_flowing_lights[i].update();
+			_light_positions[i] = _flowing_lights[i].position << 1.0;
+			
+			if (_flowing_lights[i].history.size() > 1) {
+				// Add some particle effects
+				_trail_particles->add(_flowing_lights[i].end_segment(), _light_colors[i].reduce());
+			}
+		}
 		
 		_rotation += 0.01;
 		
@@ -438,70 +526,80 @@ namespace Demo {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		{
-			_textured_program->enable();
+			auto binding = _wireframe_program->binding();
+			binding.set_uniform("display_matrix", _viewport->display_matrix());
+		}
+		
+		{
+			check_graphics_error();
+			
+			auto binding = _textured_program->binding();
 			_texture_manager->bind(0, _crate_texture);
-			
-			glUniform1i(_diffuse_uniform, 0);
-			
+						
 			Mat44 modelview_matrix = Mat44::rotating_matrix_around_z(_rotation);
+			//modelview_matrix = modelview_matrix * _viewport->display_matrix();
 			modelview_matrix = _viewport->display_matrix() * modelview_matrix;
 			
 			GLuint display_matrix_uniform = _textured_program->uniform_location("display_matrix");
 			
-			//Vec4 updated_positions[2];
-			//updated_positions[0] = _viewport->display_matrix() * _light_positions[0];
-			//updated_positions[1] = _viewport->display_matrix() * _light_positions[1];
-			
-			glUniform4fv(_textured_program->uniform_location("light_colors"), 2, _light_colors[0].value());
-			glUniform4fv(_light_positions_uniform, 2, _light_positions[0].value());
+			binding.set_uniform("light_colors", _light_colors);
+			binding.set_uniform(_light_positions_uniform, _light_positions);
 			
 			check_graphics_error();
 			
 			//Vec2 p(0.5 * Math::sin(time), 0.5 * Math::cos(time));
-			glUniform2fv(_position_uniform, 1, (const GLfloat *)_point.value());
+			binding.set_uniform(_position_uniform, _point);
 			
 			check_graphics_error();
 			
 			// Draw the various objects to the screen:
-			//glUniformMatrix4fv(display_matrix_uniform, 1, GL_FALSE, _viewport->display_matrix().value());
-			//_grid_mesh_buffer->draw();
+			binding.set_uniform(display_matrix_uniform, _viewport->display_matrix());
+			_grid_mesh_buffer->draw();
 			
-			glUniformMatrix4fv(display_matrix_uniform, 1, GL_FALSE, modelview_matrix.value());
+			binding.set_uniform(display_matrix_uniform, modelview_matrix);
 			_object_mesh_buffer->draw();
-					
+			
 			check_graphics_error();
+			
+			//AlignedBox3 sphere_box(-4, 4);
+			//_wireframe_renderer->render(sphere_box);
+		}
+
+		{
+			auto binding = _solid_program->binding();
+			binding.set_uniform("display_matrix", _viewport->display_matrix());
+
+			for (std::size_t i = 0; i < 3; i += 1) {
+				binding.set_uniform("light_position", _light_positions[i]);
+				binding.set_uniform("light_color", _light_colors[i]);
+				
+				auto array_binding = _flowing_array->binding();
+				array_binding.attach(*_flowing_buffer);
+				
+				auto buffer_binding = _flowing_buffer->binding<Vec3>();
+				buffer_binding.set_data(_flowing_lights[i].history);
+				
+				array_binding.draw_arrays(GL_LINE_STRIP, 0, (GLsizei)_flowing_lights[i].history.size());
+				
+				check_graphics_error();
+			}
 		}
 		
-		for (std::size_t i = 0; i < 2; i += 1) {
-			_solid_program->enable();
-			glUniform4f(_solid_program->uniform_location("color"), 0.5, 0.5, 0.5, 0.5);
-			glUniformMatrix4fv(_solid_program->uniform_location("display_matrix"), 1, GL_FALSE, _viewport->display_matrix().value());
-			glUniform4fv(_solid_program->uniform_location("light_position"), 1, _light_positions[i].value());
-			glUniform4fv(_solid_program->uniform_location("light_color"), 1, _light_colors[i].value());
+		{
+			glDepthMask(GL_FALSE);
 			
-			_flowing_array->bind();
-			_flowing_buffer->attach(*_flowing_array);
-			_flowing_buffer->buffer_data(_flowing_lights[i].history.data_size(), (ByteT *)_flowing_lights[i].history.data(), GL_STREAM_DRAW);
-			_flowing_array->draw_arrays(GL_LINE_STRIP, 0, (GLsizei)_flowing_lights[0].history.size());
-			_flowing_array->unbind();
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			
-			check_graphics_error();
-		}
-		
-		// Draw textured rectangle:
-		if (0) {
-			_flat_program->enable();
+			auto binding = _particle_program->binding();
+			binding.set_uniform("display_matrix", _viewport->display_matrix());
+
+			_texture_manager->bind(0, _particle_texture);
+			_trail_particles->draw();
 			
-			GLuint display_matrix_uniform = _flat_program->uniform_location("display_matrix");
-			//glUniformMatrix4fv(display_matrix_uniform, 1, GL_FALSE, _viewport->display_matrix().value());
-			Mat44 display_matrix = Mat44::rotating_matrix_around_y(R180);
-			glUniformMatrix4fv(display_matrix_uniform, 1, GL_FALSE, display_matrix.value());
+			glDisable(GL_BLEND);
 			
-			//AlignedBox2 box = AlignedBox2::from_center_and_size(ZERO, _image->size().reduce());
-			AlignedBox2 box = AlignedBox2::from_center_and_size(ZERO, 1.0);
-			_pixel_buffer_renderer->render(box, _image);
-			
-			check_graphics_error();
+			glDepthMask(GL_TRUE);
 		}
 	}
 	
@@ -517,8 +615,7 @@ namespace Demo {
 			virtual void application_did_enter_foreground (IApplication * application);
 	};
 	
-	DemoApplicationDelegate::~DemoApplicationDelegate()
-	{
+	DemoApplicationDelegate::~DemoApplicationDelegate() {
 	}
 	
 	void DemoApplicationDelegate::application_did_finish_launching (IApplication * application)
@@ -529,13 +626,17 @@ namespace Demo {
 		Ref<Thread> thread = new Events::Thread;
 		Ref<ILoader> loader = SceneManager::default_resource_loader();
 		
-		Ref<SceneManager> sceneManager = new SceneManager(_context, thread->loop(), loader);
+		Ref<SceneManager> scene_manager = new SceneManager(_context, thread->loop(), loader);
 		
-		sceneManager->push_scene(new DemoScene);
+#ifdef DREAM_DEBUG
+		logger()->log(LOG_INFO, "Debugging mode active");
+#else
+		logger()->log(LOG_INFO, "Debugging mode inactive");
+#endif
 		
-		_context->start();
+		scene_manager->push_scene(new DemoScene);
 	}
-		
+	
 	void DemoApplicationDelegate::application_will_enter_background (IApplication * application)
 	{
 		logger()->log(LOG_INFO, "Entering background...");

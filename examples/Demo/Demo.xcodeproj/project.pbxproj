@@ -19,7 +19,7 @@
 		7E9E4239142988760061260C /* Dream Icon (57x57).png in Resources */ = {isa = PBXBuildFile; fileRef = 7E9E4237142988760061260C /* Dream Icon (57x57).png */; };
 		7E9E423A142988760061260C /* Dream Icon (114x114).png in Resources */ = {isa = PBXBuildFile; fileRef = 7E9E4238142988760061260C /* Dream Icon (114x114).png */; };
 		7E9EA73C142306E300F8BC49 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E9EA73B142306E300F8BC49 /* OpenGL.framework */; };
-		7ED8A81214D0F16E005F890A /* Materials in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E5B632C148D786200027AF5 /* Materials */; };
+		7EA4D10714E93FB800D5C4C6 /* Textures in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7EA4D10614E92C2000D5C4C6 /* Textures */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -29,8 +29,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				7ED8A81214D0F16E005F890A /* Materials in CopyFiles */,
 				7E0DE9BB14E663A4009EEF7E /* Shaders in CopyFiles */,
+				7EA4D10714E93FB800D5C4C6 /* Textures in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -41,8 +41,6 @@
 		7E14F83B1422FAA200AB80F1 /* Demo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Demo; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E14F83F1422FAA300AB80F1 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		7E14F84D1422FB0000AB80F1 /* Dream.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Dream.xcconfig; sourceTree = "<group>"; };
-		7E269E6014D2B6C600C54392 /* checkers.program */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = checkers.program; sourceTree = "<group>"; };
-		7E5B632C148D786200027AF5 /* Materials */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Materials; sourceTree = "<group>"; };
 		7E9E41BE14286DCF0061260C /* iOS Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E9E41CD14286DCF0061260C /* iOS Demo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iOS Demo-Info.plist"; sourceTree = "<group>"; };
 		7E9E41CF14286DCF0061260C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -52,6 +50,7 @@
 		7E9E4237142988760061260C /* Dream Icon (57x57).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Dream Icon (57x57).png"; path = "../../../inf/Dream Icon (57x57).png"; sourceTree = "<group>"; };
 		7E9E4238142988760061260C /* Dream Icon (114x114).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Dream Icon (114x114).png"; path = "../../../inf/Dream Icon (114x114).png"; sourceTree = "<group>"; };
 		7E9EA73B142306E300F8BC49 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		7EA4D10614E92C2000D5C4C6 /* Textures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Textures; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,10 +96,9 @@
 		7E14F83E1422FAA200AB80F1 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
-				7E269E6014D2B6C600C54392 /* checkers.program */,
 				7E14F83F1422FAA300AB80F1 /* main.cpp */,
 				7E9E423F1429BB830061260C /* Supporting Files */,
-				7E5B632C148D786200027AF5 /* Materials */,
+				7EA4D10614E92C2000D5C4C6 /* Textures */,
 				7E0DE9BA14E6314F009EEF7E /* Shaders */,
 			);
 			path = Demo;
