@@ -28,7 +28,7 @@ namespace Dream
 		template <typename InterpolateT, typename AnyT>
 		inline AnyT cosine_interpolate (const InterpolateT & t, const AnyT & a, const AnyT & b)
 		{
-			RealT f = (1.0 - cos(t * M_PI)) * 0.5;
+			InterpolateT f = (1.0 - cos(t * M_PI)) * 0.5;
 
 			return a*(1-f) + b*f;
 		}
@@ -45,22 +45,16 @@ namespace Dream
 			return p*(t*t*t) + q*(t*t) + r * t + s;
 		}
 
-		/** Hermite interpolation polynomial function.
-
-		 Tension: 1 is high, 0 normal, -1 is low
-		 Bias: 0 is even,
-		 positive is towards first segment,
-		 negative towards the other
-		 */
+		/// Hermite interpolation polynomial function.
 		template <typename InterpolateT, typename AnyT>
 		inline AnyT hermite_polynomial (const InterpolateT & t, const AnyT & p0, const AnyT & m0, const AnyT & p1, const AnyT & m1)
 		{
-			RealT t3 = t*t*t, t2 = t*t;
+			InterpolateT t3 = t*t*t, t2 = t*t;
 
-			RealT h00 = 2*t3 - 3*t2 + 1;
-			RealT h10 = t3 - 2*t2 + t;
-			RealT h01 = -2*t3 + 3*t2;
-			RealT h11 = t3 - t2;
+			InterpolateT h00 = 2*t3 - 3*t2 + 1;
+			InterpolateT h10 = t3 - 2*t2 + t;
+			InterpolateT h01 = -2*t3 + 3*t2;
+			InterpolateT h11 = t3 - t2;
 
 			return p0 * h00 + m0 * h10 + p1 * h01 + m1 * h11;
 		}
