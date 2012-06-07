@@ -104,7 +104,6 @@ namespace Dream
 				FIntT a_integral = convert_to_integer(a);
 				FIntT b_integral = convert_to_integer(b);
 
-				FIntT integral_difference;
 				if (a_integral < b_integral)
 					return b_integral - a_integral;
 				else
