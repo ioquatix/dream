@@ -55,6 +55,7 @@
 		7E4F578F14A2A39100A6DB0C /* Input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E4F578D14A2A39100A6DB0C /* Input.cpp */; };
 		7E4F579014A2A39100A6DB0C /* Input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E4F578D14A2A39100A6DB0C /* Input.cpp */; };
 		7E4F579114A2A39100A6DB0C /* Input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E4F578D14A2A39100A6DB0C /* Input.cpp */; };
+		7E5187221580BFC0004352C0 /* MultiFingerInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EBC22100FA7F6F100D2CA1D /* MultiFingerInput.cpp */; };
 		7E696FF5107C0AE4007D2740 /* Stream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E696FF4107C0AE4007D2740 /* Stream.cpp */; };
 		7E696FF8107C0AE4007D2740 /* Stream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E696FF4107C0AE4007D2740 /* Stream.cpp */; };
 		7E696FF9107C0AE4007D2740 /* Stream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E696FF4107C0AE4007D2740 /* Stream.cpp */; };
@@ -1661,6 +1662,7 @@
 				7EB4EDF314EBD47100C69A1B /* VertexArray.cpp in Sources */,
 				7E0F411515084BBD00F66DE0 /* HeightMap.cpp in Sources */,
 				7EEE48C1150E018F004C9A5B /* Axis.cpp in Sources */,
+				7E5187221580BFC0004352C0 /* MultiFingerInput.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

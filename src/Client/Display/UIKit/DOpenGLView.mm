@@ -26,7 +26,7 @@ static Vec3 position_in_view (UIView * view, UITouch * touch)
 	return Vec3(locationInView.x, bounds.size.height - locationInView.y, 0);
 }
 
-AlignedBox<2> bounds_from_frame (CGRect frame)
+static AlignedBox<2> bounds_from_frame (CGRect frame)
 {
 	Vec2 origin(frame.origin.x, frame.origin.y);
 	Vec2 size(frame.size.width, frame.size.height);

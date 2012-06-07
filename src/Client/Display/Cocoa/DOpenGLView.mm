@@ -10,13 +10,89 @@
 
 using namespace Dream::Client::Display;
 
+static AlignedBox<2> bounds_from_frame(NSRect frame)
+{
+	Vec2 origin(frame.origin.x, frame.origin.y);
+	Vec2 size(frame.size.width, frame.size.height);
+	
+	AlignedBox<2> bounds(origin, origin + size);
+	
+	return bounds;
+}
+
 @implementation DOpenGLView
 
 @synthesize displayContext = _display_context;
 
+- (id)initWithFrame:(NSRect)frame pixelFormat:(NSOpenGLPixelFormat *)format
+{
+    self = [super initWithFrame:frame pixelFormat:format];
+	
+    if (self) {
+		_multi_finger_input = new MultiFingerInput;
+    }
+	
+    return self;
+}
+
 - (BOOL)acceptsFirstResponder
 {
 	return YES;
+}
+
+- (void)touchesBeganWithEvent:(NSEvent *)event {
+	NSSet * touches = [event touchesMatchingPhase:NSTouchPhaseTouching inView:self];
+	
+	for (NSTouch * touch in touches) {
+		AlignedBox<2> bounds = bounds_from_frame(self.frame);
+		NSPoint point = touch.normalizedPosition;
+		Vec3 position = bounds.absolute_position_of(vec(point.x, point.y)) << 0.0;
+		
+		const FingerTracking & ft = _multi_finger_input->begin_motion((FingerID)touch.identity, position);
+		
+		Key touch_key(DefaultTouchPad, ft.button);
+		
+		MotionInput motion_input(touch_key, Pressed, ft.position, ft.motion, bounds);
+		_display_context->process(motion_input);
+	}
+}
+
+- (void)touchesMovedWithEvent:(NSEvent *)event {
+	NSSet * touches = [event touchesMatchingPhase:NSTouchPhaseMoved inView:self];
+	
+	for (NSTouch * touch in touches) {
+		AlignedBox<2> bounds = bounds_from_frame(self.frame);
+		NSPoint point = touch.normalizedPosition;
+		Vec3 position = bounds.absolute_position_of(vec(point.x, point.y)) << 0.0;
+		
+		const FingerTracking & ft = _multi_finger_input->update_motion((FingerID)touch.identity, position);
+		
+		Key touch_key(DefaultTouchPad, ft.button);
+		
+		MotionInput motion_input(touch_key, Dragged, ft.position, ft.motion, bounds);
+		_display_context->process(motion_input);
+	}
+}
+
+- (void)touchesEndedWithEvent:(NSEvent *)event {
+	NSSet * touches = [event touchesMatchingPhase:NSTouchPhaseEnded inView:self];
+	
+	for (NSTouch * touch in touches) {
+		AlignedBox<2> bounds = bounds_from_frame(self.frame);
+		NSPoint point = touch.normalizedPosition;
+		Vec3 position = bounds.absolute_position_of(vec(point.x, point.y)) << 0.0;
+		
+		const FingerTracking & ft = _multi_finger_input->finish_motion((FingerID)touch.identity, position);
+		
+		Key touch_key(DefaultTouchPad, ft.button);
+		
+		MotionInput motion_input(touch_key, Released, ft.position, ft.motion, bounds);
+		_display_context->process(motion_input);
+	}
+}
+
+- (void)touchesCancelledWithEvent:(NSEvent *)event {
+	[self touchesEndedWithEvent:event];
 }
 
 - (BOOL)becomeFirstResponder {

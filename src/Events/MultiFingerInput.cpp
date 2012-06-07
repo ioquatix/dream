@@ -8,12 +8,14 @@
 //
 
 #include "MultiFingerInput.h"
-#include <iostream>
+
+#include "Logger.h"
 
 namespace Dream
 {
 	namespace Events
 	{
+		using namespace Logging;
 	
 		MultiFingerInput::MultiFingerInput () : _top(0)
 		{
@@ -22,7 +24,7 @@ namespace Dream
 		
 		ButtonT MultiFingerInput::allocate_button ()
 		{
-			if (_free_buttons.size()) {
+			if (_free_buttons.size() > 0) {
 				ButtonT free_button = _free_buttons.back();
 				_free_buttons.pop_back();
 				return free_button;
@@ -41,20 +43,22 @@ namespace Dream
 			}
 		}
 		
-		const FingerTracking & MultiFingerInput::begin_motion (FingerID finger, Vec3 position)
+		const FingerTracking & MultiFingerInput::begin_motion(FingerID finger, Vec3 position)
 		{
 			FingerTracking ft;
 			ft.button = allocate_button();
 			ft.position = position;
 			ft.motion.zero();
 			
-			//std::cerr << " Begin Tracking Finger : " << ft.button << " @ " << ft.position << std::endl;
+			//logger()->log(LOG_DEBUG, LogBuffer() << "Begin motion for finger: " << finger);
 			
 			return (_fingers[finger] = ft);
 		}
 		
-		const FingerTracking & MultiFingerInput::update_motion (FingerID finger, Vec3 position)
+		const FingerTracking & MultiFingerInput::update_motion(FingerID finger, Vec3 position)
 		{
+			//logger()->log(LOG_DEBUG, LogBuffer() << "Update motion for finger: " << finger);
+			
 			FingersMap::iterator it = _fingers.find(finger);
 			DREAM_ASSERT(it != _fingers.end());
 			
@@ -62,13 +66,13 @@ namespace Dream
 			ft.motion = ft.position - position;
 			ft.position = position;
 			
-			//std::cerr << "Update Tracking Finger : " << ft.button << " @ " << ft.position << std::endl;
-			
 			return ft;
 		}
 		
-		const FingerTracking MultiFingerInput::finish_motion (FingerID finger, Vec3 position)
+		const FingerTracking MultiFingerInput::finish_motion(FingerID finger, Vec3 position)
 		{
+			//logger()->log(LOG_DEBUG, LogBuffer() << "Finish motion for finger: " << finger);
+			
 			FingersMap::iterator it = _fingers.find(finger);
 			DREAM_ASSERT(it != _fingers.end());
 			
@@ -78,8 +82,6 @@ namespace Dream
 			
 			release_button(ft.button);
 			_fingers.erase(it);
-			
-			//std::cerr << "Finish Tracking Finger : " << ft.button << " @ " << ft.position << std::endl;
 			
 			return ft;
 		}

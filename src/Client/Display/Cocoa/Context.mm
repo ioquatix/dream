@@ -228,8 +228,11 @@ namespace Dream
 						
 						CGAssociateMouseAndMouseCursorPosition(false);
 						
+						[_graphics_view setAcceptsTouchEvents:YES];
 						[_graphics_view warpCursorToCenter];
 					} else {
+						[_graphics_view setAcceptsTouchEvents:NO];
+						
 						CGAssociateMouseAndMouseCursorPosition(true);
 						
 						CGDisplayShowCursor(kCGNullDirectDisplay);

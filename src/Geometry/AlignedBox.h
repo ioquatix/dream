@@ -306,8 +306,13 @@ namespace Dream {
 			}
 			
 			/// Find the relative position of a point inside the box.
-			Vector<D> relative_offset_of(const Vector<D> & point) const {
+			Vector<D> relative_offset_of(const Vector<D> &point) const {
 				return offset_of(point) / size();
+			}
+			
+			/// Calculate an absolute point based on a relative offset.
+			Vector<D> absolute_position_of(const Vector<D> &offset) const {
+				return _min + (size() * offset);
 			}
 			
 			/// Returns a sphere that encloses the entire box.
