@@ -63,8 +63,19 @@ namespace Dream {
 				for (std::size_t i = 0; i < vertices.size(); i++)
 					vertices[i].apply(transform);
 			}
+			
+			inline Mesh& operator<<(IndexT index) {
+				indices.push_back(index);
+				
+				return *this;
+			}
+			
+			inline Mesh& operator<<(VertexT vertex) {
+				vertices.push_back(vertex);
+				
+				return *this;
+			}
 		};
-		
 		
 	}
 }
