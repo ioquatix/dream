@@ -65,6 +65,9 @@ namespace Dream {
 				
 				Ref<Program> program = new Program;
 				
+				// We must have at least one shader for the program to do anything:
+				DREAM_ASSERT(vertex_shader || geometry_shader || fragment_shader);
+				
 				if (vertex_shader)
 					program->attach(vertex_shader);
 				
