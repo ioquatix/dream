@@ -35,7 +35,8 @@ namespace Dream
 {
 	namespace Events
 	{
-
+		static const bool DEBUG = true;
+		
 // MARK: mark -
 // MARK: mark Helper Functions
 		
@@ -488,7 +489,7 @@ namespace Dream
 		{
 			DREAM_ASSERT(source->file_descriptor() != -1);
 			
-			//std::cerr << this << " removing fd: " << fd << std::endl;
+			if (DEBUG) logger()->log(LOG_DEBUG, LogBuffer() << "Event loop removing file descriptor = " << source->file_descriptor());
 			//IFileDescriptorSource::debug_file_descriptor_flags(fd);
 		
 			_file_descriptor_monitor->remove_source(source);
@@ -509,12 +510,9 @@ namespace Dream
 		
 		void Loop::stop ()
 		{
-			if (std::this_thread::get_id() != _current_thread)
-			{
+			if (std::this_thread::get_id() != _current_thread) {
 				post_notification(NotificationSource::stop_loop_notification(), true);	
-			}
-			else
-			{
+			} else {
 				_running = false;	
 			}
 		}
@@ -569,17 +567,33 @@ namespace Dream
 			}
 		}
 		
-		TimeT Loop::process_timers ()
+		TimeT Loop::process_timers()
 		{
-			TimeT timeout;
+			TimeT timeout = -1;
 			unsigned rate = _rate_limit;
 			
-			// It is the case that (we have a timeout) AND (we are within the rate limit OR we are not rate limiting)
-			while(next_timeout(timeout) && timeout <= 0.0 && (rate-- || _rate_limit == 0))
-			{
-				// Check if the timeout is late.
-				//if (timeout < -0.1)
-				//	std::cerr << "Timeout was late: " << timeout << std::endl;
+			// next_timeout returns true if the timeout should be processed, and updates timeout with the time it was due
+			while (next_timeout(timeout)) {
+				if (timeout > 0.0) {
+					// The timeout was in the future:
+					break;
+				}
+				
+				if (_rate_limit > 0) {
+					// Are we rate-limiting timeouts?
+					rate -= 1;
+					
+					if (rate == 0) {
+						if (DEBUG) logger()->log(LOG_WARN, "Timers have been rate limited!");
+						
+						// The timeout was rate limited, the timer needs to be called again on the next iteration of the event loop:
+						return 0.0;
+					}
+				}
+				
+				// Check if the timeout is late:
+				if (timeout < -0.1 && DEBUG)
+					logger()->log(LOG_WARN, LogBuffer() << "Timeout was late: " << timeout);
 				
 				TimerHandle th = _timer_handles.top();
 				_timer_handles.pop();
@@ -593,19 +607,13 @@ namespace Dream
 				}
 			}
 			
-			if (rate == 0 && _rate_limit != 0) {
-				logger()->log(LOG_WARN, "Warning: Timers were rate limited");
-			}
-			
-			// There are timeouts that should have run, but didn't.
-			if (timeout < 0)
-				timeout = 0;
-			
 			return timeout;
 		}
 		
 		void Loop::process_file_descriptors (TimeT timeout)
 		{
+			if (DEBUG) logger()->log(LOG_DEBUG, LogBuffer() << "process_file_descriptors timeout = " << timeout);
+			
 			// Timeout is now the amount of time we have to process other events until another timeout will need to fire.
 			if (_file_descriptor_monitor->source_count())
 				_file_descriptor_monitor->wait_for_events(timeout, this);
@@ -615,6 +623,8 @@ namespace Dream
 		
 		void Loop::run_one_iteration (bool use_timer_timeout, TimeT timeout)
 		{
+			if (DEBUG) logger()->log(LOG_DEBUG, LogBuffer() << "Loop::run_one_iteration use_timer_timeout = " << use_timer_timeout << " timeout = " << timeout);
+			
 			TimeT time_until_next_timer_event = process_timers();
 			
 			// Process notifications before waiting for IO... [optional - reduce notification latency]
@@ -628,10 +638,12 @@ namespace Dream
 			if (_running == false)
 				return;
 			
-			// If the timeout specified was too big, we set it till the time the next event will occur, so that this function (will/should) be called again
-			// shortly and process the timeout as appropriate.
-			if (use_timer_timeout || timeout > time_until_next_timer_event)
+			// If the timeout specified was too big, we set it till the time the next event will occur, so that this function (will/should) be called again shortly and process the timeout as appropriate.
+			if (use_timer_timeout || timeout > time_until_next_timer_event) {
 				timeout = time_until_next_timer_event;
+				
+				if (DEBUG) logger()->log(LOG_DEBUG, LogBuffer() << "Loop::run_one_iteration timeout = " << timeout);
+			}
 			
 			process_file_descriptors(timeout);
 			
@@ -639,26 +651,28 @@ namespace Dream
 			process_notifications();
 		}
 		
-		void Loop::run_once (bool block)
+		void Loop::run_once(bool block)
 		{
 			_running = true;
 			_current_thread = std::this_thread::get_id();
-			
+						
 			run_one_iteration(false, block ? -1 : 0);
 			
 			_running = false;
 		}
 		
-		void Loop::run_forever ()
-		{			
-			//std::cerr << "Entering runloop " << std::flush;
+		void Loop::run_forever()
+		{
+			logger()->log(LOG_INFO, "Entering runloop...");
+
 			_running = true;
 			_current_thread = std::this_thread::get_id();
-			//std::cerr << "..." << std::endl;
 			
 			while (_running) {
-				run_one_iteration(true);
+				run_one_iteration(true, -1);
 			}
+			
+			logger()->log(LOG_INFO, "...exiting runloop.");
 		}
 		
 		TimeT Loop::run_until_timeout (TimeT timeout)

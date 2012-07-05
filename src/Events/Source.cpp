@@ -16,6 +16,8 @@
 
 #include <unistd.h>
 
+#include "Logger.h"
+
 namespace Dream
 {
 	namespace Events
@@ -99,36 +101,36 @@ namespace Dream
 // MARK: mark -
 // MARK: mark class IFileDescriptorSource
 		
-		void IFileDescriptorSource::debug_file_descriptor_flags (int fd)
+		void IFileDescriptorSource::debug_file_descriptor_flags(int fd)
 		{
-			using namespace std;
+			LogBuffer log_buffer;
 			
 			int flags = fcntl(fd, F_GETFL);
 			
-			cout << "Flags for #" << fd << ":";
+			log_buffer << "Flags for #" << fd << ":";
 			
 			if (flags & O_NONBLOCK)
-				cout << " NONBLOCK";
+				log_buffer << " NONBLOCK";
 			
 			int access_mode = flags & O_ACCMODE;
 			
 			if (access_mode == O_RDONLY)
-				cout << " RDONLY";
+				log_buffer << " RDONLY";
 			else if (access_mode == O_WRONLY)
-				cout << " WRONLY";
+				log_buffer << " WRONLY";
 			else
-				cout << " RDWR";
+				log_buffer << " RDWR";
 
 			if (flags & O_APPEND)
-				cout << " APPEND";
+				log_buffer << " APPEND";
 			
 			if (flags & O_CREAT)
-				cout << " CREATE";
+				log_buffer << " CREATE";
 			
 			if (flags & O_TRUNC)
-				cout << " TRUNCATE";
+				log_buffer << " TRUNCATE";
 			
-			cout << endl;
+			logger()->log(LOG_DEBUG, log_buffer);
 		}
 		
 		void IFileDescriptorSource::set_will_block (bool value)

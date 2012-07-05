@@ -50,12 +50,12 @@ namespace Dream {
 		void Thread::run ()
 		{
 			logger()->log(LOG_INFO, "Starting thread event loop...");
-		
+			
 			// Lock the loop to ensure it isn't released by another thread.
 			Ref<Loop> loop = _loop;
 			
 			loop->run_forever();
-
+			
 			logger()->log(LOG_INFO, "Exiting thread event loop...");
 		}
 		
