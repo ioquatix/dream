@@ -448,7 +448,9 @@ namespace Dream
 			} else {
 				// Add the timer via a notification which is passed across the thread.
 				Ref<ScheduleTimerNotificationSource> note = new ScheduleTimerNotificationSource(source);
-				this->post_notification(note);
+				
+				// If the event loop is currently running forever with a timeout of -1, the notification will never be processed unless it is set to urgent. It might be better to have a default timeout for the runloop and expose this behaviour to the client library rather than just posting all schedule timer notifcations as urgent.
+				this->post_notification(note, true);
 			}
 		}
 		
@@ -495,15 +497,15 @@ namespace Dream
 			_file_descriptor_monitor->remove_source(source);
 		}
 		
-		/// If there is a timeout, returns true and the timeout in s.
-		/// If there isn't a timeout, returns false and -1 in s.
-		bool Loop::next_timeout (TimeT & s)
+		/// If there is a timeout, returns true and the timeout in `at_time`.
+		/// If there isn't a timeout, returns false and -1 in `at_time`.
+		bool Loop::next_timeout (TimeT & at_time)
 		{
 			if (_timer_handles.empty()) {
-				s = -1;
+				at_time = -1;
 				return false;
 			} else {
-				s = _timer_handles.top().timeout - _stopwatch.time();
+				at_time = _timer_handles.top().timeout - _stopwatch.time();
 				return true;
 			}
 		}
