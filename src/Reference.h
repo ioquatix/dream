@@ -17,8 +17,8 @@
 #include <stdint.h>
 #include <iostream>
 
-// A bit of a hack to get this to compile on 10.7 Lion.
-#define cxx_atomic cxx_nullptr
+// A bit of a hack to get this to compile on 10.7 Lion, no longer needed on 10.8
+//#define cxx_atomic cxx_nullptr
 #include <atomic>
 
 namespace Dream {
