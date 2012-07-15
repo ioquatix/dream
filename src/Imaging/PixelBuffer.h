@@ -28,10 +28,8 @@ namespace Dream {
 			UINT = 0x1405,
 			FLOAT = 0x1406,
 			DOUBLE = 0x140A,
-		};
-		
-		/// Pixel packing type.
-		enum ImagePixelPacking {
+			
+			// Packed data types:
 			UBYTE_3_3_2 = 0x8032,
 			USHORT_4_4_4_4 = 0x8033,
 			USHORT_5_5_5_1 = 0x8034,
@@ -48,6 +46,13 @@ namespace Dream {
 		
 		/// Image pixel formats.
 		enum ImagePixelFormat {
+			// Generic pixel formats:
+			GENERIC_1_CHANNEL = 1,
+			GENERIC_2_CHANNEL = 2,
+			GENERIC_3_CHANNEL = 3,
+			GENERIC_4_CHANNEL = 4,
+			
+			// These types map to GL_ enumerations:
 			RED = 0x1903,
 			GREEN = 0x1904,
 			BLUE = 0x1905,
@@ -59,8 +64,8 @@ namespace Dream {
 		};
 			
 		unsigned data_type_byte_size(ImageDataType type);
-		unsigned packed_pixel_channel_count (ImagePixelPacking type);
-		unsigned pixel_format_channel_count (ImagePixelFormat type);
+		unsigned data_type_channel_count(ImageDataType type);
+		unsigned pixel_format_channel_count(ImagePixelFormat type);
 		
 		// This type is guaranteed to be big enough to hold even RGBA16.
 		// This is useful when you want a generic representation of a pixel

@@ -35,7 +35,7 @@ namespace Dream {
 			}
 		}
 		
-		unsigned packed_pixel_channel_count (ImagePixelPacking type) {
+		unsigned data_type_channel_count (ImageDataType type) {
 			switch(type) {
 				case UBYTE_3_3_2:
 				case UBYTE_2_3_3_REV:
@@ -54,13 +54,13 @@ namespace Dream {
 					return 4;
 					
 				default:
-					return 0;
+					return 1;
 			}
 		}
 		
 		unsigned pixel_format_channel_count (ImagePixelFormat type) {
 			switch(type) {
-				case 1:
+				case GENERIC_1_CHANNEL:
 				case RED:
 				case GREEN:
 				case BLUE:
@@ -68,15 +68,15 @@ namespace Dream {
 				case LUMINANCE:
 					return 1;
 					
-				case 2:
+				case GENERIC_2_CHANNEL:
 				case LUMINANCE_ALPHA: // Internal Format
 					return 2;
 				
-				case 3:
+				case GENERIC_3_CHANNEL:
 				case RGB: // Internal Format
 					return 3;
 				
-				case 4:
+				case GENERIC_4_CHANNEL:
 				case RGBA: // Internal Format
 					return 4;
 					

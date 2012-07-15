@@ -43,18 +43,22 @@ namespace Dream
 		int png_color_type (ImagePixelFormat pixel_format)
 		{
 			switch (pixel_format) {
-			case RED:
-			case GREEN:
-			case BLUE:
-			case LUMINANCE:
-			case ALPHA:
-				return PNG_COLOR_TYPE_GRAY;
-			case LUMINANCE_ALPHA:
-				return PNG_COLOR_TYPE_GRAY_ALPHA;
-			case RGB:
-				return PNG_COLOR_TYPE_RGB;
-			case RGBA:
-				return PNG_COLOR_TYPE_RGBA;
+				case GENERIC_1_CHANNEL:
+				case RED:
+				case GREEN:
+				case BLUE:
+				case LUMINANCE:
+				case ALPHA:
+					return PNG_COLOR_TYPE_GRAY;
+				case GENERIC_2_CHANNEL:
+				case LUMINANCE_ALPHA:
+					return PNG_COLOR_TYPE_GRAY_ALPHA;
+				case GENERIC_3_CHANNEL:
+				case RGB:
+					return PNG_COLOR_TYPE_RGB;
+				case GENERIC_4_CHANNEL:
+				case RGBA:
+					return PNG_COLOR_TYPE_RGBA;
 			}
 			
 			return -1;
