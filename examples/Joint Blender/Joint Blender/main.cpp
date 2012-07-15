@@ -329,8 +329,10 @@ namespace JointBlender {
 			
 			binding.set_uniform("display_matrix", _renderer_state->viewport->display_matrix());
 			
+			binding.set_uniform("major_color", Vec4(0.6, 0.62, 0.94, 1.0));
 			_lower->draw();
 			_upper->draw();
+			binding.set_uniform("major_color", Vec4(0.0, 0.0, 1.0, 1.0));
 			_joint->draw();
 			//_grid->draw();
 		}

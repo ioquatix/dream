@@ -39,14 +39,14 @@ namespace Demo {
 	
 	class TrailParticles : public ParticleRenderer<TrailParticles> {
 	public:
-		bool update_physics (Physics & physics, TimeT last_time, TimeT current_time, TimeT dt);
+		bool update_particle (Particle & particle, TimeT last_time, TimeT current_time, TimeT dt);
 		void add(LineSegment<3> line_segment, const Vec3 & color);
 	};
 	
-	bool TrailParticles::update_physics (Physics & physics, TimeT last_time, TimeT current_time, TimeT dt) {
-		if (physics.update_time(dt, Vec3(0.0, 0.0, -9.8))) {
-			RealT alpha = physics.calculate_alpha(0.7);				
-			physics.update_vertex_color(Vec3(0.2 * physics.color_modulation(2.0)) << alpha);
+	bool TrailParticles::update_particle (Particle & particle, TimeT last_time, TimeT current_time, TimeT dt) {
+		if (particle.update_time(dt, Vec3(0.0, 0.0, -9.8))) {
+			RealT alpha = particle.calculate_alpha(0.7);
+			particle.update_vertex_color(Vec3(0.2 * particle.color_modulation(2.0)) << alpha);
 			
 			return true;
 		}
@@ -65,7 +65,7 @@ namespace Demo {
 			point[Y] += real_random(-0.2, 0.2);
 			point[Z] += real_random(-0.2, 0.2);
 			
-			Physics particle;
+			Particle particle;
 			
 			particle.velocity = Vec3(0.0, 0.0, 0.0);
 			particle.set_position(point, Vec3(-0.1, -0.1, 0.0), Vec3(0.0, 0.0, -1.0), 0.0);
@@ -73,7 +73,7 @@ namespace Demo {
 			particle.color = color;
 			particle.set_random_mapping(4);
 			
-			_physics.push_back(particle);
+			_particles.push_back(particle);
 		}
 	}
 	

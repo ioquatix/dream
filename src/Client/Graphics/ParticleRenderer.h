@@ -1,11 +1,11 @@
-/*
- *  ParticleRenderer.h
- *  Dream
- *
- *  Created by Samuel Williams on 13/08/10.
- *  Copyright 2010 Orion Transfer Ltd. All rights reserved.
- *
- */
+//
+//  ParticleRenderer.h
+//  Dream
+//
+//  Created by Samuel Williams on 13/08/10.
+//  Copyright 2010 Orion Transfer Ltd. All rights reserved.
+//
+//
 
 #ifndef _DREAM_CLIENT_GRAPHICS_PARTICLERENDERER_H
 #define _DREAM_CLIENT_GRAPHICS_PARTICLERENDERER_H
@@ -26,7 +26,7 @@ namespace Dream
 			/// Setup an array of indices for rendering quadrilaterals as triangles
 			template <typename IndexT>
 			std::size_t setup_triangle_indicies(std::size_t count, std::vector<IndexT> & indices) {
-				IndexT INDICES[] = {0, 1, 3, 1, 3, 2};
+				IndexT INDICES[] = {0, 3, 1, 1, 3, 2};
 				
 				std::size_t base = indices.size() / 6;
 				
@@ -64,8 +64,14 @@ namespace Dream
 				return unsigned(real_random() * max) % max;
 			}
 			
-			template <typename ParticlesT>
-			class ParticleRenderer : public Object, public TimedSystem<ParticlesT> {
+			struct ParticleTraits {
+				// Additional data to be tracked per particle:
+				struct Particle {
+				};
+			};
+			
+			template <typename DerivedT, typename TraitsT = ParticleTraits>
+			class ParticleRenderer : public Object, public TimedSystem<DerivedT> {
 			protected:				
 				struct Vertex {
 					Vec3 position;
@@ -74,7 +80,8 @@ namespace Dream
 					Vec4 color;
 				};
 				
-				struct Physics : public ParticlesT::Particle {
+			protected:
+				struct Particle : public TraitsT::Particle {
 				protected:					
 					Vertex _vertices[4];
 					
@@ -87,7 +94,7 @@ namespace Dream
 					
 					RealT life, age;
 					
-					Physics() : velocity(ZERO), color(1.0), life(0), age(0) {
+					Particle() : velocity(ZERO), color(1.0), life(0), age(0) {
 						color_modulator = real_random();
 					}
 					
@@ -187,7 +194,7 @@ namespace Dream
 					}
 				};
 				
-				std::vector<Physics> _physics;
+				std::vector<Particle> _particles;
 				std::vector<GLushort> _indices;
 				
 				std::size_t _count;
@@ -196,7 +203,7 @@ namespace Dream
 				VertexBuffer<Vertex> _vertex_buffer;
 				
 				std::size_t required_vertices() {
-					return _physics.size() * 4;
+					return _particles.size() * 4;
 				}
 				
 			public:
@@ -225,10 +232,10 @@ namespace Dream
 				}
 				
 				// To use this function, make sure you implement
-				// bool update_physics(Physics & physics, TimeT last_time, TimeT current_time, TimeT dt)
+				// bool update_particle(Particle & particle, TimeT last_time, TimeT current_time, TimeT dt)
 				void update_for_duration (TimeT last_time, TimeT current_time, TimeT dt)
 				{
-					if (_physics.size() == 0)
+					if (_particles.size() == 0)
 						return;
 					
 					auto binding = _vertex_buffer.binding();
@@ -239,24 +246,24 @@ namespace Dream
 						
 						std::size_t byte_size = binding.size() * sizeof(Vertex);
 						
-						logger()->log(LOG_DEBUG, LogBuffer() << "Allocating " << byte_size << " bytes to particle renderer for " << _physics.size() << " particles.");
+						logger()->log(LOG_DEBUG, LogBuffer() << "Allocating " << byte_size << " bytes to particle renderer for " << _particles.size() << " particles.");
 					}
 					
 					auto buffer = binding.array();
 					
 					std::size_t i = 0;
-					while (i < _physics.size()) {
-						Physics & physics = _physics[i];
+					while (i < _particles.size()) {
+						Particle & particle = _particles[i];
 						
-						bool alive = static_cast<ParticlesT*>(this)->update_physics(physics, last_time, current_time, dt);
+						bool alive = static_cast<DerivedT*>(this)->update_particle(particle, last_time, current_time, dt);
 						
 						if (alive) {
 							// Add the particle to be drawn:
-							physics.queue(&buffer[i*4]);
+							particle.queue(&buffer[i*4]);
 							
 							i += 1;
 						} else {
-							erase_element_at_index(i, _physics);
+							erase_element_at_index(i, _particles);
 						}
 					}
 					
@@ -280,12 +287,11 @@ namespace Dream
 					
 					{
 						auto binding = _vertex_array.binding();
-						binding.draw_elements(GL_TRIANGLES, _count * 6, GLTypeTraits<GLushort>::TYPE);
+						binding.draw_elements(GL_TRIANGLES, (GLsizei)(_count * 6), GLTypeTraits<GLushort>::TYPE);
 					}
 				}
 				
-				struct Particle {
-				};
+				std::vector<Particle> & particles() { return _particles; }
 			};
 			
 		}
