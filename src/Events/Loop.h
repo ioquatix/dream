@@ -35,6 +35,7 @@ namespace Dream
 		
 		class Loop;
 		
+		/// An interface for various operating system level event-handling mechanisms, e.g. kqueue, poll.
 		class IFileDescriptorMonitor : implements IObject
 		{
 		public:			
@@ -54,8 +55,8 @@ namespace Dream
 			virtual int wait_for_events (TimeT timeout, Loop * loop) abstract;
 		};
 		
-		class FileDescriptorClosed
-		{
+		/// An exception indicating that the file descriptor has been closed.
+		class FileDescriptorClosed {
 		};
 		
 // MARK: mark -
@@ -81,8 +82,7 @@ namespace Dream
 			
 			void process_notifications ();
 			
-			struct Notifications
-			{				
+			struct Notifications {
 				typedef std::queue<Ref<INotificationSource>> QueueT;
 				
 				Notifications ();
@@ -99,8 +99,7 @@ namespace Dream
 			std::thread::id _current_thread;
 			bool _running;
 			
-			struct TimerHandle
-			{
+			struct TimerHandle {
 				TimeT timeout;
 				Ref<ITimerSource> source;
 				
@@ -120,8 +119,7 @@ namespace Dream
 			/// @returns -1 if there are no further timeouts
 			TimeT process_timers ();
 			
-			/// Process any file descriptors and their events.
-			/// Timeout supplied as per IFileDescriptorMonitor::wait_for_events()
+			/// Process any file descriptors and their events. Timeout supplied as per IFileDescriptorMonitor::wait_for_events()
 			void process_file_descriptors (TimeT timeout);
 			
 			Stopwatch _stopwatch;
@@ -143,31 +141,22 @@ namespace Dream
 			/// Set whether once there are no longer IO or Timer sources, the runloop will stop automatically.
 			void set_stop_when_idle (bool stop_when_idle = true);
 			
-			/// Sets whether or not timers and notifications can stall the loop. If a timer constantly schedules itself in the past, it will be called 
-			/// repeatedly and possibly stall other timers and event notification sources. The same goes for notifications - if a notification reschedules 
-			/// itself repeatedly. If you rate limit (which is the default) these types of situations will not cause the loop to stall. This function should
-			/// generally be used to ensure a robust loop i.e. events are processed promptly.
+			/// Sets whether or not timers and notifications can stall the loop. If a timer constantly schedules itself in the past, it will be called repeatedly and possibly stall other timers and event notification sources. The same goes for notifications - if a notification reschedules itself repeatedly. If you rate limit (which is the default) these types of situations will not cause the loop to stall. This function should generally be used to ensure a robust loop i.e. events are processed promptly.
 			void set_rate_limit (unsigned rate = 10);
 			
 			/// This stopwatch is not thread-safe.
 			const Stopwatch & stopwatch () const;
 			
-			/// Schedule a timer for periodic events. This function is thread-safe. If called from a spearate thread, the timer is added by sending
-			/// an asynchronous notification. The timer will be run on the same thread as the loop, not the calling thread.
+			/// Schedule a timer for periodic events. This function is thread-safe. If called from a spearate thread, the timer is added by sending an asynchronous notification. The timer will be run on the same thread as the loop, not the calling thread.
 			void schedule_timer (Ref<ITimerSource> source);
 			
-			/// This function performs a notification as soon as possible. This function is thread-safe. If called from a separate thread, it may block while it
-			/// locks the notification queue. Also, it is okay for a notification to schedule another notification, but it possibly won't run until the next
-			/// execution of the loop (with the current implementation, this is true in about 50% of cases as notifications are processed twice each run through
-			/// the loop).
+			/// This function performs a notification as soon as possible. This function is thread-safe. If called from a separate thread, it may block while it locks the notification queue. Also, it is okay for a notification to schedule another notification, but it possibly won't run until the next execution of the loop (with the current implementation, this is true in about 50% of cases as notifications are processed twice each run through the loop).
 			void post_notification (Ref<INotificationSource> note, bool urgent = false);
 			
-			/// Monitor a file descriptor and process any read/write events when it is possible to do so.
-			/// This function is NOT thread-safe.
+			/// Monitor a file descriptor and process any read/write events when it is possible to do so. This function is NOT thread-safe. For thread-safe monitoring, use a notification.
 			void monitor (Ptr<IFileDescriptorSource> source);
 			
-			/// Stop monitoring a file descriptor.
-			/// This function is NOT thread-safe.
+			/// Stop monitoring a file descriptor. This function is NOT thread-safe.
 			void stop_monitoring_file_descriptor (Ptr<IFileDescriptorSource> source);
 			
 			/// Stops the event loop. This function is thread-safe. If called from a separate thread, sends an urgent stop notification.
@@ -179,12 +168,7 @@ namespace Dream
 			/// Run through the event loop until it is stopped.
 			void run_forever ();
 			
-			/// Run the loop until a specific deadline. This function is fairly strict, and in the general case should return within the timeout specified.
-			/// This function is designed to be used within other run-loops.
-			/// This function is only valid when timeout is greater than 0. For timeouts less than or equal to 0, see run_once() or run_forever(). If you supply 
-			/// a timeout <= 0, an exception will be thrown.
-			/// The function will process the loop until the specified timeout has been reached. If the loop stops, it will return prematurely, and the result
-			/// will be the remaining time.
+			/// Run the loop until a specific deadline. This function is fairly strict, and in the general case should return within the timeout specified. This function is designed to be used within other run-loops. This function is only valid when timeout is greater than 0. For timeouts less than or equal to 0, see run_once() or run_forever(). If you supply a timeout <= 0, an exception will be thrown. The function will process the loop until the specified timeout has been reached. If the loop stops, it will return prematurely, and the result will be the remaining time.
 			TimeT run_until_timeout (TimeT timeout);
 		};
 	}
