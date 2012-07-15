@@ -48,6 +48,8 @@ namespace Dream
 						_initialized = true;
 					}
 					
+					TimeT hostClockFrequency = CVGetHostClockFrequency();
+					
 					if (_skip_frame) {						
 						_skip_frame -= 1;
 						// Eat the first frame (or subsequent frames), which may not be an entire time slice.
@@ -57,7 +59,7 @@ namespace Dream
 					//logger()->log(LOG_DEBUG, LogBuffer() << "*** Rendering frame for context " << _graphics_view.openGLContext.CGLContextObj);
 					
 					uint64_t start_host_time, submit_host_time, end_host_time;
-					TimeT time = (TimeT)(output_time->hostTime) / (TimeT)CVGetHostClockFrequency();
+					TimeT time = (TimeT)(output_time->hostTime) / hostClockFrequency;
 					
 					@autoreleasepool {
 						CGLContextObj graphicsContext = (CGLContextObj)_graphics_view.openGLContext.CGLContextObj;
@@ -89,9 +91,9 @@ namespace Dream
 						// We calculate these times in seconds:
 						TimeT frame_period = (TimeT)output_time->videoRefreshPeriod / (TimeT)output_time->videoTimeScale;
 						
-						TimeT start_frame_offset = ((TimeT)start_host_time - output_time->hostTime) / CVGetHostClockFrequency();
-						TimeT submit_frame_offset = ((TimeT)submit_host_time - output_time->hostTime) / CVGetHostClockFrequency();
-						TimeT end_frame_offset = ((TimeT)end_host_time - output_time->hostTime) / CVGetHostClockFrequency();
+						TimeT start_frame_offset = ((TimeT)start_host_time - output_time->hostTime) / hostClockFrequency;
+						TimeT submit_frame_offset = ((TimeT)submit_host_time - output_time->hostTime) / hostClockFrequency;
+						TimeT end_frame_offset = ((TimeT)end_host_time - output_time->hostTime) / hostClockFrequency;
 						
 						TimeT end_offset = (end_frame_offset / frame_period) * 100.0;
 						TimeT submit_offset = (submit_frame_offset / frame_period) * 100.0;
@@ -99,6 +101,7 @@ namespace Dream
 						
 						logger()->log(LOG_DEBUG, LogBuffer() << std::setprecision(3) << "Frame missed vertical sync (start=" << start_offset << "%, submit=" << submit_offset << "%, end=" << end_offset << "%)");
 						
+						// Skip one frame since we have missed the VSync and are currently at least one frame ahead.
 						_skip_frame = 1;
 					}
 					
