@@ -84,7 +84,7 @@ namespace Dream {
 			DREAM_ASSERT(is_valid());
 			
 			if (::shutdown(_socket, mode) == -1) {
-				perror("Socket::shutdown");
+				logger()->system_error(__func__);
 			}
 		}
 		
@@ -110,7 +110,7 @@ namespace Dream {
 			int result = setsockopt(_socket, SOL_SOCKET, TCP_NODELAY, (char*)&flag, sizeof(int));
 			
 			if (result < 0) {
-				logger()->system_error("setsockopt(no delay mode)");
+				logger()->system_error(__func__);
 			}
 		}
 		

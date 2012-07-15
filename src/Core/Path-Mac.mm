@@ -108,14 +108,14 @@ namespace Dream
 			StringT path = to_local_path();
 			
 			if (::remove(path.c_str()) != 0)
-				perror(__PRETTY_FUNCTION__);
+				logger()->system_error(__func__);
 		}
 		
 		void Path::move (const Path & new_name) const {
 			StringT from = to_local_path(), to = new_name.to_local_path();
 			
 			if (rename(from.c_str(), to.c_str()) != 0)
-				perror(__PRETTY_FUNCTION__);
+				logger()->system_error(__func__);
 		}
 		
 		Path Path::temporary_file_path() {

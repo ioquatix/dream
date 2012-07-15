@@ -35,7 +35,7 @@ namespace Dream
 {
 	namespace Events
 	{
-		static const bool DEBUG = true;
+		static const bool DEBUG = false;
 		
 // MARK: mark -
 // MARK: mark Helper Functions
@@ -125,8 +125,9 @@ namespace Dream
 					
 			int result = kevent(_kqueue, change, c, NULL, 0, NULL);
 					
-			if (result == -1)
-				perror(__PRETTY_FUNCTION__);
+			if (result == -1) {
+				logger()->system_error(__func__);
+			}
 		}
 		
 		int KQueueFileDescriptorMonitor::source_count () const
@@ -152,7 +153,7 @@ namespace Dream
 			int result = kevent(_kqueue, change, c, NULL, 0, NULL);
 				
 			if (result == -1)
-				perror(__PRETTY_FUNCTION__);
+				logger()->system_error(__func__);
 					
 			_removed_file_descriptors.insert(fd);
 			_file_descriptor_handles.erase(source);
@@ -182,7 +183,7 @@ namespace Dream
 				count = kevent(_kqueue, NULL, 0, events, KQUEUE_SIZE, &kevent_timeout);
 			
 			if (count == -1) {
-				perror(__PRETTY_FUNCTION__);
+				logger()->system_error(__func__);
 			} else {
 				for(unsigned i = 0; i < count; i += 1)
 				{
@@ -446,6 +447,8 @@ namespace Dream
 				
 				_timer_handles.push(th);
 			} else {
+				if (DEBUG) logger()->log(LOG_DEBUG, "Posting notification to remote event loop");
+				
 				// Add the timer via a notification which is passed across the thread.
 				Ref<ScheduleTimerNotificationSource> note = new ScheduleTimerNotificationSource(source);
 				
@@ -576,6 +579,8 @@ namespace Dream
 			
 			// next_timeout returns true if the timeout should be processed, and updates timeout with the time it was due
 			while (next_timeout(timeout)) {
+				if (DEBUG) logger()->log(LOG_DEBUG, LogBuffer() << "Timeout at " << timeout);
+				
 				if (timeout > 0.0) {
 					// The timeout was in the future:
 					break;
@@ -608,6 +613,8 @@ namespace Dream
 					_timer_handles.push(th);
 				}
 			}
+			
+			if (DEBUG) logger()->log(LOG_DEBUG, LogBuffer() << "process_timers finished with timeout = " << timeout);
 			
 			return timeout;
 		}
