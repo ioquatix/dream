@@ -106,6 +106,10 @@ namespace Dream {
 					binding.draw_arrays(GL_TRIANGLE_STRIP, 0, vertices.size());
 				}
 			}
+			
+			void PixelBufferRenderer::invalidate(Ptr<IPixelBuffer> pixel_buffer) {
+				_texture_cache.erase(pixel_buffer);
+			}
 		}
 	}
 }

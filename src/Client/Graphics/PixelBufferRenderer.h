@@ -47,6 +47,8 @@ namespace Dream {
 				
 				void render(AlignedBox2 box, Ptr<IPixelBuffer> pixel_buffer);
 				void render(AlignedBox2 box, Ptr<IPixelBuffer> pixel_buffer, Vec2b flip, RotationT rotation);
+				
+				void invalidate(Ptr<IPixelBuffer> pixel_buffer);
 			};
 			
 		}
