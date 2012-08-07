@@ -22,7 +22,7 @@ namespace Dream {
 		protected:
 			ImagePixelFormat _format;
 			ImageDataType _data_type;
-			Vector<3, unsigned> _size;
+			PixelCoordinateT _size;
 			
 		public:			
 			ImageBase () : _format(ImagePixelFormat(0)), _data_type(ImageDataType(0)), _size(ZERO) {}
@@ -38,7 +38,7 @@ namespace Dream {
 				return _data_type;
 			}
 			
-			virtual Vector<3, unsigned> size () const
+			virtual PixelCoordinateT size () const
 			{ 
 				return _size;
 			}
@@ -50,10 +50,10 @@ namespace Dream {
 		
 		public:			
 			UnbufferedImage (ImagePixelFormat format, ImageDataType data_type);
-			UnbufferedImage (const ByteT *data, const Vector<3, unsigned> &size, ImagePixelFormat format, ImageDataType data_type);
+			UnbufferedImage (const ByteT *data, const PixelCoordinateT &size, ImagePixelFormat format, ImageDataType data_type);
 						
 			void set_format (ImagePixelFormat format, ImageDataType data_type);
-			void set_data (const ByteT *data, const Vector<3, unsigned> &size);
+			void set_data (const ByteT *data, const PixelCoordinateT &size);
 			
 			virtual const ByteT* pixel_data () const
 			{
@@ -75,7 +75,7 @@ namespace Dream {
 		public:
 			Image();
 			
-			Image(const Vector<3, unsigned> &size, ImagePixelFormat format, ImageDataType data_type);
+			Image(const PixelCoordinateT &size, ImagePixelFormat format, ImageDataType data_type);
 			
 			virtual ~Image ();
 					
@@ -84,7 +84,7 @@ namespace Dream {
 			virtual ByteT * pixel_data();
 			
 			/// Offset and Length are in pixels
-			void set_data (const Vector<3, unsigned> &size, ImagePixelFormat format, ImageDataType data_type, const ByteT * buffer);
+			void set_data (const PixelCoordinateT &size, ImagePixelFormat format, ImageDataType data_type, const ByteT * buffer);
 			void set_data (IndexT offset, IndexT length, const ByteT* buffer);
 			
 			/// Sets up the internal buffers for handing data for the specified size, format and data_type.

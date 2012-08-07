@@ -131,7 +131,7 @@ namespace Dream {
 					format = RGB; 
 				}
 				
-				result_image = new Image(Vector<3, unsigned>(width, height, 1), format, data_type);
+				result_image = new Image(PixelCoordinateT(width, height, 1), format, data_type);
 				
 				ByteT *line = result_image->pixel_data();
 				jpeg_start_decompress(&cinfo); 
@@ -236,7 +236,7 @@ namespace Dream {
 				unsigned row_bytes = png_get_rowbytes(png_reader, png_info);
 
 				// Allocate the image_data buffer.
-				result_image = new Image(Vector<3, unsigned>(width, height, 1), format, data_type);
+				result_image = new Image(PixelCoordinateT(width, height, 1), format, data_type);
 				ByteT *image_bytes = result_image->pixel_data();
 				DREAM_ASSERT(image_bytes != NULL);
 				

@@ -133,7 +133,7 @@ namespace Dream {
 			
 // MARK: mark -
 			
-			void Texture::load_pixel_data(const Vector<3, unsigned> & size, const ByteT * pixels, GLenum format, GLenum data_type) {
+			void Texture::load_pixel_data(const Vec3u & size, const ByteT * pixels, GLenum format, GLenum data_type) {
 				GLenum internal_format = _parameters.get_internal_format(format);
 				GLenum target = _parameters.get_target();
 				

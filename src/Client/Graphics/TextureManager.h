@@ -145,7 +145,7 @@ namespace Dream {
 				
 				friend class TextureManager::Binding;
 				
-				void load_pixel_data(const Vector<3, unsigned> & size, const ByteT * pixels, GLenum format, GLenum data_type);
+				void load_pixel_data(const Vec3u & size, const ByteT * pixels, GLenum format, GLenum data_type);
 				void set_parameters(const TextureParameters & parameters) { _parameters = parameters; }
 				
 			public:

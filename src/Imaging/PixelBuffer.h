@@ -70,6 +70,8 @@ namespace Dream {
 		// This type is guaranteed to be big enough to hold even RGBA16.
 		// This is useful when you want a generic representation of a pixel
 		typedef uint64_t PixelT;
+		typedef std::size_t DimentionT;
+		typedef Vector<3, std::size_t> PixelCoordinateT;
 		
 		class IPixelBuffer : implements IObject
 		{
@@ -82,11 +84,11 @@ namespace Dream {
 				INTENSITY = 4,
 				LUMINANCE = 5
 			};
-						
+			
 			virtual ImagePixelFormat pixel_format () const abstract; // eg GL_RGBA
 			virtual ImageDataType pixel_data_type () const; // eg GL_UNSIGNED_BYTE
 			
-			unsigned pixel_data_length () const { return size().product() * bytes_per_pixel(); }
+			std::size_t pixel_data_length () const { return size().product() * bytes_per_pixel(); }
 			
 			// Returns the equivalent pixel type, ie GL_UNSIGNED_INT_8_8_8_8 -> GL_UNSIGNED_INT
 			ImageDataType packed_type () const;
@@ -102,25 +104,25 @@ namespace Dream {
 				return ((PixelT)1 << (bytes_per_pixel() * 8)) - 1;
 			}
 					
-			virtual Vector<3, unsigned> size () const abstract;
+			virtual PixelCoordinateT size () const abstract;
 			
 			// Data accessors
 			virtual const ByteT * pixel_data () const abstract;
 			
 			// Get the number of bytes to index into pixel_data
-			unsigned pixel_offset (const Vector<3, unsigned> &at) const {
-				unsigned offset = at[X] + (at[Y] * size()[X]) + (at[Z] * size()[X] * size()[Y]);
+			std::size_t pixel_offset (const PixelCoordinateT & at) const {
+				std::size_t offset = at[X] + (at[Y] * size()[X]) + (at[Z] * size()[X] * size()[Y]);
 				return offset * bytes_per_pixel();
 			}
 			
 			// pixbuf->at(vec<unsigned>(43, 12));
-			const ByteT* pixel_data_at (const Vector<3, unsigned> &at) const {
+			const ByteT* pixel_data_at (const PixelCoordinateT &at) const {
 				return pixel_data() + pixel_offset(at);
 			}
 			
 			// Helper to read pixel data
 			// This may convert between the pixbuf format and the output pixel
-			// void read_pixel (const Vector<3, unsigned> &at, Vector<4, float> &output) const;
+			// void read_pixel (const PixelCoordinateT &at, Vector<4, float> &output) const;
 			template <typename DataT>
 			void read_data_at (const unsigned &idx, DataT &val) const {
 				const ByteT *data = pixel_data();
@@ -130,18 +132,18 @@ namespace Dream {
 			
 			// This does not do _any_ sanity checking what-so-ever.
 			template <unsigned D, typename NumericT>
-			void read_pixel (const Vector<3, unsigned> &at, Vector<D, NumericT> &output) const {
+			void read_pixel (const PixelCoordinateT &at, Vector<D, NumericT> &output) const {
 				DREAM_ASSERT(!is_packed_format() && "Packed pixel formats not supported for reading!");
 				
-				unsigned from = pixel_offset(at);
-				unsigned bytes_per_component = bytes_per_pixel() / channel_count();
+				std::size_t from = pixel_offset(at);
+				std::size_t bytes_per_component = bytes_per_pixel() / channel_count();
 				
 				for (unsigned i = 0; i < D; i += 1) {
 					read_data_at(from + (i * bytes_per_component), output[i]);
 				}
 			}
 			
-			PixelT read_pixel (const Vector<3, unsigned> &at);
+			PixelT read_pixel (const PixelCoordinateT &at);
 		};
 		
 		enum CopyFlags {
@@ -159,32 +161,42 @@ namespace Dream {
 			
 			void zero (PixelT px = 0);
 			
-			ByteT* pixel_data_at (const Vector<3, unsigned> &at)
-			{
+			ByteT* pixel_data_at (const PixelCoordinateT &at) {
 				return pixel_data() + pixel_offset(at);
 			}
 			
-			template <typename data_t>
-			void write_data_at (const unsigned &idx, const data_t &val)
+			template <typename DataT>
+			void write_data_at (const unsigned &idx, const DataT &val)
 			{
 				ByteT *data = pixel_data();
 				
-				*(data_t*)(&data[idx]) = val;
+				*(DataT*)(&data[idx]) = val;
 			}
 			
 			/// Set all bytes to zero.
 			void clear ();
 
-			// void write_pixel (const Vector<3, unsigned> &at, const Vector<4, float> &input);
+			// void write_pixel (const PixelCoordinateT &at, const Vector<4, float> &input);
 			template <unsigned D, typename NumericT>
-			void write_pixel (const Vector<3, unsigned> &at, const Vector<D, NumericT> &input);
+			void write_pixel (const PixelCoordinateT &at, const Vector<D, NumericT> &input) {
+				DREAM_ASSERT(!is_packed_format() && "Packed pixel formats not supported for reading!");
+				
+				unsigned from = pixel_offset(at);
+				unsigned bytes_per_component = bytes_per_pixel() / channel_count();
+				
+				DREAM_ASSERT(sizeof(NumericT) == bytes_per_component);
+				
+				for (unsigned i = 0; i < D; i += 1) {
+					write_data_at(from + (i * bytes_per_component), input[i]);
+				}
+			}
 			
-			void write_pixel (const Vector<3, unsigned> &at, const PixelT &px);
+			void write_pixel (const PixelCoordinateT &at, const PixelT &px);
 			
 			// Copy from buf to this
-			void copy_pixels_from(const IPixelBuffer& buf, const Vector<3, unsigned> &from, const Vector<3, unsigned> &to, const Vector<3, unsigned> &size, CopyFlags copy_flags = CopyNormal);
+			void copy_pixels_from(const IPixelBuffer& buf, const PixelCoordinateT &from, const PixelCoordinateT &to, const PixelCoordinateT &size, CopyFlags copy_flags = CopyNormal);
 			
-			void copy_pixels_from(const IPixelBuffer& buf, const Vector<3, unsigned> &to, CopyFlags copy_flags = CopyNormal) {
+			void copy_pixels_from(const IPixelBuffer& buf, const PixelCoordinateT &to, CopyFlags copy_flags = CopyNormal) {
 				copy_pixels_from(buf, Vec3u(0, 0, 0), to, buf.size(), copy_flags);
 			}
 		};

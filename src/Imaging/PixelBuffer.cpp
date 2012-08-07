@@ -88,7 +88,7 @@ namespace Dream {
 // MARK: mark -
 // MARK: mark class IPixelBuffer
 		
-		PixelT IPixelBuffer::read_pixel (const Vector<3, unsigned> &at) {
+		PixelT IPixelBuffer::read_pixel (const PixelCoordinateT &at) {
 			const ByteT * src = this->pixel_data_at(at);
 			PixelT px = 0;
 			ByteT * dst = (ByteT*)&px;
@@ -194,7 +194,7 @@ namespace Dream {
 			bzero(buffer, pixel_data_length());
 		}
 		
-		void IMutablePixelBuffer::write_pixel (const Vector<3, unsigned> &at, const PixelT &px)
+		void IMutablePixelBuffer::write_pixel (const PixelCoordinateT &at, const PixelT &px)
 		{
 			ByteT * dst = this->pixel_data_at(at);
 			const ByteT * src = (const ByteT *)&px;
@@ -216,26 +216,9 @@ namespace Dream {
 			}
 		}
 		
-		// void write_pixel (const Vector<3, unsigned> &at, const Vector<4, float> &input);
-		template <unsigned D, typename NumericT>
-		void IMutablePixelBuffer::write_pixel (const Vector<3, unsigned> &at, const Vector<D, NumericT> &input)
-		{
-			DREAM_ASSERT(!is_packed_format() && "Packed pixel formats not supported for reading!");
-			DREAM_ASSERT(D == this->channel_count());
-			
-			unsigned from = pixel_offset(at);
-			unsigned bytes_per_component = bytes_per_pixel() / channel_count();
-			
-			DREAM_ASSERT(sizeof(NumericT) == bytes_per_component);
-			
-			for (unsigned i = 0; i < D; i += 1) {
-				write_data_at(from + (i * bytes_per_component), input[i]);
-			}
-		}
-		
 		// Copy from buf to this
-		void IMutablePixelBuffer::copy_pixels_from (const IPixelBuffer & buf, const Vector<3, unsigned> &from, const Vector<3, unsigned> &to, 
-												  const Vector<3, unsigned> &size, CopyFlags copy_flags) 
+		void IMutablePixelBuffer::copy_pixels_from (const IPixelBuffer & buf, const PixelCoordinateT &from, const PixelCoordinateT &to, 
+												  const PixelCoordinateT &size, CopyFlags copy_flags) 
 		{
 			DREAM_ASSERT(!is_packed_format() && "Packed pixel formats not supported for reading!");
 			DREAM_ASSERT(this->channel_count() == buf.channel_count());
@@ -252,7 +235,7 @@ namespace Dream {
 			DREAM_ASSERT((to+size).less_than_or_equal(this->size()));
 					
 			const unsigned pixel_size = this->bytes_per_pixel();
-			Vector<3, unsigned> s, d;
+			PixelCoordinateT s, d;
 			
 			const ByteT * src = buf.pixel_data();
 			ByteT * dst = this->pixel_data();
