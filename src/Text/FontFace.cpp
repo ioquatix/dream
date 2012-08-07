@@ -26,7 +26,7 @@ namespace Dream
 				FT_Done_Glyph(glyph);
 			}
 
-			void FontGlyph::composite_to_buffer(Vector<2, unsigned> origin, Ref<IMutablePixelBuffer> img) const
+			void FontGlyph::composite_to_buffer(Vec2u origin, Ref<IMutablePixelBuffer> img) const
 			{
 				DREAM_ASSERT(is_bitmap());
 				FT_BitmapGlyph bm = (FT_BitmapGlyph)glyph;
@@ -42,12 +42,12 @@ namespace Dream
 				}
 			}
 
-			Vector<2, unsigned> FontGlyph::calculate_character_origin (Vector<2, unsigned> pen) const
+			Vec2u FontGlyph::calculate_character_origin (Vec2u pen) const
 			{
 				DREAM_ASSERT(is_bitmap());
 				FT_BitmapGlyph bm = (FT_BitmapGlyph)glyph;
 
-				Vector<2, unsigned> origin;
+				Vec2u origin;
 				origin[X] = (pen[X] >> 6) + bm->left;
 				origin[Y] = (pen[Y] >> 6) - (bm->bitmap.rows - bm->top);
 
@@ -160,7 +160,7 @@ namespace Dream
 				return cache;
 			}
 
-			Vector<2, unsigned> FontFace::process_text(const std::string& text, Ref<Image> dst)
+			Vec2u FontFace::process_text(const std::string& text, Ref<Image> dst)
 			{
 				TextBlock block(this);
 
@@ -170,7 +170,7 @@ namespace Dream
 					block.render(dst);
 				}
 
-				Vector<2, unsigned> size = block.calculate_size();
+				Vec2u size = block.calculate_size();
 
 				return size;
 			}

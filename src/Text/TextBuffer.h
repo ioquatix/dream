@@ -27,7 +27,7 @@ namespace Dream
 			bool _text_updated;
 
 			bool _use_static_size;
-			Vector<2, unsigned> _size;
+			Vec2u _size;
 
 		public:
 			TextBuffer (Ref<Font> font);
@@ -51,7 +51,7 @@ namespace Dream
 			void insert_character_at_offset (unsigned offset, unsigned character);
 			unsigned offset_for_point (const Vec2u offset);
 
-			void set_static_size (Vector<2, unsigned> size);
+			void set_static_size (Vec2u size);
 			void set_dynamic_size ();
 
 			Ref<IPixelBuffer> render_text (bool & regenerated);

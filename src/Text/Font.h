@@ -40,7 +40,7 @@ namespace Dream
 			Detail::FontFace *_face;
 			Ref<IData> _font_data;
 
-			Vector<2, unsigned> compute_bounding_box (const std::string & text) const;
+			Vec2u compute_bounding_box (const std::string & text) const;
 
 		public:
 			class Loader : implements ILoadable {

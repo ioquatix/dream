@@ -37,12 +37,12 @@ namespace Dream
 
 		class TextBlock {
 		protected:
-			Vector<2, unsigned> _extents;
+			Vec2u _extents;
 			unsigned _line_width;
 			std::vector<TextLine*> _lines;
 
-			Vector<2, unsigned> _horizontal_padding;
-			Vector<2, unsigned> _vertical_padding;
+			Vec2u _horizontal_padding;
+			Vec2u _vertical_padding;
 
 			TextDirection _character_direction, _line_direction;
 
@@ -65,7 +65,7 @@ namespace Dream
 			bool is_horizontal () const;
 			bool is_vertical () const;
 
-			Vector<2, unsigned> text_origin ();
+			Vec2u text_origin ();
 
 			void set_kerning (bool enabled);
 			bool kerning_enabled ();
@@ -85,7 +85,7 @@ namespace Dream
 
 			std::string text () const;
 
-			Vector<2, unsigned> calculate_size () const;
+			Vec2u calculate_size () const;
 
 			void render (Ref<IMutablePixelBuffer> pbuf, CharacterBoxes * boxes = NULL);
 		};
@@ -110,7 +110,7 @@ namespace Dream
 			bool can_add_character (CodePointT c) const;
 
 			bool add_character (CodePointT c);
-			void composite_to_image (Ref<IMutablePixelBuffer> img, Vector<2, unsigned> pen, CharacterBoxes * boxes = NULL);
+			void composite_to_image (Ref<IMutablePixelBuffer> img, Vec2u pen, CharacterBoxes * boxes = NULL);
 		};
 	}
 }

@@ -38,9 +38,9 @@ namespace Dream
 
 				~FontGlyph ();
 
-				void composite_to_buffer(Vector<2, unsigned> origin, Ref<IMutablePixelBuffer> img) const;
+				void composite_to_buffer(Vec2u origin, Ref<IMutablePixelBuffer> img) const;
 
-				Vector<2, unsigned> calculate_character_origin (Vector<2, unsigned> pen) const;
+				Vec2u calculate_character_origin (Vec2u pen) const;
 				void get_cbox(FT_UInt bbox_mode, FT_BBox * acbox) const;
 
 				bool is_bitmap () const;
@@ -75,7 +75,7 @@ namespace Dream
 
 				FontGlyph * load_glyph_for_index (FT_UInt c);
 
-				Vector<2, unsigned> process_text(const std::string & text, Ref<Image> dst);
+				Vec2u process_text(const std::string & text, Ref<Image> dst);
 			};
 		}
 	}

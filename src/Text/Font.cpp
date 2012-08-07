@@ -112,7 +112,7 @@ namespace Dream
 			DREAM_ASSERT(err == 0);
 		}
 
-		Vector<2, unsigned> Font::compute_bounding_box (const std::string &text) const
+		Vec2u Font::compute_bounding_box (const std::string &text) const
 		{
 			DREAM_ASSERT(_face != NULL);
 

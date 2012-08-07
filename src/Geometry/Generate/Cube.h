@@ -28,7 +28,7 @@ namespace Dream {
 					5, 1, 7, 3
 				};
 
-				const Vector<3, unsigned> K(IDENTITY, 2);
+				const Vec3u K(IDENTITY, 2);
 				const IndexT SIZE = sizeof(CUBE_3X2) / sizeof(IndexT);
 
 				mesh.vertices.resize(SIZE);

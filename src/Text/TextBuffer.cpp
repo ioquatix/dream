@@ -24,7 +24,7 @@ namespace Dream
 		{
 		}
 
-		void TextBuffer::set_static_size (Vector<2, unsigned> size) {
+		void TextBuffer::set_static_size (Vec2u size) {
 			_size = size;
 			_use_static_size = true;
 		}

@@ -23,8 +23,8 @@ namespace Dream
 			Detail::FontFace * _face;
 			bool kerning;
 
-			Vector<2, unsigned> pen;
-			Vector<2, unsigned> _extents;
+			Vec2u pen;
+			Vec2u _extents;
 
 			FT_Pos prev_rsbdelta;
 
@@ -67,24 +67,24 @@ namespace Dream
 				img = _img;
 			}
 
-			void set_origin(Vector<2, unsigned> _pen)
+			void set_origin(Vec2u _pen)
 			{
 				pen = vec<unsigned>(_pen[X] << 6, _pen[Y] << 6);
 			}
 
-			Vector<2, unsigned> origin()
+			Vec2u origin()
 			{
 				return vec<unsigned>(pen[X] >> 6, pen[Y] >> 6);
 			}
 
-			const Vector<2, unsigned> & extents()
+			const Vec2u & extents()
 			{
 				return _extents;
 			}
 
 			AlignedBox2u composite_character (const Detail::FontGlyph * glyph)
 			{
-				Vector<2, unsigned> origin = glyph->calculate_character_origin(pen);
+				Vec2u origin = glyph->calculate_character_origin(pen);
 
 				// Update box extents
 				FT_BBox bbox;
@@ -195,7 +195,7 @@ namespace Dream
 			return true;
 		}
 
-		void TextLine::composite_to_image (Ref<IMutablePixelBuffer> img, Vector<2, unsigned> pen, CharacterBoxes * boxes)
+		void TextLine::composite_to_image (Ref<IMutablePixelBuffer> img, Vec2u pen, CharacterBoxes * boxes)
 		{
 			TextLineRenderer r(_block->_face, _block->kerning_enabled());
 
@@ -271,10 +271,10 @@ namespace Dream
 			return _character_direction & (BT|TB);
 		}
 
-		Vector<2, unsigned> TextBlock::text_origin ()
+		Vec2u TextBlock::text_origin ()
 		{
 			// {0, 0} is bottom left hand corner
-			Vector<2, unsigned> v;
+			Vec2u v;
 
 			TextDirection c = (TextDirection)(_character_direction|_line_direction);
 
@@ -384,8 +384,8 @@ namespace Dream
 
 		void TextBlock::render (Ref<IMutablePixelBuffer> pbuf, CharacterBoxes * boxes)
 		{
-			Vector<2, unsigned> pen(ZERO);
-			Vector<2, unsigned> origin = pbuf->size().reduce() * text_origin();
+			Vec2u pen(ZERO);
+			Vec2u origin = pbuf->size().reduce() * text_origin();
 
 			//std::cout << "Ascender: " << ascender_offset() << std::endl;
 
@@ -414,9 +414,9 @@ namespace Dream
 			}
 		}
 
-		Vector<2, unsigned> TextBlock::calculate_size () const
+		Vec2u TextBlock::calculate_size () const
 		{
-			Vector<2, unsigned> result(ZERO);
+			Vec2u result(ZERO);
 
 			//std::cout << "Calculating text size for " << _lines.size() << " lines..." << std::endl;
 
