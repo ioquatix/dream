@@ -15,6 +15,8 @@ namespace Dream
 {
 	namespace Events
 	{
+		static const bool DEBUG = false;
+		
 		using namespace Logging;
 	
 		MultiFingerInput::MultiFingerInput () : _top(0)
@@ -50,15 +52,14 @@ namespace Dream
 			ft.position = position;
 			ft.motion.zero();
 			
-			//logger()->log(LOG_DEBUG, LogBuffer() << "Begin motion for finger: " << finger);
+			if (DEBUG) logger()->log(LOG_DEBUG, LogBuffer() << "Begin motion for finger: " << finger);
 			
 			return (_fingers[finger] = ft);
 		}
 		
 		const FingerTracking & MultiFingerInput::update_motion(FingerID finger, Vec3 position)
 		{
-			//logger()->log(LOG_DEBUG, LogBuffer() << "Update motion for finger: " << finger);
-			
+			if (DEBUG) logger()->log(LOG_DEBUG, LogBuffer() << "Update motion for finger: " << finger);
 			FingersMap::iterator it = _fingers.find(finger);
 			DREAM_ASSERT(it != _fingers.end());
 			
@@ -71,7 +72,7 @@ namespace Dream
 		
 		const FingerTracking MultiFingerInput::finish_motion(FingerID finger, Vec3 position)
 		{
-			//logger()->log(LOG_DEBUG, LogBuffer() << "Finish motion for finger: " << finger);
+			if (DEBUG) logger()->log(LOG_DEBUG, LogBuffer() << "Finish motion for finger: " << finger);
 			
 			FingersMap::iterator it = _fingers.find(finger);
 			DREAM_ASSERT(it != _fingers.end());
