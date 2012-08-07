@@ -20,35 +20,31 @@ namespace Dream
 		template <unsigned E, typename NumericT>
 		class Vector;
 
-// MARK: mark -
-// MARK: mark Vector Math
+// MARK: -
+// MARK: Vector Math
 
 		/** Vector conversion traits. Default specialization.
 		 */
 		template <unsigned E, typename NumericT>
-		class VectorConversionTraits
-		{
+		class VectorConversionTraits {
 		};
 
 		template <typename NumericT>
-		class VectorConversionTraits<1, NumericT>
-		{
+		class VectorConversionTraits<1, NumericT>{
 		public:
 			operator NumericT () const;
 		};
-		
+
 		/** Vector equality traits for specific template parameters. Default specialization.
 		 */
 		template <unsigned E, typename NumericT>
-		class VectorEqualityTraits
-		{
+		class VectorEqualityTraits {
 		};
 
 		/** Single floating point vector equality traits.
 		 */
 		template <unsigned E>
-		class VectorEqualityTraits<E, float>
-		{
+		class VectorEqualityTraits<E, float>{
 		public:
 			/// Check whether a vector is equal to another using the equal_within_tolerance set of functions.
 			bool equal_within_tolerance (const Vector<E, float> & other, const unsigned & ulps = DEFAULT_ULPS) const;
@@ -59,8 +55,7 @@ namespace Dream
 		/** Double floating point vector equality traits.
 		 */
 		template <unsigned E>
-		class VectorEqualityTraits<E, double>
-		{
+		class VectorEqualityTraits<E, double>{
 		public:
 			/// Check whether a vector is equal to another using the equal_within_tolerance set of functions.
 			bool equal_within_tolerance (const Vector<E, double> & other, const unsigned & ulps = DEFAULT_ULPS) const;
@@ -71,24 +66,22 @@ namespace Dream
 		/** Vector traits for specific template parameters. Default specialization.
 		 */
 		template <unsigned E, typename NumericT>
-		class VectorTraits
-		{
+		class VectorTraits {
 		};
 
 		template <typename NumericT>
-		class VectorTraits<2, NumericT>
-		{
+		class VectorTraits<2, NumericT>{
 		private:
 			typedef Vector<2, NumericT> VectorT;
-			
+
 		public:
 			/// Returns an orthogonal 2D vector.
 			Vector<2, NumericT> normal () const;
-			
+
 			NumericT aspect_ratio () const;
 			Vector<2, NumericT> shrink_to_fit_aspect_ratio(NumericT n) const;
 			Vector<2, NumericT> shrink_to_fit_aspect_ratio(const Vector<2, NumericT> & other) const;
-			
+
 			Vector<2, NumericT> expand_to_fit_aspect_ratio(NumericT n) const;
 			Vector<2, NumericT> expand_to_fit_aspect_ratio(const Vector<2, NumericT> & other) const;
 		};
@@ -102,8 +95,7 @@ namespace Dream
 		 3-space vectors nave a number of special traits. This allows the calculation of cross products and angles.
 		 */
 		template <typename NumericT>
-		class VectorTraits<3, NumericT>
-		{
+		class VectorTraits<3, NumericT>{
 		private:
 			typedef Vector<3, NumericT> VectorT;
 
@@ -113,7 +105,7 @@ namespace Dream
 
 			/// Assuming you have two unit vectors, you can compute the surface normal using this method.
 			Vector<3, NumericT> normal (const Vector<3, NumericT> & other) const;
-			
+
 			/// Given three points, you can calculate the surface normal.
 			/// @sa surface_normal
 			Vector<3, NumericT> normal (const Vector<3, NumericT> & a, const Vector<3, NumericT> & b) const;
@@ -122,7 +114,7 @@ namespace Dream
 		/// 4-space cross product.
 		template <typename NumericT>
 		Vector<4, NumericT> cross_product (const Vector<4, NumericT> & u, const Vector<4, NumericT> & v,
-										   const Vector<4, NumericT> & w);
+		                                   const Vector<4, NumericT> & w);
 
 		/** 4-space vector traits specialization.
 
@@ -131,15 +123,14 @@ namespace Dream
 		 @sa cross_product
 		 */
 		template <typename NumericT>
-		class VectorTraits<4, NumericT>
-		{
+		class VectorTraits<4, NumericT>{
 		public:
 			/// Calculate the 4-space cross product.
 			Vector<4, NumericT> cross (const Vector<4, NumericT> & v, const Vector<4, NumericT> & w);
 		};
 
-// MARK: mark -
-// MARK: mark Vector
+// MARK: -
+// MARK: Vector
 
 		/** A fixed-size numeric vector.
 
@@ -165,12 +156,11 @@ namespace Dream
 		 that rely on strict ordering behaviour such as <tt>std::set</tt> and <tt>std::map</tt>.
 		 */
 		template <unsigned E, typename NumericT = RealT>
-		class Vector : public VectorTraits<E, NumericT>, public VectorEqualityTraits<E, NumericT>, public VectorConversionTraits<E, NumericT>
-		{
+		class Vector : public VectorTraits<E, NumericT>, public VectorEqualityTraits<E, NumericT>, public VectorConversionTraits<E, NumericT>{
 		public:
 			enum { ELEMENTS = E };
 			typedef NumericT ElementT;
-			
+
 			/// The type of the vector elements.
 			typedef typename RealType<NumericT>::RealT NumericRealT;
 
@@ -179,15 +169,15 @@ namespace Dream
 
 			/// Empty constructor. Value of vector is undefined.
 			Vector () = default;
-			
+
 			// Default copy constructor and assignment operator
 			Vector (const Vector & other) {
 				this->set(other._vector);
 			}
-			
+
 			Vector & operator= (const Vector & other) {
 				this->set(other._vector);
-				
+
 				return *this;
 			}
 
@@ -209,14 +199,14 @@ namespace Dream
 
 			/// Construct a vector with all elements of value x.
 			Vector (const NumericT & x);
-			
+
 			/// Construct a 2-space vector.
 			Vector (const NumericT & x, const NumericT & y);
 			/// Construct a 3-space vector.
 			Vector (const NumericT & x, const NumericT & y, const NumericT & z);
 			/// Construct a 4-space vector.
 			Vector (const NumericT & x, const NumericT & y, const NumericT & z, const NumericT & w);
-			
+
 			/// Construct a vector from raw data.
 			Vector (const NumericT * data)
 			{
@@ -235,26 +225,26 @@ namespace Dream
 
 			/// Set the value of this instance to zero.
 			void zero ();
-		    /// Check if the value of this instance is zero.
+			/// Check if the value of this instance is zero.
 			bool is_zero () const;
-		    /// Set the value of all components of the vector to the value specified.
+			/// Set the value of all components of the vector to the value specified.
 			/// The default value is 1.
 			void load_identity (const NumericT & n = 1);
 
-		    /// Return a pointer to the raw data.
+			/// Return a pointer to the raw data.
 			const NumericT * value () const
 			{
 				return _vector;
 			}
 
-		    /// Return a copy of the vector.
+			/// Return a copy of the vector.
 			Vector copy () const
 			{
 				return *this;
 			}
 
-		    /// Return a vector which has one less component.
-		    /// Removes the last component of the vector.
+			/// Return a vector which has one less component.
+			/// Removes the last component of the vector.
 			Vector<E-1, NumericT> reduce () const
 			{
 				Vector<E-1, NumericT> result;
@@ -270,12 +260,13 @@ namespace Dream
 				if ((NumericT)n)
 					for (unsigned i = 0; i < E; ++i)
 						_vector[i] = (NumericT)n;
+
 				else
 					this->zero();
 
 				return *this;
 			}
-			
+
 			/// Assignment of a Vec<N> to a Vec<E> results in copying as much as possible and setting remaining elements to zero.
 			template <unsigned N, typename OtherNumericT>
 			Vector & operator=(const Vector<N, OtherNumericT> & other) {
@@ -285,7 +276,7 @@ namespace Dream
 					else
 						_vector[i] = 0;
 				}
-				
+
 				return *this;
 			}
 
@@ -304,7 +295,7 @@ namespace Dream
 			{
 				return _vector[i];
 			}
-		    /// Access a component of the vector.
+			/// Access a component of the vector.
 			const NumericT & operator[] (unsigned i) const
 			{
 				return _vector[i];
@@ -364,7 +355,7 @@ namespace Dream
 			{
 				return this->dot(*this);
 			}
-			
+
 			/// Return the length of the vector.
 			NumericRealT length () const
 			{
@@ -374,7 +365,7 @@ namespace Dream
 			/// Calculate the dot product of two vectors.
 			template <typename OtherT>
 			NumericT dot (const OtherT & other) const;
-		
+
 			/// Calculates the angle between this vector and another.
 			template <typename OtherT>
 			NumericT angle_between (const OtherT & other) const;
@@ -456,8 +447,8 @@ namespace Dream
 			void unpack (unsigned bits, const PackedT & p);
 		};
 
-// MARK: mark -
-// MARK: mark Static Matrix Constructors
+// MARK: -
+// MARK: Static Matrix Constructors
 
 		/// Short hand notation for 1-space vector type.
 		typedef Vector<1, RealT> Vec1;
@@ -483,7 +474,7 @@ namespace Dream
 		template <typename NumericT>
 		inline Vector<1, NumericT> vec (const NumericT & x)
 		{
-			return Vector<1, NumericT> (x);
+			return Vector<1, NumericT>(x);
 		}
 
 		/// Construct a 2-space vector
@@ -503,13 +494,13 @@ namespace Dream
 		/// Construct a 4-space vector
 		template <typename NumericT, typename numeric1_t, typename numeric2_t, typename numeric3_t>
 		inline Vector<4, NumericT> vec (const NumericT & x, const numeric1_t & y, const numeric2_t & z,
-										 const numeric3_t & w)
+		                                const numeric3_t & w)
 		{
 			return Vector<4, NumericT>((NumericT)x, (NumericT)y, (NumericT)z, (NumericT)w);
 		}
 
-// MARK: mark
-// MARK: mark Vector Combinations
+// MARK:
+// MARK: Vector Combinations
 
 		/// Append a component to a vector
 		template <unsigned int E, typename NumericT, typename OtherNumericT>
@@ -535,16 +526,16 @@ namespace Dream
 			return result;
 		}
 
-// MARK: mark -
-// MARK: mark Binary Operators
+// MARK: -
+// MARK: Binary Operators
 
 #define OPERATOR(OP, OPE) \
-template <unsigned int E, typename NumericT, typename AnyT> \
-inline Vector<E, NumericT> operator OP (const Vector<E, NumericT> & lhs, const AnyT & n) \
-{ \
-	Vector<E, NumericT> tmp(lhs); \
-	return tmp OPE n; \
-}
+	template <unsigned int E, typename NumericT, typename AnyT> \
+	inline Vector<E, NumericT> operator OP (const Vector<E, NumericT> & lhs, const AnyT & n) \
+	{ \
+		Vector<E, NumericT> tmp(lhs); \
+		return tmp OPE n; \
+	}
 
 		OPERATOR(+, +=)
 		OPERATOR(-, -=)
@@ -556,17 +547,17 @@ inline Vector<E, NumericT> operator OP (const Vector<E, NumericT> & lhs, const A
 
 #undef OPERATOR
 
-// MARK: mark -
-// MARK: mark Unary Operators
+// MARK: -
+// MARK: Unary Operators
 
 #define OPERATOR(OP) \
-template <unsigned E, typename NumericT, typename OtherNumericT> \
-Vector<E, NumericT> & operator OP (Vector<E, NumericT> & lhs, const Vector<E, OtherNumericT> & n) \
-{ \
-	for (unsigned int i = 0; i < E; ++i) \
-		lhs[i] OP n[i]; \
-	return lhs; \
-}
+	template <unsigned E, typename NumericT, typename OtherNumericT> \
+	Vector<E, NumericT> & operator OP (Vector<E, NumericT> & lhs, const Vector<E, OtherNumericT> & n) \
+	{ \
+		for (unsigned int i = 0; i < E; ++i) \
+			lhs[i] OP n[i]; \
+		return lhs; \
+	}
 
 		OPERATOR(+=)
 		OPERATOR(-=)
@@ -580,19 +571,20 @@ Vector<E, NumericT> & operator OP (Vector<E, NumericT> & lhs, const Vector<E, Ot
 		{
 			for (unsigned int i = 0; i < E; ++i)
 				lhs[i] = Number<NumericT>::mod(lhs[i], n[i]);
+
 			return lhs;
 		}
 
 #undef OPERATOR
 
 #define OPERATOR(OP) \
-template <unsigned E, typename NumericT, typename OtherNumericT> \
-Vector<E, NumericT> & operator OP (Vector<E, NumericT> & lhs, const OtherNumericT & n) \
-{ \
-	for (unsigned int i = 0; i < E; ++i) \
-		lhs[i] OP n; \
-	return lhs; \
-}
+	template <unsigned E, typename NumericT, typename OtherNumericT> \
+	Vector<E, NumericT> & operator OP (Vector<E, NumericT> & lhs, const OtherNumericT & n) \
+	{ \
+		for (unsigned int i = 0; i < E; ++i) \
+			lhs[i] OP n; \
+		return lhs; \
+	}
 
 		OPERATOR(+=)
 		OPERATOR(-=)
@@ -606,13 +598,14 @@ Vector<E, NumericT> & operator OP (Vector<E, NumericT> & lhs, const OtherNumeric
 		{
 			for (unsigned int i = 0; i < E; ++i)
 				lhs[i] = Number<NumericT>::mod(lhs[i], n);
+
 			return lhs;
 		}
 
 #undef OPERATOR
 
-// MARK: mark -
-// MARK: mark IO Operators
+// MARK: -
+// MARK: IO Operators
 
 		/// Write a vector to an std::ostream
 		template <unsigned E, typename NumericT>
@@ -625,13 +618,12 @@ Vector<E, NumericT> & operator OP (Vector<E, NumericT> & lhs, const OtherNumeric
 
 			return out;
 		}
-		
+
 		/// Read a vector from a std::istream
 		template <unsigned E, typename NumericT>
 		std::istream & operator>> (std::istream & in, Vector<E, NumericT> & vec)
 		{
-			for (unsigned int i = 0; i < E; ++i)
-			{
+			for (unsigned int i = 0; i < E; ++i) {
 				in >> vec[i];
 			}
 

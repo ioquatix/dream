@@ -22,16 +22,14 @@ namespace Dream
 	namespace Events
 	{
 		using namespace Dream::Core;
-		
+
 		/// Event constants as used by Loop
-		enum Event
-		{
+		enum Event {
 			READ_READY = 1,
 			WRITE_READY = 2,
 			TIMEOUT = 16,
 			NOTIFICATION = 32
 		};
-		
 	}
 }
 

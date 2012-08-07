@@ -19,50 +19,47 @@ namespace Dream
 	namespace Events
 	{
 		using namespace Dream::Numerics;
-		
-		class IKnob
-		{
-			public:
-				virtual ~IKnob ();
-				virtual void update (RealT time) abstract;
+
+		class IKnob {
+		public:
+			virtual ~IKnob ();
+			virtual void update (RealT time) abstract;
 		};
-		
+
 		/**
-			A fader object updates a knob with a time value linearly interpolated from 0.0 to 1.0. At the end, it calls
-			the finish callback if it is specified.
-			
-			It is used for providing time based animation/interpolation, and by Ref counting can be used in a set
-			and forget fashion.
+		    A fader object updates a knob with a time value linearly interpolated from 0.0 to 1.0. At the end, it calls
+		    the finish callback if it is specified.
+
+		    It is used for providing time based animation/interpolation, and by Ref counting can be used in a set
+		    and forget fashion.
 		*/
-		class Fader : public Object, implements ITimerSource
-		{
-			public:
-				typedef std::function<void (Ptr<Fader> fader)> FinishCallbackT;
-			
-			protected:
-				Shared<IKnob> _knob;
+		class Fader : public Object, implements ITimerSource {
+		public:
+			typedef std::function<void (Ptr<Fader> fader)> FinishCallbackT;
 
-				int _count, _steps;
-				TimeT _increment;
-				
-				bool _finished;
-				
-				FinishCallbackT _finish_callback;
-			
-			public:
-				Fader(Shared<IKnob> knob, int steps, TimeT increment);
-				virtual ~Fader ();
-				
-				void cancel ();
-				bool finished () { return _finished; }
-				
-				void set_finish_callback (FinishCallbackT finish_callback);
-				
-				virtual bool repeats () const;
-				virtual TimeT next_timeout (const TimeT & last_timeout, const TimeT & current_time) const;
-				virtual void process_events (Loop *, Event);
+		protected:
+			Shared<IKnob> _knob;
+
+			int _count, _steps;
+			TimeT _increment;
+
+			bool _finished;
+
+			FinishCallbackT _finish_callback;
+
+		public:
+			Fader(Shared<IKnob> knob, int steps, TimeT increment);
+			virtual ~Fader ();
+
+			void cancel ();
+			bool finished () { return _finished; }
+
+			void set_finish_callback (FinishCallbackT finish_callback);
+
+			virtual bool repeats () const;
+			virtual TimeT next_timeout (const TimeT & last_timeout, const TimeT & current_time) const;
+			virtual void process_events (Loop *, Event);
 		};
-
 	}
 }
 

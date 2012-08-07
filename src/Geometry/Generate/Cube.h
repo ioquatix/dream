@@ -12,10 +12,9 @@
 
 #include "Basic.h"
 
-namespace Dream {	
+namespace Dream {
 	namespace Geometry {
 		namespace Generate {
-						
 			template <typename VertexT>
 			void simple_cube(Mesh<VertexT> & mesh, const AlignedBox<3> & box)
 			{
@@ -28,10 +27,10 @@ namespace Dream {
 					4, 0, 5, 1,
 					5, 1, 7, 3
 				};
-				
-				const Vector<3, unsigned> K(IDENTITY, 2);			
+
+				const Vector<3, unsigned> K(IDENTITY, 2);
 				const IndexT SIZE = sizeof(CUBE_3X2) / sizeof(IndexT);
-				
+
 				mesh.vertices.resize(SIZE);
 				mesh.indices.resize(SIZE);
 
@@ -43,26 +42,25 @@ namespace Dream {
 					mesh.indices[c] = CUBE_3X2[c];
 				}
 			}
-			
+
 			template <typename VertexT>
 			void simple_cube_shade(Mesh<VertexT> & mesh)
 			{
 				// Look at each face
 				for (IndexT c = 0; c < mesh.vertices.size(); c += 4) {
 					Vec3 normal = surface_normal(mesh.vertices[c].position, mesh.vertices[c+1].position, mesh.vertices[c+2].position);
-					
+
 					mesh.vertices[c+0].normal = normal;
 					mesh.vertices[c+1].normal = normal;
 					mesh.vertices[c+2].normal = normal;
 					mesh.vertices[c+3].normal = normal;
-					
+
 					mesh.vertices[c+0].mapping = Vec2(1, 0);
 					mesh.vertices[c+1].mapping = Vec2(0, 0);
 					mesh.vertices[c+2].mapping = Vec2(1, 1);
 					mesh.vertices[c+3].mapping = Vec2(0, 1);
 				}
 			}
-			
 		}
 	}
 }

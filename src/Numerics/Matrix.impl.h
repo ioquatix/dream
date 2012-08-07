@@ -30,9 +30,9 @@ namespace Dream
 		{
 			return row + col * sz;
 		}
-		
-// MARK: mark -
-// MARK: mark Matrix Multiplication
+
+// MARK: -
+// MARK: Matrix Multiplication
 
 		template <unsigned R, unsigned C, typename NumericT>
 		Vector<C, NumericT> MatrixMultiplicationTraits<R, C, NumericT>::multiply (const Vector<R, NumericT> & v) const
@@ -63,8 +63,8 @@ namespace Dream
 			return result;
 		}
 
-// MARK: mark -
-// MARK: mark Matrix Inverse
+// MARK: -
+// MARK: Matrix Inverse
 
 		template <typename NumericT>
 		void invert4x4Matrix (const NumericT * mat, NumericT * dst)
@@ -77,8 +77,7 @@ namespace Dream
 			NumericT det;
 
 			// transpose matrix
-			for (int i = 0; i < 4; i++)
-			{
+			for (int i = 0; i < 4; i++) {
 				src[i]        = mat[i*4];
 				src[i + 4]    = mat[i*4 + 1];
 				src[i + 8]    = mat[i*4 + 2];
@@ -171,8 +170,8 @@ namespace Dream
 			return result;
 		}
 
-// MARK: mark -
-// MARK: mark Matrix Square Implementation
+// MARK: -
+// MARK: Matrix Square Implementation
 
 		template <unsigned N, typename NumericT> template <unsigned K>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::scaling_matrix (const Vector<K, NumericT> & amount)
@@ -236,15 +235,14 @@ namespace Dream
 
 		template <unsigned N, typename NumericT>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotating_matrix (const NumericT & angle, const Vector<3, NumericT> & normal,
-																				 const Vector<3, NumericT> & pt)
+		                                                                            const Vector<3, NumericT> & pt)
 		{
 			Matrix<N, N, NumericT> t;
 			t.load_identity();
 
 			bool at_origin = pt.is_zero();
 
-			if (angle != 0)
-			{
+			if (angle != 0) {
 				if (!at_origin)
 					t = t * Matrix<N, N, NumericT>::translating_matrix(-pt);
 
@@ -259,7 +257,7 @@ namespace Dream
 
 		template <unsigned N, typename NumericT>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotating_matrix (const Vector<3, NumericT> & from, const Vector<3, NumericT> & to,
-																				 const Vector<3, NumericT> & normal)
+		                                                                            const Vector<3, NumericT> & normal)
 		{
 			NumericT angle = to.angle_between(from);
 
@@ -345,7 +343,7 @@ namespace Dream
 
 		template <unsigned N, typename NumericT>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotated_matrix (const NumericT & angle, const Vector<3, NumericT> & n,
-																				  const Vector<3, NumericT> & p)
+		                                                                           const Vector<3, NumericT> & p)
 		{
 			const MatrixT * t = static_cast<const MatrixT*>(this);
 
@@ -386,17 +384,16 @@ namespace Dream
 			return *t;
 		}
 
-// MARK: mark -
-// MARK: mark IO Operators
+// MARK: -
+// MARK: IO Operators
 		template <unsigned R, unsigned C, typename NumericT>
 		inline std::ostream & operator<< (std::ostream & out, const Matrix<R, C, NumericT> & m)
 		{
 			using namespace std;
-			
+
 			unsigned k = 0;
 			for (unsigned c = 0; c < C; ++c)
-				for (unsigned r = 0; r < R; ++r)
-				{
+				for (unsigned r = 0; r < R; ++r) {
 					out << setw(10) << setprecision(4) << m.at(r, c);
 
 					if (k % R == (R-1))
@@ -410,8 +407,8 @@ namespace Dream
 			return out;
 		}
 
-// MARK: mark -
-// MARK: mark class Matrix
+// MARK: -
+// MARK: class Matrix
 		template <unsigned R, unsigned C, typename N>
 		Matrix<R, C, N>::Matrix ()
 		{
@@ -448,8 +445,7 @@ namespace Dream
 
 			zero();
 
-			if (n == 0)
-			{
+			if (n == 0) {
 				return;
 			}
 

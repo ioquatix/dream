@@ -12,7 +12,6 @@
 
 namespace Dream {
 	namespace Geometry {
-
 		unsigned Quadrants::index_for_partition(const Vec2 &point, const Vec2 &center) {
 			if (point[Y] < center[Y]) {
 				if (point[X] < center[X])
@@ -26,10 +25,10 @@ namespace Dream {
 					return 3;
 			}
 		}
-		
+
 		Vec2 Quadrants::normal_origin_for_partition_index(const IndexT &i) {
 			DREAM_ASSERT(i < Q && "Invalid partition index!");
-			
+
 			switch (i) {
 			case 0:
 				return Vec2 (0.0, 0.0);
@@ -40,16 +39,16 @@ namespace Dream {
 			case 3:
 				return Vec2 (0.5, 0.5);
 			}
-			
+
 			DREAM_ASSERT(false && "Invalid partition index!");
 
 			return ZERO;
 		}
-		
+
 		Vec2 Quadrants::offset_origin_for_partition_index(const IndexT &i) {
 			return ((normal_origin_for_partition_index(i) + 0.25) * 2.0) - 0.5;
 		}
-		
+
 		Quadrants::PartitionLocation Quadrants::location_for_direction (const Direction &dir) {
 			switch (dir) {
 			case (BOTTOM | LEFT):
@@ -63,15 +62,15 @@ namespace Dream {
 			default:
 				break;
 			}
-			
+
 			DREAM_ASSERT(false && "Invalid partition direction!");
-			
-			return BottomLeft;			
+
+			return BottomLeft;
 		}
-		
+
 		unsigned Octants::index_for_partition(const Vec3 &point, const Vec3 &center) {
 			unsigned v = point[Z] < center[Z] ? 0 : 4;
-			
+
 			if (point[Y] < center[Y]) {
 				if (point[X] < center[X])
 					return v + 0;
@@ -84,8 +83,8 @@ namespace Dream {
 					return v + 3;
 			}
 		}
-		
-		Vec3 Octants::normal_origin_for_partition_index(const IndexT &i) {			
+
+		Vec3 Octants::normal_origin_for_partition_index(const IndexT &i) {
 			switch (i) {
 			case 0:
 				return Vec3 (0.0, 0.0, 0.0);
@@ -104,16 +103,16 @@ namespace Dream {
 			case 7:
 				return Vec3 (0.5, 0.5, 0.5);
 			}
-			
+
 			DREAM_ASSERT(false && "Invalid partition index!");
-			
+
 			return ZERO;
 		}
-		
+
 		Vec3 Octants::offset_origin_for_partition_index(const IndexT &i) {
 			return ((normal_origin_for_partition_index(i) + 0.25) * 2.0) - 0.5;
 		}
-		
+
 		Octants::PartitionLocation Octants::location_for_direction (const Direction &dir) {
 			switch (dir) {
 			case (BOTTOM | LEFT | NEAR):
@@ -124,7 +123,7 @@ namespace Dream {
 				return TopLeftNear;
 			case (TOP | RIGHT | NEAR):
 				return TopRightNear;
-				
+
 			case (BOTTOM | LEFT | FAR):
 				return BottomLeftFar;
 			case (BOTTOM | RIGHT | FAR):
@@ -133,15 +132,14 @@ namespace Dream {
 				return TopLeftFar;
 			case (TOP | RIGHT | FAR):
 				return TopRightFar;
-			
+
 			default:
 				break;
 			}
-			
+
 			DREAM_ASSERT(false && "Invalid partition direction!");
-			
+
 			return BottomLeftNear;
 		}
-		
 	}
 }

@@ -19,36 +19,33 @@ namespace Dream
 		namespace Audio
 		{
 			class OggReader;
-			
-			class OggResource : public Object
-			{
+
+			class OggResource : public Object {
+			public:
+				class Loader : public Object, implements ILoadable {
 				public:
-					class Loader : public Object, implements ILoadable
-					{
-						public:
-							virtual void register_loader_types (ILoader * loader);
-							virtual Ref<Object> load_from_data (const Ptr<IData> data, const ILoader * loader);
-					};
-				
-				protected:
-					Ref<IData> _data;
-					
-					ALenum _format;
-					ALsizei _frequency;
-					
-				public:
-					OggResource (const Ptr<IData> data);
-					virtual ~OggResource ();
-					
-					Ref<Stream> create_stream (Ptr<Source> source);
-					
-					// Current implementation returns NULL. Use create_stream or WAV files.
-					Ref<Sound> create_sound (Ptr<Source> source);
-					
-					//void debug();
-					static StringT error_string(int code);
+					virtual void register_loader_types (ILoader * loader);
+					virtual Ref<Object> load_from_data (const Ptr<IData> data, const ILoader * loader);
+				};
+
+			protected:
+				Ref<IData> _data;
+
+				ALenum _format;
+				ALsizei _frequency;
+
+			public:
+				OggResource (const Ptr<IData> data);
+				virtual ~OggResource ();
+
+				Ref<Stream> create_stream (Ptr<Source> source);
+
+				// Current implementation returns NULL. Use create_stream or WAV files.
+				Ref<Sound> create_sound (Ptr<Source> source);
+
+				//void debug();
+				static StringT error_string(int code);
 			};
-			
 		}
 	}
 }

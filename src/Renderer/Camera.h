@@ -19,13 +19,13 @@ namespace Dream
 	namespace Renderer
 	{
 		using namespace Dream::Events;
-		
+
 		class ICamera : implements IObject, implements IInputHandler {
-		public:				
+		public:
 			virtual ~ICamera ();
-			
+
 			virtual Mat44 view_matrix() const abstract;
-		};			
+		};
 	}
 }
 

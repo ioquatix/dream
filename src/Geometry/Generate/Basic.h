@@ -12,26 +12,23 @@
 
 #include "../Mesh.h"
 
-namespace Dream {	
+namespace Dream {
 	namespace Geometry {
 		namespace Generate {
-			
 			template <typename MeshT, typename ColorT>
 			void solid_color(MeshT & mesh, const ColorT & color)
 			{
 				for (auto & vertex : mesh.vertices) {
 					vertex.color = color;
-				}				
+				}
 			}
-			
+
 			template <typename MeshT, typename NormalT>
 			void solid_normal(MeshT & mesh, const NormalT & normal) {
 				for (auto & vertex : mesh.vertices) {
 					vertex.normal = normal;
 				}
 			}
-			
-			
 		}
 	}
 }

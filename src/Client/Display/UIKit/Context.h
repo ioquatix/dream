@@ -28,39 +28,37 @@ namespace Dream
 		{
 			namespace UIKit
 			{
-			
 				/// Manages a context for a specific view without touching the associated window.
-				class ViewContext : public Context
-				{
-					protected:
-						DOpenGLView * _graphics_view;
-						
-						ViewContext ();
-						
-					public:
-						ViewContext (DOpenGLView * graphics_view);
-						virtual ~ViewContext ();
-						
-						virtual void start ();
-						virtual void stop ();
-						
-						virtual Vec2u size ();
+				class ViewContext : public Context {
+				protected:
+					DOpenGLView * _graphics_view;
+
+					ViewContext ();
+
+				public:
+					ViewContext (DOpenGLView * graphics_view);
+					virtual ~ViewContext ();
+
+					virtual void start ();
+					virtual void stop ();
+
+					virtual Vec2u size ();
 				};
-				
+
 				/// This context manages a window which can be used to display content.
 				class WindowContext : public ViewContext, implements IInputHandler {
-					protected:
-						UIWindow * _window;
-						
-						// Setup the graphics view
-						void setup_graphics_view (Ptr<Dictionary> config, CGRect frame);
-											
-					public:
-						WindowContext (Ptr<Dictionary> config);
-						virtual ~WindowContext ();
-					
-						virtual void start ();
-						virtual void stop ();
+				protected:
+					UIWindow * _window;
+
+					// Setup the graphics view
+					void setup_graphics_view (Ptr<Dictionary> config, CGRect frame);
+
+				public:
+					WindowContext (Ptr<Dictionary> config);
+					virtual ~WindowContext ();
+
+					virtual void start ();
+					virtual void stop ();
 				};
 			}
 		}

@@ -16,14 +16,13 @@ namespace Dream
 	namespace Events
 	{
 		static const bool DEBUG = false;
-		
+
 		using namespace Logging;
-	
+
 		MultiFingerInput::MultiFingerInput () : _top(0)
 		{
-			
 		}
-		
+
 		ButtonT MultiFingerInput::allocate_button ()
 		{
 			if (_free_buttons.size() > 0) {
@@ -35,7 +34,7 @@ namespace Dream
 				return _top;
 			}
 		}
-		
+
 		void MultiFingerInput::release_button (ButtonT button)
 		{
 			if (_top == button) {
@@ -44,48 +43,48 @@ namespace Dream
 				_free_buttons.push_back(button);
 			}
 		}
-		
+
 		const FingerTracking & MultiFingerInput::begin_motion(FingerID finger, Vec3 position)
 		{
 			FingerTracking ft;
 			ft.button = allocate_button();
 			ft.position = position;
 			ft.motion.zero();
-			
+
 			if (DEBUG) logger()->log(LOG_DEBUG, LogBuffer() << "Begin motion for finger: " << finger);
-			
+
 			return (_fingers[finger] = ft);
 		}
-		
+
 		const FingerTracking & MultiFingerInput::update_motion(FingerID finger, Vec3 position)
 		{
 			if (DEBUG) logger()->log(LOG_DEBUG, LogBuffer() << "Update motion for finger: " << finger);
+
 			FingersMap::iterator it = _fingers.find(finger);
 			DREAM_ASSERT(it != _fingers.end());
-			
+
 			FingerTracking & ft = it->second;
 			ft.motion = ft.position - position;
 			ft.position = position;
-			
+
 			return ft;
 		}
-		
+
 		const FingerTracking MultiFingerInput::finish_motion(FingerID finger, Vec3 position)
 		{
 			if (DEBUG) logger()->log(LOG_DEBUG, LogBuffer() << "Finish motion for finger: " << finger);
-			
+
 			FingersMap::iterator it = _fingers.find(finger);
 			DREAM_ASSERT(it != _fingers.end());
-			
+
 			FingerTracking ft = it->second;
 			ft.motion = ft.position - position;
 			ft.position = position;
-			
+
 			release_button(ft.button);
 			_fingers.erase(it);
-			
+
 			return ft;
 		}
-					
 	}
 }

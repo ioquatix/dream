@@ -13,6 +13,6 @@
 	Dream::Client::Display::IApplication * _application;
 }
 
-@property(nonatomic,assign) Dream::Client::Display::IApplication * application;
+@property (nonatomic, assign) Dream::Client::Display::IApplication * application;
 
 @end

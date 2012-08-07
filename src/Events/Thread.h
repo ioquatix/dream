@@ -18,66 +18,63 @@ namespace Dream
 {
 	namespace Events
 	{
-		
 		std::string system_error_description(int error_number);
-	
+
 		/// Manage an event-loop on a separate thread.
-		class Thread : public Object
-		{
-			protected:
-				Ref<Loop> _loop;
-				Shared<std::thread> _thread;
-				
-				void run ();
-				
-			public:
-				Thread ();
-				
-				/// This destructor may block if the event-loop is not responding.
-				~Thread ();
-				
-				/// The remote loop instance.
-				Ref<Loop> loop();
-				
-				/// Start the event-loop on a new thread.
-				void start();
-				
-				/// Stop the event-loop.
-				void stop();
+		class Thread : public Object {
+		protected:
+			Ref<Loop> _loop;
+			Shared<std::thread> _thread;
+
+			void run ();
+
+		public:
+			Thread ();
+
+			/// This destructor may block if the event-loop is not responding.
+			~Thread ();
+
+			/// The remote loop instance.
+			Ref<Loop> loop();
+
+			/// Start the event-loop on a new thread.
+			void start();
+
+			/// Stop the event-loop.
+			void stop();
 		};
-		
+
 		/// Stream data from multiple writers to a single reader.
 		template <typename ItemT>
-		class Queue : public Object
-		{
-			protected:
-				std::mutex _lock;
-				std::vector<ItemT> * _waiting, * _processing;
-			
-			public:
-				Queue ();
-				virtual ~Queue ();
-				
-				void add (ItemT item);
-				void flush ();
-			
-				std::vector<ItemT> * fetch ();
+		class Queue : public Object {
+		protected:
+			std::mutex _lock;
+			std::vector<ItemT> * _waiting, * _processing;
+
+		public:
+			Queue ();
+			virtual ~Queue ();
+
+			void add (ItemT item);
+			void flush ();
+
+			std::vector<ItemT> * fetch ();
 		};
 
 		template <typename ItemT>
 		Queue<ItemT>::Queue ()
 		{
 			std::lock_guard<std::mutex> lock(_lock);
-			
+
 			_waiting = new std::vector<ItemT>;
 			_processing = new std::vector<ItemT>;
 		}
-		
+
 		template <typename ItemT>
 		Queue<ItemT>::~Queue ()
 		{
 			std::lock_guard<std::mutex> lock(_lock);
-			
+
 			delete _waiting;
 			delete _processing;
 		}
@@ -96,7 +93,7 @@ namespace Dream
 		void Queue<ItemT>::flush ()
 		{
 			std::lock_guard<std::mutex> lock(_lock);
-			
+
 			_waiting->resize(0);
 		}
 
@@ -111,10 +108,9 @@ namespace Dream
 				std::swap(_processing, _waiting);
 				_waiting->resize(0);
 			}
-			
+
 			return _processing;
 		}
-	
 	}
 }
 

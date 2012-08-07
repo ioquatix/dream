@@ -14,21 +14,19 @@
 
 namespace Dream {
 	namespace Geometry {
-		
 		template <unsigned D, typename NumericT>
-		class Triangle : public Shape<D, 3, NumericT>
-		{
+		class Triangle : public Shape<D, 3, NumericT>{
 		public:
 			Triangle (const Vector<D, NumericT> & p1, const Vector<D, NumericT> & p2, const Vector<D, NumericT> & p3);
-			
+
 			Vector<D, NumericT> normal () const;
-			
+
 			/// @todo Improve method of intersection test as per URI in cpp.
 			IntersectionResult intersects_with (const Line<3, NumericT> & line, Vector<D, NumericT> & at) const;
-			
+
 			AlignedBox<D, NumericT> bounding_box ();
 		};
-		
+
 		typedef Triangle<3, RealT> Triangle3;
 		typedef Triangle<2, RealT> Triangle2;
 	}

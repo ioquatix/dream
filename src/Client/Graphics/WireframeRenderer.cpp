@@ -12,50 +12,48 @@
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
-		
 			WireframeRenderer::WireframeRenderer() {
 				{
 					auto binding = _vertex_array.binding();
-					
+
 					auto attributes = binding.attach(_vertex_buffer);
 					attributes[POSITION] = &Vertex::position;
 				}
-				
+
 				check_graphics_error();
 			}
-			
+
 			WireframeRenderer::~WireframeRenderer() {
-				
 			}
-			
+
 			void WireframeRenderer::render(const std::vector<Vec3> & line, Layout layout) {
 				{
 					// Upload data:
 					auto binding = _vertex_buffer.binding<Vec3>();
 					binding.set_data(line);
 				}
-				
+
 				{
 					// Render data:
 					auto binding = _vertex_array.binding();
 					binding.draw_arrays((GLenum)layout, 0, line.size());
 				}
 			}
-			
+
 			void WireframeRenderer::render(const Geometry::LineSegment<2> & segment) {
 				std::vector<Vec3> line;
 				line.push_back(segment.start() << 0.0);
 				line.push_back(segment.end() << 1.0);
 				render(line);
 			}
-			
+
 			void WireframeRenderer::render(const Geometry::LineSegment<3> & segment) {
 				std::vector<Vec3> line;
 				line.push_back(segment.start());
 				line.push_back(segment.end());
-				render(line);				
+				render(line);
 			}
-			
+
 			void WireframeRenderer::render(const Geometry::AlignedBox<2> & box, RealT z) {
 				std::vector<Vec3> edges;
 				edges.push_back(box.corner(Vec2b(false, false)) << z);
@@ -65,18 +63,18 @@ namespace Dream {
 				edges.push_back(box.corner(Vec2b(false, false)) << z);
 				render(edges);
 			}
-			
+
 			void WireframeRenderer::render(const Geometry::AlignedBox<3> & box) {
 				AlignedBox<2> profile(box.min().reduce(), box.max().reduce());
-				
+
 				render(profile, box.min()[Z]);
 				render(profile, box.max()[Z]);
 			}
-			
+
 			void WireframeRenderer::render_axis() {
 				render(LineSegment<3>(ZERO, Vec3(1.0, 0.0, 0.0)));
 				render(LineSegment<3>(ZERO, Vec3(0.0, 1.0, 0.0)));
-				render(LineSegment<3>(ZERO, Vec3(0.0, 0.0, 1.0)));				
+				render(LineSegment<3>(ZERO, Vec3(0.0, 0.0, 1.0)));
 			}
 		}
 	}

@@ -19,19 +19,20 @@ namespace Dream
 	{
 		template <typename NumericT>
 		class Number;
-	
+
 		/** Functionality common to all numeric types.
 		 */
 		template <typename NumericT>
-		class NumberTraits
-		{
+		class NumberTraits {
 		public:
 			/// Clamp a value between a lower and upper bound.
 			template <typename t>
 			static inline t clamp (const t & v, const t & lower = 0.0, const t & upper = 1.0)
 			{
 				if (v < lower) return lower;
+
 				if (v > upper) return upper;
+
 				return v;
 			}
 
@@ -40,6 +41,7 @@ namespace Dream
 			static inline t clamp_bottom (const t & v, const t & l = 0.0)
 			{
 				if (v < l) return l;
+
 				return v;
 			}
 
@@ -48,6 +50,7 @@ namespace Dream
 			static inline t clamp_top (const t & v, const t & u = 1.0)
 			{
 				if (v > u) return u;
+
 				return v;
 			}
 
@@ -83,8 +86,7 @@ namespace Dream
 		/** Generic number class for signed and unsigned integers.
 		 */
 		template <typename NumericT>
-		class Number : public NumberTraits<NumericT>
-		{
+		class Number : public NumberTraits<NumericT>{
 		public:
 			static inline NumericT floor (const NumericT & n)
 			{
@@ -108,7 +110,7 @@ namespace Dream
 			{
 				return n % m;
 			}
-			
+
 			static inline bool equivalent(const NumericT & n, const NumericT & m)
 			{
 				return n == m;
@@ -118,8 +120,7 @@ namespace Dream
 		/** Specific Number class for single floating point numbers.
 		 */
 		template <>
-		class Number<float> : public NumberTraits<float>
-		{
+		class Number<float>: public NumberTraits<float>{
 		public:
 			typedef float NumericT;
 
@@ -187,7 +188,7 @@ namespace Dream
 			{
 				return ::fmodf(n, m);
 			}
-			
+
 			static inline bool equivalent(const NumericT & n, const NumericT & m)
 			{
 				return Numerics::equivalent(n, m);
@@ -197,8 +198,7 @@ namespace Dream
 		/** Specific Number class for double floating point numbers.
 		 */
 		template <>
-		class Number<double> : public NumberTraits<double>
-		{
+		class Number<double>: public NumberTraits<double>{
 		public:
 			typedef double NumericT;
 
@@ -266,7 +266,7 @@ namespace Dream
 			{
 				return ::fmod (n, m);
 			}
-			
+
 			static inline bool equivalent(const NumericT & n, const NumericT & m)
 			{
 				return Numerics::equivalent(n, m);

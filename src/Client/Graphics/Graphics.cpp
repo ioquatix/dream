@@ -18,13 +18,14 @@ namespace Dream
 			{
 #ifdef DREAM_DEBUG
 				GLenum error = GL_NO_ERROR;
-				
+
 				while ((error = glGetError()) != GL_NO_ERROR) {
 					logger()->log(LOG_ERROR, LogBuffer() << "OpenGL Error #" << error);
-					
+
 					// Abort due to error
 					DREAM_ASSERT(error == GL_NO_ERROR);
 				}
+
 #endif
 			}
 		}

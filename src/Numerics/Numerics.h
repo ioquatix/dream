@@ -26,26 +26,22 @@ namespace Dream
 		typedef single RealT;
 
 		/// Zero type. Used in some Numerics constructors.
-		enum Zero
-		{
+		enum Zero {
 			ZERO = 0
 		};
-		
+
 		/// Identity type. Used in some Numerics constructors.
-		enum Identity
-		{
+		enum Identity {
 			IDENTITY = 1
 		};
 
 		/// 4D Vector indices, for use with Vector
-		enum
-		{
+		enum {
 			X = 0, Y = 1, Z = 2, W = 3
 		};
 
 		/// 3D size indicies, for use with Vector
-		enum
-		{
+		enum {
 			WIDTH = 0, HEIGHT = 1, DEPTH = 2
 		};
 
@@ -69,7 +65,7 @@ namespace Dream
 		/// Radians to degrees multiplier
 		const double R2D = (180.0 / M_PI);
 		const double D2R = (M_PI / 180.0);
-	
+
 		/// If the supplied value is a power of two, it is returned, otherwise the next highest power of 2 is calculated and returned.
 		uint32_t next_highest_power_of_2 (uint32_t);
 
@@ -106,23 +102,23 @@ namespace Dream
 
 		/// Helper to get floating point type from a fixed point type
 		template <>
-		struct RealType<double> {
+		struct RealType<double>{
 			typedef double RealT;
 		};
-		
+
 		/// Helper to print numbers
 		template <typename AnyT>
 		struct NumericType {
 			typedef AnyT NumericT;
 		};
-		
+
 		template <>
-		struct NumericType<unsigned char> {
+		struct NumericType<unsigned char>{
 			typedef unsigned int NumericT;
 		};
-		
+
 		template <>
-		struct NumericType<char> {
+		struct NumericType<char>{
 			typedef int NumericT;
 		};
 	}

@@ -11,15 +11,11 @@
 
 namespace Dream {
 	namespace Numerics {
-
-		RandomSequence::RandomSequence (unsigned seed, RealT min, RealT max)
-		: _distribution(min, max), _generator(seed) {
-		
+		RandomSequence::RandomSequence (unsigned seed, RealT min, RealT max) : _distribution(min, max), _generator(seed) {
 		}
 
 		const RealT RandomSequence::next_real () {
 			return _distribution(_generator);
 		}
-		
 	}
 }

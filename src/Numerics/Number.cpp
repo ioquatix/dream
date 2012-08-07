@@ -13,8 +13,8 @@ namespace Dream
 {
 	namespace Numerics
 	{
-// MARK: mark -
-// MARK: mark Unit Tests
+// MARK: -
+// MARK: Unit Tests
 
 #ifdef ENABLE_TESTING
 		UNIT_TEST(Number)
@@ -77,17 +77,15 @@ namespace Dream
 	{
 		namespace CodeTestAssertions
 		{
-		
 			bool equivalent (const float & lhs, const float & rhs)
 			{
 				return Numerics::Number<float>::equivalent(lhs, rhs);
 			}
-			
+
 			bool equivalent (const double & lhs, const double & rhs)
 			{
 				return Numerics::Number<double>::equivalent(lhs, rhs);
 			}
-
 		}
 	}
 }

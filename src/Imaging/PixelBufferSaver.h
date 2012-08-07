@@ -17,9 +17,7 @@ namespace Dream
 {
 	namespace Imaging
 	{
-		
 		Ref<Core::IData> save_pixel_buffer_as_png (IPixelBuffer * pixel_buffer);
-		
 	}
 }
 

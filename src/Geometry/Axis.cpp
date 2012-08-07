@@ -10,6 +10,5 @@
 
 namespace Dream {
 	namespace Geometry {
-		
-	}	
+	}
 }

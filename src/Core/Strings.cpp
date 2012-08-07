@@ -47,8 +47,8 @@ namespace Dream
 
 			return s.str();
 		}
-		
-// MARK: mark -
+
+// MARK: -
 
 		StringT::value_type convert_to_digit(char c) {
 			StringT::value_type d = c - '0';
@@ -56,85 +56,86 @@ namespace Dream
 				return d;
 			} else {
 				d = c - 'A';
-				
+
 				if (d < 26) {
 					return d + 10;
 				}
 			}
-			
+
 			throw std::range_error("Could not convert character to digit - out of range!");
 		}
-		
+
 		char convert_to_character(StringT::value_type d) {
 			if (d < 10) {
 				return '0' + d;
 			} else if (d < 36) {
 				return 'A' + (d - 10);
 			}
-			
-			throw std::range_error("Could not convert digit to character - out of range!"); 
+
+			throw std::range_error("Could not convert digit to character - out of range!");
 		}
-	
+
 		StringT unescape_string (const StringT & value) {
 			StringStreamT buffer;
-			
+
 			StringT::const_iterator i = value.begin(), end = value.end();
-			
+
 			// Skip enclosing quotes
 			++i;
 			--end;
-			
+
 			for (; i != end; ++i) {
 				if (*i == '\\') {
 					++i;
-					
+
 					switch (*i) {
-						case 't':
-							buffer << '\t';
+					case 't':
+						buffer << '\t';
+						continue;
+					case 'r':
+						buffer << '\r';
+						continue;
+					case 'n':
+						buffer << '\n';
+						continue;
+					case '\\':
+						buffer << '\\';
+						continue;
+					case '"':
+						buffer << '"';
+						continue;
+					case '\'':
+						buffer << '\'';
+						continue;
+					case 'x':
+						if ((end - i) >= 2) {
+							StringT::value_type value = convert_to_digit(*(++i)) << 4;
+							value |= convert_to_digit(*(++i));
+							buffer << (StringT::value_type)value;
 							continue;
-						case 'r':
-							buffer << '\r';
-							continue;
-						case 'n':
-							buffer << '\n';
-							continue;
-						case '\\':
-							buffer << '\\';
-							continue;
-						case '"':
-							buffer << '"';
-							continue;
-						case '\'':
-							buffer << '\'';
-							continue;
-						case 'x':
-							if ((end - i) >= 2) {
-								StringT::value_type value = convert_to_digit(*(++i)) << 4;
-								value |= convert_to_digit(*(++i));
-								buffer << (StringT::value_type)value;
-								continue;
-							} else {
-								break;
-							}
-						case '.':
-							continue;
+						} else {
+							break;
+						}
+
+					case '.':
+						continue;
 					}
-					
+
 					throw std::runtime_error("Could not parse string escape!");
 				} else {
 					buffer << *i;
 				}
 			}
-		
+
 			return buffer.str();
 		}
-		
+
 		StringT escape_string (const StringT & value) {
 			StringStreamT buffer;
-			
+
 			StringT::const_iterator i = value.begin(), end = value.end();
 			buffer << '"';
-			
+
 			for (; i != end; ++i) {
 				if (*i == '"') {
 					buffer << "\\\"";
@@ -142,13 +143,13 @@ namespace Dream
 					buffer << *i;
 				}
 			}
-			
+
 			buffer << '"';
 			return buffer.str();
 		}
 
-// MARK: mark -
-// MARK: mark Unit Tests
+// MARK: -
+// MARK: Unit Tests
 
 #ifdef ENABLE_TESTING
 		UNIT_TEST(Strings)

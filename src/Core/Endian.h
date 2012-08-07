@@ -16,8 +16,7 @@ namespace Dream
 {
 	namespace Core
 	{
-		enum Endian
-		{
+		enum Endian {
 			BIG,
 			LITTLE
 		};
@@ -36,7 +35,7 @@ namespace Dream
 		inline bool _is_big_endian ()
 		{
 			unsigned x = 1;
-			return !(*(char * )( & x));
+			return !(*(char * )( &x));
 		}
 
 		inline Endian host_endian ()
@@ -71,8 +70,7 @@ namespace Dream
 		template <typename BaseT>
 		inline void endian_decode (BaseT & value, Endian src_type, Endian dst_type)
 		{
-			if (src_type != dst_type)
-			{
+			if (src_type != dst_type) {
 				BaseT copy;
 				order_copy(value, copy, src_type, dst_type);
 				value = copy;
@@ -82,13 +80,11 @@ namespace Dream
 		// This interface can be used when reading data directly from memory.
 		inline void order_copy (const unsigned char * src, unsigned char * dst, std::size_t len, Endian src_type, Endian dst_type)
 		{
-			if (src_type != dst_type)
-			{
+			if (src_type != dst_type) {
 				dst += len - 1;
 				for (std::size_t i = 0; i < len; i++)
 					*(dst--) = *(src++);
-			} else
-			{
+			} else {
 				for (std::size_t i = 0; i < len; i++)
 					*(dst++) = *(src++);
 			}
@@ -126,13 +122,12 @@ namespace Dream
 		 @code
 		 template <Endian store_t>
 		 struct OrderedTestStruct {
-			Ordered<uint32_t, store_t> value;
+		    Ordered<uint32_t, store_t> value;
 		 };
 		 @endcode
 		 */
 		template <typename _BaseT, Endian store_t = LITTLE>
-		class Ordered
-		{
+		class Ordered {
 		public:
 			typedef _BaseT BaseT;
 			BaseT base;

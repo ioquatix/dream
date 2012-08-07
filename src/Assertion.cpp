@@ -21,19 +21,15 @@ void assertion_failure() {
 
 namespace Dream
 {
-	AssertionError::AssertionError (const char * expression, const char * file, unsigned line) throw ()
-	: _expression (expression), _file (file), _line (line)
+	AssertionError::AssertionError (const char * expression, const char * file, unsigned line) throw () : _expression (expression), _file (file), _line (line)
 	{
 		using namespace std;
 
-		try
-		{
+		try {
 			stringstream s;
 			s << _file << ":" << _line << " assertion failed: " << _expression;
 			_what = s.str ();
-		}
-		catch (...)
-		{
+		} catch (...)   {
 			_what = "Could not format assertion text!";
 		}
 	}
@@ -49,16 +45,15 @@ namespace Dream
 
 	void AssertionError::assert_handler (bool condition, const char * expression, const char * file, unsigned line)
 	{
-		if (!condition)
-		{
+		if (!condition) {
 			assertion_failure();
-			
+
 			throw AssertionError(expression, file, line);
 		}
 	}
 
-// MARK: mark -
-// MARK: mark Unit Tests
+// MARK: -
+// MARK: Unit Tests
 
 #ifdef ENABLE_TESTING
 	UNIT_TEST(Assertion)
@@ -68,24 +63,18 @@ namespace Dream
 		testing("Ensure");
 
 		exception_thrown = false;
-		try
-		{
+		try {
 			DREAM_ASSERT(1 == 0);
-		}
-		catch (AssertionError & err)
-		{
+		} catch (AssertionError & err)   {
 			exception_thrown = true;
 		}
 
 		check(exception_thrown) << "Ensure threw exception";
 
 		exception_thrown = false;
-		try
-		{
+		try {
 			DREAM_ASSERT(1 == 1);
-		}
-		catch (AssertionError & err)
-		{
+		} catch (AssertionError & err)   {
 			exception_thrown = true;
 		}
 

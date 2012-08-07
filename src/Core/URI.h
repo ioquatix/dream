@@ -19,36 +19,35 @@ namespace Dream
 {
 	namespace Core
 	{
-		class URI
-		{
+		class URI {
 		private:
 			StringT _url;
-			
+
 			/// According to RFC3986.
 			StringT _scheme, _authority, _path, _query, _fragment;
-			
+
 			/// Standard parts of the authority
 			StringT _hostname;
 			unsigned _port;
-			
+
 			/// Other parts that may or may not be defined:
 			std::vector<StringT> _user_info;
-			
+
 		public:
-			
+
 			class InvalidFormatError : std::exception {
 			protected:
 				StringT _url;
 				std::size_t _offset;
-				
+
 				StringT _message;
-				
+
 			public:
 				InvalidFormatError(const StringT & url, std::size_t offset);
-				
+
 				virtual const char* what() const noexcept;
 			};
-			
+
 			/// Construct a URI from a RFC2396 formatted string.
 			URI (const StringT & s);
 
@@ -60,13 +59,13 @@ namespace Dream
 
 			/// The location portion of the URI.
 			const StringT & authority () const;
-			
+
 			/// The path portion of the URI.
 			const StringT & path () const;
-			
+
 			/// The query portion of the URI.
 			const StringT & query () const;
-			
+
 			/// The fragment portion of the URI.
 			const StringT & fragment () const;
 
@@ -83,10 +82,10 @@ namespace Dream
 
 			/// The port number as a string, or the scheme.
 			StringT service () const;
-			
+
 			/// Whether or not the URI was relative or absolute.
 			bool is_absolute () const;
-			
+
 			/// True if the URI represents a file path. The path is local and accessible via path().
 			bool is_file_path ();
 		};

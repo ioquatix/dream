@@ -26,8 +26,8 @@ namespace Dream
 {
 	namespace Core
 	{
-// MARK: mark -
-// MARK: mark class Buffer
+// MARK: -
+// MARK: class Buffer
 
 		Buffer::~Buffer ()
 		{
@@ -43,7 +43,7 @@ namespace Dream
 			DREAM_ASSERT(loc <= size());
 			return begin() + loc;
 		}
-		
+
 		void Buffer::read (IndexT offset, IndexT size, ByteT * value) const
 		{
 			memcpy(value, at(offset), size);
@@ -105,20 +105,20 @@ namespace Dream
 
 			if (strncmp("DDS ", (const char *)&buffer[0], 4) == 0)
 				return IMAGE_DDS;
-			
+
 			if (strncmp("RIFF", (const char *)&buffer[0], 4) == 0)
 				return AUDIO_XWAV;
-			
+
 			if (strncmp(".snd", (const char *)&buffer[0], 4) == 0)
 				return AUDIO_BASIC;
-			
+
 			if (strncmp("OggS", (const char *)&buffer[0], 4) == 0)
 				return APPLICATION_OGG;
 
 			return UNKNOWN;
 		}
-		
-		
+
+
 		// >04000000 4B657931 84050000 00040000< ....Key1........ 00000000
 		// >004B6579 32200600 00004170 706C6573< .Key2 ....Apples 00000010
 		void Buffer::hexdump (std::ostream & out)
@@ -126,36 +126,35 @@ namespace Dream
 			// http://stahlforce.com/dev/index.php?tool=csc01
 			const ByteT * current = begin();
 			std::size_t remaining = size();
-			
-			while (true)
-			{
+
+			while (true) {
 				StringStreamT buffer;
-				
+
 				buffer << "0x";
-				
+
 				buffer.fill('0');
 				buffer.width(sizeof(long) * 2);
 				buffer.setf(std::ios::hex, std::ios::basefield);
-				
+
 				buffer << (current - begin()) << " >";
-				
+
 				std::size_t count = std::min(remaining, (std::size_t)4*4);
-								
+
 				for (std::size_t i = 0; i < (4*4); i += 1) {
 					if (i > 0 && i % 4 == 0)
 						buffer << ' ';
-					
+
 					if (i < count) {
 						buffer.width(2);
 						buffer << (int)(*(current + i));
 					} else
 						buffer << "  ";
 				}
-				
+
 				buffer << "< ";
-				
+
 				out << buffer.str();
-				
+
 				for (std::size_t i = 0; i < count; i += 1) {
 					ByteT character = *(current + i);
 					if (character >= 32 && character <= 128)
@@ -163,17 +162,17 @@ namespace Dream
 					else
 						out << ".";
 				}
-				
+
 				out << std::endl;
-				
+
 				remaining -= count;
 				if (remaining == 0)
 					break;
-				
+
 				current += count;
-			}	
+			}
 		}
-		
+
 		// http://www.flounder.com/checksum.htm
 		uint32_t Buffer::checksum () const
 		{
@@ -181,54 +180,54 @@ namespace Dream
 			uint32_t r = 55665;
 			const uint32_t C1 = 52845;
 			const uint32_t C2 = 22719;
-			
+
 			IndexT s = size();
 			const ByteT * b = begin();
-			
+
 			for (unsigned i = 0; i < s; i += 1) {
 				ByteT cipher = (b[i] ^ (r >> 8));
 				r = (cipher + r) * C1 + C2;
 				sum += cipher;
 			}
-			
+
 			return sum;
 		}
-		
+
 		void Buffer::write_to_file (const Path & p)
 		{
 			FileDescriptorT fd;
 			int result;
-						
+
 			// Open and create the output file
 			mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
-			
+
 			fd = open(p.to_local_path().c_str(), O_RDWR | O_CREAT | O_TRUNC, mode);
 			DREAM_ASSERT(fd >= 0);
-			
+
 			// Seek to the end
 			result = lseek(fd, size() - 1, SEEK_SET);
 			DREAM_ASSERT(result != -1);
-			
+
 			// Write a byte to give the file appropriate size
 			result = write(fd, "", 1);
 			DREAM_ASSERT(result != -1);
-			
+
 			// mmap the file
 			ByteT * dst = (ByteT *)mmap(0, size(), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 			DREAM_ASSERT(dst != (ByteT *)-1);
-						
+
 			madvise(dst, size(), MADV_SEQUENTIAL);
-			
+
 			// Copy the data
 			memcpy(dst, begin(), size());
-			
+
 			// Clean up
 			munmap(dst, size());
 			close(fd);
 		}
 
-// MARK: mark -
-// MARK: mark class MutableBuffer
+// MARK: -
+// MARK: class MutableBuffer
 
 		MutableBuffer::~MutableBuffer ()
 		{
@@ -279,35 +278,34 @@ namespace Dream
 			IndexT len = strlen(string);
 			assign((const ByteT *)string, (const ByteT *)string + len, offset);
 		}
-		
-// MARK: mark -
-// MARK: mark class Resizable
-		
+
+// MARK: -
+// MARK: class Resizable
+
 		ResizableBuffer::~ResizableBuffer ()
 		{
-			
 		}
-		
+
 		void ResizableBuffer::expand (IndexT amount)
 		{
 			resize(size() + amount);
 		}
-		
+
 		void ResizableBuffer::append (IndexT size, const ByteT * data)
 		{
 			expand(size);
-			
+
 			memcpy(this->end() - size, data, size);
 		}
 
-// MARK: mark -
-// MARK: mark class StaticBuffer
+// MARK: -
+// MARK: class StaticBuffer
 
 		StaticBuffer StaticBuffer::for_cstring (const char * str, bool include_null_byte)
 		{
 			return StaticBuffer((const ByteT*)str, strlen(str) + (int)include_null_byte);
 		}
-		
+
 		StaticBuffer::StaticBuffer (const ByteT * buf, const IndexT & size) : _size(size), _buf(buf)
 		{
 		}
@@ -326,46 +324,45 @@ namespace Dream
 			return _buf;
 		}
 
-// MARK: mark -
-// MARK: mark class FileBuffer
-		
+// MARK: -
+// MARK: class FileBuffer
+
 		FileBuffer::FileBuffer (const Path & file_path)
 		{
 			FileDescriptorT input = open(file_path.to_local_path().c_str(), O_RDONLY);
 
 			if (input == -1)
 				perror(__PRETTY_FUNCTION__);
-			
+
 			DREAM_ASSERT(input != -1);
-			
+
 			_size = lseek(input, 0, SEEK_END);
-			
+
 			_buf = mmap(0, _size, PROT_READ, MAP_SHARED, input, 0);
 			DREAM_ASSERT(_buf != (ByteT *)-1);
 		}
-		
+
 		FileBuffer::~FileBuffer ()
 		{
 			munmap(_buf, _size);
 		}
-		
+
 		IndexT FileBuffer::size () const
 		{
 			return _size;
 		}
-		
+
 		const ByteT * FileBuffer::begin () const
 		{
 			return (const ByteT *)_buf;
 		}
-		
-// MARK: mark -
-// MARK: mark class DynamicBuffer
+
+// MARK: -
+// MARK: class DynamicBuffer
 
 		void DynamicBuffer::allocate (IndexT size)
 		{
-			if (size != _capacity)
-			{
+			if (size != _capacity) {
 				_buf = (ByteT*)realloc(_buf, size);
 				DREAM_ASSERT(_buf != NULL);
 
@@ -375,8 +372,7 @@ namespace Dream
 
 		void DynamicBuffer::deallocate ()
 		{
-			if (_buf)
-			{
+			if (_buf) {
 				free(_buf);
 				_buf = NULL;
 				_size = 0;
@@ -391,7 +387,7 @@ namespace Dream
 		DynamicBuffer::DynamicBuffer (IndexT size, bool reserved) : _buf (NULL)
 		{
 			allocate(size);
-			
+
 			if (reserved == false)
 				_size = size;
 			else
@@ -425,8 +421,7 @@ namespace Dream
 
 		void DynamicBuffer::resize (IndexT size)
 		{
-			if (size > _capacity)
-			{
+			if (size > _capacity) {
 				allocate(size);
 			}
 
@@ -443,8 +438,8 @@ namespace Dream
 			return _buf;
 		}
 
-// MARK: mark -
-// MARK: mark class PackedData
+// MARK: -
+// MARK: class PackedData
 
 		PackedBuffer::PackedBuffer (IndexT size) : _size (size)
 		{
@@ -489,28 +484,28 @@ namespace Dream
 			return data();
 		}
 
-// MARK: mark -
-// MARK: mark class BufferStream
+// MARK: -
+// MARK: class BufferStream
 
 		BufferStream::BufferStream (const Buffer & buf) : std::streambuf (), std::istream (this)
 		{
 			std::streambuf::setg ((char *) buf.begin (), (char *) buf.begin (), (char *) buf.end ());
 		}
 
-// MARK: mark -
-// MARK: mark Unit Tests
+// MARK: -
+// MARK: Unit Tests
 
 #ifdef ENABLE_TESTING
 		UNIT_TEST(BufferRead)
 		{
 			StaticBuffer buf = StaticBuffer::for_cstring("Bobby");
-			
+
 			uint8_t v;
 			buf.read(2, v);
-			
+
 			check(v == 'b') << "Read value is equal";
 		}
-		
+
 		UNIT_TEST(DynamicBuffer)
 		{
 			const char * data = "Human resources are human first, and resources second.";
@@ -565,17 +560,17 @@ namespace Dream
 			a.resize(600);
 			check(a.size() == 600) << "Size increase was successful";
 			check(a.capacity() >= 600) << "Capacity increased after size increase";
-			
+
 			a.expand(100);
-			
+
 			check(a.size() == 700) << "Size expansion was successful";
-			
+
 			testing("Appending");
-			
+
 			a.resize(0);
 			a.append(5, (const ByteT *)"abcde");
 			a.append(5, (const ByteT *)"abcde");
-			
+
 			check(a.size() == 10) << "Size is correct after appending 10 characters";
 			check(a[1] == 'b') << "Character is correct";
 		}
@@ -600,36 +595,36 @@ namespace Dream
 			for (unsigned i = 0; i < buffer->size(); i += 1)
 				check((*buffer)[i] == data[i]) << "Data is correct";
 		}
-		
+
 		UNIT_TEST(ReadingAndWritingBuffers)
 		{
 			Path tmp_path = Path::temporary_file_path();
 			const char * data = "When the only tool you have is a hammer, you tend to treat everything as if it were a nail.";
 			unsigned data_length = strlen(data);
-			
+
 			testing("Writing");
-			
+
 			PackedBuffer * write_buffer;
 			write_buffer = PackedBuffer::new_buffer(data_length);
-			
+
 			write_buffer->assign((const ByteT*)data, (const ByteT*)data + data_length, 0);
-			
+
 			write_buffer->write_to_file(tmp_path);
-			
+
 			testing("Reading");
 			FileBuffer read_buffer(tmp_path);
-			
+
 			std::string write_string(write_buffer->begin(), write_buffer->end());
 			std::string read_string(read_buffer.begin(), read_buffer.end());
-			
+
 			check(write_buffer->size() == read_buffer.size()) << "Data size is consistent";
 			check(write_buffer->checksum() == read_buffer.checksum()) << "Data is correct";
-			
+
 			check(write_string == read_string) << "Data string is equal";
-			
+
 			write_buffer->hexdump(std::cout);
 			read_buffer.hexdump(std::cout);
-			
+
 			// Remove the temporary file
 			tmp_path.remove();
 		}

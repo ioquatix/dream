@@ -17,30 +17,29 @@ namespace Dream
 {
 	namespace Core
 	{
-		
-// MARK: mark -
-		
+// MARK: -
+
 		std::ostream & operator<< (std::ostream & out, const std::type_info & rhs)
 		{
 			return (out << "<typeinfo for " << rhs.name() << ">");
 		}
-		
-// MARK: mark -
-		
+
+// MARK: -
+
 		CodeTestRegistry * shared_code_test_registry () {
 			static CodeTestRegistry * code_test_registry = NULL;
-			
+
 			if (!code_test_registry) {
 				code_test_registry = new CodeTestRegistry;
 			}
-			
+
 			return code_test_registry;
 		}
 
 		CodeTestRegistry::CodeTestRegistry ()
 		{
 		}
-		
+
 		void CodeTestRegistry::add_test (CodeTest * test)
 		{
 			_code_tests.push_back(test);
@@ -49,13 +48,13 @@ namespace Dream
 		void CodeTestRegistry::_perform_all_tests ()
 		{
 			using namespace std;
-			
+
 			Ref<CodeTest::Statistics> overall = new CodeTest::Statistics("Code Test Registry");
-			
+
 			foreach (test, _code_tests)
 			{
 				if ((*test)->_name != "Object Test") continue;
-				
+
 				(*test)->perform_tests ();
 
 				Ref<CodeTest::Statistics> stats = (*test)->overall_statistics();
@@ -65,7 +64,7 @@ namespace Dream
 			cout << endl << center(" Summary ", 60, '_') << endl;
 			overall->print_summary();
 		}
-		
+
 		void CodeTestRegistry::perform_all_tests ()
 		{
 			shared_code_test_registry()->_perform_all_tests();
@@ -75,7 +74,7 @@ namespace Dream
 		{
 			shared_code_test_registry()->add_test(this);
 		}
-		
+
 		CodeTest::~CodeTest ()
 		{
 		}
@@ -89,9 +88,9 @@ namespace Dream
 		{
 			if (condition == false) {
 				current_test()->fail_test();
-				
+
 				std::cerr << "Test Failed: ";
-				
+
 				return ErrorLogger(true);
 			} else {
 				current_test()->pass_test();
@@ -137,13 +136,11 @@ namespace Dream
 
 			std::cout << " out of " << _failed + _passed << " total" << std::endl;
 		}
-		
-		CodeTest::ErrorLogger::ErrorLogger (bool error)
-			: _error(error)
+
+		CodeTest::ErrorLogger::ErrorLogger (bool error) : _error(error)
 		{
-		
 		}
-		
+
 		CodeTest::ErrorLogger::~ErrorLogger ()
 		{
 			if (_error)
@@ -177,6 +174,5 @@ namespace Dream
 				(*stats)->print_summary();
 			}
 		}
-
 	}
 }

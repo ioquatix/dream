@@ -25,49 +25,49 @@ namespace Dream
 	{
 		typedef std::string StringT;
 		typedef std::stringstream StringStreamT;
-		
+
 		typedef uint32_t CodePointT;
 
 		std::string trimmed (std::string const & str, char const * sep_set);
 
 		std::string center (const std::string & str, unsigned width, char space);
-		
-		/// This function is typically used for parsing OpenGL extension strings.		
+
+		/// This function is typically used for parsing OpenGL extension strings.
 		template <typename OutT>
 		void split(const StringT & input, const char divider, OutT result) {
 			std::size_t pos = 0, next = 0;
-			
+
 			do {
 				next = input.find(divider, pos);
-				
+
 				StringT bit(&input[pos], (next == StringT::npos) ? (input.size() - pos) : (next - pos));
-				*result++ = bit;					
-				
+				*result++ = bit;
+
 				pos = next + 1;
 			} while (next != StringT::npos);
 		}
-		
+
 		StringT unescape_string (const StringT &);
 		StringT escape_string (const StringT &);
-		
+
 		template <typename AnyT>
 		StringT to_string(const AnyT & value) {
 			StringStreamT buffer;
-			
+
 			buffer << value;
-			
+
 			return buffer.str();
 		}
-		
+
 		template <typename AnyT>
 		AnyT to(const StringT & string) {
 			StringStreamT buffer(string);
-			
+
 			AnyT value;
 			if (!(buffer >> value)) {
 				throw std::runtime_error("Invalid input");
 			}
-			
+
 			return value;
 		}
 	}

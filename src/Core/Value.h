@@ -17,11 +17,10 @@
 namespace Dream
 {
 	namespace Core
-	{		
+	{
 		/** Thrown when a value cannot be converted to another of a different type.
 		 */
-		class ConversionError : public std::exception
-		{
+		class ConversionError : public std::exception {
 			StringT _what;
 		public:
 			ConversionError (const std::type_info & convert_from, const std::type_info & convert_to) throw ();
@@ -33,8 +32,7 @@ namespace Dream
 
 		/** Thrown when a value is deRefd and is undefined.
 		 */
-		class ValueUndefinedError : public std::exception
-		{
+		class ValueUndefinedError : public std::exception {
 		public:
 			ValueUndefinedError () throw ();
 			virtual ~ValueUndefinedError () throw ();
@@ -42,11 +40,10 @@ namespace Dream
 			/// Returns a C-style character string describing the general cause of the current error.
 			virtual const char * what () const throw ();
 		};
-		
+
 		/** Thrown when a value unable to be serialized.
 		 */
-		class SerializationError : public std::exception
-		{
+		class SerializationError : public std::exception {
 		public:
 			SerializationError () throw ();
 			virtual ~SerializationError () throw ();
@@ -57,19 +54,18 @@ namespace Dream
 
 		/** Abstract typed value base. Provides a basic set of functionality for dealing with values of unknown type.
 		 */
-		class ITypedValue : public SharedObject
-		{
+		class ITypedValue : public SharedObject {
 		public:
 			/// @sa equal
 			bool operator== (const ITypedValue & other) const
 			{
 				return equal(&other);
 			}
-			
+
 			virtual const std::type_info & value_type () const abstract;
-			
+
 			/// Compares two values
-			/// @returns True if the TypedValue objects are of the same type and contained value.			
+			/// @returns True if the TypedValue objects are of the same type and contained value.
 			virtual bool equal (const ITypedValue *) const abstract;
 
 			virtual void write_to_stream (std::ostream &) const abstract;
@@ -89,13 +85,13 @@ namespace Dream
 			/// @throws ConversionError if the type given is incorrect.
 			template <typename ValueT>
 			void set (const ValueT &);
-			
+
 			/// A bit like typeinfo, but only works for specific primitive types and returns well-defined values.
 			virtual TypeIdentifierT type_index () const abstract;
-			
+
 			/// Returns a pointer to the value storage.
 			virtual const ByteT * value_data () const abstract;
-			
+
 			/// Append the value to a buffer.
 			virtual void append_to_buffer (ResizableBuffer & buf) const abstract;
 		};
@@ -112,7 +108,7 @@ namespace Dream
 			{
 				stream >> value;
 			}
-		
+
 			template <typename ValueT>
 			void append_to_buffer (ResizableBuffer & buf, ValueT & value) const
 			{
@@ -120,9 +116,9 @@ namespace Dream
 				TypeSerialization<TypeIdentifier>::append_to_buffer(buf, value);
 			}
 		};
-		
+
 		template <>
-		struct TypedValueSerializer<0> {
+		struct TypedValueSerializer<0>{
 			template <typename ValueT>
 			void read_from_stream (std::istream & stream, ValueT & value)
 			{
@@ -144,8 +140,7 @@ namespace Dream
 		 @endcode
 		 */
 		template <typename ValueT>
-		class TypedValue : implements ITypedValue, protected TypedValueSerializer<TypeIdentifierTypeTraits<ValueT>::TypeIdentifierValue>
-		{
+		class TypedValue : implements ITypedValue, protected TypedValueSerializer<TypeIdentifierTypeTraits<ValueT>::TypeIdentifierValue>{
 		protected:
 			ValueT _value;
 			typedef TypedValueSerializer<TypeIdentifierTypeTraits<ValueT>::TypeIdentifierValue> TypedValueSerializerT;
@@ -164,12 +159,12 @@ namespace Dream
 			virtual ~TypedValue ()
 			{
 			}
-			
+
 			virtual TypeIdentifierT type_index () const
 			{
 				return TypeIdentifierTypeTraits<ValueT>::TypeIdentifierValue;
 			}
-			
+
 			virtual const std::type_info & value_type () const
 			{
 				return typeid(ValueT);
@@ -179,7 +174,7 @@ namespace Dream
 			{
 				return sizeof(ValueT);
 			}
-			
+
 			const ByteT * value_data () const
 			{
 				return (const ByteT *)&_value;
@@ -212,12 +207,12 @@ namespace Dream
 			{
 				stream << _value;
 			}
-			
+
 			virtual void read_from_stream (std::istream & stream)
 			{
 				TypedValueSerializerT::read_from_stream(stream, _value);
 			}
-			
+
 			virtual void append_to_buffer (ResizableBuffer & buf) const
 			{
 				TypedValueSerializerT::append_to_buffer(buf, _value);
@@ -242,12 +237,9 @@ namespace Dream
 			typedef TypedValue<ValueT> TypedValueT;
 			const TypedValueT * v = dynamic_cast<const TypedValueT *>(this);
 
-			if (v != NULL)
-			{
+			if (v != NULL) {
 				return v->value();
-			}
-			else 
-			{
+			} else   {
 				throw ConversionError(value_type(), typeid(ValueT));
 			}
 		}
@@ -258,11 +250,9 @@ namespace Dream
 			typedef TypedValue<ValueT> TypedValueT;
 			TypedValueT * v = dynamic_cast<TypedValueT *>(this);
 
-			if (v != NULL)
-			{
+			if (v != NULL) {
 				v->value() = value;
-			} else
-			{
+			} else {
 				throw ConversionError(value_type(), typeid(ValueT));
 			}
 		}
@@ -271,21 +261,20 @@ namespace Dream
 
 		 Can be updated or modified with different types.
 		 */
-		class Value
-		{
+		class Value {
 			Ref<ITypedValue> _ptr;
-			
+
 		public:
 			/// Construct an undefined value.
 			Value ();
 
 			/// Construct an object from a particular value.
 			template <typename ValueT>
-			explicit Value (const ValueT & value) : _ptr (new TypedValue<ValueT> (value))
+			explicit Value (const ValueT & value) : _ptr (new TypedValue<ValueT>(value))
 			{
 			}
-			
-			explicit Value (const char * value) : _ptr (new TypedValue<StringT> (StringT(value)))
+
+			explicit Value (const char * value) : _ptr (new TypedValue<StringT>(StringT(value)))
 			{
 			}
 
@@ -304,8 +293,7 @@ namespace Dream
 			template <typename ValueT>
 			bool extract (ValueT & value) const
 			{
-				if (defined())
-				{
+				if (defined()) {
 					return _ptr->extract<ValueT>(value);
 				}
 
@@ -340,9 +328,9 @@ namespace Dream
 			/// Prints out the value.
 			friend std::ostream & operator<< (std::ostream &, const Value &);
 			friend std::istream & operator>> (std::istream &, Value &);
-			
+
 			const ITypedValue * typed_value () const;
-			
+
 			static Value read_from_buffer (const Buffer & buf, IndexT & offset);
 			void append_to_buffer (ResizableBuffer & buf) const;
 		};
@@ -354,7 +342,6 @@ namespace Dream
 		/// Stream helper for reading and converting strings to values
 		/// @sa ITypedValue::read_from_stream
 		std::istream & operator>> (std::istream &, Value &);
-		
 	}
 }
 

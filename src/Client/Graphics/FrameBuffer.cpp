@@ -13,29 +13,28 @@
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
-			
 			GLenum FrameBuffer::check_status () const {
 				GLenum status = glCheckFramebufferStatus(_target);
-				
+
 				if (status != GL_FRAMEBUFFER_COMPLETE) {
 					switch (status) {
-						case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-							throw std::runtime_error("Framebuffer Error: Attachment invalid");
-						case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-							throw std::runtime_error("Framebuffer Error: Missing attachment");
+					case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+						throw std::runtime_error("Framebuffer Error: Attachment invalid");
+					case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+						throw std::runtime_error("Framebuffer Error: Missing attachment");
 #ifdef DREAM_OPENGL32
-						case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
-							throw std::runtime_error("Framebuffer Error: Missing draw buffer");
-						case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
-							throw std::runtime_error("Framebuffer Error: Missing read buffer");
+					case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+						throw std::runtime_error("Framebuffer Error: Missing draw buffer");
+					case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+						throw std::runtime_error("Framebuffer Error: Missing read buffer");
 #endif
-						case GL_FRAMEBUFFER_UNSUPPORTED:
-							throw std::runtime_error("Framebuffer Error: Configuration Unsupported");
-						default:
-							throw std::runtime_error("Framebuffer Error: Unknown problem");
+					case GL_FRAMEBUFFER_UNSUPPORTED:
+						throw std::runtime_error("Framebuffer Error: Configuration Unsupported");
+					default:
+						throw std::runtime_error("Framebuffer Error: Unknown problem");
 					}
 				}
-				
+
 				return status;
 			}
 		}

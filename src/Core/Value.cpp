@@ -13,8 +13,8 @@ namespace Dream
 {
 	namespace Core
 	{
-// MARK: mark -
-// MARK: mark class ConversionError
+// MARK: -
+// MARK: class ConversionError
 
 		ConversionError::ConversionError (const std::type_info & convert_from, const std::type_info & convert_to) throw ()
 		{
@@ -34,8 +34,8 @@ namespace Dream
 			return _what.c_str();
 		}
 
-// MARK: mark -
-// MARK: mark class ValueUndefinedError
+// MARK: -
+// MARK: class ValueUndefinedError
 
 		ValueUndefinedError::ValueUndefinedError () throw ()
 		{
@@ -50,9 +50,9 @@ namespace Dream
 		{
 			return "The value is undefined";
 		}
-		
-// MARK: mark -
-// MARK: mark class ValueUndefinedError
+
+// MARK: -
+// MARK: class ValueUndefinedError
 
 		SerializationError::SerializationError () throw ()
 		{
@@ -68,8 +68,8 @@ namespace Dream
 			return "The value could not be serialized.";
 		}
 
-// MARK: mark -
-// MARK: mark Stream Functions
+// MARK: -
+// MARK: Stream Functions
 
 		std::ostream & operator<< (std::ostream & outs, const ITypedValue & value)
 		{
@@ -81,12 +81,12 @@ namespace Dream
 		std::istream & operator>> (std::istream & ins, ITypedValue & value)
 		{
 			value.read_from_stream(ins);
-		
+
 			return ins;
 		}
 
-// MARK: mark -
-// MARK: mark class Value
+// MARK: -
+// MARK: class Value
 
 		Value::Value ()
 		{
@@ -127,7 +127,7 @@ namespace Dream
 
 			return _ptr.get()->equal(&other);
 		}
-		
+
 		const ITypedValue * Value::typed_value () const
 		{
 			return _ptr.get();
@@ -152,42 +152,42 @@ namespace Dream
 
 			return ins;
 		}
-		
+
 		Value Value::read_from_buffer (const Buffer & buf, IndexT & offset)
 		{
 			TypeIdentifierT type_identifier;
-			
+
 			offset += buf.read(offset, type_identifier);
-			
+
 #define TI_CASE(index) case index: return Value(TypeSerialization<index>::read_from_buffer(buf, offset));
-			switch (type_identifier)
-			{
-					TI_CASE(TI_UINT8)
-					TI_CASE(TI_INT8)
-					TI_CASE(TI_UINT16)
-					TI_CASE(TI_INT16)
-					TI_CASE(TI_UINT32)
-					TI_CASE(TI_INT32)
-					TI_CASE(TI_FLOAT32)
-					TI_CASE(TI_UINT64)
-					TI_CASE(TI_INT64)
-					TI_CASE(TI_FLOAT64)
-					TI_CASE(TI_STRING)
-				default:
-					return Value();
+			switch (type_identifier) {
+				TI_CASE(TI_UINT8)
+				TI_CASE(TI_INT8)
+				TI_CASE(TI_UINT16)
+				TI_CASE(TI_INT16)
+				TI_CASE(TI_UINT32)
+				TI_CASE(TI_INT32)
+				TI_CASE(TI_FLOAT32)
+				TI_CASE(TI_UINT64)
+				TI_CASE(TI_INT64)
+				TI_CASE(TI_FLOAT64)
+				TI_CASE(TI_STRING)
+			default:
+				return Value();
 			}
+
 #undef TI_CASE
 		}
-		
+
 		void Value::append_to_buffer (ResizableBuffer & buf) const
 		{
 			if (undefined()) throw ValueUndefinedError();
-			
+
 			return _ptr->append_to_buffer(buf);
 		}
 
-// MARK: mark -
-// MARK: mark Unit Tests
+// MARK: -
+// MARK: Unit Tests
 
 #ifdef ENABLE_TESTING
 		UNIT_TEST(Value)
@@ -211,12 +211,9 @@ namespace Dream
 
 			bool exception_thrown;
 
-			try
-			{
+			try {
 				q1->set<bool>(true);
-			}
-			catch (ConversionError & err)
-			{
+			} catch (ConversionError & err)   {
 				exception_thrown = true;
 			}
 
@@ -249,22 +246,22 @@ namespace Dream
 
 			b1 << 15;
 			b1 >> v1;
-			
+
 			check(v1.extract<int>() == 15) << "Value was parsed correctly";
 
 			b2 << v1;
 			b2 >> v2;
 
 			check(v1 == v2) << "Values are equal";
-			
+
 			testing("Pointers");
-			
+
 			int i = 1;
 			float f = 1.0;
 			v1.set(&i);
 			v2.set(&i);
 			v3.set(&f);
-			
+
 			check(v1 == v2) << "Values are equal";
 			check(!(v2 == v3)) << "Values are not equal";
 		}

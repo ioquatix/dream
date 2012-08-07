@@ -13,7 +13,7 @@
 #include "Line.h"
 
 namespace Dream {
-	namespace Geometry {			
+	namespace Geometry {
 		void VertexP3N3M2::apply(const Mat44 & transform) {
 			Vec3 new_position = transform * position;
 			normal = ((transform * (position + normal)) - new_position).normalize();

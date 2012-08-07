@@ -11,7 +11,6 @@
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
-			
 		}
 	}
 }

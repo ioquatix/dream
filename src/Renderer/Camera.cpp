@@ -14,7 +14,7 @@ namespace Dream
 	namespace Renderer
 	{
 		ICamera::~ICamera ()
-		{	
+		{
 		}
 	}
 }

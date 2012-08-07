@@ -18,8 +18,8 @@ namespace Dream
 {
 	namespace Numerics
 	{
-// MARK: mark -
-// MARK: mark Vector Traits
+// MARK: -
+// MARK: Vector Traits
 
 		template <typename NumericT>
 		VectorConversionTraits<1, NumericT>::operator NumericT () const
@@ -28,14 +28,13 @@ namespace Dream
 
 			return v[0];
 		}
-		
+
 		template <unsigned E>
 		bool VectorEqualityTraits<E, float>::equal_within_tolerance (const Vector<E, float> & other, const unsigned & ulps) const
 		{
 			const Vector<E, float> &v = static_cast<const Vector<E, float> &>(*this);
 
-			for (unsigned int i = 0; i < E; ++i)
-			{
+			for (unsigned int i = 0; i < E; ++i) {
 				if (!Numerics::equal_within_tolerance(v[i], other[i], ulps))
 					return false;
 			}
@@ -48,8 +47,7 @@ namespace Dream
 		{
 			const Vector<E, double> &v = static_cast<const Vector<E, double> &>(*this);
 
-			for (unsigned int i = 0; i < E; ++i)
-			{
+			for (unsigned int i = 0; i < E; ++i) {
 				if (!Numerics::equal_within_tolerance(v[i], other[i], ulps))
 					return false;
 			}
@@ -62,8 +60,7 @@ namespace Dream
 		{
 			const Vector<E, float> &v = static_cast<const Vector<E, float> &>(*this);
 
-			for (unsigned int i = 0; i < E; ++i)
-			{
+			for (unsigned int i = 0; i < E; ++i) {
 				if (!Numerics::equivalent(v[i], other[i]))
 					return false;
 			}
@@ -76,8 +73,7 @@ namespace Dream
 		{
 			const Vector<E, double> &v = static_cast<const Vector<E, double> &>(*this);
 
-			for (unsigned int i = 0; i < E; ++i)
-			{
+			for (unsigned int i = 0; i < E; ++i) {
 				if (!Numerics::equivalent(v[i], other[i]))
 					return false;
 			}
@@ -93,77 +89,77 @@ namespace Dream
 
 			return a1.cross(b1).normalize();
 		}
-		
+
 		template <typename NumericT>
 		Vector<2, NumericT> VectorTraits<2, NumericT>::normal () const
 		{
 			const VectorT &v = *static_cast<const VectorT*>(this);
 			Vector<3, NumericT> up(0.0, 0.0, 1.0);
-		
+
 			return (v << 0.0).cross(up).reduce();
 		}
-		
+
 		template <typename NumericT>
 		NumericT VectorTraits<2, NumericT>::aspect_ratio () const
 		{
 			const VectorT &v = *static_cast<const VectorT*>(this);
-			
+
 			return v[WIDTH] / v[HEIGHT];
 		}
-		
+
 		template <typename NumericT>
 		Vector<2, NumericT> VectorTraits<2, NumericT>::shrink_to_fit_aspect_ratio(NumericT n) const
 		{
 			const VectorT &v = *static_cast<const VectorT*>(this);
 
 			Vector<2, NumericT> result;
-			
+
 			result = v;
 			result[WIDTH] = n * result[HEIGHT];
-			
+
 			if (result[WIDTH] <= v[WIDTH]) {
 				return result;
 			}
-			
+
 			result = v;
 			result[HEIGHT] = (1.0 / n) * result[WIDTH];
-			
+
 			return result;
 		}
-		
+
 		template <typename NumericT>
 		Vector<2, NumericT> VectorTraits<2, NumericT>::shrink_to_fit_aspect_ratio(const Vector<2, NumericT> & other) const
 		{
 			const VectorT &v = *static_cast<const VectorT*>(this);
-			
+
 			return this->shrink_to_fit_aspect_ratio(other.aspect_ratio());
 		}
-		
+
 		template <typename NumericT>
 		Vector<2, NumericT> VectorTraits<2, NumericT>::expand_to_fit_aspect_ratio(NumericT n) const
 		{
 			const VectorT &v = *static_cast<const VectorT*>(this);
 
 			Vector<2, NumericT> result;
-			
+
 			result = v;
 			result[WIDTH] = n * result[HEIGHT];
-			
+
 			if (result[WIDTH] >= v[WIDTH]) {
 				return result;
 			}
-			
+
 			result = v;
 			result[HEIGHT] = (1.0 / n) * result[WIDTH];
-			
+
 			return result;
 		}
-		
+
 		template <typename NumericT>
 		Vector<2, NumericT> VectorTraits<2, NumericT>::expand_to_fit_aspect_ratio(const Vector<2, NumericT> & other) const
 		{
 			const VectorT &v = *static_cast<const VectorT*>(this);
-			
+
 			return this->expand_to_fit_aspect_ratio(other.aspect_ratio());
 		}
 
@@ -210,9 +206,9 @@ namespace Dream
 
 			// calculate the result-vector components.
 			result[0] =   (u[1] * f) - (u[2] * e) + (u[3] * d);
-			result[1] = - (u[0] * f) + (u[2] * c) - (u[3] * b);
+			result[1] = -(u[0] * f) + (u[2] * c) - (u[3] * b);
 			result[2] =   (u[0] * e) - (u[1] * c) + (u[3] * a);
-			result[3] = - (u[0] * d) + (u[1] * b) - (u[2] * a);
+			result[3] = -(u[0] * d) + (u[1] * b) - (u[2] * a);
 
 			return result;
 		}
@@ -223,8 +219,8 @@ namespace Dream
 			return cross_product(*this, v, w);
 		}
 
-// MARK: mark -
-// MARK: mark Vector
+// MARK: -
+// MARK: Vector
 
 		template <unsigned E, typename NumericT>
 		Vector<E, NumericT>::Vector (const NumericT & x)
@@ -238,7 +234,7 @@ namespace Dream
 		Vector<E, NumericT>::Vector (const NumericT & x, const NumericT & y)
 		{
 			DREAM_STATIC_ASSERT(E == 2);
-		
+
 			_vector[0] = x;
 			_vector[1] = y;
 		}
@@ -247,7 +243,7 @@ namespace Dream
 		Vector<E, NumericT>::Vector (const NumericT & x, const NumericT & y, const NumericT & z)
 		{
 			DREAM_STATIC_ASSERT(E == 3);
-		
+
 			_vector[0] = x;
 			_vector[1] = y;
 			_vector[2] = z;
@@ -257,7 +253,7 @@ namespace Dream
 		Vector<E, NumericT>::Vector (const NumericT & x, const NumericT & y, const NumericT & z, const NumericT & w)
 		{
 			DREAM_STATIC_ASSERT(E == 4);
-			
+
 			_vector[0] = x;
 			_vector[1] = y;
 			_vector[2] = z;
@@ -292,7 +288,7 @@ namespace Dream
 		void Vector<E, NumericT>::set (const Vector<E2, other_numeric_t> & other)
 		{
 			const unsigned I = E < E2 ? E : E2;
-			
+
 			for (unsigned i = 0; i < I; ++i)
 				this->_vector[i] = (NumericT)other[i];
 		}
@@ -312,7 +308,7 @@ namespace Dream
 		template <unsigned E, typename NumericT> template <typename OtherT>
 		bool Vector<E, NumericT>::operator== (const OtherT & other) const
 		{
-			return ! (*this != other);
+			return !(*this != other);
 		}
 
 		template <unsigned E, typename NumericT> template <typename OtherT>
@@ -330,6 +326,7 @@ namespace Dream
 			for (unsigned i = 0; i < E; ++i)
 				if (_vector[i] >= other[i])
 					return false;
+
 			return true;
 		}
 
@@ -339,6 +336,7 @@ namespace Dream
 			for (unsigned i = 0; i < E; ++i)
 				if (_vector[i] <= other[i])
 					return false;
+
 			return true;
 		}
 
@@ -349,6 +347,7 @@ namespace Dream
 			for (unsigned i = 0; i < E; ++i)
 				if (_vector[i] > other[i])
 					return false;
+
 			return true;
 		}
 
@@ -358,6 +357,7 @@ namespace Dream
 			for (unsigned i = 0; i < E; ++i)
 				if (_vector[i] < other[i])
 					return false;
+
 			return true;
 		}
 
@@ -405,21 +405,20 @@ namespace Dream
 		{
 			NumericT result = 0;
 
-			for (unsigned i = 0; i < E; ++i)
-			{
+			for (unsigned i = 0; i < E; ++i) {
 				result += _vector[i] * other[i];
 			}
 
 			return result;
 		}
-		
+
 		template <unsigned E, typename NumericT> template <typename OtherT>
 		NumericT Vector<E, NumericT>::angle_between (const OtherT & other) const
-		{			
+		{
 			NumericT r = this->dot(other) / (this->length() * other.length());
-			
+
 			return Number<NumericT>::acos(Number<NumericT>::clamp(r, (NumericT)-1.0, (NumericT)1.0));
-		}		
+		}
 
 		template <unsigned E, typename NumericT>
 		NumericT Vector<E, NumericT>::sum () const
@@ -452,8 +451,7 @@ namespace Dream
 
 			DREAM_ASSERT(m);
 
-			for (unsigned i = E; i > 0; i -= 1)
-			{
+			for (unsigned i = E; i > 0; i -= 1) {
 				m /= _vector[i-1];
 				r[i-1] = Number<NumericT>::floor(k / m);
 				k = Number<NumericT>::mod(k, m);
@@ -473,8 +471,7 @@ namespace Dream
 			NumericT m = 1;
 
 			//		x(1) + y(sx) + z(sx*sy)
-			for (unsigned i = 0; i < E; i += 1)
-			{
+			for (unsigned i = 0; i < E; i += 1) {
 				idx += coord[i] * m;
 				m *= _vector[i];
 			}
@@ -502,8 +499,7 @@ namespace Dream
 		template <unsigned E, typename NumericT>
 		Vector<E, NumericT> & Vector<E, NumericT>::abs ()
 		{
-			for (unsigned int i = 0; i < E; ++i)
-			{
+			for (unsigned int i = 0; i < E; ++i) {
 				_vector[i] = Math::abs(_vector[i]);
 			}
 
@@ -542,15 +538,13 @@ namespace Dream
 		{
 			NumericT n = this->length();
 
-			if (n == 0)
-			{
+			if (n == 0) {
 				return *this;
 			}
 
 			//DREAM_ASSERT(n > 0 && "Trying to normalize zero-length vector!");
 
-			if (to_length != n)
-			{
+			if (to_length != n) {
 				NumericT factor = to_length / n;
 				*this *= factor;
 			}
@@ -571,13 +565,10 @@ namespace Dream
 		template <unsigned E, typename NumericT> template <typename OtherT>
 		void Vector<E, NumericT>::constrain (const Vector<E, NumericT> & with, const OtherT & limits)
 		{
-			for (unsigned int i = 0; i < E; ++i)
-			{
-				if (limits[i] < 0)
-				{
+			for (unsigned int i = 0; i < E; ++i) {
+				if (limits[i] < 0) {
 					_vector[i] = (_vector[i] < with[i] ? _vector[i] : with[i]) * -(NumericT)limits[i];
-				} else if (limits[i] > 0)
-				{
+				} else if (limits[i] > 0) {
 					_vector[i] = (_vector[i] > with[i] ? _vector[i] : with[i]) * (NumericT)limits[i];
 				}
 			}
@@ -623,13 +614,12 @@ namespace Dream
 		template <unsigned E, typename NumericT>
 		bool Vector<E, NumericT>::increment (const Vector<E, NumericT> & max)
 		{
-			for (unsigned i = 0; i < E; ++i)
-			{
-				if ((_vector[i] + 1) < max[i])
-				{
+			for (unsigned i = 0; i < E; ++i) {
+				if ((_vector[i] + 1) < max[i]) {
 					_vector[i] += 1;
 
 					if (i) _vector[i-1] = 0;
+
 					return true;
 				}
 			}
@@ -643,8 +633,7 @@ namespace Dream
 		void Vector<E, NumericT>::pack (unsigned bits, PackedT & p) const
 		{
 			unsigned mask = ((1 << bits) - 1);
-			for (unsigned i = 0; i < E; ++i)
-			{
+			for (unsigned i = 0; i < E; ++i) {
 				p <<= bits;
 
 				// Mask out higher order bits
@@ -656,8 +645,7 @@ namespace Dream
 		template <unsigned E, typename NumericT> template <typename PackedT>
 		void Vector<E, NumericT>::unpack (unsigned bits, const PackedT & p)
 		{
-			for (unsigned i = 0; i < E; ++i)
-			{
+			for (unsigned i = 0; i < E; ++i) {
 				_vector[E-(i+1)] = (p >> (bits*i)) & ((1 << bits) - 1);
 			}
 		}

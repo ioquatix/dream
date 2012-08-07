@@ -22,27 +22,25 @@ namespace Dream
 		namespace Audio
 		{
 			using namespace Dream::Resources;
-			
-			class Sound : public Object
-			{
+
+			class Sound : public Object {
+			public:
+				class Loader : implements ILoadable {
 				public:
-					class Loader : implements ILoadable
-					{
-					public:
-						virtual void register_loader_types (ILoader * loader);
-						virtual Ref<Object> load_from_data (const Ptr<IData> data, const ILoader * loader);
-					};
-					
-				protected:
-					ALuint _buffer_id;
-					ALenum _format;
-					ALfloat _frequency;
-					
-				public:
-					Sound (ALenum format, ALsizei frequency, const Buffer *);
-					virtual ~Sound ();
-									
-					friend class Source;
+					virtual void register_loader_types (ILoader * loader);
+					virtual Ref<Object> load_from_data (const Ptr<IData> data, const ILoader * loader);
+				};
+
+			protected:
+				ALuint _buffer_id;
+				ALenum _format;
+				ALfloat _frequency;
+
+			public:
+				Sound (ALenum format, ALsizei frequency, const Buffer *);
+				virtual ~Sound ();
+
+				friend class Source;
 			};
 		}
 	}

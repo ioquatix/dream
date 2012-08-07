@@ -15,8 +15,8 @@
 namespace Dream
 {
 	/** The Client namespace is functionality which is specific to actual graphical applications.
-	
-	This includes such functionality such as graphics, audio, user interface, and associated areas.	
+
+	This includes such functionality such as graphics, audio, user interface, and associated areas.
 	*/
 	namespace Client
 	{

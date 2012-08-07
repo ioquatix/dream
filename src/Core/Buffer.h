@@ -24,8 +24,7 @@ namespace Dream
 
 		 We are only interested in a subset of possible types. Therefore, we only check for these particular types.
 		 */
-		enum Mimetype
-		{
+		enum Mimetype {
 			UNKNOWN = 0,
 			IMAGE_JPEG = 10,
 			IMAGE_PNG = 11,
@@ -38,26 +37,25 @@ namespace Dream
 		/**
 		 Abstract buffer providing read-only access to data.
 		 */
-		class Buffer
-		{
+		class Buffer {
 		public:
 			virtual ~Buffer ();
 
 			/// Access data at a particular location. Range checked.
 			const ByteT * at (IndexT loc) const;
-			
+
 			/// Read a variable out of the buffer
 			void read (IndexT offset, IndexT size, ByteT * value) const;
-			
+
 			/// Helper to read values of specific type
 			template <typename t>
 			IndexT read (IndexT offset, t & value) const
 			{
 				read(offset, sizeof(t), (ByteT *)&value);
-				
+
 				return sizeof(t);
 			}
-			
+
 			template <typename t>
 			IndexT read (IndexT offset, t & value, Endian src_type, Endian dst_type) const
 			{
@@ -65,13 +63,13 @@ namespace Dream
 				endian_decode(value, src_type, dst_type);
 				return cnt;
 			}
-			
+
 			template <typename t>
 			IndexT read (IndexT offset, t & value, Endian src_type) const
 			{
 				return read(offset, value, src_type, host_endian());
 			}
-			
+
 			/// Access data at a particular location. Not range checked.
 			const ByteT & operator[] (IndexT idx) const;
 
@@ -95,13 +93,13 @@ namespace Dream
 
 			/// Check the mime-type of the data contained within the buffer.
 			Mimetype mimetype ();
-			
+
 			/// Dump the buffer as hex to the given stream.
 			void hexdump (std::ostream &);
-			
+
 			/// Basic data checksum
 			uint32_t checksum () const;
-			
+
 			/// Write the contents of the buffer to the specified file path.
 			void write_to_file (const Path &);
 		};
@@ -109,14 +107,13 @@ namespace Dream
 		/**
 		 Abstract buffer providing read/write access to data.
 		 */
-		class MutableBuffer : public Buffer
-		{
+		class MutableBuffer : public Buffer {
 		public:
 			virtual ~MutableBuffer ();
 
 			/// Provide the const version
 			using Buffer::begin;
-			
+
 			/// Returns the address of the first byte in the buffer.
 			virtual ByteT * begin () abstract;
 			/// Returns the address of the last byte + 1 in the buffer.
@@ -137,7 +134,7 @@ namespace Dream
 			void assign (const Buffer & other, IndexT other_offset, IndexT other_size, IndexT offset = 0);
 			/// Copy a c-style string into the buffer
 			void assign (const char * string, IndexT offset = 0);
-			
+
 			/// Write a specific value into the buffer at the specified offset.
 			template <typename AnyT>
 			IndexT write (const AnyT & value, IndexT offset)
@@ -147,37 +144,36 @@ namespace Dream
 				return offset + sizeof(AnyT);
 			}
 		};
-		
+
 		/**
 		 A buffer that can be resized. A resizable buffer may have a capacity >= size.
 		 */
-		class ResizableBuffer : public MutableBuffer
-		{
+		class ResizableBuffer : public MutableBuffer {
 		public:
 			virtual ~ResizableBuffer ();
-			
+
 			/// The currently allocated capacity of the buffer. Can be changed by calling reserve().
 			virtual IndexT capacity () const abstract;
-			
+
 			/// Reserve/allocate more capacity if required. Will release capacity if size is smaller than current capacity.
 			virtual void reserve (IndexT size) abstract;
-			
+
 			/// Change the size of the buffer. Will allocate more capacity if required.
 			virtual void resize (IndexT size) abstract;
-			
+
 			/// Increase the size of the buffer by the given size.
 			void expand (IndexT amount);
-			
+
 			/// Appends a set number of bytes to the end of the buffer
 			void append (IndexT size, const ByteT * data);
-			
+
 			// Helper for appending primitive types.
 			template <typename t>
 			void append (const t & value)
 			{
 				append(sizeof(t), (const ByteT *)&value);
 			}
-			
+
 			/// Append data from an incremental iterator
 			template <typename AnyT>
 			void append (AnyT begin, AnyT end)
@@ -208,19 +204,18 @@ namespace Dream
 		 In this case, we could wrap the data up in a buffer, but we didn't have to copy the data needlessly. Using a different kind of buffer, such as
 		 DynamicBuffer, would copy the data.
 		 */
-		class StaticBuffer : public Buffer
-		{
+		class StaticBuffer : public Buffer {
 			IndexT _size;
 			const ByteT * _buf;
 
 		public:
 			/// Allocate the data with a c-style string. Uses strlen to determine the length of the buffer. Includes the
-			/// null character by default.			
+			/// null character by default.
 			static StaticBuffer for_cstring (const char * str, bool include_null_byte = true);
 
 			/// Allocate the data with a sequence of bytes, buf, of specified size.
 			StaticBuffer (const ByteT * buf, const IndexT & size);
-			
+
 			// Standard copy constructer is fine.
 
 			virtual ~StaticBuffer ();
@@ -228,25 +223,24 @@ namespace Dream
 			virtual IndexT size () const;
 			virtual const ByteT * begin () const;
 		};
-		
+
 		/**
 		 A read-only buffer that provides fast access to files on the file-system.
-		 
+
 		 The buffer uses mmap (or equivalent) internally to load data from the disk. This buffer is designed to be as fast as possible to load data from the
 		 disk, and will reduce the number of copies required.
 		 */
-		class FileBuffer : public Buffer, private NonCopyable
-		{
+		class FileBuffer : public Buffer, private NonCopyable {
 		protected:
 			IndexT _size;
 			void * _buf;
-			
+
 		public:
 			/// Maps the data from the file specified by file_path into memory.
 			FileBuffer (const Path & file_path);
-			
+
 			virtual ~FileBuffer ();
-			
+
 			virtual IndexT size () const;
 			virtual const ByteT * begin () const;
 		};
@@ -256,8 +250,7 @@ namespace Dream
 
 		 This buffer provides maximum flexibility when dealing with data which may change its size, and is almost API compatible with <tt>std::vector<unsigned char></tt>, but has optimizations for data buffering. This can provide up to 30% increase in performance when dealing with a lot of data.
 		 */
-		class DynamicBuffer : public ResizableBuffer, private NonCopyable
-		{
+		class DynamicBuffer : public ResizableBuffer, private NonCopyable {
 			IndexT _capacity, _size;
 			ByteT * _buf;
 
@@ -270,7 +263,7 @@ namespace Dream
 			/// Construct a pre-sized buffer.
 			/// If reserved is true, the size refers to capacity i.e. equivalent of calling reserve(size).
 			DynamicBuffer (IndexT size, bool reserved = false);
-			
+
 			virtual ~DynamicBuffer ();
 
 			virtual IndexT capacity () const;
@@ -310,8 +303,7 @@ namespace Dream
 
 		 This class will copy its data. Therefore, you may want to consider StaticBuffer if you don't want to copy the data.
 		 */
-		class PackedBuffer : public MutableBuffer, private NonCopyable
-		{
+		class PackedBuffer : public MutableBuffer, private NonCopyable {
 			IndexT _size;
 
 			PackedBuffer (IndexT size);
@@ -338,8 +330,7 @@ namespace Dream
 
 		 This can be used to provide a buffer to a stream processing function.
 		 */
-		class BufferStream : public std::streambuf, public std::istream
-		{
+		class BufferStream : public std::streambuf, public std::istream {
 		public:
 			BufferStream (const Buffer & buf);
 		};

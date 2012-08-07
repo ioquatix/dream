@@ -13,13 +13,13 @@
 
 @interface DOpenGLView : NSOpenGLView {
 	Dream::Client::Display::Cocoa::ViewContext * _display_context;
-	
+
 	Dream::Client::Display::MultiFingerInput * _multi_finger_input;
-	
+
 	BOOL _skip_next_motion_event;
 }
 
-@property(nonatomic,assign) Dream::Client::Display::Cocoa::ViewContext * displayContext;
+@property (nonatomic, assign) Dream::Client::Display::Cocoa::ViewContext * displayContext;
 
 - (void) warpCursorToCenter;
 

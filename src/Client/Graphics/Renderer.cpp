@@ -11,45 +11,41 @@
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
-			
 			INode::~INode() {
-				
 			}
-			
+
 			void INode::accept(IRenderer * renderer) {
 				renderer->render(this);
 			}
-			
+
 			void INode::traverse(IRenderer * renderer) {
 				// An implementation would look something like this:
 				//for (auto child : this->children()) {
 				//	child->accept(renderer);
 				//}
 			}
-			
-// MARK: mark -
-			
+
+// MARK: -
+
 			IRenderer::~IRenderer() {
-				
 			}
-				
+
 			void IRenderer::render(INode * node) {
 				node->traverse(this);
 			}
-			
+
 			void IRenderer::traverse(INode * node) {
 				node->accept(this);
 			}
-			
-// MARK: mark -
-			
+
+// MARK: -
+
 			RendererState::~RendererState() {
-				
 			}
-			
+
 			GLuint RendererState::compile_shader_of_type (GLenum type, StringT name) {
 				Ref<IData> data = resource_loader->data_for_resource(name);
-				
+
 				if (data) {
 					logger()->log(LOG_DEBUG, LogBuffer() << "Loading " << name);
 					return shader_manager->compile(type, data->buffer().get());
@@ -57,42 +53,41 @@ namespace Dream {
 					return 0;
 				}
 			}
-			
+
 			Ref<Program> RendererState::load_program(StringT name) {
 				GLuint vertex_shader = compile_shader_of_type(GL_VERTEX_SHADER, name + ".vertex-shader");
 				GLuint geometry_shader = compile_shader_of_type(GL_GEOMETRY_SHADER, name + ".geometry-shader");
 				GLuint fragment_shader = compile_shader_of_type(GL_FRAGMENT_SHADER, name + ".fragment-shader");
-				
+
 				Ref<Program> program = new Program;
-				
+
 				// We must have at least one shader for the program to do anything:
 				DREAM_ASSERT(vertex_shader || geometry_shader || fragment_shader);
-				
+
 				if (vertex_shader)
 					program->attach(vertex_shader);
-				
+
 				if (geometry_shader)
 					program->attach(geometry_shader);
-				
+
 				if (fragment_shader)
 					program->attach(fragment_shader);
-				
+
 				program->link();
 				program->bind_fragment_location("fragment_color");
-				
+
 				return program;
-			}	
-			
+			}
+
 			Ref<Texture> RendererState::load_texture(const TextureParameters & parameters, StringT name) {
 				Ref<IPixelBuffer> image = resource_loader->load<IPixelBuffer>(name);
-				
+
 				if (image) {
 					return texture_manager->allocate(parameters, image);
 				} else {
 					return nullptr;
 				}
 			}
-			
 		}
 	}
 }

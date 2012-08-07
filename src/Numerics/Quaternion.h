@@ -27,8 +27,7 @@ namespace Dream
 		 @todo Better documentation
 		 */
 		template <typename _NumericT = RealT>
-		class Quaternion
-		{
+		class Quaternion {
 		protected:
 			Vector<4, _NumericT> _vector;
 		public:
@@ -49,7 +48,7 @@ namespace Dream
 
 			/// Assignment constructor.
 			Quaternion & operator= (const Vec4T & other);
-			
+
 			/// Equality
 			bool operator== (const Quaternion & other) {
 				return vector() == other.vector();
@@ -65,15 +64,15 @@ namespace Dream
 
 			/// Point constructor.
 			Quaternion (const Vec3T & point);
-			
+
 			/// Get the rotation from a matrix
 			static Quaternion from_matrix (const Mat44 & m);
 
 			/// Calculate the rotation from Euler angles
 			static Quaternion from_euler(Vec3T angles);
-			
+
 			static Quaternion from_1ijk(Vec4T);
-			
+
 			/// Proxy function for convenience
 			const NumericT & operator[] (unsigned i) const;
 			/// Proxy function for convenience
@@ -114,7 +113,7 @@ namespace Dream
 
 			/// Return the conjugated quaternion.
 			Quaternion conjugated_quaternion () const;
-			
+
 			/// Extract axis information
 			Vec3T extract_axis (IndexT a) const;
 

@@ -19,24 +19,21 @@ namespace Dream
 	namespace Numerics
 	{
 		template <typename t>
-		class FloatingPointIntegerTraits
-		{
+		class FloatingPointIntegerTraits {
 		};
 
 		template <>
-		class FloatingPointIntegerTraits<float>
-		{
+		class FloatingPointIntegerTraits<float>{
 		public:
 			typedef int32_t FIntT;
 			typedef uint32_t FUIntT;
-			
+
 			/// Manually calculated - approximate accuracy of zero point for libm when dealing with trigonometric functions.
 			static const uint32_t ACCURACY = 897988541;
 		};
 
 		template <>
-		class FloatingPointIntegerTraits<double>
-		{
+		class FloatingPointIntegerTraits<double>{
 		public:
 			typedef int64_t FIntT;
 			typedef uint64_t FUIntT;
@@ -46,8 +43,7 @@ namespace Dream
 		};
 
 		template <typename t>
-		class FloatingPointTraits
-		{
+		class FloatingPointTraits {
 		public:
 			typedef t FloatT;
 			typedef typename FloatingPointIntegerTraits<t>::FIntT FIntT;
@@ -115,7 +111,7 @@ namespace Dream
 				// Make sure max_ulps is non-negative and small enough that the
 				// default NAN won't compare as equal to anything.
 				DREAM_ASSERT(max_ulps < 4 * 1024 * 1024);
-	
+
 				if (integral_difference(a, b) <= max_ulps)
 					return true;
 
@@ -144,7 +140,7 @@ namespace Dream
 		uint32_t next_highest_power_of_2 (uint32_t n)
 		{
 			if (n == 0) return 0;
-			
+
 			n--;
 			n |= n >> 1;
 			n |= n >> 2;
@@ -184,8 +180,8 @@ namespace Dream
 			return FloatingPointTraits<double>::equivalent(a, b);
 		}
 
-// MARK: mark -
-// MARK: mark Unit Tests
+// MARK: -
+// MARK: Unit Tests
 
 #ifdef ENABLE_TESTING
 		UNIT_TEST(Numerics)
@@ -228,12 +224,12 @@ namespace Dream
 
 			std::cout << "Accuracy of float: " << FloatingPointTraits<double>::convert_to_integer(t) << std::endl;
 		}
-		
+
 		UNIT_TEST(PowerOfTwo)
 		{
 			int k = next_highest_power_of_2(16);
 			check(k == 16) << "Next power of two calculated correctly";
-			
+
 			k = next_highest_power_of_2(17);
 			check(k == 32) << "Next power of two calculated correctly";
 		}
@@ -250,12 +246,10 @@ namespace Dream
 			FloatT f = R90;
 			FloatT v1 = Number<FloatT>::cos(f);
 
-			if (v1 < (FloatT) 0.0)
-			{
+			if (v1 < (FloatT) 0.0) {
 				// Increment floating point number to next discrete step
 				f = F::convert_to_float (F::convert_to_integer (f) + 1);
-			} else
-			{
+			} else {
 				// Decrement floating point number to previous discrete step
 				f = F::convert_to_float (F::convert_to_integer (f) - 1);
 			}
@@ -279,11 +273,11 @@ namespace Dream
 			std::cout << "   Float ACCURACY: " << FloatingPointTraits<float>::convert_to_integer(0.000001) << std::endl;
 			std::cout << "  Double ACCURACY: " << FloatingPointTraits<double>::convert_to_integer(0.000000000001) << std::endl;
 		}
-		
+
 		UNIT_TEST(CheckRotationAccuracy)
 		{
 			testing("Rotations");
-			
+
 			check(equivalent(R45 * 2, R90)) << "R45 is correct";
 			check(equivalent(R90 * 2, R180)) << "R90 is correct";
 			check(equivalent(R180 * 2, R360)) << "R360 is correct";

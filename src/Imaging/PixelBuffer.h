@@ -16,7 +16,7 @@
 namespace Dream {
 	namespace Imaging {
 		using namespace Dream::Numerics;
-		
+
 		/// Pixel data type.
 		/// These should be compatible with the equiv. OpenGL types
 		enum ImageDataType {
@@ -28,7 +28,7 @@ namespace Dream {
 			UINT = 0x1405,
 			FLOAT = 0x1406,
 			DOUBLE = 0x140A,
-			
+
 			// Packed data types:
 			UBYTE_3_3_2 = 0x8032,
 			USHORT_4_4_4_4 = 0x8033,
@@ -43,7 +43,7 @@ namespace Dream {
 			UINT_8_8_8_8_REV = 0x8367,
 			UINT_2_10_10_10_REV = 0x8368
 		};
-		
+
 		/// Image pixel formats.
 		enum ImagePixelFormat {
 			// Generic pixel formats:
@@ -51,31 +51,30 @@ namespace Dream {
 			GENERIC_2_CHANNEL = 2,
 			GENERIC_3_CHANNEL = 3,
 			GENERIC_4_CHANNEL = 4,
-			
+
 			// These types map to GL_ enumerations:
 			RED = 0x1903,
 			GREEN = 0x1904,
 			BLUE = 0x1905,
 			ALPHA = 0x1906,
 			RGB = 0x1907,
-			RGBA = 0x1908, 
+			RGBA = 0x1908,
 			LUMINANCE = 0x1909,
 			LUMINANCE_ALPHA = 0x190A
 		};
-			
+
 		unsigned data_type_byte_size(ImageDataType type);
 		unsigned data_type_channel_count(ImageDataType type);
 		unsigned pixel_format_channel_count(ImagePixelFormat type);
-		
+
 		// This type is guaranteed to be big enough to hold even RGBA16.
 		// This is useful when you want a generic representation of a pixel
 		typedef uint64_t PixelT;
 		typedef std::size_t DimentionT;
 		typedef Vector<3, std::size_t> PixelCoordinateT;
-		
-		class IPixelBuffer : implements IObject
-		{
-		public:					
+
+		class IPixelBuffer : implements IObject {
+		public:
 			enum Component {
 				RED = 0,
 				GREEN = 1,
@@ -84,95 +83,94 @@ namespace Dream {
 				INTENSITY = 4,
 				LUMINANCE = 5
 			};
-			
+
 			virtual ImagePixelFormat pixel_format () const abstract; // eg GL_RGBA
 			virtual ImageDataType pixel_data_type () const; // eg GL_UNSIGNED_BYTE
-			
+
 			std::size_t pixel_data_length () const { return size().product() * bytes_per_pixel(); }
-			
+
 			// Returns the equivalent pixel type, ie GL_UNSIGNED_INT_8_8_8_8 -> GL_UNSIGNED_INT
 			ImageDataType packed_type () const;
 			unsigned channel_count () const;
-			
+
 			bool is_packed_format () const;
 			bool is_byte_order_reversed () const;
-			
+
 			unsigned bytes_per_pixel () const;
-			
+
 			// Helper: Returns the maximum value of an individual pixel
 			PixelT max_pixel_size () const {
 				return ((PixelT)1 << (bytes_per_pixel() * 8)) - 1;
 			}
-					
+
 			virtual PixelCoordinateT size () const abstract;
-			
+
 			// Data accessors
 			virtual const ByteT * pixel_data () const abstract;
-			
+
 			// Get the number of bytes to index into pixel_data
 			std::size_t pixel_offset (const PixelCoordinateT & at) const {
 				std::size_t offset = at[X] + (at[Y] * size()[X]) + (at[Z] * size()[X] * size()[Y]);
 				return offset * bytes_per_pixel();
 			}
-			
+
 			// pixbuf->at(vec<unsigned>(43, 12));
 			const ByteT* pixel_data_at (const PixelCoordinateT &at) const {
 				return pixel_data() + pixel_offset(at);
 			}
-			
+
 			// Helper to read pixel data
 			// This may convert between the pixbuf format and the output pixel
 			// void read_pixel (const PixelCoordinateT &at, Vector<4, float> &output) const;
 			template <typename DataT>
 			void read_data_at (const unsigned &idx, DataT &val) const {
 				const ByteT *data = pixel_data();
-				
+
 				val = *(DataT*)(&data[idx]);
 			}
-			
+
 			// This does not do _any_ sanity checking what-so-ever.
 			template <unsigned D, typename NumericT>
 			void read_pixel (const PixelCoordinateT &at, Vector<D, NumericT> &output) const {
 				DREAM_ASSERT(!is_packed_format() && "Packed pixel formats not supported for reading!");
-				
+
 				std::size_t from = pixel_offset(at);
 				std::size_t bytes_per_component = bytes_per_pixel() / channel_count();
-				
+
 				for (unsigned i = 0; i < D; i += 1) {
 					read_data_at(from + (i * bytes_per_component), output[i]);
 				}
 			}
-			
+
 			PixelT read_pixel (const PixelCoordinateT &at);
 		};
-		
+
 		enum CopyFlags {
 			CopyNormal = 0,
 			CopyFlip = 1
 		};
-		
+
 		// Some pixel buffers (for example the screen buffer), can never have mutable operations without
 		// high cost, so there is a sub-interface for 'typically' mutable pixbufs.
-		class IMutablePixelBuffer : implements IPixelBuffer
-		{
-		public:			
+		class IMutablePixelBuffer : implements IPixelBuffer {
+		public:
 			virtual ByteT * pixel_data () abstract;
 			using IPixelBuffer::pixel_data;
-			
+
 			void zero (PixelT px = 0);
-			
+
 			ByteT* pixel_data_at (const PixelCoordinateT &at) {
 				return pixel_data() + pixel_offset(at);
 			}
-			
+
 			template <typename DataT>
 			void write_data_at (const unsigned &idx, const DataT &val)
 			{
 				ByteT *data = pixel_data();
-				
+
 				*(DataT*)(&data[idx]) = val;
 			}
-			
+
 			/// Set all bytes to zero.
 			void clear ();
 
@@ -180,28 +178,26 @@ namespace Dream {
 			template <unsigned D, typename NumericT>
 			void write_pixel (const PixelCoordinateT &at, const Vector<D, NumericT> &input) {
 				DREAM_ASSERT(!is_packed_format() && "Packed pixel formats not supported for reading!");
-				
+
 				unsigned from = pixel_offset(at);
 				unsigned bytes_per_component = bytes_per_pixel() / channel_count();
-				
+
 				DREAM_ASSERT(sizeof(NumericT) == bytes_per_component);
-				
+
 				for (unsigned i = 0; i < D; i += 1) {
 					write_data_at(from + (i * bytes_per_component), input[i]);
 				}
 			}
-			
+
 			void write_pixel (const PixelCoordinateT &at, const PixelT &px);
-			
+
 			// Copy from buf to this
 			void copy_pixels_from(const IPixelBuffer& buf, const PixelCoordinateT &from, const PixelCoordinateT &to, const PixelCoordinateT &size, CopyFlags copy_flags = CopyNormal);
-			
+
 			void copy_pixels_from(const IPixelBuffer& buf, const PixelCoordinateT &to, CopyFlags copy_flags = CopyNormal) {
 				copy_pixels_from(buf, Vec3u(0, 0, 0), to, buf.size(), copy_flags);
 			}
 		};
-		
-
 	}
 }
 

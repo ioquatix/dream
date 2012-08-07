@@ -15,20 +15,19 @@ namespace Dream {
 	namespace Client {
 		namespace Display {
 			namespace UIKit {
-			
 				class Application : public Object, implements IApplication {
-					protected:
-						Ref<IApplicationDelegate> _application_delegate;
-						
-					public:
-						Application(Ptr<IApplicationDelegate> delegate);
-						virtual ~Application ();
-						
-						void run();
-						
-						virtual Ref<IContext> create_context (Ref<Dictionary> config);
-						
-						virtual IApplicationDelegate * delegate () const;
+				protected:
+					Ref<IApplicationDelegate> _application_delegate;
+
+				public:
+					Application(Ptr<IApplicationDelegate> delegate);
+					virtual ~Application ();
+
+					void run();
+
+					virtual Ref<IContext> create_context (Ref<Dictionary> config);
+
+					virtual IApplicationDelegate * delegate () const;
 				};
 			}
 		}

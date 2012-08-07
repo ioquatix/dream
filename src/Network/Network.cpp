@@ -15,17 +15,14 @@ namespace Dream
 	{
 		ConnectionError::ConnectionError (const std::string & what) : std::runtime_error(what)
 		{
-			
 		}
-		
+
 		ConnectionResetByPeer::ConnectionResetByPeer (const std::string & what) : ConnectionError(what)
 		{
-			
 		}
-		
+
 		ConnectionShutdown::ConnectionShutdown (const std::string & what) : _what(what)
 		{
-			
 		}
 	}
 }

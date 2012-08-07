@@ -19,19 +19,19 @@ The view content is basically an EAGL surface you render your OpenGL scene into.
 Note that setting the view non-opaque will only work if the EAGL surface has an alpha channel.
 */
 @interface EAGLView : UIView {
-    /* The pixel dimensions of the backbuffer */
+	/* The pixel dimensions of the backbuffer */
 	BOOL _resize_buffers;
-    GLint _backing_width;
-    GLint _backing_height;
-    
-    EAGLContext * _context;
-    
-    /* OpenGL names for the renderbuffer and framebuffers used to render to this view */
+	GLint _backing_width;
+	GLint _backing_height;
+
+	EAGLContext * _context;
+
+	/* OpenGL names for the renderbuffer and framebuffers used to render to this view */
 	GLuint _default_framebuffer, _color_renderbuffer;
-    
-    /* OpenGL name for the depth buffer that is attached to view_framebuffer, if it exists (0 if it does not exist) */
-    GLuint _depth_renderbuffer;
-	
+
+	/* OpenGL name for the depth buffer that is attached to view_framebuffer, if it exists (0 if it does not exist) */
+	GLuint _depth_renderbuffer;
+
 	// The display link and associated render thread.
 	NSThread * _render_thread;
 	NSConditionLock * _render_thread_lock;

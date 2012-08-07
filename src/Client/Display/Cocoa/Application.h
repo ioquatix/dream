@@ -15,23 +15,22 @@ namespace Dream {
 	namespace Client {
 		namespace Display {
 			namespace Cocoa {
-			
 				class Application : public Object, implements IApplication {
-					protected:
-						Ref<IApplicationDelegate> _application_delegate;
-						
-						void create_application_menus();
-						void transform_to_foreground_application();
-						
-					public:
-						Application(Ptr<IApplicationDelegate> delegate);
-						virtual ~Application ();
-						
-						void run();
-						
-						virtual Ref<IContext> create_context (Ref<Dictionary> config);
-						
-						virtual IApplicationDelegate * delegate () const;
+				protected:
+					Ref<IApplicationDelegate> _application_delegate;
+
+					void create_application_menus();
+					void transform_to_foreground_application();
+
+				public:
+					Application(Ptr<IApplicationDelegate> delegate);
+					virtual ~Application ();
+
+					void run();
+
+					virtual Ref<IContext> create_context (Ref<Dictionary> config);
+
+					virtual IApplicationDelegate * delegate () const;
 				};
 			}
 		}

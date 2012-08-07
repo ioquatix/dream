@@ -19,8 +19,7 @@ namespace Dream
 		/** This class can assist in the calculation of mathematical averages.
 		 */
 		template <typename type_t>
-		class Average
-		{
+		class Average {
 		protected:
 			/// The number of samples taken so far.
 			uint32_t _times;
@@ -88,7 +87,6 @@ namespace Dream
 				add_samples(other);
 			}
 		};
-
 	}
 }
 

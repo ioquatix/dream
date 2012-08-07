@@ -11,18 +11,14 @@
 
 namespace Dream {
 	namespace Resources {
-		
 		LoadError::LoadError (StringT what) : _what(what) {
-			
 		}
-		
+
 		LoadError::~LoadError () throw () {
-			
 		}
-		
+
 		const char * LoadError::what () const noexcept {
 			return _what.c_str();
 		}
-		
 	}
 }

@@ -15,7 +15,7 @@
 namespace Dream
 {
 	namespace Numerics
-	{	
+	{
 		/// @todo Add tests for these functions.
 		/// Linear interpolate between two values
 		template <typename InterpolateT, typename AnyT>

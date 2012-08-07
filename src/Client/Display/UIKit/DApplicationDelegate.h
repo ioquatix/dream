@@ -12,7 +12,7 @@
 #import <UIKit/UIKit.h>
 #include "Application.h"
 
-@interface DApplicationDelegate : NSObject<UIApplicationDelegate> 
+@interface DApplicationDelegate : NSObject<UIApplicationDelegate>
 {
 }
 

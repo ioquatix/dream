@@ -22,40 +22,35 @@ namespace Dream
 {
 	namespace Events
 	{
-		
 		using Dream::Numerics::Vec3;
-		
+
 		typedef intptr_t FingerID;
-		
-		struct FingerTracking
-		{
+
+		struct FingerTracking {
 			Vec3 position;
 			Vec3 motion;
-			
+
 			ButtonT button;
 		};
-		
-		class MultiFingerInput
-		{
-		protected:				
+
+		class MultiFingerInput {
+		protected:
 			typedef std::map<FingerID, FingerTracking> FingersMap;
 			FingersMap _fingers;
-			
+
 			std::vector<ButtonT> _free_buttons;
 			ButtonT _top;
 
 			ButtonT allocate_button ();
 			void release_button(ButtonT);
-			
+
 		public:
 			MultiFingerInput ();
-			
+
 			const FingerTracking & begin_motion (FingerID finger, Vec3 position);
 			const FingerTracking & update_motion (FingerID finger, Vec3 position);
 			const FingerTracking finish_motion (FingerID finger, Vec3 position);
-			
 		};
-		
 	}
 }
 

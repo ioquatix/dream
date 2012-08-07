@@ -47,14 +47,14 @@ namespace Dream
 		{
 			using namespace Dream::Numerics;
 			using namespace Dream::Client::Display;
-			
+
 			void check_graphics_error();
-			
+
 			template <typename TypeT>
 			struct GLTypeTraits {};
-			
-#define GL_TYPE_TRAITS(type, name) template <> struct GLTypeTraits<type> { enum { TYPE = name }; };
-			
+
+#define GL_TYPE_TRAITS(type, name) template <> struct GLTypeTraits<type>{ enum { TYPE = name }; };
+
 			GL_TYPE_TRAITS(GLbyte, GL_BYTE)
 			GL_TYPE_TRAITS(GLubyte, GL_UNSIGNED_BYTE)
 			GL_TYPE_TRAITS(GLshort, GL_SHORT)

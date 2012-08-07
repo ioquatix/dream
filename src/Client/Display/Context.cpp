@@ -13,31 +13,29 @@
 namespace Dream {
 	namespace Client {
 		namespace Display {
-			
-// MARK: mark -
+// MARK: -
 
 			IContextDelegate::~IContextDelegate ()
 			{
 			}
-			
+
 			void IContextDelegate::render_frame_for_time (Ptr<IContext> context, TimeT time)
 			{
 			}
-			
+
 			void IContextDelegate::process_input (Ptr<IContext> context, const Input & input)
 			{
 			}
-			
-// MARK: mark -
-			
+
+// MARK: -
+
 			IContext::~IContext ()
 			{
 			}
-			
+
 			Context::Context() : _cursor_mode(CURSOR_NORMAL) {
-				
 			}
-			
+
 			Context::~Context ()
 			{
 			}
@@ -46,29 +44,29 @@ namespace Dream {
 			{
 				_context_delegate = context_delegate;
 			}
-			
+
 			bool Context::process(const Input & input)
 			{
 				if (_context_delegate) {
 					_context_delegate->process_input(this, input);
-				
+
 					return true;
 				}
-				
+
 				return false;
 			}
-			
+
 			void Context::render_frame_for_time (TimeT time)
 			{
 				if (_context_delegate) {
 					_context_delegate->render_frame_for_time(this, time);
 				}
 			}
-			
+
 			void Context::set_cursor_mode(CursorMode mode) {
 				_cursor_mode = mode;
 			}
-			
+
 			CursorMode Context::cursor_mode() const {
 				return _cursor_mode;
 			}

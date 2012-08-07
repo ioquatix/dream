@@ -13,23 +13,22 @@ namespace Dream
 {
 	namespace Geometry
 	{
-		
-// MARK: mark -
-// MARK: mark Unit Tests
-		
+// MARK: -
+// MARK: Unit Tests
+
 #ifdef ENABLE_TESTING
 		UNIT_TEST(Shapes)
 		{
 			testing("Construction");
-			
+
 			typedef Shape<2, 4, int> shape_t;
-			
+
 			shape_t s;
 			s[0] = vec<int>(-5, -5);
 			s[1] = vec<int>(5, -5);
 			s[2] = vec<int>(5, 5);
-			s[3] = vec<int>(-5, 5);			
-			
+			s[3] = vec<int>(-5, 5);
+
 			check(s.center() == vec<int>(0) << 0) << "Center is located correctly";
 		}
 #endif

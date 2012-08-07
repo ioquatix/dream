@@ -13,7 +13,7 @@
 #include <sys/time.h>
 
 namespace Dream {
-	namespace Core {		
+	namespace Core {
 		TimeT system_time () {
 			struct timeval t;
 			gettimeofday (&t, (struct timezone*)0);

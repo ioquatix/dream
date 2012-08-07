@@ -29,7 +29,7 @@ namespace Dream
 				
 				using namespace Events::Logging;
 								
-// MARK: mark -
+// MARK: -
 							
 				// This is the renderer output callback function
 				CVReturn ViewContext::display_link_callback(CVDisplayLinkRef display_link, const CVTimeStamp* now, const CVTimeStamp* output_time, CVOptionFlags flags_in, CVOptionFlags* flags_out, void* display_link_context)
@@ -246,7 +246,7 @@ namespace Dream
 					setup_for_current_display();
 				}
 				
-// MARK: mark -
+// MARK: -
 
 				void WindowContext::setup_graphics_view(Ptr<Dictionary> config, NSRect frame)
 				{					

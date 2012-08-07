@@ -14,8 +14,8 @@
 #include <exception>
 
 //#ifdef DREAM_DEBUG
-	/// Similar to assert, however will throw an AssertionError on failure.
-	#define DREAM_ASSERT(e) ::Dream::AssertionError::assert_handler(e, #e, __FILE__, __LINE__)
+/// Similar to assert, however will throw an AssertionError on failure.
+	#define DREAM_ASSERT(e) ::Dream::AssertionError::assert_handler(e, # e, __FILE__, __LINE__)
 //#else
 //	#define DREAM_ASSERT(e)
 //#endif
@@ -34,8 +34,7 @@ namespace Dream
 	 ensure(my_condition)
 	 @endcode
 	 */
-	class AssertionError : public std::exception
-	{
+	class AssertionError : public std::exception {
 		const char * _expression;
 		const char * _file;
 		unsigned _line;
@@ -51,17 +50,17 @@ namespace Dream
 		/// The DREAM_ASSERT() macro calls this function to handle throwing the actual exception.
 		static void assert_handler (bool condition, const char * expression, const char * file, unsigned line);
 	};
-	
+
 	/// Simple static assertion implementation
 	template <bool>
 	class StaticAssertion {
 	public:
 		static void failed() {}
 	};
-	
-	template<>
-	class StaticAssertion<false> {
-	};	
+
+	template <>
+	class StaticAssertion<false>{
+	};
 }
 
 #endif

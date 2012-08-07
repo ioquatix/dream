@@ -17,83 +17,77 @@ namespace Dream
 {
 	namespace Core
 	{
-		
-// MARK: mark -
-// MARK: mark LocalFileData
+// MARK: -
+// MARK: LocalFileData
 
 		LocalFileData::LocalFileData (const Path & path) : _path(path)
 		{
-			
 		}
-		
+
 		LocalFileData::~LocalFileData ()
 		{
-		
 		}
-		
+
 		Shared<Buffer> LocalFileData::buffer () const
 		{
 			if (!_buffer && _path.exists()) {
 				_buffer = new FileBuffer(_path);
 			}
-			
+
 			return _buffer;
 		}
-		
+
 		Shared<std::istream> LocalFileData::input_stream () const
 		{
 			std::ifstream * file_input_stream = new std::ifstream(_path.to_local_path().c_str(), std::ios::binary);
-			
+
 			return Shared<std::istream>(file_input_stream);
 		}
-		
+
 		std::size_t LocalFileData::size () const
 		{
 			return _path.file_size();
 		}
 
 
-// MARK: mark -
-// MARK: mark BufferedData
-		
-		BufferedData::BufferedData (Shared<Buffer> buffer)
-			: _buffer(buffer)
+// MARK: -
+// MARK: BufferedData
+
+		BufferedData::BufferedData (Shared<Buffer> buffer) : _buffer(buffer)
 		{
-		
 		}
-		
+
 		/// Create a buffer from a given input stream
 		BufferedData::BufferedData (std::istream & stream)
 		{
 			Shared<DynamicBuffer> buffer = new DynamicBuffer;
-			
+
 			buffer->append(std::istreambuf_iterator<char>(stream), std::istreambuf_iterator<char>());
-			
+
 			_buffer = buffer;
 		}
-		
+
 		BufferedData::~BufferedData ()
 		{
-		
 		}
-		
+
 		Shared<Buffer> BufferedData::buffer () const
 		{
 			return _buffer;
 		}
-		
+
 		Shared<std::istream> BufferedData::input_stream () const
 		{
 			return new BufferStream(*_buffer);
 		}
-		
+
 		std::size_t BufferedData::size () const
 		{
 			return _buffer->size();
 		}
-		
-// MARK: mark -
-// MARK: mark Unit Tests
+
+// MARK: -
+// MARK: Unit Tests
 
 #ifdef ENABLE_TESTING
 		UNIT_TEST(Data)

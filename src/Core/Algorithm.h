@@ -11,7 +11,6 @@
 
 namespace Dream {
 	namespace Core {
-		
 		/// Provides an efficient way to erase elements from an unsorted std::vector
 		template <typename t>
 		bool erase_element_at_index (std::size_t index, std::vector<t> & array)
@@ -25,7 +24,6 @@ namespace Dream {
 				return true;
 			}
 		}
-		
 	}
 }
 

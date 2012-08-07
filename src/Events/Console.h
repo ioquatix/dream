@@ -16,12 +16,10 @@ namespace Dream
 {
 	namespace Events
 	{
-		
 		/// This function is used to reopen stdin so that
 		/// other functions can interact with them as expected.
 		/// NB. This is a terrible terrible hack. :(
 		void reopen_standard_file_descriptors_as_pipes ();
-		
 	}
 }
 

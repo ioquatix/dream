@@ -17,26 +17,23 @@ namespace Dream
 {
 	namespace Core
 	{
-	
 		typedef int ErrorNumberT;
-	
-		class SystemError
-		{
-			protected:
-				ErrorNumberT _error_number;
-				StringT _message;
-				StringT _formatted_message;
-			
-			public:
-				SystemError(StringT domain, ErrorNumberT error_number, StringT error_description, StringT error_target);
-				SystemError(StringT message);
-				
-				StringT what () const;
-				
-				static void check (StringT what);
-				static void reset ();
-		};
 
+		class SystemError {
+		protected:
+			ErrorNumberT _error_number;
+			StringT _message;
+			StringT _formatted_message;
+
+		public:
+			SystemError(StringT domain, ErrorNumberT error_number, StringT error_description, StringT error_target);
+			SystemError(StringT message);
+
+			StringT what () const;
+
+			static void check (StringT what);
+			static void reset ();
+		};
 	}
 }
 

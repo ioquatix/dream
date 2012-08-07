@@ -15,30 +15,28 @@
 
 namespace Dream {
 	namespace Numerics {
-	
 		class PerlinNoise {
 		protected:
 			RealT _table[256];
 			unsigned char _indicies[256];
-			
+
 		public:
 			PerlinNoise(unsigned seed);
-			
+
 			RealT sample (const Vec3 &v) const;
-			
+
 			RealT turbulence (const Vec3 &v) const;
 			RealT marble (const RealT &strength, const Vec3 &v) const;
-			
+
 			/* roct -> reciprocal octave, ie 1/oct, rscale is 1/scale */
 			RealT sample(const Vec3 &at, RealT roct, RealT rscale) const {
 				return sample(at * roct) * rscale;
 			}
-			
+
 		protected:
 			RealT lattice_noise(IndexT i, IndexT j, IndexT k) const;
 			RealT spline (RealT x) const;
 		};
-
 	}
 }
 

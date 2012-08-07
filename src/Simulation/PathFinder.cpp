@@ -10,5 +10,4 @@
 #include "PathFinder.h"
 
 namespace Dream {
-	
 }

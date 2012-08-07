@@ -11,11 +11,11 @@
 
 @class DScreenManager;
 
-@interface DWindowDelegate : NSObject <NSWindowDelegate> {
+@interface DWindowDelegate : NSObject<NSWindowDelegate>{
 	Dream::Client::Display::Cocoa::WindowContext * _window_context;
 }
 
-@property(nonatomic,assign) Dream::Client::Display::Cocoa::WindowContext * displayContext;
+@property (nonatomic, assign) Dream::Client::Display::Cocoa::WindowContext * displayContext;
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender;
 - (BOOL)windowShouldClose:(id)sender;

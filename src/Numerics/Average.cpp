@@ -13,8 +13,8 @@ namespace Dream
 {
 	namespace Numerics
 	{
-// MARK: mark -
-// MARK: mark Unit Tests
+// MARK: -
+// MARK: Unit Tests
 
 #ifdef ENABLE_TESTING
 		UNIT_TEST(Average)

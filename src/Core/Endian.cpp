@@ -13,13 +13,12 @@ namespace Dream
 {
 	namespace Core
 	{
-// MARK: mark -
-// MARK: mark Unit Tests
+// MARK: -
+// MARK: Unit Tests
 
 #ifdef ENABLE_TESTING
 		template <Endian store_t>
-		struct OrderedTestStruct
-		{
+		struct OrderedTestStruct {
 			Ordered<uint32_t, store_t> value;
 		};
 
@@ -30,8 +29,7 @@ namespace Dream
 
 			Endian other_endian = LITTLE;
 
-			if (host_endian() == LITTLE)
-			{
+			if (host_endian() == LITTLE) {
 				other_endian = BIG;
 			}
 
@@ -72,12 +70,10 @@ namespace Dream
 			ls.value = 0x10203040;
 			bs.value = 0x10203040;
 
-			if (host_endian() == LITTLE)
-			{
+			if (host_endian() == LITTLE) {
 				check(ls.value.base == 0x10203040) << "Value is stored in native order";
 				check(bs.value.base == 0x40302010) << "Value is stored in converted order";
-			} else
-			{
+			} else {
 				check(bs.value.base == 0x10203040) << "Value is stored in native order";
 				check(ls.value.base == 0x40302010) << "Value is stored in converted order";
 			}

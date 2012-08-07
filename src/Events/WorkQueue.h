@@ -11,9 +11,8 @@
 
 namespace Dream {
 	namespace Events {
-	
 		// http://athile.net/library/blog/?p=847
-		
+
 		template <typename ElementT>
 		class WorkQueue {
 		protected:
@@ -22,9 +21,7 @@ namespace Dream {
 			struct Range {
 				std::size_t offset, length, end;
 			};
-			
 		};
-		
 	}
 }
 
