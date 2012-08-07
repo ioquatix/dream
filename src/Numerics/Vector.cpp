@@ -208,6 +208,22 @@ namespace Dream
 			
 			check(r1 == 5.5) << "Type conversion successful";
 		}
+		
+		UNIT_TEST(ArrayIndex)
+		{
+			testing("Indexing");
+			
+			auto index2 = array_index<2>(vec(10, 10));
+			
+			check(index2[0][0] == 0) << "index[0][0] == 0";
+			check(index2[0][1] == 1) << "index[0][1] == 1";
+			check(index2[1][1] == 11) << "index[1][1] == 11";
+			
+			auto index4 = array_index<4>(vec(3, 5, 4, 4));
+			
+			check(index4[0][0][0][0] == 0) << "index[0][0][0][0] == 0";
+
+		}
 #endif
 	}
 }

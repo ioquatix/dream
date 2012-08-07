@@ -649,6 +649,53 @@ Vector<E, NumericT> & operator OP (Vector<E, NumericT> & lhs, const OtherNumeric
 		{
 			return a.equivalent(b);
 		}
+		
+		template <unsigned N = 2>
+		struct ArrayIndex {
+			std::size_t _size;
+			ArrayIndex<N-1> _next;
+			std::size_t _offset;
+			
+			ArrayIndex(std::size_t size, ArrayIndex<N-1> next, std::size_t offset = 0) : _size(size), _next(next), _offset(offset) {
+			}
+			
+			ArrayIndex<N-1> operator[](std::size_t index) {
+				ArrayIndex<N-1> next = _next;
+				
+				next._offset = index * _size + _offset;
+				
+				return next;
+			}
+		};
+		
+		template <>
+		struct ArrayIndex<1> {
+			std::size_t _offset;
+			
+			ArrayIndex(std::size_t offset = 0) : _offset(offset) {
+			}
+			
+			std::size_t operator[](std::size_t index) {
+				return index + _offset;
+			}
+		};
+		
+		template <std::size_t N>
+		inline ArrayIndex<N> array_index(const Vector<N, std::size_t> & size) {
+			Vector<N-1, std::size_t> reduced = size.reduce();
+			
+			ArrayIndex<N> index(reduced.product(), array_index<N-1>(reduced));
+			
+			return index;
+		}
+		
+		template <>
+		inline ArrayIndex<1> array_index<1>(const Vector<1, std::size_t> & size) {
+			ArrayIndex<1> index(0);
+			
+			return index;
+		}
+		
 	}
 }
 
