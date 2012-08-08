@@ -71,9 +71,11 @@ namespace Dream {
 				return glGetUniformLocation(_handle, name);
 			}
 
+#ifndef DREAM_OPENGLES2
 			GLint Program::uniform_block_index(const char * name) {
 				return glGetUniformBlockIndex(_handle, name);
 			}
+#endif
 
 			void Program::bind_fragment_location(const char * name, GLuint output)
 			{

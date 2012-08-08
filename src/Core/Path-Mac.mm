@@ -9,6 +9,7 @@
 
 #include "Path.h"
 #include "System.h"
+#include "../Events/Logger.h"
 
 #include <Foundation/NSError.h>
 #include <Foundation/NSFileManager.h>
@@ -27,6 +28,8 @@ namespace Dream
 {
 	namespace Core
 	{
+		using namespace Events::Logging;
+		
 		Path::FileType Path::file_status() const {
 			NSAutoreleasePool * pool = [NSAutoreleasePool new];			
 
@@ -92,7 +95,7 @@ namespace Dream
 						continue;
 				}
 				
-				if (!(filter & HIDDEN) & [entry characterAtIndex:0] == '.')
+				if (!(filter & HIDDEN) && [entry characterAtIndex:0] == '.')
 					continue;
 				
 				entries.push_back([entry UTF8String]);

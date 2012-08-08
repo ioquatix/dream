@@ -26,6 +26,7 @@ namespace Dream {
 			}
 			 */
 
+#ifndef DREAM_OPENGLES2
 			class UniformBuffer : private NonCopyable {
 			protected:
 				GLuint _handle;
@@ -74,7 +75,8 @@ namespace Dream {
 					GLuint index() const { return _index; }
 				};
 			};
-
+#endif
+			
 			template <unsigned E>
 			class GLUniformTraits {
 			};
@@ -199,10 +201,12 @@ namespace Dream {
 			template <>
 			class GLUniformTraits<1>{
 			public:
+#ifndef DREAM_OPENGLES2
 				static void set(GLint location, const GLsizei count, const GLuint * value) {
 					glUniform1uiv(location, count, value);
 				}
-
+#endif
+				
 				static void set(GLint location, const GLsizei count, const GLint * value) {
 					glUniform1iv(location, count, value);
 				}
@@ -215,10 +219,12 @@ namespace Dream {
 			template <>
 			class GLUniformTraits<2>{
 			public:
+#ifndef DREAM_OPENGLES2
 				static void set(GLint location, const GLsizei count, const GLuint * value) {
 					glUniform2uiv(location, count, value);
 				}
-
+#endif
+				
 				static void set(GLint location, const GLsizei count, const GLint * value) {
 					glUniform2iv(location, count, value);
 				}
@@ -231,9 +237,11 @@ namespace Dream {
 			template <>
 			class GLUniformTraits<3>{
 			public:
+#ifndef DREAM_OPENGLES2
 				static void set(GLint location, const GLsizei count, const GLuint * value) {
 					glUniform3uiv(location, count, value);
 				}
+#endif
 
 				static void set(GLint location, const GLsizei count, const GLint * value) {
 					glUniform3iv(location, count, value);
@@ -247,10 +255,12 @@ namespace Dream {
 			template <>
 			class GLUniformTraits<4>{
 			public:
+#ifndef DREAM_OPENGLES2
 				static void set(GLint location, const GLsizei count, const GLuint * value) {
 					glUniform4uiv(location, count, value);
 				}
-
+#endif
+				
 				static void set(GLint location, const GLsizei count, const GLint * value) {
 					glUniform4iv(location, count, value);
 				}
@@ -268,6 +278,7 @@ namespace Dream {
 				}
 			};
 
+#ifndef DREAM_OPENGLES2
 			template <>
 			class GLUniformMatrixTraits<2, 3>{
 			public:
@@ -291,7 +302,8 @@ namespace Dream {
 					glUniformMatrix3x2fv(location, count, transpose, value);
 				}
 			};
-
+#endif
+			
 			template <>
 			class GLUniformMatrixTraits<3, 3>{
 			public:
@@ -300,6 +312,7 @@ namespace Dream {
 				}
 			};
 
+#ifndef DREAM_OPENGLES2
 			template <>
 			class GLUniformMatrixTraits<3, 4>{
 			public:
@@ -323,7 +336,8 @@ namespace Dream {
 					glUniformMatrix4x3fv(location, count, transpose, value);
 				}
 			};
-
+#endif
+			
 			template <>
 			class GLUniformMatrixTraits<4, 4>{
 			public:

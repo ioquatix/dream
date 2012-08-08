@@ -11,6 +11,13 @@
 
 #include "Graphics.h"
 
+#ifdef DREAM_OPENGLES2
+#define glMapBuffer glMapBufferOES
+#define glUnmapBuffer glUnmapBufferOES
+
+#define GL_WRITE_ONLY GL_WRITE_ONLY_OES
+#endif
+
 namespace Dream {
 	namespace Client {
 		namespace Graphics {

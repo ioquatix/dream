@@ -197,8 +197,11 @@ const int RENDER_THREAD_FINISHED = 1;
 
 - (void) _start
 {
-	// Lock the render process
+	// Lock the render process:
 	[_render_thread_lock lock];
+	
+	// Set the context for rendering operations:
+	[self makeCurrentContext];
 	
 	// We shouldn't begin the rendering thread more than once.
 	NSAutoreleasePool * pool = [NSAutoreleasePool new];	

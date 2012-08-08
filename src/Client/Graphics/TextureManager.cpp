@@ -188,7 +188,7 @@ namespace Dream {
 			TextureManager::TextureManager() {
 				/* Fetch number of texture units */ {
 					GLint image_unit_count = 0;
-					glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &image_unit_count);
+					glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &image_unit_count);
 					_image_unit_count = image_unit_count;
 				}
 

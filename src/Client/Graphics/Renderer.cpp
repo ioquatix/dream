@@ -56,20 +56,24 @@ namespace Dream {
 
 			Ref<Program> RendererState::load_program(StringT name) {
 				GLuint vertex_shader = compile_shader_of_type(GL_VERTEX_SHADER, name + ".vertex-shader");
+#ifndef DREAM_OPENGLES2
 				GLuint geometry_shader = compile_shader_of_type(GL_GEOMETRY_SHADER, name + ".geometry-shader");
+#endif
 				GLuint fragment_shader = compile_shader_of_type(GL_FRAGMENT_SHADER, name + ".fragment-shader");
 
 				Ref<Program> program = new Program;
 
 				// We must have at least one shader for the program to do anything:
-				DREAM_ASSERT(vertex_shader || geometry_shader || fragment_shader);
+				DREAM_ASSERT(vertex_shader || fragment_shader);
 
 				if (vertex_shader)
 					program->attach(vertex_shader);
 
+#ifndef DREAM_OPENGLES2
 				if (geometry_shader)
 					program->attach(geometry_shader);
-
+#endif
+				
 				if (fragment_shader)
 					program->attach(fragment_shader);
 
