@@ -1,0 +1,31 @@
+#version 150
+
+uniform vec4 light_colors[3];
+uniform vec4 light_positions[3];
+uniform sampler2D diffuse;
+
+in vec4 vertex_color;
+in vec4 lighting_normal;
+in vec4 surface_position;
+in vec2 diffuse_mapping;
+
+out vec4 fragment_color;
+
+vec4 basic_light(vec4 position, vec4 color) {
+	vec4 direction = position - surface_position;
+	float distance = length(direction);
+	
+	float intensity = max(dot(normalize(direction), normalize(lighting_normal)), 0.0);
+	return intensity * (color / (distance * 0.1 + 1.0));
+}
+
+void main(void)
+{
+	vec4 light_contribution = vec4(0.0);
+	light_contribution += basic_light(light_positions[0], light_colors[0]);
+	light_contribution += basic_light(light_positions[1], light_colors[1]);
+	light_contribution += basic_light(light_positions[2], light_colors[2]);
+	
+	fragment_color = texture(diffuse, diffuse_mapping) * light_contribution;
+	fragment_color.w = 1.0;
+}

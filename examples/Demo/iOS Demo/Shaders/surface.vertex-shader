@@ -1,0 +1,26 @@
+#version 150
+
+uniform vec2 point;
+uniform mat4 display_matrix;
+
+in vec4 position;
+in vec4 normal;
+in vec4 color;
+in vec2 mapping;
+
+out vec4 vertex_color;
+out vec4 lighting_normal;
+out vec4 surface_position;
+out vec2 diffuse_mapping;
+
+void main (void)
+{
+    vertex_color = color;
+	lighting_normal = normal;
+	diffuse_mapping = mapping;
+
+	surface_position = position;
+	surface_position.w = 1.0;
+	
+    gl_Position = display_matrix * surface_position;
+}

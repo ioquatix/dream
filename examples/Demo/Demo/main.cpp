@@ -13,6 +13,8 @@
 #include <Dream/Client/Graphics/TextureManager.h>
 #include <Dream/Client/Graphics/WireframeRenderer.h>
 
+#include <Dream/Client/Graphics/Renderer.h>
+
 #include <Dream/Renderer/Viewport.h>
 #include <Dream/Renderer/BirdsEyeCamera.h>
 #include <Dream/Renderer/PointCamera.h>
@@ -136,8 +138,7 @@ namespace Demo {
 		typedef Geometry::Mesh<> MeshT;
 		Ref<MeshBuffer<MeshT>> _object_mesh_buffer, _grid_mesh_buffer;
 		
-		Ref<ShaderManager> _shader_manager;
-		Ref<TextureManager> _texture_manager;
+		Ref<RendererState> _renderer_state;
 		Ref<WireframeRenderer> _wireframe_renderer;
 		
 		Ref<PixelBufferRenderer> _pixel_buffer_renderer;
@@ -165,40 +166,6 @@ namespace Demo {
 	
 	DemoScene::~DemoScene ()
 	{
-	}
-	
-	GLuint DemoScene::compile_shader_of_type (GLenum type, StringT name)
-	{
-		Ref<IData> data = resource_loader()->data_for_resource(name);
-		
-		if (data) {
-			logger()->log(LOG_DEBUG, LogBuffer() << "Loading " << name);
-			return _shader_manager->compile(type, data->buffer().get());
-		} else {
-			return 0;
-		}
-	}
-	
-	Ref<Program> DemoScene::load_program(StringT name) {
-		GLuint vertex_shader = compile_shader_of_type(GL_VERTEX_SHADER, name + ".vertex-shader");
-		GLuint geometry_shader = compile_shader_of_type(GL_GEOMETRY_SHADER, name + ".geometry-shader");
-		GLuint fragment_shader = compile_shader_of_type(GL_FRAGMENT_SHADER, name + ".fragment-shader");
-		
-		Ref<Program> program = new Program;
-	
-		if (vertex_shader)
-			program->attach(vertex_shader);
-	
-		if (geometry_shader)
-			program->attach(geometry_shader);
-		
-		if (fragment_shader)
-			program->attach(fragment_shader);
-		
-		program->link();
-		program->bind_fragment_location("fragment_color");
-		
-		return program;
 	}
 	
 	void DemoScene::will_become_current(ISceneManager * manager)
@@ -230,35 +197,28 @@ namespace Demo {
 		//_light_colors[1] = Vec4(0.2, 0.2, 1.2, 0.0);
 		//_light_colors[2] = Vec4(0.2, 1.2, 0.2, 0.0);
 		
-		_shader_manager = new ShaderManager;
-		_texture_manager = new TextureManager;
-		
-		TextureParameters parameters;
-		parameters.generate_mip_maps = true;
-		parameters.min_filter = GL_LINEAR_MIPMAP_LINEAR;
-		parameters.mag_filter = GL_LINEAR;
-		parameters.target = GL_TEXTURE_2D;
-		
+		_renderer_state = new RendererState;
+		_renderer_state->shader_manager = new ShaderManager;
+		_renderer_state->texture_manager = new TextureManager;
+		_renderer_state->resource_loader = this->resource_loader();
+
 		{
-			Ref<IPixelBuffer> checkers_image = resource_loader()->load<IPixelBuffer>("Textures/Checkers");		
-			_crate_texture = _texture_manager->allocate(parameters, checkers_image);
-			
-			Ref<IPixelBuffer> particle_image = resource_loader()->load<IPixelBuffer>("Textures/Trail");
-			_particle_texture = _texture_manager->allocate(parameters, particle_image);
+			_crate_texture = _renderer_state->load_texture(TextureParameters::LINEAR, "Textures/Checkers");
+			_particle_texture = _renderer_state->load_texture(TextureParameters::LINEAR, "Textures/Trail");
 		}
 		
 		check_graphics_error();
 		
 		{
-			_pixel_buffer_renderer = new PixelBufferRenderer(_texture_manager);
+			_pixel_buffer_renderer = new PixelBufferRenderer(_renderer_state->texture_manager);
 		}
 		
 		{
-			_solid_program = load_program("Shaders/solid");
+			_solid_program = _renderer_state->load_program("Shaders/solid");
 		}
 		
 		{
-			_wireframe_program = load_program("Shaders/wireframe");
+			_wireframe_program = _renderer_state->load_program("Shaders/wireframe");
 			_wireframe_program->set_attribute_location("position", WireframeRenderer::POSITION);
 			_wireframe_program->link();
 			
@@ -266,7 +226,7 @@ namespace Demo {
 		}
 		
 		{
-			_particle_program = load_program("Shaders/particle");
+			_particle_program = _renderer_state->load_program("Shaders/particle");
 			
 			_particle_program->set_attribute_location("position", TrailParticles::POSITION);
 			_particle_program->set_attribute_location("offset", TrailParticles::OFFSET);
@@ -293,7 +253,7 @@ namespace Demo {
 		}
 		
 		{
-			_flat_program = load_program("Shaders/flat");
+			_flat_program = _renderer_state->load_program("Shaders/flat");
 			
 			_flat_program->set_attribute_location("position", 0);
 			_flat_program->set_attribute_location("mapping", 1);
@@ -306,7 +266,7 @@ namespace Demo {
 		}
 		
 		{
-			_textured_program = load_program("Shaders/surface");
+			_textured_program = _renderer_state->load_program("Shaders/surface");
 			
 			_textured_program->set_attribute_location("position", POSITION);
 			_textured_program->set_attribute_location("normal", NORMAL);
@@ -412,8 +372,7 @@ namespace Demo {
 		
 		logger()->log(LOG_INFO, "Will revoke current.");
 		
-		_shader_manager = NULL;
-		_texture_manager = NULL;
+		_renderer_state = NULL;
 		_textured_program = NULL;
 	}
 	
@@ -534,7 +493,7 @@ namespace Demo {
 			check_graphics_error();
 			
 			auto binding = _textured_program->binding();
-			_texture_manager->bind(0, _crate_texture);
+			_renderer_state->texture_manager->bind(0, _crate_texture);
 						
 			Mat44 modelview_matrix = Mat44::rotating_matrix_around_z(_rotation);
 			//modelview_matrix = modelview_matrix * _viewport->display_matrix();
@@ -594,7 +553,7 @@ namespace Demo {
 			auto binding = _particle_program->binding();
 			binding.set_uniform("display_matrix", _viewport->display_matrix());
 
-			_texture_manager->bind(0, _particle_texture);
+			_renderer_state->texture_manager->bind(0, _particle_texture);
 			_trail_particles->draw();
 			
 			glDisable(GL_BLEND);

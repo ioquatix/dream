@@ -20,6 +20,8 @@
 		7E9E423A142988760061260C /* Dream Icon (114x114).png in Resources */ = {isa = PBXBuildFile; fileRef = 7E9E4238142988760061260C /* Dream Icon (114x114).png */; };
 		7E9EA73C142306E300F8BC49 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E9EA73B142306E300F8BC49 /* OpenGL.framework */; };
 		7EA4D10714E93FB800D5C4C6 /* Textures in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7EA4D10614E92C2000D5C4C6 /* Textures */; };
+		7EE716BC15D29E6100951AF3 /* Textures in Resources */ = {isa = PBXBuildFile; fileRef = 7EE716BA15D29E4B00951AF3 /* Textures */; };
+		7EE716BE15D29E7C00951AF3 /* Shaders in Resources */ = {isa = PBXBuildFile; fileRef = 7EE716BD15D29E7C00951AF3 /* Shaders */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -51,6 +53,8 @@
 		7E9E4238142988760061260C /* Dream Icon (114x114).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Dream Icon (114x114).png"; path = "../../../inf/Dream Icon (114x114).png"; sourceTree = "<group>"; };
 		7E9EA73B142306E300F8BC49 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		7EA4D10614E92C2000D5C4C6 /* Textures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Textures; sourceTree = "<group>"; };
+		7EE716BA15D29E4B00951AF3 /* Textures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Textures; path = Demo/Textures; sourceTree = SOURCE_ROOT; };
+		7EE716BD15D29E7C00951AF3 /* Shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Shaders; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +130,8 @@
 			children = (
 				7E9E422B1428907E0061260C /* shader.vsh */,
 				7E9E422A1428907E0061260C /* shader.fsh */,
+				7EE716BD15D29E7C00951AF3 /* Shaders */,
+				7EE716BA15D29E4B00951AF3 /* Textures */,
 				7E9E41CC14286DCF0061260C /* Supporting Files */,
 			);
 			path = "iOS Demo";
@@ -222,7 +228,9 @@
 				7E9E422E1428909D0061260C /* shader.vsh in Resources */,
 				7E9E422F142890A00061260C /* shader.fsh in Resources */,
 				7E9E4239142988760061260C /* Dream Icon (57x57).png in Resources */,
+				7EE716BC15D29E6100951AF3 /* Textures in Resources */,
 				7E9E423A142988760061260C /* Dream Icon (114x114).png in Resources */,
+				7EE716BE15D29E7C00951AF3 /* Shaders in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -330,7 +338,7 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "iOS Demo/iOS Demo-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
@@ -345,7 +353,7 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "iOS Demo/iOS Demo-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
