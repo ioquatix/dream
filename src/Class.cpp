@@ -91,12 +91,21 @@ namespace Dream
 
 			object_cache->set(key, value);
 
-			check(object_cache->lookup(key) == value);
-			check(object_cache->objects().size() == 1);
+			check(object_cache->lookup(key) == value) << "Object was found in cache";
+			check(object_cache->objects().size() == 1) << "Cache size is correct";
+
+			check(key->reference_count() == 1) << "Key is referenced locally only";
+			check(value->reference_count() == 2) << "Value is referenced locally and in cache";
+
+			key = nullptr;
+
+			check(value->reference_count() == 1) << "Value has been purged from cache";
+
+			value = nullptr;
 		}
 
 		// Now that we are out of the scope where key exists, the object has been removed from the cache, since key was automatically deleted.
-		check(object_cache->objects().size() == 0);
+		check(object_cache->objects().size() == 0) << "Object has been removed";
 	}
 #endif
 }

@@ -38,9 +38,10 @@ namespace Dream {
 	}
 
 	bool SharedObject::release () const {
+		// Returns the value before subtracting 1:
 		NumberT count = _count.fetch_sub(1);
 
-		if (count == 0) {
+		if (count == 1) {
 			deallocate();
 			return true;
 		}
