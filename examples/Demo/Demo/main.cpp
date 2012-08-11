@@ -71,7 +71,7 @@ namespace Demo {
 			
 			particle.velocity = Vec3(0.0, 0.0, 0.0);
 			particle.set_position(point, Vec3(-0.1, -0.1, 0.0), Vec3(0.0, 0.0, -1.0), 0.0);
-			particle.add_life(4.0 + real_random());
+			particle.add_life(0.4 + real_random() * 0.4);
 			particle.color = color;
 			particle.set_random_mapping(4);
 			

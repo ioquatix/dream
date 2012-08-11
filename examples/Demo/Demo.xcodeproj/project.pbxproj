@@ -12,10 +12,6 @@
 		7E9E41D014286DCF0061260C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7E9E41CE14286DCF0061260C /* InfoPlist.strings */; };
 		7E9E41EC14286DF60061260C /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E9E41EB14286DF60061260C /* OpenGLES.framework */; };
 		7E9E41ED14286E490061260C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E14F83F1422FAA300AB80F1 /* main.cpp */; };
-		7E9E422C1428907E0061260C /* shader.fsh in Sources */ = {isa = PBXBuildFile; fileRef = 7E9E422A1428907E0061260C /* shader.fsh */; };
-		7E9E422D1428907E0061260C /* shader.vsh in Sources */ = {isa = PBXBuildFile; fileRef = 7E9E422B1428907E0061260C /* shader.vsh */; };
-		7E9E422E1428909D0061260C /* shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 7E9E422B1428907E0061260C /* shader.vsh */; };
-		7E9E422F142890A00061260C /* shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 7E9E422A1428907E0061260C /* shader.fsh */; };
 		7E9E4239142988760061260C /* Dream Icon (57x57).png in Resources */ = {isa = PBXBuildFile; fileRef = 7E9E4237142988760061260C /* Dream Icon (57x57).png */; };
 		7E9E423A142988760061260C /* Dream Icon (114x114).png in Resources */ = {isa = PBXBuildFile; fileRef = 7E9E4238142988760061260C /* Dream Icon (114x114).png */; };
 		7E9EA73C142306E300F8BC49 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E9EA73B142306E300F8BC49 /* OpenGL.framework */; };
@@ -47,8 +43,6 @@
 		7E9E41CD14286DCF0061260C /* iOS Demo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iOS Demo-Info.plist"; sourceTree = "<group>"; };
 		7E9E41CF14286DCF0061260C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7E9E41EB14286DF60061260C /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/System/Library/Frameworks/OpenGLES.framework; sourceTree = DEVELOPER_DIR; };
-		7E9E422A1428907E0061260C /* shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = shader.fsh; sourceTree = "<group>"; };
-		7E9E422B1428907E0061260C /* shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = shader.vsh; sourceTree = "<group>"; };
 		7E9E4237142988760061260C /* Dream Icon (57x57).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Dream Icon (57x57).png"; path = "../../../inf/Dream Icon (57x57).png"; sourceTree = "<group>"; };
 		7E9E4238142988760061260C /* Dream Icon (114x114).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Dream Icon (114x114).png"; path = "../../../inf/Dream Icon (114x114).png"; sourceTree = "<group>"; };
 		7E9EA73B142306E300F8BC49 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -128,8 +122,6 @@
 		7E9E41CB14286DCF0061260C /* iOS Demo */ = {
 			isa = PBXGroup;
 			children = (
-				7E9E422B1428907E0061260C /* shader.vsh */,
-				7E9E422A1428907E0061260C /* shader.fsh */,
 				7EE716BD15D29E7C00951AF3 /* Shaders */,
 				7EE716BA15D29E4B00951AF3 /* Textures */,
 				7E9E41CC14286DCF0061260C /* Supporting Files */,
@@ -225,8 +217,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E9E41D014286DCF0061260C /* InfoPlist.strings in Resources */,
-				7E9E422E1428909D0061260C /* shader.vsh in Resources */,
-				7E9E422F142890A00061260C /* shader.fsh in Resources */,
 				7E9E4239142988760061260C /* Dream Icon (57x57).png in Resources */,
 				7EE716BC15D29E6100951AF3 /* Textures in Resources */,
 				7E9E423A142988760061260C /* Dream Icon (114x114).png in Resources */,
@@ -242,8 +232,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E14F8401422FAA300AB80F1 /* main.cpp in Sources */,
-				7E9E422C1428907E0061260C /* shader.fsh in Sources */,
-				7E9E422D1428907E0061260C /* shader.vsh in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,13 +322,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "iOS Demo/iOS Demo-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -349,14 +339,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "iOS Demo/iOS Demo-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};

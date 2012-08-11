@@ -16,7 +16,7 @@
 		<string>Dream Icon (57x57).png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>nz.co.oriontransfer.dream.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>nz.co.oriontransfer.${PRODUCT_NAME:rfc1034identifier}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

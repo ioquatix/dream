@@ -1,10 +1,12 @@
-#version 150
+#version 100
+
+#define in varying
+precision mediump float;
 
 uniform vec4 light_position;
 uniform vec4 light_color;
 
 in vec4 surface_position;
-out vec4 fragment_color;
 
 vec4 solid_light(vec4 position, vec4 color) {
 	vec4 direction = position - surface_position;
@@ -14,6 +16,6 @@ vec4 solid_light(vec4 position, vec4 color) {
 }
 
 void main(void) {
-	fragment_color = solid_light(light_position, light_color);
-	fragment_color.w = 1.0;
+	gl_FragColor = solid_light(light_position, light_color);
+	gl_FragColor.w = 1.0;
 }

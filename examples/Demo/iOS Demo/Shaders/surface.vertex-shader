@@ -1,4 +1,12 @@
-#version 150
+#version 100
+
+#define in attribute
+#define out varying
+precision mediump float;
+
+// Lighting
+uniform vec4 light_colors[3];
+uniform vec4 light_positions[3];
 
 uniform vec2 point;
 uniform mat4 display_matrix;
@@ -9,18 +17,27 @@ in vec4 color;
 in vec2 mapping;
 
 out vec4 vertex_color;
-out vec4 lighting_normal;
-out vec4 surface_position;
 out vec2 diffuse_mapping;
+
+vec4 basic_light(vec4 light_position, vec4 color) {
+	vec4 direction = light_position - position;
+	float distance = length(direction);
+	
+	float intensity = max(dot(normalize(direction), normal), 0.0);
+	return intensity * (color / (distance * 0.1 + 1.0));
+}
 
 void main (void)
 {
-    vertex_color = color;
-	lighting_normal = normal;
 	diffuse_mapping = mapping;
 
-	surface_position = position;
-	surface_position.w = 1.0;
+	vec4 light_contribution = vec4(0.01);
+
+	light_contribution += basic_light(light_positions[0], light_colors[0]);
+	light_contribution += basic_light(light_positions[1], light_colors[1]);
+	light_contribution += basic_light(light_positions[2], light_colors[2]);
 	
-    gl_Position = display_matrix * surface_position;
+    vertex_color = color + light_contribution;
+	
+    gl_Position = display_matrix * position;
 }

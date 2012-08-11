@@ -1,4 +1,8 @@
-#version 150
+#version 100
+
+#define in attribute
+#define out varying
+precision mediump float;
 
 uniform mat4 display_matrix;
 
