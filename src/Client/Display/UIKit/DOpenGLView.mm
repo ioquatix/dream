@@ -63,6 +63,8 @@ static AlignedBox<2> bounds_from_frame (CGRect frame)
 	TimeT nextTime = [displayLink timestamp] + [displayLink duration];
 	
 	_display_context->render_frame_for_time(nextTime);
+	
+	[self flushBuffers];
 }
 
 - (void)touchesBegan: (NSSet *)touches withEvent: (UIEvent *)event

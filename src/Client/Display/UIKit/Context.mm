@@ -55,8 +55,9 @@ namespace Dream
 				Vec2u ViewContext::size ()
 				{
 					CGRect frame = [_graphics_view frame];
+					CGFloat scale = [_graphics_view contentScaleFactor];
 					
-					return Vec2u(frame.size.width, frame.size.height);
+					return Vec2u(frame.size.width * scale, frame.size.height * scale);
 				}
 				
 				const char * getSymbolicError (GLenum error) {
@@ -117,7 +118,9 @@ namespace Dream
 				
 				WindowContext::WindowContext (Ptr<Dictionary> config)
 				{
-					_window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+					UIScreen * mainScreen = [UIScreen mainScreen];
+					
+					_window = [[UIWindow alloc] initWithFrame:[mainScreen bounds]];
 					
 					CGRect frame = [[UIScreen mainScreen] applicationFrame];
 					setup_graphics_view(config, frame);
@@ -125,6 +128,8 @@ namespace Dream
 					if (_graphics_view) {
 						[_graphics_view setDisplayContext:this];
 						[_window addSubview:_graphics_view];
+						
+						[_graphics_view setContentScaleFactor:[mainScreen scale]];
 					} else {
 						logger()->log(LOG_ERROR, "Couldn't initialize graphics view!");
 					}

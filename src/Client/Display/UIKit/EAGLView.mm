@@ -10,6 +10,7 @@
 #import <OpenGLES/EAGLDrawable.h>
 
 #import "EAGLView.h"
+#import "../../../Events/Logger.h"
 
 @interface EAGLView (Private)
 - (void)createFramebuffer;
@@ -200,6 +201,8 @@ const int RENDER_THREAD_FINISHED = 1;
 	// Lock the render process:
 	[_render_thread_lock lock];
 	
+	Dream::Events::Logging::logger()->set_thread_name("Renderer");
+	
 	// Set the context for rendering operations:
 	[self makeCurrentContext];
 	
@@ -213,7 +216,7 @@ const int RENDER_THREAD_FINISHED = 1;
 	[displayLink addToRunLoop:currentRunLoop forMode:NSRunLoopCommonModes];
 	
 	NSLog(@"Entering rendering loop.");
-
+	
 	NSThread * currentThread = [[NSThread currentThread] retain];
 	while (![currentThread isCancelled]) {
 		[currentRunLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
