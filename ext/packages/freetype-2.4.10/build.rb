@@ -1,5 +1,5 @@
 
-Package.define("freetype-2.4.6") do |package|
+Package.define("freetype-2.4.10") do |package|
 	package.variant(:all) do |platform, config|
 		RExec.env(config.build_environment) do
 			Dir.chdir(package.src) do

@@ -1,13 +1,16 @@
 
 #
-#  ext/platforms/darwin_iphonesimulator.rb
+#  ext/platforms/darwin_ios_simulator.rb
 #  This file is part of the "Dream" project, and is released under the MIT license.
 #
 
-Platform.new(:darwin_iphonesimulator) do |config|
-	iphone_sdk_version = ENV["IPHONE_SDK_VERSION"] || "5.0" 
+Platform.new(:darwin_ios_simulator) do |config|
+	iphone_sdk_version = ENV["IPHONE_SDK_VERSION"] || "5.1" 
 	
-	config.platform = Pathname.new("/Developer/Platforms/iPhoneSimulator.platform")
+	config.xcode_path = Pathname.new(`xcode-select --print-path`.chomp)
+	config.platform = config.xcode_path + "Platforms/iPhoneSimulator.platform"
+	config.toolchain = config.xcode_path + "Toolchains/XcodeDefault.xctoolchain"
+	
 	config.sdk_version = iphone_sdk_version
 	config.sdk = config.platform + "Developer/SDKs/iPhoneSimulator#{config.sdk_version}.sdk"
 	
@@ -16,11 +19,9 @@ Platform.new(:darwin_iphonesimulator) do |config|
 	config.configure = []
 	
 	config.build_environment = {
-		"CC" => config.platform + "Developer/usr/bin/clang",
-		"CXX" => config.platform + "Developer/usr/bin/clang++",
-		# Seems to have disappeared?
-		# "CPP" => config.platform + "Developer/usr/bin/cpp",
-		"LD" => config.platform + "Developer/usr/bin/ld",
+		"CC" => config.toolchain + "usr/bin/clang",
+		"CXX" => config.toolchain + "usr/bin/clang++",
+		"LD" => config.toolchain + "usr/bin/ld",
 		"CFLAGS" => "#{GLOBAL_CFLAGS} #{config.cflags}",
 		"LDFLAGS" => "#{config.cflags}"
 	}

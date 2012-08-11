@@ -1,5 +1,5 @@
 
-Package.define("libvorbis-1.3.2") do |package|
+Package.define("libvorbis-1.3.3") do |package|
 	package.variant(:all) do |platform, config|
 		RExec.env(config.build_environment) do
 			Dir.chdir(package.src) do

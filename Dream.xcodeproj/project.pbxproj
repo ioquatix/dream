@@ -570,8 +570,8 @@
 		7EB4EDF114EBD47100C69A1B /* VertexArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VertexArray.h; sourceTree = "<group>"; };
 		7EB5FFDC12CD9FEC00B704E3 /* Fader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Fader.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		7EB5FFDD12CD9FEC00B704E3 /* Fader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Fader.cpp; sourceTree = "<group>"; };
-		7EB7BBB60F9B0DE400452BDE /* libDream-Darwin-iPhoneOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libDream-Darwin-iPhoneOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		7EB7BBFF0F9B264700452BDE /* libDream-Darwin-iPhoneSimulator.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libDream-Darwin-iPhoneSimulator.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7EB7BBB60F9B0DE400452BDE /* libDream-Darwin-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libDream-Darwin-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7EB7BBFF0F9B264700452BDE /* libDream-Darwin-iOS-Simulator.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libDream-Darwin-iOS-Simulator.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EBC15A40FA31F3500D2CA1D /* Scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Scene.cpp; sourceTree = "<group>"; };
 		7EBC15A50FA31F3500D2CA1D /* Scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Scene.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		7EBC1A280FA46D2400D2CA1D /* Loader-UIKit.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "Loader-UIKit.mm"; sourceTree = "<group>"; };
@@ -601,7 +601,7 @@
 		7EC4524F0EE7E39B000D47C2 /* Loader-Generic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Loader-Generic.cpp"; sourceTree = "<group>"; };
 		7EC4545F0EE9FE35000D47C2 /* Timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Timer.cpp; sourceTree = "<group>"; };
 		7EC6F4AB0EFBB5CA00BC9E3B /* ServerTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ServerTest.cpp; sourceTree = "<group>"; };
-		7EC86A280FAD70FD005DD627 /* libDream-Darwin-MacOSX.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libDream-Darwin-MacOSX.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7EC86A280FAD70FD005DD627 /* libDream-Darwin-OSX.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libDream-Darwin-OSX.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EC8BA990EBADBA200C8D28B /* Number.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Number.cpp; sourceTree = "<group>"; };
 		7EC986710EC96DB000530A13 /* Sphere.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Sphere.cpp; sourceTree = "<group>"; };
 		7EC986730EC96DB000530A13 /* Triangle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Triangle.cpp; sourceTree = "<group>"; };
@@ -707,9 +707,9 @@
 			isa = PBXGroup;
 			children = (
 				7EA912770EB41A080080E66D /* Unit Tests */,
-				7EB7BBB60F9B0DE400452BDE /* libDream-Darwin-iPhoneOS.a */,
-				7EB7BBFF0F9B264700452BDE /* libDream-Darwin-iPhoneSimulator.a */,
-				7EC86A280FAD70FD005DD627 /* libDream-Darwin-MacOSX.a */,
+				7EB7BBB60F9B0DE400452BDE /* libDream-Darwin-iOS.a */,
+				7EB7BBFF0F9B264700452BDE /* libDream-Darwin-iOS-Simulator.a */,
+				7EC86A280FAD70FD005DD627 /* libDream-Darwin-OSX.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1154,9 +1154,9 @@
 			productReference = 7EA912770EB41A080080E66D /* Unit Tests */;
 			productType = "com.apple.product-type.tool";
 		};
-		7EB7BBB50F9B0DE400452BDE /* Dream-Darwin-iPhoneOS */ = {
+		7EB7BBB50F9B0DE400452BDE /* Dream-Darwin-iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7EB7BBBE0F9B0E1B00452BDE /* Build configuration list for PBXNativeTarget "Dream-Darwin-iPhoneOS" */;
+			buildConfigurationList = 7EB7BBBE0F9B0E1B00452BDE /* Build configuration list for PBXNativeTarget "Dream-Darwin-iOS" */;
 			buildPhases = (
 				7EB7BBB30F9B0DE400452BDE /* Sources */,
 				7EB7BBB40F9B0DE400452BDE /* Frameworks */,
@@ -1167,14 +1167,14 @@
 			dependencies = (
 				7ED2B154141BA3380017C006 /* PBXTargetDependency */,
 			);
-			name = "Dream-Darwin-iPhoneOS";
+			name = "Dream-Darwin-iOS";
 			productName = "Dream-iPhone";
-			productReference = 7EB7BBB60F9B0DE400452BDE /* libDream-Darwin-iPhoneOS.a */;
+			productReference = 7EB7BBB60F9B0DE400452BDE /* libDream-Darwin-iOS.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		7EB7BBFE0F9B264700452BDE /* Dream-Darwin-iPhoneSimulator */ = {
+		7EB7BBFE0F9B264700452BDE /* Dream-Darwin-iOS-Simulator */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7EB7BC040F9B265E00452BDE /* Build configuration list for PBXNativeTarget "Dream-Darwin-iPhoneSimulator" */;
+			buildConfigurationList = 7EB7BC040F9B265E00452BDE /* Build configuration list for PBXNativeTarget "Dream-Darwin-iOS-Simulator" */;
 			buildPhases = (
 				7EB7BBFC0F9B264700452BDE /* Sources */,
 				7EB7BBFD0F9B264700452BDE /* Frameworks */,
@@ -1185,14 +1185,14 @@
 			dependencies = (
 				7ED2B156141BA33A0017C006 /* PBXTargetDependency */,
 			);
-			name = "Dream-Darwin-iPhoneSimulator";
+			name = "Dream-Darwin-iOS-Simulator";
 			productName = "Dream-iPhone-Simulator";
-			productReference = 7EB7BBFF0F9B264700452BDE /* libDream-Darwin-iPhoneSimulator.a */;
+			productReference = 7EB7BBFF0F9B264700452BDE /* libDream-Darwin-iOS-Simulator.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		7EC86A270FAD70FD005DD627 /* Dream-Darwin-MacOSX */ = {
+		7EC86A270FAD70FD005DD627 /* Dream-Darwin-OSX */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7EC86A320FAD711B005DD627 /* Build configuration list for PBXNativeTarget "Dream-Darwin-MacOSX" */;
+			buildConfigurationList = 7EC86A320FAD711B005DD627 /* Build configuration list for PBXNativeTarget "Dream-Darwin-OSX" */;
 			buildPhases = (
 				7EC86A250FAD70FD005DD627 /* Sources */,
 				7EC86A260FAD70FD005DD627 /* Frameworks */,
@@ -1203,9 +1203,9 @@
 			dependencies = (
 				7ED2B152141BA3340017C006 /* PBXTargetDependency */,
 			);
-			name = "Dream-Darwin-MacOSX";
+			name = "Dream-Darwin-OSX";
 			productName = "Dream-Darwin-Universal";
-			productReference = 7EC86A280FAD70FD005DD627 /* libDream-Darwin-MacOSX.a */;
+			productReference = 7EC86A280FAD70FD005DD627 /* libDream-Darwin-OSX.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -1234,9 +1234,9 @@
 			targets = (
 				7EA912760EB41A080080E66D /* Unit Tests */,
 				7ED2B0BB140FBC2D0017C006 /* Copy Headers */,
-				7EC86A270FAD70FD005DD627 /* Dream-Darwin-MacOSX */,
-				7EB7BBB50F9B0DE400452BDE /* Dream-Darwin-iPhoneOS */,
-				7EB7BBFE0F9B264700452BDE /* Dream-Darwin-iPhoneSimulator */,
+				7EC86A270FAD70FD005DD627 /* Dream-Darwin-OSX */,
+				7EB7BBB50F9B0DE400452BDE /* Dream-Darwin-iOS */,
+				7EB7BBFE0F9B264700452BDE /* Dream-Darwin-iOS-Simulator */,
 				7E800EF511A930B800E6D994 /* All Static Targets */,
 			);
 		};
@@ -1254,7 +1254,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $PROJECT_DIR\n\ncp $BUILT_PRODUCTS_DIR/libDream-Darwin-iPhoneOS.a $SRCROOT/ext/darwin_iphoneos/lib/libDream.a\n";
+			shellScript = "cd $PROJECT_DIR\n\ncp $BUILT_PRODUCTS_DIR/libDream-Darwin-iOS.a $SRCROOT/ext/darwin_ios/lib/libDream.a\n";
 		};
 		7EBC25340FA8714700D2CA1D /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1267,7 +1267,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $PROJECT_DIR\n\ncp $BUILT_PRODUCTS_DIR/libDream-Darwin-iPhoneSimulator.a $SRCROOT/ext/darwin_iphonesimulator/lib/libDream.a\n";
+			shellScript = "cd $PROJECT_DIR\n\ncp $BUILT_PRODUCTS_DIR/libDream-Darwin-iOS-Simulator.a $SRCROOT/ext/darwin_ios_simulator/lib/libDream.a\n";
 		};
 		7EC86A340FAD7129005DD627 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1280,7 +1280,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $PROJECT_DIR\n\ncp $BUILT_PRODUCTS_DIR/libDream-Darwin-MacOSX.a $SRCROOT/ext/darwin_macosx/lib/libDream.a\n";
+			shellScript = "cd $PROJECT_DIR\n\ncp $BUILT_PRODUCTS_DIR/libDream-Darwin-OSX.a $SRCROOT/ext/darwin_osx/lib/libDream.a\n";
 		};
 		7ED2B0BF140FBC360017C006 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1676,17 +1676,17 @@
 		};
 		7E800EFB11A930C600E6D994 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 7EC86A270FAD70FD005DD627 /* Dream-Darwin-MacOSX */;
+			target = 7EC86A270FAD70FD005DD627 /* Dream-Darwin-OSX */;
 			targetProxy = 7E800EFA11A930C600E6D994 /* PBXContainerItemProxy */;
 		};
 		7E800EFD11A930C600E6D994 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 7EB7BBFE0F9B264700452BDE /* Dream-Darwin-iPhoneSimulator */;
+			target = 7EB7BBFE0F9B264700452BDE /* Dream-Darwin-iOS-Simulator */;
 			targetProxy = 7E800EFC11A930C600E6D994 /* PBXContainerItemProxy */;
 		};
 		7E800EFF11A930C600E6D994 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 7EB7BBB50F9B0DE400452BDE /* Dream-Darwin-iPhoneOS */;
+			target = 7EB7BBB50F9B0DE400452BDE /* Dream-Darwin-iOS */;
 			targetProxy = 7E800EFE11A930C600E6D994 /* PBXContainerItemProxy */;
 		};
 		7ED2B152141BA3340017C006 /* PBXTargetDependency */ = {
@@ -1778,7 +1778,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7EA2822A139A545500AB1E1F /* Library.xcconfig */;
 			buildSettings = {
-				PRODUCT_NAME = "Dream-Darwin-iPhoneOS";
+				PRODUCT_NAME = "Dream-Darwin-iOS";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
 			};
@@ -1789,7 +1789,7 @@
 			baseConfigurationReference = 7EA2822A139A545500AB1E1F /* Library.xcconfig */;
 			buildSettings = {
 				GCC_DYNAMIC_NO_PIC = YES;
-				PRODUCT_NAME = "Dream-Darwin-iPhoneOS";
+				PRODUCT_NAME = "Dream-Darwin-iOS";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
 			};
@@ -1799,7 +1799,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7EA2822A139A545500AB1E1F /* Library.xcconfig */;
 			buildSettings = {
-				PRODUCT_NAME = "Dream-Darwin-iPhoneSimulator";
+				PRODUCT_NAME = "Dream-Darwin-iOS-Simulator";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphonesimulator;
 			};
@@ -1810,7 +1810,7 @@
 			baseConfigurationReference = 7EA2822A139A545500AB1E1F /* Library.xcconfig */;
 			buildSettings = {
 				GCC_DYNAMIC_NO_PIC = YES;
-				PRODUCT_NAME = "Dream-Darwin-iPhoneSimulator";
+				PRODUCT_NAME = "Dream-Darwin-iOS-Simulator";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphonesimulator;
 			};
@@ -1822,7 +1822,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COPY_PHASE_STRIP = NO;
-				PRODUCT_NAME = "Dream-Darwin-MacOSX";
+				PRODUCT_NAME = "Dream-Darwin-OSX";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -1833,7 +1833,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_DYNAMIC_NO_PIC = YES;
-				PRODUCT_NAME = "Dream-Darwin-MacOSX";
+				PRODUCT_NAME = "Dream-Darwin-OSX";
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -1882,7 +1882,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7EB7BBBE0F9B0E1B00452BDE /* Build configuration list for PBXNativeTarget "Dream-Darwin-iPhoneOS" */ = {
+		7EB7BBBE0F9B0E1B00452BDE /* Build configuration list for PBXNativeTarget "Dream-Darwin-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7EB7BBB90F9B0DE500452BDE /* Debug */,
@@ -1891,7 +1891,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7EB7BC040F9B265E00452BDE /* Build configuration list for PBXNativeTarget "Dream-Darwin-iPhoneSimulator" */ = {
+		7EB7BC040F9B265E00452BDE /* Build configuration list for PBXNativeTarget "Dream-Darwin-iOS-Simulator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7EB7BC000F9B264800452BDE /* Debug */,
@@ -1900,7 +1900,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7EC86A320FAD711B005DD627 /* Build configuration list for PBXNativeTarget "Dream-Darwin-MacOSX" */ = {
+		7EC86A320FAD711B005DD627 /* Build configuration list for PBXNativeTarget "Dream-Darwin-OSX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7EC86A2B0FAD70FD005DD627 /* Debug */,

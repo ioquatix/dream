@@ -5,9 +5,7 @@ ext/packages/*/*.tar.gz
 ext/packages/*/*/
 ext/platforms/*/*
 ext/linux/
-ext/darwin_macosx/
-ext/darwin_iphoneos/
-ext/darwin_iphonesimulator/
+ext/darwin_*/
 ext/android_ndk/
 include/
 opt/
