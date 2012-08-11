@@ -48,11 +48,13 @@ namespace Dream
 
 		class Viewport : public Object, implements IViewport {
 		protected:
-			bool _size_changed_since_last_update;
+			bool _bounds_changed;
 			AlignedBox<2> _bounds;
 
 			Ref<ICamera> _camera;
 			Ref<IProjection> _projection;
+			
+			Mat44 _projection_matrix_cache;
 
 		public:
 			Viewport(Ptr<ICamera> camera, Ptr<IProjection> projection);

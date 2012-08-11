@@ -33,6 +33,9 @@ namespace Dream
 
 			bool _reverse;
 
+			mutable bool _invalid;
+			mutable Mat44 _view_matrix_cache;
+			
 			void regenerate ();
 		public:
 			BirdsEyeCamera ();

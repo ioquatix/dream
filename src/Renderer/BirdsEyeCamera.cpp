@@ -14,7 +14,7 @@ namespace Dream {
 	namespace Renderer {
 		using namespace Events::Logging;
 
-		BirdsEyeCamera::BirdsEyeCamera() : _up(0.0, 0.0, 1.0), _right(1.0, 0.0, 0.0), _center(ZERO), _multiplier(IDENTITY, 1), _reverse(false) {
+		BirdsEyeCamera::BirdsEyeCamera() : _up(0.0, 0.0, 1.0), _right(1.0, 0.0, 0.0), _center(ZERO), _multiplier(IDENTITY, 1), _reverse(false), _invalid(true) {
 			_distance = 100;
 			_azimuth = R45;
 			_incidence = R45;
@@ -29,21 +29,28 @@ namespace Dream {
 		void BirdsEyeCamera::regenerate () {
 			_back = _up.cross(_right);
 			_right = -_up.cross(_back);
+			
+			_invalid = true;
 		}
 
 		Mat44 BirdsEyeCamera::view_matrix () const
 		{
-			Vec3 glUp(0.0, 1.0, 0.0), glRight(1.0, 0.0, 0.0), glIn(0.0, 0.0, -1.0);
-			Vec3 far = _back * _distance;
+			if (_invalid) {
+				Vec3 world_up(0.0, 1.0, 0.0);
+				Vec3 far = _back * _distance;
 
-			Mat44 m = Mat44::rotating_matrix(glUp, _up, _back);
-			m = m.translated_matrix(far);
-			m = m.rotated_matrix(-_incidence, _right);
-			m = m.rotated_matrix(-_azimuth, _up);
-			m = m.translated_matrix(-_center);
-			m = m.rotated_matrix(_twist, _up);
+				Mat44 m = Mat44::rotating_matrix(world_up, _up, _back);
+				m = m.translated_matrix(far);
+				m = m.rotated_matrix(-_incidence, _right);
+				m = m.rotated_matrix(-_azimuth, _up);
+				m = m.translated_matrix(-_center);
+				m = m.rotated_matrix(_twist, _up);
+				
+				_view_matrix_cache = m;
+				_invalid = false;
+			}
 
-			return m;
+			return _view_matrix_cache;
 		}
 
 		bool BirdsEyeCamera::button(const ButtonInput &) {
@@ -75,10 +82,14 @@ namespace Dream {
 				_azimuth += (k * d[X] * _multiplier[X] * (R90 / 90));
 				_incidence += (d[Y] * _multiplier[Y] * (R90 / 90));
 
+				_invalid = true;
+				
 				return true;
 			} else if (input.key().button() == MouseScroll) {
 				_distance += (d[Y] * _multiplier[Z]);
 
+				_invalid = true;
+				
 				return true;
 			} else {
 				return false;
@@ -87,6 +98,8 @@ namespace Dream {
 
 		void BirdsEyeCamera::set_multiplier (const Vec3 &m) {
 			_multiplier = m;
+			
+			_invalid = true;
 		}
 
 		const Vec3 & BirdsEyeCamera::multiplier () {
@@ -95,12 +108,13 @@ namespace Dream {
 
 		void BirdsEyeCamera::set_center (const Vec3 &new_center) {
 			_center = new_center;
+			
+			_invalid = true;
 		}
 
 		void BirdsEyeCamera::set_up (const Vec3 &up) {
 			if (_up != up) {
 				_up = up;
-				/* Regenerate Cache */
 				regenerate();
 			}
 		}
@@ -108,37 +122,44 @@ namespace Dream {
 		void BirdsEyeCamera::set_right (const Vec3 &right) {
 			if (_right != right) {
 				_right = right;
-				/* Regenerate Cache */
 				regenerate();
 			}
 		}
 
-		void BirdsEyeCamera::set_distance (const RealT& amnt, bool relative) {
+		void BirdsEyeCamera::set_distance (const RealT& amount, bool relative) {
 			if (relative)
-				_distance += amnt;
+				_distance += amount;
 			else
-				_distance = amnt;
+				_distance = amount;
+			
+			_invalid = true;
 		}
 
-		void BirdsEyeCamera::set_twist (const RealT& amnt, bool relative) {
+		void BirdsEyeCamera::set_twist (const RealT& amount, bool relative) {
 			if (relative)
-				_twist += amnt;
+				_twist += amount;
 			else
-				_twist = amnt;
+				_twist = amount;
+			
+			_invalid = true;
 		}
 
-		void BirdsEyeCamera::set_azimuth (const RealT& amnt, bool relative) {
+		void BirdsEyeCamera::set_azimuth (const RealT& amount, bool relative) {
 			if (relative)
-				_azimuth += amnt;
+				_azimuth += amount;
 			else
-				_azimuth = amnt;
+				_azimuth = amount;
+			
+			_invalid = true;
 		}
 
-		void BirdsEyeCamera::set_incidence (const RealT &amnt, bool relative) {
+		void BirdsEyeCamera::set_incidence (const RealT &amount, bool relative) {
 			if (relative)
-				_incidence += amnt;
+				_incidence += amount;
 			else
-				_incidence = amnt;
+				_incidence = amount;
+			
+			_invalid = true;
 		}
 	}
 }

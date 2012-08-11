@@ -73,11 +73,13 @@ namespace Dream
 
 // MARK: -
 
-		Viewport::Viewport(Ptr<ICamera> camera, Ptr<IProjection> projection) : _bounds(ZERO, ZERO), _camera(camera), _projection(projection) {
+		Viewport::Viewport(Ptr<ICamera> camera, Ptr<IProjection> projection) : _bounds_changed(true), _bounds(ZERO, ZERO), _camera(camera), _projection(projection) {
 		}
 
 		void Viewport::set_bounds(AlignedBox<2> bounds) {
 			_bounds = bounds;
+			
+			_projection_matrix_cache = _projection->projection_matrix_for_viewport(*this);
 		}
 
 		Ref<ICamera> Viewport::camera() const {
@@ -101,7 +103,7 @@ namespace Dream
 		}
 
 		Mat44 Viewport::projection_matrix() const {
-			return _projection->projection_matrix_for_viewport(*this);
+			return _projection_matrix_cache;
 		}
 
 		AlignedBox<2> Viewport::bounds() const {
