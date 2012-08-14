@@ -20,9 +20,6 @@
 //	#define DREAM_ASSERT(e)
 //#endif
 
-/// Similar to ensure, but works statically, e.g. on consts, template arguments, etc.
-#define DREAM_STATIC_ASSERT(e) ::Dream::StaticAssertion<(e) != 0>::failed()
-
 namespace Dream
 {
 	/**
@@ -49,17 +46,6 @@ namespace Dream
 
 		/// The DREAM_ASSERT() macro calls this function to handle throwing the actual exception.
 		static void assert_handler (bool condition, const char * expression, const char * file, unsigned line);
-	};
-
-	/// Simple static assertion implementation
-	template <bool>
-	class StaticAssertion {
-	public:
-		static void failed() {}
-	};
-
-	template <>
-	class StaticAssertion<false>{
 	};
 }
 

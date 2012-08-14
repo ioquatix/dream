@@ -21,8 +21,8 @@ namespace Dream
 			Vec3 _up;
 			Vec3 _right;
 
-			/* Cached _up.cross(_left) */
-			Vec3 _back;
+			/* Cached _up.cross(_right) */
+			Vec3 _forward;
 
 			Vec3 _center;
 

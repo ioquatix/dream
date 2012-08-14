@@ -20,7 +20,8 @@ Platform.new(:darwin_ios) do |config|
 	# Apparently this now builds for armv6 _and_ armv7?
 	config.arch = "-arch armv7"
 	
-	config.cflags = "#{config.arch} -isysroot #{config.sdk} -miphoneos-version-min=#{config.sdk_version} -mdynamic-no-pic"
+	# -mdynamic-no-pic
+	config.cflags = "#{config.arch} -isysroot #{config.sdk} -miphoneos-version-min=#{config.sdk_version}"
 	config.configure = ["--host=arm-apple-darwin"]
 	
 	# SDK Version 3.2 ?, version 3.1 used darwin9

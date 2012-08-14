@@ -16,5 +16,23 @@ namespace Dream
 		ICamera::~ICamera ()
 		{
 		}
+
+		Camera::Camera(const Mat44 & view_matrix) : _view_matrix(view_matrix)
+		{
+		}
+
+		Camera::~Camera ()
+		{
+		}
+
+		Mat44 Camera::view_matrix() const
+		{
+			return _view_matrix;
+		}
+
+		Mat44 & Camera::view_matrix()
+		{
+			return _view_matrix;
+		}
 	}
 }

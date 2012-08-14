@@ -15,6 +15,8 @@
 		7E9E4239142988760061260C /* Dream Icon (57x57).png in Resources */ = {isa = PBXBuildFile; fileRef = 7E9E4237142988760061260C /* Dream Icon (57x57).png */; };
 		7E9E423A142988760061260C /* Dream Icon (114x114).png in Resources */ = {isa = PBXBuildFile; fileRef = 7E9E4238142988760061260C /* Dream Icon (114x114).png */; };
 		7E9EA73C142306E300F8BC49 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E9EA73B142306E300F8BC49 /* OpenGL.framework */; };
+		7EA3D37815DA55A200A0BE23 /* Dream Icon (72x72).png in Resources */ = {isa = PBXBuildFile; fileRef = 7EA3D37715DA55A200A0BE23 /* Dream Icon (72x72).png */; };
+		7EA3D37A15DA565300A0BE23 /* Dream Icon (144x144).png in Resources */ = {isa = PBXBuildFile; fileRef = 7EA3D37915DA565300A0BE23 /* Dream Icon (144x144).png */; };
 		7EA4D10714E93FB800D5C4C6 /* Textures in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7EA4D10614E92C2000D5C4C6 /* Textures */; };
 		7EE716BC15D29E6100951AF3 /* Textures in Resources */ = {isa = PBXBuildFile; fileRef = 7EE716BA15D29E4B00951AF3 /* Textures */; };
 		7EE716BE15D29E7C00951AF3 /* Shaders in Resources */ = {isa = PBXBuildFile; fileRef = 7EE716BD15D29E7C00951AF3 /* Shaders */; };
@@ -46,6 +48,9 @@
 		7E9E4237142988760061260C /* Dream Icon (57x57).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Dream Icon (57x57).png"; path = "../../../inf/Dream Icon (57x57).png"; sourceTree = "<group>"; };
 		7E9E4238142988760061260C /* Dream Icon (114x114).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Dream Icon (114x114).png"; path = "../../../inf/Dream Icon (114x114).png"; sourceTree = "<group>"; };
 		7E9EA73B142306E300F8BC49 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		7EA3D37715DA55A200A0BE23 /* Dream Icon (72x72).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Dream Icon (72x72).png"; path = "../../../inf/Dream Icon (72x72).png"; sourceTree = "<group>"; };
+		7EA3D37915DA565300A0BE23 /* Dream Icon (144x144).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Dream Icon (144x144).png"; path = "../../../inf/Dream Icon (144x144).png"; sourceTree = "<group>"; };
+		7EA3D37B15DA56B200A0BE23 /* iOS Demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "iOS Demo.entitlements"; sourceTree = "<group>"; };
 		7EA4D10614E92C2000D5C4C6 /* Textures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Textures; sourceTree = "<group>"; };
 		7EE716BA15D29E4B00951AF3 /* Textures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Textures; path = Demo/Textures; sourceTree = SOURCE_ROOT; };
 		7EE716BD15D29E7C00951AF3 /* Shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Shaders; sourceTree = "<group>"; };
@@ -132,8 +137,11 @@
 		7E9E41CC14286DCF0061260C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				7EA3D37B15DA56B200A0BE23 /* iOS Demo.entitlements */,
 				7E9E4237142988760061260C /* Dream Icon (57x57).png */,
+				7EA3D37715DA55A200A0BE23 /* Dream Icon (72x72).png */,
 				7E9E4238142988760061260C /* Dream Icon (114x114).png */,
+				7EA3D37915DA565300A0BE23 /* Dream Icon (144x144).png */,
 				7E9E41CD14286DCF0061260C /* iOS Demo-Info.plist */,
 				7E9E41CE14286DCF0061260C /* InfoPlist.strings */,
 			);
@@ -221,6 +229,8 @@
 				7EE716BC15D29E6100951AF3 /* Textures in Resources */,
 				7E9E423A142988760061260C /* Dream Icon (114x114).png in Resources */,
 				7EE716BE15D29E7C00951AF3 /* Shaders in Resources */,
+				7EA3D37815DA55A200A0BE23 /* Dream Icon (72x72).png in Resources */,
+				7EA3D37A15DA565300A0BE23 /* Dream Icon (144x144).png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -322,8 +332,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_ENTITLEMENTS = "iOS Demo/iOS Demo.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "iOS Demo/iOS Demo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
@@ -339,8 +349,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_ENTITLEMENTS = "iOS Demo/iOS Demo.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "iOS Demo/iOS Demo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;

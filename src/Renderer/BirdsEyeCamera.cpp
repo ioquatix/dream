@@ -27,22 +27,29 @@ namespace Dream {
 		}
 
 		void BirdsEyeCamera::regenerate () {
-			_back = _up.cross(_right);
-			_right = -_up.cross(_back);
-			
+			_forward = _up.cross(_right);
+
+			logger()->log(LOG_DEBUG, LogBuffer() << "Forward: " << _forward);
+
+			_right = -_up.cross(_forward);
+
+			logger()->log(LOG_DEBUG, LogBuffer() << "Right: " << _right);
+			logger()->log(LOG_DEBUG, LogBuffer() << "Up: " << _up);
+
 			_invalid = true;
 		}
 
 		Mat44 BirdsEyeCamera::view_matrix () const
 		{
 			if (_invalid) {
-				Vec3 world_up(0.0, 1.0, 0.0);
-				Vec3 far = _back * _distance;
+				Vec3 world_up(0.0, 1.0, 0.0), world_forward(0.0, 0.0, -1.0);
+				Vec3 far = _forward * _distance;
 
-				Mat44 m = Mat44::rotating_matrix(world_up, _up, _back);
+				Mat44 m(IDENTITY);
+				m = m.rotating_matrix(_up, world_up, _forward);
 				m = m.translated_matrix(far);
-				m = m.rotated_matrix(-_incidence, _right);
-				m = m.rotated_matrix(-_azimuth, _up);
+				m = m.rotated_matrix(_incidence, _right);
+				m = m.rotated_matrix(_azimuth, _up);
 				m = m.translated_matrix(-_center);
 				m = m.rotated_matrix(_twist, _up);
 				

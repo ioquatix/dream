@@ -109,5 +109,39 @@ namespace Dream
 		AlignedBox<2> Viewport::bounds() const {
 			return _bounds;
 		}
+
+// MARK: -
+// MARK: Unit Tests
+
+#ifdef ENABLE_TESTING
+		UNIT_TEST(Viewport)
+		{
+			testing("Projections");
+
+			Ref<Camera> camera = new Camera(IDENTITY);
+			Ref<IProjection> projection = new OrthographicProjection(AlignedBox3::from_center_and_size(ZERO, 20.0));
+			Ref<Viewport> viewport = new Viewport(camera, projection);
+
+			{
+				viewport->set_bounds(AlignedBox2::from_center_and_size(ZERO, 20.0));
+				Vec3 r = viewport->display_matrix() * Vec3(-10, -10, 0);
+				check(r.equivalent(Vec3(-1, -1, 0)));
+			}
+
+			{
+				// Changing the size of the viewport doesn't change the size of the NDC box.
+				viewport->set_bounds(AlignedBox2::from_center_and_size(ZERO, 40.0));
+				Vec3 r = viewport->display_matrix() * Vec3(-10, -10, 0);
+				check(r.equivalent(Vec3(-1, -1, 0)));
+			}
+
+			viewport->set_camera(new Camera(Mat44::translating_matrix(Vec3(10, 10, 0))));
+
+			{
+				Vec3 r = viewport->display_matrix() * Vec3(-10, -10, 0);
+				check(r.equivalent(Vec3(0, 0, 0)));
+			}
+		}
+#endif
 	}
 }

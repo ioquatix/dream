@@ -233,7 +233,7 @@ namespace Dream
 		template <unsigned E, typename NumericT>
 		Vector<E, NumericT>::Vector (const NumericT & x, const NumericT & y)
 		{
-			DREAM_STATIC_ASSERT(E == 2);
+			static_assert(E == 2, "Vector must be correct size!");
 
 			_vector[0] = x;
 			_vector[1] = y;
@@ -242,7 +242,7 @@ namespace Dream
 		template <unsigned E, typename NumericT>
 		Vector<E, NumericT>::Vector (const NumericT & x, const NumericT & y, const NumericT & z)
 		{
-			DREAM_STATIC_ASSERT(E == 3);
+			static_assert(E == 3, "Vector must be correct size!");
 
 			_vector[0] = x;
 			_vector[1] = y;
@@ -252,7 +252,7 @@ namespace Dream
 		template <unsigned E, typename NumericT>
 		Vector<E, NumericT>::Vector (const NumericT & x, const NumericT & y, const NumericT & z, const NumericT & w)
 		{
-			DREAM_STATIC_ASSERT(E == 4);
+			static_assert(E == 4, "Vector must be correct size!");
 
 			_vector[0] = x;
 			_vector[1] = y;

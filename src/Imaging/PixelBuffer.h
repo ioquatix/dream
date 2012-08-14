@@ -179,12 +179,12 @@ namespace Dream {
 			void write_pixel (const PixelCoordinateT &at, const Vector<D, NumericT> &input) {
 				DREAM_ASSERT(!is_packed_format() && "Packed pixel formats not supported for reading!");
 
-				unsigned from = pixel_offset(at);
-				unsigned bytes_per_component = bytes_per_pixel() / channel_count();
+				std::size_t from = pixel_offset(at);
+				std::size_t bytes_per_component = bytes_per_pixel() / channel_count();
 
 				DREAM_ASSERT(sizeof(NumericT) == bytes_per_component);
 
-				for (unsigned i = 0; i < D; i += 1) {
+				for (std::size_t i = 0; i < D; i += 1) {
 					write_data_at(from + (i * bytes_per_component), input[i]);
 				}
 			}

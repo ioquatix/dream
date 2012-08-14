@@ -13,20 +13,22 @@
 #include <iostream>
 #include <iomanip>
 
+#include "Matrix.NEON.h"
+
 namespace Dream
 {
 	namespace Numerics
 	{
 		// If we increase row by 1, the offset will increase by sz (number of elements per row i.e. number of columns)
 		// If we increase col by 1, the offset will increase by 1
-		inline unsigned row_major_offset(unsigned row, unsigned col, unsigned sz)
+		inline std::size_t row_major_offset(std::size_t row, std::size_t col, std::size_t sz)
 		{
 			return col + row * sz;
 		}
 
 		// If we increase col by 1, the offset will increase by sz (number of elements per column i.e. number of rows)
 		// If we increase row by 1, the offset will increase by 1
-		inline unsigned column_major_offset(unsigned row, unsigned col, unsigned sz)
+		inline std::size_t column_major_offset(std::size_t row, std::size_t col, std::size_t sz)
 		{
 			return row + col * sz;
 		}
@@ -34,33 +36,54 @@ namespace Dream
 // MARK: -
 // MARK: Matrix Multiplication
 
+		/*
+
+						  | |1|
+                          | |2|
+					  C = 4 |3|
+						  | |4|
+			    - C = 4 -
+		      | |1 2 3 4|   | |
+		  R = 4 |5 6 7 8|   |R|
+		      | |9 8 7 6|   | |
+		      | |5 4 3 2|   | |
+
+		 */
+
 		template <unsigned R, unsigned C, typename NumericT>
-		Vector<C, NumericT> MatrixMultiplicationTraits<R, C, NumericT>::multiply (const Vector<R, NumericT> & v) const
+		void multiply (Vector<R, NumericT> & result, const Matrix<R, C, NumericT> & left, const Vector<C, NumericT> & right)
 		{
-			const MatrixT * t = static_cast<const MatrixT*>(this);
-
-			Vector<C, NumericT> result(ZERO);
-
-			for (unsigned c = 0; c < C; ++c)
-				for (unsigned r = 0; r < R; ++r)
-					result[c] += v[r] * t->at(r, c);
-
-			return result;
+			for (unsigned r = 0; r < R; ++r)
+				for (unsigned c = 0; c < C; ++c)
+					result[r] += right[c] * left.at(r, c);
 		}
 
-		template <unsigned R, unsigned C, typename NumericT> template <unsigned T>
-		Matrix<T, C, NumericT> MatrixMultiplicationTraits<R, C, NumericT>::multiply (const Matrix<T, R, NumericT> & m) const
+		/*
+						  top
+							  -  C = 5  -
+							| |1 2 3 4 5|
+							| |6 7 8 9 8|
+						T = 4 |7 6 5 4 3|
+		     left           | |2 1 0 1 2|
+				  - T = 4 -
+		        | |1 2 3 4|   |         |
+		    R = 3 |5 6 7 8|   |  R x C  |
+		        | |9 8 7 6|   |         |
+		                          result
+		 
+		 */
+		
+		template <unsigned R, unsigned C, unsigned T, typename NumericT>
+		void multiply (Matrix<R, C, NumericT> & result, const Matrix<R, T, NumericT> & left, const Matrix<T, C, NumericT> & top)
 		{
-			const MatrixT * t = static_cast<const MatrixT*>(this);
-
-			Matrix<R, C, NumericT> result(ZERO);
-
-			for (unsigned c = 0; c < C; ++c)
-				for (unsigned r = 0; r < R; ++r)
-					for (unsigned i = 0; i < R; i++)
-						result.at(r, c) += t->at(i, c) * m.at(r, i);
-
-			return result;
+			for (unsigned r = 0; r < R; ++r) {
+				for (unsigned c = 0; c < C; ++c) {
+					NumericT & value = result.at(r, c);
+					
+					for (unsigned t = 0; t < T; t++)
+						value += left.at(r, t) * top.at(t, c);
+				}
+			}
 		}
 
 // MARK: -
@@ -176,7 +199,7 @@ namespace Dream
 		template <unsigned N, typename NumericT> template <unsigned K>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::scaling_matrix (const Vector<K, NumericT> & amount)
 		{
-			DREAM_STATIC_ASSERT((K <= N));
+			static_assert(K <= N, "Vector must be equal or smaller than matrix!");
 
 			Matrix<N, N, NumericT> result;
 			result.load_identity();
@@ -190,13 +213,12 @@ namespace Dream
 		template <unsigned N, typename NumericT> template <unsigned K>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::translating_matrix (const Vector<K, NumericT> & amount)
 		{
-			DREAM_STATIC_ASSERT((K <= N));
+			static_assert(K <= N, "Vector must be equal or smaller than matrix!");
 
-			Matrix<N, N, NumericT> result;
-			result.load_identity();
+			Matrix<N, N, NumericT> result(IDENTITY);
 
 			// Copy the vector along bottom row
-			for (unsigned i = 0; i < K; i += 1) result.at(N-1, i) = amount[i];
+			for (unsigned i = 0; i < K; i += 1) result.at(i, N-1) = amount[i];
 
 			return result;
 		}
@@ -204,11 +226,9 @@ namespace Dream
 		template <unsigned N, typename NumericT>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotating_matrix (const NumericT & angle, const Vector<3, NumericT> & p)
 		{
-			// Typically used for N == 3, N == 4 size matricies
-			DREAM_STATIC_ASSERT((N > 2));
+			static_assert(N == 3 || N == 4, "Matrix rotation is only implemented for size 3x3 or 4x4");
 
-			Matrix<N, N, NumericT> result;
-			result.load_identity();
+			Matrix<N, N, NumericT> result(IDENTITY);
 
 			if (equal_within_tolerance(angle, (NumericT)0.0)) return result;
 
@@ -216,53 +236,50 @@ namespace Dream
 			NumericT c = Number<NumericT>::cos(angle);
 			NumericT a = 1.0 - c;
 
-			RealT xs = p[X] * s, ys = p[Y] * s, zs = p[Z] * s;
+			Vector<3, NumericT> sp = p * s;
 
 			result.at(0, 0) = p[X] * p[X] * a + c;
-			result.at(0, 1) = p[X] * p[Y] * a - zs;
-			result.at(0, 2) = p[X] * p[Z] * a + ys;
+			result.at(0, 1) = p[X] * p[Y] * a - sp[Z];
+			result.at(0, 2) = p[X] * p[Z] * a + sp[Y];
 
-			result.at(1, 0) = p[Y] * p[X] * a + zs;
+			result.at(1, 0) = p[Y] * p[X] * a + sp[Z];
 			result.at(1, 1) = p[Y] * p[Y] * a + c;
-			result.at(1, 2) = p[Y] * p[Z] * a - xs;
+			result.at(1, 2) = p[Y] * p[Z] * a - sp[X];
 
-			result.at(2, 0) = p[Z] * p[X] * a - ys;
-			result.at(2, 1) = p[Z] * p[Y] * a + xs;
+			result.at(2, 0) = p[Z] * p[X] * a - sp[Y];
+			result.at(2, 1) = p[Z] * p[Y] * a + sp[X];
 			result.at(2, 2) = p[Z] * p[Z] * a + c;
 
 			return result;
 		}
 
 		template <unsigned N, typename NumericT>
-		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotating_matrix (const NumericT & angle, const Vector<3, NumericT> & normal,
-		                                                                            const Vector<3, NumericT> & pt)
+		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotating_matrix (const NumericT & angle, const Vector<3, NumericT> & normal, const Vector<3, NumericT> & pt)
 		{
-			Matrix<N, N, NumericT> t;
-			t.load_identity();
+			Matrix<N, N, NumericT> t, rotation = Matrix<N, N, NumericT>::rotating_matrix(angle, normal);
 
 			bool at_origin = pt.is_zero();
 
 			if (angle != 0) {
-				if (!at_origin)
-					t = t * Matrix<N, N, NumericT>::translating_matrix(-pt);
-
-				t = t * Matrix<N, N, NumericT>::rotating_matrix(angle, normal);
-
-				if (!at_origin)
-					t = t * Matrix<N, N, NumericT>::translating_matrix(pt);
+				if (!at_origin) {
+					t = Matrix<N, N, NumericT>::translating_matrix(-pt);
+					t << rotation;
+					t << Matrix<N, N, NumericT>::translating_matrix(pt);
+				} else {
+					return rotation;
+				}
 			}
 
 			return t;
 		}
 
 		template <unsigned N, typename NumericT>
-		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotating_matrix (const Vector<3, NumericT> & from, const Vector<3, NumericT> & to,
-		                                                                            const Vector<3, NumericT> & normal)
+		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotating_matrix (const Vector<3, NumericT> & from, const Vector<3, NumericT> & to, const Vector<3, NumericT> & normal)
 		{
 			NumericT angle = to.angle_between(from);
 
 			if (equal_within_tolerance(angle, (NumericT)0.0)) {
-				return Matrix<N, N, NumericT>(Identity());
+				return IDENTITY;
 			} else if (Math::abs(angle) == R180) {
 				return Matrix<N, N, NumericT>::rotating_matrix(angle, from.cross(normal).normalize());
 			} else {
@@ -273,7 +290,7 @@ namespace Dream
 		template <unsigned N, typename NumericT>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotating_matrix_around_x (const NumericT & radians)
 		{
-			DREAM_STATIC_ASSERT((N >= 3));
+			static_assert(N >= 3, "Matrix must be size 3 or bigger!");
 
 			NumericT ca = Number<NumericT>::cos(radians);
 			NumericT sa = Number<NumericT>::sin(radians);
@@ -283,9 +300,9 @@ namespace Dream
 			if (equal_within_tolerance(radians, 0.0f)) return result;
 
 			result.at(1, 1) = ca;
+			result.at(1, 2) = -sa;
+			result.at(2, 1) = sa;
 			result.at(2, 2) = ca;
-			result.at(1, 2) = sa;
-			result.at(2, 1) = -sa;
 
 			return result;
 		}
@@ -293,7 +310,7 @@ namespace Dream
 		template <unsigned N, typename NumericT>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotating_matrix_around_y (const NumericT & radians)
 		{
-			DREAM_STATIC_ASSERT((N >= 3));
+			static_assert(N >= 3, "Matrix must be size 3 or bigger!");
 
 			NumericT ca = Number<NumericT>::cos(radians);
 			NumericT sa = Number<NumericT>::sin(radians);
@@ -304,8 +321,8 @@ namespace Dream
 
 			result.at(0, 0) = ca;
 			result.at(2, 2) = ca;
-			result.at(2, 0) = sa;
-			result.at(0, 2) = -sa;
+			result.at(2, 0) = -sa;
+			result.at(0, 2) = sa;
 
 			return result;
 		}
@@ -314,7 +331,7 @@ namespace Dream
 		template <unsigned N, typename NumericT>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotating_matrix_around_z (const NumericT & radians)
 		{
-			DREAM_STATIC_ASSERT((N >= 2));
+			static_assert(N >= 2, "Matrix must be size 3 or bigger!");
 
 			NumericT ca = Number<NumericT>::cos(radians);
 			NumericT sa = Number<NumericT>::sin(radians);
@@ -325,8 +342,8 @@ namespace Dream
 
 			result.at(0, 0) = ca;
 			result.at(1, 1) = ca;
-			result.at(0, 1) = sa;
-			result.at(1, 0) = -sa;
+			result.at(0, 1) = -sa;
+			result.at(1, 0) = sa;
 
 			return result;
 		}
@@ -334,42 +351,34 @@ namespace Dream
 		template <unsigned N, typename NumericT>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotated_matrix (const NumericT & angle, const Vector<3, NumericT> & n)
 		{
-			const MatrixT * t = static_cast<const MatrixT*>(this);
+			MatrixT * t = static_cast<MatrixT*>(this);
 
-			Matrix<N, N, NumericT> *lhs = (Matrix<N, N, NumericT>*)(t);
-
-			return lhs->multiply(Matrix<N, N, NumericT>::rotating_matrix(angle, n));
+			return (*t) * Matrix<N, N, NumericT>::rotating_matrix(angle, n);
 		}
 
 		template <unsigned N, typename NumericT>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::rotated_matrix (const NumericT & angle, const Vector<3, NumericT> & n,
 		                                                                           const Vector<3, NumericT> & p)
 		{
-			const MatrixT * t = static_cast<const MatrixT*>(this);
-
-			Matrix<N, N, NumericT> *lhs = (Matrix<N, N, NumericT>*)(t);
-
-			return lhs->multiply(Matrix<N, N, NumericT>::rotating_matrix(angle, n, p));
+			MatrixT * t = static_cast<MatrixT*>(this);
+			
+			return (*t) * Matrix<N, N, NumericT>::rotating_matrix(angle, n, p);
 		}
 
 		template <unsigned N, typename NumericT> template <unsigned K>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::translated_matrix (const Vector<K, NumericT> & amount)
 		{
-			const MatrixT * t = static_cast<const MatrixT*>(this);
-
-			Matrix<N, N, NumericT> *lhs = (Matrix<N, N, NumericT>*)(t);
-
-			return lhs->multiply(Matrix<N, N, NumericT>::translating_matrix(amount));
+			MatrixT * t = static_cast<MatrixT*>(this);
+			
+			return (*t) * Matrix<N, N, NumericT>::translating_matrix(amount);
 		}
 
 		template <unsigned N, typename NumericT> template <unsigned K>
 		Matrix<N, N, NumericT> MatrixSquareTraits<N, N, NumericT>::scaled_matrix (const Vector<K, NumericT> & amount)
 		{
-			const MatrixT * t = static_cast<const MatrixT*>(this);
+			MatrixT * t = static_cast<MatrixT*>(this);
 
-			Matrix<N, N, NumericT> *lhs = (Matrix<N, N, NumericT>*)(t);
-
-			return lhs->multiply(Matrix<N, N, NumericT>::scaling_matrix(amount));
+			return (*t) * Matrix<N, N, NumericT>::scaling_matrix(amount);
 		}
 
 		template <unsigned N, typename NumericT>
@@ -429,19 +438,19 @@ namespace Dream
 		template <unsigned R, unsigned C, typename N>
 		Matrix<R, C, N>::Matrix (const Matrix<R, C, N> & other)
 		{
-			memcpy(_matrix, other._matrix, sizeof(_matrix));
+			set(other._data);
 		}
 
 		template <unsigned R, unsigned C, typename N>
 		void Matrix<R, C, N>::zero ()
 		{
-			memset(_matrix, 0, sizeof(_matrix));
+			memset(this->_data, 0, sizeof(this->_data));
 		}
 
 		template <unsigned R, unsigned C, typename N>
 		void Matrix<R, C, N>::load_identity (const NumericT & n)
 		{
-			DREAM_STATIC_ASSERT((unsigned)R == (unsigned)C);
+			static_assert(R == C, "Matrix must be square");
 
 			zero();
 

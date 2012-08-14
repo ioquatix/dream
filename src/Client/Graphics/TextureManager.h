@@ -25,7 +25,7 @@ namespace Dream {
 
 			 */
 			struct TextureParameters {
-				inline void set_defaults();
+				void set_defaults();
 
 				/// Whether or not mip-maps are used
 				bool generate_mip_maps;

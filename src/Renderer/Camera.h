@@ -26,6 +26,18 @@ namespace Dream
 
 			virtual Mat44 view_matrix() const abstract;
 		};
+
+		class Camera : implements ICamera {
+		protected:
+			Mat44 _view_matrix;
+
+		public:
+			Camera(const Mat44 & view_matrix);
+			virtual ~Camera ();
+
+			virtual Mat44 view_matrix() const;
+			Mat44 & view_matrix();
+		};
 	}
 }
 

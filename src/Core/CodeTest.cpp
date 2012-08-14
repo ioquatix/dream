@@ -53,8 +53,6 @@ namespace Dream
 
 			foreach (test, _code_tests)
 			{
-				if ((*test)->_name != "Object Test") continue;
-
 				(*test)->perform_tests ();
 
 				Ref<CodeTest::Statistics> stats = (*test)->overall_statistics();

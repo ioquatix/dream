@@ -12,7 +12,6 @@ BUILD_VARIANT[sdk=iphonesimulator*]=darwin_ios_simulator
 
 DREAM_EXT=$(DREAM_ROOT)/ext/$(BUILD_VARIANT)/
 
-// ppc doesn't seem to be supported any more Xcode 4.
 VALID_ARCHS[sdk=macosx*]=i386 x86_64
 VALID_ARCHS[sdk=iphoneos*]=armv6 armv7
 VALID_ARCHS[sdk=iphonesimulator*]=i386
@@ -20,6 +19,7 @@ VALID_ARCHS[sdk=iphonesimulator*]=i386
 ARCHS=$(VALID_ARCHS)
 
 DEBUG_CFLAGS[variant=debug]=-DDREAM_DEBUG
+DEBUG_CFLAGS[variant=release]=-DDREAM_RELEASE
 
 OTHER_CFLAGS[sdk=macosx*]=-DDREAM_VARIANT=$(BUILD_VARIANT) $(DEBUG_CFLAGS)
 OTHER_CFLAGS[sdk=iphoneos*]=-DDREAM_VARIANT=$(BUILD_VARIANT) $(DEBUG_CFLAGS)
@@ -42,3 +42,11 @@ GCC_SYMBOLS_PRIVATE_EXTERN=NO
 
 // Faster execution for floating-point heavy code.
 GCC_THUMB_SUPPORT=NO
+
+GCC_DYNAMIC_NO_PIC[sdk=iphoneos*]=NO
+GCC_DYNAMIC_NO_PIC[sdk=macosx]=YES
+
+// General optimisations, should give you about +10FPS depending on workload.
+GCC_OPTIMIZATION_LEVEL[variant=release]=3
+GCC_UNROLL_LOOPS[variant=release]=YES
+LLVM_LTO[variant=release]=YES

@@ -56,7 +56,7 @@ namespace Dream {
 
 			Line3 q = a.rotated_line(norm, R90);
 
-			check(q.direction().equivalent(Vec3(0, -1, 0))) << "Rotated line is correct";
+			check(q.direction().equivalent(Vec3(0, 1, 0))) << "Rotated line is correct";
 		}
 
 		UNIT_TEST(LineSegment)

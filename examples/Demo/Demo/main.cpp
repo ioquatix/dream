@@ -6,6 +6,9 @@
 //  Copyright 2011 Orion Transfer Ltd. All rights reserved.
 //
 
+#include <Dream/Numerics/Matrix.h>
+#include <Dream/Numerics/Matrix.NEON.h>
+
 #include <Dream/Client/Client.h>
 #include <Dream/Client/Display/Application.h>
 
@@ -38,13 +41,13 @@ namespace Demo {
 	using namespace Dream::Renderer;
 	using namespace Dream::Client::Display;
 	using namespace Dream::Client::Graphics;
-	
+
 	class TrailParticles : public ParticleRenderer<TrailParticles> {
 	public:
 		bool update_particle (Particle & particle, TimeT last_time, TimeT current_time, TimeT dt);
 		void add(LineSegment<3> line_segment, const Vec3 & color);
 	};
-	
+
 	bool TrailParticles::update_particle (Particle & particle, TimeT last_time, TimeT current_time, TimeT dt) {
 		if (particle.update_time(dt, Vec3(0.0, 0.0, -9.8))) {
 			RealT alpha = particle.calculate_alpha(0.7);
@@ -120,7 +123,7 @@ namespace Demo {
 		Ref<BirdsEyeCamera> _camera;
 		Ref<IProjection> _projection;
 		Ref<Viewport> _viewport;
-		
+
 		Ref<Program> _textured_program, _flat_program, _solid_program, _particle_program, _wireframe_program;
 		GLuint _position_uniform, _light_positions_uniform;
 		
@@ -167,13 +170,15 @@ namespace Demo {
 	DemoScene::~DemoScene ()
 	{
 	}
-	
+
 	void DemoScene::will_become_current(ISceneManager * manager)
 	{
 		Scene::will_become_current(manager);
 		
 		glEnable(GL_DEPTH_TEST);
-		
+		//glEnable(GL_CULL_FACE);
+		//glCullFace(GL_BACK);
+
 		check_graphics_error();
 		
 		_camera = new BirdsEyeCamera;
@@ -183,12 +188,12 @@ namespace Demo {
 		_projection = new PerspectiveProjection(R90 * 0.7, 1, 1024 * 12);
 		_viewport = new Viewport(_camera, _projection);
 		_viewport->set_bounds(AlignedBox<2>(ZERO, manager->display_context()->size()));
-		
+
 		_point.zero();
 		_light_positions[0].zero();
 		_light_positions[1].zero();
 		_light_positions[2].zero();
-		
+
 		_rotation = 0.0;
 		_light_colors[0] = Vec4(2.0, 0.8, 0.4, 0.0);
 		_light_colors[1] = Vec4(0.4, 0.8, 2.0, 0.0);
@@ -362,7 +367,7 @@ namespace Demo {
 		}
 		
 		glClearColor(0.0, 0.0, 0.0, 1.0);
-		
+
 		logger()->log(LOG_INFO, "Will become current.");
 	}
 	
@@ -485,11 +490,6 @@ namespace Demo {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		{
-			auto binding = _wireframe_program->binding();
-			binding.set_uniform("display_matrix", _viewport->display_matrix());
-		}
-		
-		{
 			check_graphics_error();
 			
 			auto binding = _textured_program->binding();
@@ -514,16 +514,13 @@ namespace Demo {
 			// Draw the various objects to the screen:
 			binding.set_uniform(display_matrix_uniform, _viewport->display_matrix());
 			_grid_mesh_buffer->draw();
-			
+
 			binding.set_uniform(display_matrix_uniform, modelview_matrix);
 			_object_mesh_buffer->draw();
 			
 			check_graphics_error();
-			
-			//AlignedBox3 sphere_box(-4, 4);
-			//_wireframe_renderer->render(sphere_box);
 		}
-
+		
 		{
 			auto binding = _solid_program->binding();
 			binding.set_uniform("display_matrix", _viewport->display_matrix());
@@ -542,6 +539,27 @@ namespace Demo {
 				
 				check_graphics_error();
 			}
+
+		}
+
+		{
+			auto binding = _wireframe_program->binding();
+			binding.set_uniform("display_matrix", _viewport->display_matrix());
+			
+			binding.set_uniform("major_color", Vec4(1.0, 0.0, 0.0, 1.0));
+
+			AlignedBox3 xbox = AlignedBox3::from_center_and_size(Vec3(15.0, 0.0, 0.0), 1.0);
+			_wireframe_renderer->render(xbox);
+
+			binding.set_uniform("major_color", Vec4(0.0, 1.0, 0.0, 1.0));
+
+			AlignedBox3 ybox = AlignedBox3::from_center_and_size(Vec3(0.0, 15.0, 0.0), 1.0);
+			_wireframe_renderer->render(ybox);
+
+			binding.set_uniform("major_color", Vec4(0.0, 0.0, 1.0, 1.0));
+
+			AlignedBox3 zbox = AlignedBox3::from_center_and_size(Vec3(0.0, 0.0, 15.0), 1.0);
+			_wireframe_renderer->render(zbox);
 		}
 		
 		{
@@ -576,7 +594,7 @@ namespace Demo {
 	
 	DemoApplicationDelegate::~DemoApplicationDelegate() {
 	}
-	
+
 	void DemoApplicationDelegate::application_did_finish_launching (IApplication * application)
 	{		
 		Ref<Dictionary> config = new Dictionary;
@@ -586,7 +604,7 @@ namespace Demo {
 		Ref<ILoader> loader = SceneManager::default_resource_loader();
 		
 		Ref<SceneManager> scene_manager = new SceneManager(_context, thread->loop(), loader);
-		
+
 #ifdef DREAM_DEBUG
 		logger()->log(LOG_INFO, "Debugging mode active");
 #else
@@ -595,7 +613,7 @@ namespace Demo {
 		
 		scene_manager->push_scene(new DemoScene);
 	}
-	
+
 	void DemoApplicationDelegate::application_will_enter_background (IApplication * application)
 	{
 		logger()->log(LOG_INFO, "Entering background...");
@@ -615,7 +633,7 @@ int main (int argc, const char * argv[])
 {
 	using namespace Demo;
 	using namespace Dream::Client::Display;
-	
+
 	Ref<DemoApplicationDelegate> delegate = new DemoApplicationDelegate;
 	IApplication::start(delegate);
 	

@@ -35,27 +35,108 @@ namespace Dream
 		UNIT_TEST(Matrix)
 		{
 			testing("Identity Multiplication");
-			Mat44 a, b, c;
-			Mat44 I(IDENTITY);
 
-			a.load_test_pattern();
+			{
+				Mat44 a, I(IDENTITY);
+				a.load_test_pattern();
+				
+				check(a == a * I) << "Matricies are equivalent after multiplication by identity";
+				check(I * a == a) << "Matricies are equivalent after multiplication by identity";
+			}
 
-			check(a == a * I) << "Matricies are equivalent after multiplication by identity";
-			check(I * a == a) << "Matricies are equivalent after multiplication by identity";
+			{
+				testing("Matrix Rotation");
 
-			testing("Vector Multiplication");
-			Vec4 r, pt(10.0, 0.0, 0.0, 1.0);
-			b = rotation(R90, vec(0.0, 1.0, 0.0));
+				// These tests assume column basis, column major order (traditional mathematical notation):
+				Mat44 xa = Mat44::rotating_matrix(R90, Vec3(1.0, 0.0, 0.0));
+				Mat44 xb = Mat44::rotating_matrix_around_x(R90);
 
-			r = b * pt;
+				check(xa.equivalent(xb));
 
-			check(r.equivalent(vec(0.0, 0.0, 10.0, 1.0))) << "Rotation was successful";
+				Mat44 xc(IDENTITY);
 
-			b = rotation(R180, vec(0.0, 1.0, 0.0), vec(0.0, 10.0, 10.0));
+				xc.at(1, 1) = 0;
+				xc.at(1, 2) = -1;
+				xc.at(2, 1) = 1;
+				xc.at(2, 2) = 0;
 
-			r = b * pt;
+				check(xa.equivalent(xc)) << "Matrix rotation is correct";
 
-			check(r.equivalent(vec(-10.0, 0.0, -20.0, 1.0))) << "Rotation was successful";
+				Mat44 ya = Mat44::rotating_matrix(R90, Vec3(0.0, 1.0, 0.0));
+				Mat44 yb = Mat44::rotating_matrix_around_y(R90);
+
+				check(ya.equivalent(yb));
+
+				Mat44 yc(IDENTITY);
+
+				yc.at(0, 0) = 0;
+				yc.at(0, 2) = 1;
+				yc.at(2, 0) = -1;
+				yc.at(2, 2) = 0;
+
+				check(ya.equivalent(yc)) << "Matrix rotation is correct";
+
+				Mat44 za = Mat44::rotating_matrix(R90, Vec3(0.0, 0.0, 1.0));
+				Mat44 zb = Mat44::rotating_matrix_around_z(R90);
+
+				check(za.equivalent(zb));
+
+				Mat44 zc(IDENTITY);
+
+				zc.at(0, 0) = 0;
+				zc.at(0, 1) = -1;
+				zc.at(1, 0) = 1;
+				zc.at(1, 1) = 0;
+
+				check(za.equivalent(zc)) << "Matrix rotation is correct";
+
+				auto matrix_product = xa * ya * za;
+
+				RealT sample_data[16] = {0, 0, 1, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1};
+				Mat44 sample(sample_data);
+
+				check(matrix_product.equivalent(sample));
+
+				// Check that the rotation between two vectors is correct:
+				Mat44 rk = Mat44::rotating_matrix(Vec3(1.0, 0.0, 0.0), Vec3(0.0, 1.0, 0.0), Vec3(0.0, 0.0, 1.0));
+
+				Vec3 pk = rk * Vec3(1.0, 0.0, 0.0);
+
+				check(pk.equivalent(Vec3(0.0, 1.0, 0.0))) << "Rotation between vectors is correct";
+			}
+
+			{
+				testing("Vector Multiplication");
+
+				Mat44 b, c;
+
+				Vec4 r, pt(10.0, 0.0, 0.0, 1.0);
+				b = rotation(R90, vec(0.0, 1.0, 0.0));
+
+				r = b * pt;
+
+				check(r.equivalent(vec(0.0, 0.0, -10.0, 1.0))) << "Rotation was successful";
+
+				b = rotation(R180, vec(0.0, 1.0, 0.0), vec(0.0, 10.0, 10.0));
+
+				r = b * pt;
+
+				check(r.equivalent(vec(-10.0, 0.0, 20.0, 1.0))) << "Rotation was successful";
+			}
+
+			{
+				testing("Composite Transforms");
+
+				Mat44 a(IDENTITY);
+				a << Mat44::translating_matrix(Vec3(1.0, 2.0, 3.0));
+				a << Mat44::rotating_matrix(R90, Vec3(1.0, 0.0, 0.0));
+				
+				Vec4 r, pt(0.0, 0.0, 0.0, 1.0);
+
+				r = a * pt;
+
+				check(r.equivalent(Vec4(1.0, -3.0, 2.0, 1.0))) << "Rotation was correct";
+			}
 		}
 
 		UNIT_TEST(MatrixVector)
@@ -74,9 +155,9 @@ namespace Dream
 			a.zero();
 
 			a.set(0, 0, c1, 1);
-			a.set(1, 0, c2, 1);
-			a.set(2, 0, c3, 2);
-			a.set(2, 1, c4, 2);
+			a.set(0, 1, c2, 1);
+			a.set(0, 2, c3, 2);
+			a.set(1, 2, c4, 2);
 
 			Mat44 test_pattern;
 			test_pattern.load_test_pattern();

@@ -14,6 +14,8 @@
 	<array>
 		<string>Dream Icon (114x114).png</string>
 		<string>Dream Icon (57x57).png</string>
+		<string>Dream Icon (72x72).png</string>
+		<string>Dream Icon (144x144).png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
 	<string>nz.co.oriontransfer.${PRODUCT_NAME:rfc1034identifier}</string>

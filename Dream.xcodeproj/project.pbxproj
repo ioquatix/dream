@@ -38,6 +38,10 @@
 		7E0F411615084BBD00F66DE0 /* HeightMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E0F411315084BBD00F66DE0 /* HeightMap.cpp */; };
 		7E0F411715084BBD00F66DE0 /* HeightMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E0F411315084BBD00F66DE0 /* HeightMap.cpp */; };
 		7E14F82A142243E400AB80F1 /* Application.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7E14F82D142243E400AB80F1 /* Application.mm */; };
+		7E1CFEA615D7C07D00CDC75C /* Viewport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7AE76148B680F008A9BD7 /* Viewport.cpp */; };
+		7E1CFEE715D7C28A00CDC75C /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7AE6D148B680F008A9BD7 /* Camera.cpp */; };
+		7E1CFEE815D7C28E00CDC75C /* Projection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7AE72148B680F008A9BD7 /* Projection.cpp */; };
+		7E1CFEE915D7C2F200CDC75C /* Input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E4F578D14A2A39100A6DB0C /* Input.cpp */; };
 		7E257E030FBEA5360060BD2E /* PixelBufferSaver-PNG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E257CBF0FBD38490060BD2E /* PixelBufferSaver-PNG.cpp */; };
 		7E257E040FBEA5370060BD2E /* PixelBufferSaver-PNG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E257CBF0FBD38490060BD2E /* PixelBufferSaver-PNG.cpp */; };
 		7E257E050FBEA5370060BD2E /* PixelBufferSaver-PNG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E257CBF0FBD38490060BD2E /* PixelBufferSaver-PNG.cpp */; };
@@ -311,6 +315,7 @@
 		7ECD9356122EB13C00A2757F /* Path.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ECD9354122EB13C00A2757F /* Path.cpp */; };
 		7ECD9357122EB13C00A2757F /* Path.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ECD9354122EB13C00A2757F /* Path.cpp */; };
 		7ECD93C2122ECDB100A2757F /* Path.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ECD9354122EB13C00A2757F /* Path.cpp */; };
+		7ECE354C15DA6FB0006E72D0 /* Matrix.NEON.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ECE354915DA6F1D006E72D0 /* Matrix.NEON.cpp */; };
 		7ED448B714CE6049000D5865 /* Logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED448B614CE6049000D5865 /* Logger.cpp */; };
 		7ED448B814CE6049000D5865 /* Logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED448B614CE6049000D5865 /* Logger.cpp */; };
 		7ED448B914CE6049000D5865 /* Logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ED448B614CE6049000D5865 /* Logger.cpp */; };
@@ -535,6 +540,7 @@
 		7E82EC250EB9D4F80017567C /* Numerics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Numerics.cpp; sourceTree = "<group>"; };
 		7E92B4410F369D470028676D /* Mixer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Mixer.cpp; path = Audio/Mixer.cpp; sourceTree = "<group>"; };
 		7E92B4500F36DB6E0028676D /* Sound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Sound.cpp; path = Audio/Sound.cpp; sourceTree = "<group>"; };
+		7E9C140E15D53C6E00F5A9D8 /* Matrix.NEON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Matrix.NEON.h; sourceTree = "<group>"; };
 		7E9E41B8142810040061260C /* Renderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Renderer.h; sourceTree = "<group>"; };
 		7E9E41B9142810550061260C /* Renderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Renderer.h; sourceTree = "<group>"; };
 		7E9EA74414271A3F00F8BC49 /* Context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Context.h; sourceTree = "<group>"; };
@@ -612,6 +618,7 @@
 		7EC9868D0EC96E3900530A13 /* Geometry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Geometry.cpp; sourceTree = "<group>"; };
 		7ECD9353122EB13C00A2757F /* Path.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Path.h; sourceTree = "<group>"; };
 		7ECD9354122EB13C00A2757F /* Path.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Path.cpp; sourceTree = "<group>"; };
+		7ECE354915DA6F1D006E72D0 /* Matrix.NEON.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Matrix.NEON.cpp; sourceTree = "<group>"; };
 		7ED213270F00F0E900511926 /* Serialization.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Serialization.cpp; sourceTree = "<group>"; };
 		7ED448B514CE6041000D5865 /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logger.h; sourceTree = "<group>"; };
 		7ED448B614CE6049000D5865 /* Logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Logger.cpp; sourceTree = "<group>"; };
@@ -809,6 +816,8 @@
 				7E3E1FEA118C5AFF00DA4F84 /* Color.cpp */,
 				7E3B8ABB0F9C09EF002B6541 /* Matrix.h */,
 				7E3B8ABC0F9C09EF002B6541 /* Matrix.impl.h */,
+				7E9C140E15D53C6E00F5A9D8 /* Matrix.NEON.h */,
+				7ECE354915DA6F1D006E72D0 /* Matrix.NEON.cpp */,
 				7E82EC040EB9D09D0017567C /* Matrix.cpp */,
 				7E3B8ABD0F9C09F5002B6541 /* Quaternion.h */,
 				7E82EC010EB9D09D0017567C /* Quaternion.cpp */,
@@ -1354,6 +1363,10 @@
 				7EF8EBF3141E5F0300FE753A /* Thread.cpp in Sources */,
 				7E8ADD21147B5D7700BB929D /* Spline.cpp in Sources */,
 				7ED448B714CE6049000D5865 /* Logger.cpp in Sources */,
+				7E1CFEA615D7C07D00CDC75C /* Viewport.cpp in Sources */,
+				7E1CFEE715D7C28A00CDC75C /* Camera.cpp in Sources */,
+				7E1CFEE815D7C28E00CDC75C /* Projection.cpp in Sources */,
+				7E1CFEE915D7C2F200CDC75C /* Input.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1457,6 +1470,7 @@
 				7EB4EDF414EBD47100C69A1B /* VertexArray.cpp in Sources */,
 				7E0F411615084BBD00F66DE0 /* HeightMap.cpp in Sources */,
 				7EEE48C2150E018F004C9A5B /* Axis.cpp in Sources */,
+				7ECE354C15DA6FB0006E72D0 /* Matrix.NEON.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1788,7 +1802,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7EA2822A139A545500AB1E1F /* Library.xcconfig */;
 			buildSettings = {
-				GCC_DYNAMIC_NO_PIC = YES;
 				PRODUCT_NAME = "Dream-Darwin-iOS";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -1809,7 +1822,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7EA2822A139A545500AB1E1F /* Library.xcconfig */;
 			buildSettings = {
-				GCC_DYNAMIC_NO_PIC = YES;
 				PRODUCT_NAME = "Dream-Darwin-iOS-Simulator";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphonesimulator;
@@ -1832,7 +1844,6 @@
 			baseConfigurationReference = 7EA2822A139A545500AB1E1F /* Library.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				GCC_DYNAMIC_NO_PIC = YES;
 				PRODUCT_NAME = "Dream-Darwin-OSX";
 				SDKROOT = macosx;
 			};

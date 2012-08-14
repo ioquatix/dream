@@ -23,44 +23,6 @@ namespace Dream
 		class Matrix;
 
 // MARK: -
-// MARK: Matrix Multiplication Traits
-
-		template <unsigned R, unsigned C, typename NumericT>
-		class MatrixMultiplicationTraits {
-		private:
-			typedef Matrix<R, C, NumericT> MatrixT;
-
-		public:
-			Vector<C, NumericT> multiply (const Vector<R, NumericT> & v) const;
-
-			template <unsigned T>
-			Matrix<T, C, NumericT> multiply (const Matrix<T, R, NumericT> & m) const;
-
-			/// Short-hand notation
-			Vector<C, NumericT> operator* (const Vector<R, NumericT> & v) const
-			{
-				return this->multiply(v);
-			}
-
-			/// Short-hand notation for non-homogeneous vectors
-			Vector<C-1, NumericT> operator* (const Vector<R-1, NumericT> & v) const
-			{
-				Vector<C, NumericT> result (this->multiply(v << 1));
-
-				result /= result[C-1];
-
-				return result.reduce();
-			}
-
-			/// Short hand for matrix multiplication
-			template <unsigned T>
-			Matrix<T, C, NumericT> operator* (const Matrix<T, R, NumericT> & other) const
-			{
-				return this->multiply(other);
-			}
-		};
-
-// MARK: -
 // MARK: Matrix Inverse Traits
 
 		template <unsigned R, unsigned C, typename NumericT>
@@ -148,8 +110,8 @@ namespace Dream
 // MARK: -
 // MARK: Matrix Class
 
-		unsigned row_major_offset(unsigned row, unsigned col, unsigned sz);
-		unsigned column_major_offset(unsigned row, unsigned col, unsigned sz);
+		std::size_t row_major_offset(std::size_t row, std::size_t col, std::size_t sz);
+		std::size_t column_major_offset(std::size_t row, std::size_t col, std::size_t sz);
 
 		/** A 2-dimentional set of numbers that can represent useful transformations in n-space.
 
@@ -157,15 +119,14 @@ namespace Dream
 		the interface will assume access is done via rows and columns according to this standard notation.
 		 */
 		template <unsigned _R = 4, unsigned _C = 4, typename _NumericT = RealT>
-		class Matrix : public MatrixSquareTraits<_R, _C, _NumericT>, public MatrixMultiplicationTraits<_R, _C, _NumericT>,
-			public MatrixInverseTraits<_R, _C, _NumericT>, public MatrixEqualityTraits<_R, _C, _NumericT>{
+		class Matrix : public MatrixSquareTraits<_R, _C, _NumericT>, public MatrixInverseTraits<_R, _C, _NumericT>, public MatrixEqualityTraits<_R, _C, _NumericT> {
 		public:
 			enum { R = _R };
 			enum { C = _C };
 			typedef _NumericT NumericT;
 
 		protected:
-			NumericT _matrix[R*C];
+			_NumericT _data[_R * _C];
 
 		public:
 			// Uninitialized constructor
@@ -182,64 +143,59 @@ namespace Dream
 
 			void set (const NumericT * data)
 			{
-				memcpy(_matrix, data, sizeof(_matrix));
+				memcpy(_data, data, sizeof(_data));
 			}
 
 			template <typename AnyT>
 			void set (const AnyT * data)
 			{
 				for (unsigned i = 0; i < R*C; i++) {
-					_matrix[i] = data[i];
+					_data[i] = data[i];
 				}
 			}
 
 			void zero ();
 			void load_identity (const NumericT & n = 1);
 
+			std::size_t offset(std::size_t row, std::size_t column) const {
+				DREAM_ASSERT(row < R && column < C);
+				
+				return column_major_offset(row, column, C);
+				//return row_major_offset(row, column, C);
+			}
+
 			// Accessors
 			const NumericT & at (unsigned r, unsigned c) const
 			{
-				DREAM_ASSERT(row_major_offset(r, c, C) < R*C);
-				return _matrix[row_major_offset(r, c, C)];
+				return _data[offset(r, c)];
 			}
 
 			NumericT & at (unsigned r, unsigned c)
 			{
-				DREAM_ASSERT(row_major_offset(r, c, C) < R*C);
-				return _matrix[row_major_offset(r, c, C)];
+				return _data[offset(r, c)];
 			}
-
-			const NumericT & at (unsigned i) const
-			{
-				DREAM_ASSERT(i < R*C);
-				return _matrix[i];
-			}
-
+			
 			const NumericT & operator[] (unsigned i) const
 			{
-				return _matrix[i];
+				return _data[i];
 			}
 
 			NumericT & operator[] (unsigned i)
 			{
-				return _matrix[i];
-			}
-
-			NumericT & at (unsigned i)
-			{
-				DREAM_ASSERT(i < R*C);
-				return _matrix[i];
+				return _data[i];
 			}
 
 			NumericT * value ()
 			{
-				return (NumericT*)_matrix;
+				return (NumericT*)_data;
 			}
 
 			const NumericT * value () const
 			{
-				return (const NumericT*)_matrix;
+				return (const NumericT*)_data;
 			}
+
+			/// @todo Write get equivalent of set functions for retriving Vector data
 
 			/// Copy a vector into the matix at position r, c
 			/// This copies the vector in the direction of the major format,
@@ -257,14 +213,12 @@ namespace Dream
 			template <unsigned D>
 			void set (const IndexT & r, const IndexT & c, const Vector<D, NumericT> & v, IndexT element_offset)
 			{
-				IndexT offset = &at(r, c) - (NumericT*)_matrix;
+				std::size_t start_offset = offset(r, c);
 
-				for (IndexT i = 0; i < D; i += 1) {
-					value()[offset + element_offset * i] = v[i];
+				for (std::size_t i = 0; i < D; i += 1) {
+					_data[start_offset + element_offset * i] = v[i];
 				}
 			}
-
-			/// @todo Write get equivalent of set functions for retriving Vector data
 
 			/// Return a copy of this matrix, transposed.
 			Matrix<C, R, NumericT> transposed_matrix () const
@@ -283,8 +237,8 @@ namespace Dream
 			{
 				unsigned i = 0;
 
-				for (unsigned r = 0; r < R; r += 1)
-					for (unsigned c = 0; c < C; c += 1)
+				for (unsigned c = 0; c < C; c += 1)
+					for (unsigned r = 0; r < R; r += 1)
 						at(r, c) = i++;
 			}
 
@@ -298,7 +252,67 @@ namespace Dream
 
 				return true;
 			}
+
+			bool equivalent(const Matrix & other) const
+			{
+				for (unsigned i = 0; i < R*C; i += 1) {
+					if (! Number<NumericT>::equivalent(_data[i], other[i])) {
+						return false;
+					}
+				}
+
+				return true;
+			}
 		};
+				
+		/// Short-hand notation
+		template <unsigned R, unsigned C, typename NumericT>
+		Vector<C, NumericT> operator* (const Matrix<R, C, NumericT> & left, const Vector<R, NumericT> & right)
+		{
+			Vector<R, NumericT> result(ZERO);
+			
+			multiply(result, left, right);
+			
+			return result;
+		}
+		
+		/// Short-hand notation for non-homogeneous vectors
+		template <unsigned R, unsigned C, typename NumericT>
+		Vector<C-1, NumericT> operator* (const Matrix<R, C, NumericT> & left, const Vector<R-1, NumericT> & right)
+		{
+			Vector<C, NumericT> result(ZERO);
+			
+			multiply(result, left, right << 1);
+			
+			result /= result[C-1];
+			
+			return result.reduce();
+		}
+
+		/// Short hand for matrix multiplication
+		template <unsigned R, unsigned C, unsigned T, typename NumericT>
+		Matrix<R, C, NumericT> operator* (const Matrix<R, T, NumericT> & left, const Matrix<T, C, NumericT> & right)
+		{
+			Matrix<R, C, NumericT> result(ZERO);
+
+			// For column-major matricies, the right hand transform is applied first when result * vector
+			multiply(result, left, right);
+			
+			return result;
+		}
+
+		template <unsigned R, unsigned C, typename NumericT>
+		Matrix<R, C, NumericT> & operator*= (Matrix<R, C, NumericT> & transform, const Matrix<R, C, NumericT> & step)
+		{
+			return (transform = transform * step);
+		}
+
+		template <unsigned R, unsigned C, typename NumericT>
+		Matrix<R, C, NumericT> & operator<< (Matrix<R, C, NumericT> & transform, const Matrix<R, C, NumericT> & step)
+		{
+			// To simplify the order of operations, we reverse the order of multiplcation so that transforms can be supplied in forwards order (well, technically backwards).
+			return (transform = step * transform);
+		}
 
 // MARK: -
 // MARK: Static Matrix Constructors
@@ -324,11 +338,11 @@ namespace Dream
 
 			Matrix<4, 4, NumericT> result(ZERO);
 
-			result.at(0) = f / aspect_ratio;
-			result.at(5) = f;
-			result.at(10) = (far + near) * n;
-			result.at(11) = -1.0;
-			result.at(14) = (2 * far * near) * n;
+			result[0] = f / aspect_ratio;
+			result[5] = f;
+			result[10] = (far + near) * n;
+			result[11] = -1.0;
+			result[14] = (2 * far * near) * n;
 
 			return result;
 		}
@@ -337,14 +351,14 @@ namespace Dream
 		Matrix<4, 4, NumericT> orthographic_matrix (const Vector<3, NumericT> & translation, const Vector<3, NumericT> & size) {
 			Matrix<4, 4, NumericT> result(ZERO);
 
-			result.at(0) = 2.0 / size[X];
-			result.at(5) = 2.0 / size[Y];
-			result.at(10) = -2.0 / size[Z];
+			result[0] = 2.0 / size[X];
+			result[5] = 2.0 / size[Y];
+			result[10] = -2.0 / size[Z];
 
-			result.at(12) = -translation[X];
-			result.at(13) = -translation[Y];
-			result.at(14) = -translation[Z];
-			result.at(15) = 1.0;
+			result[12] = -translation[X];
+			result[13] = -translation[Y];
+			result[14] = -translation[Z];
+			result[15] = 1.0;
 
 			return result;
 		}
