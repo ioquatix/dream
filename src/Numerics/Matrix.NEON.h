@@ -13,7 +13,7 @@
 
 #ifdef __arm__
 
-#import <arm/arch.h>
+#include <arm/arch.h>
 #ifdef _ARM_ARCH_7
 
 namespace Dream {

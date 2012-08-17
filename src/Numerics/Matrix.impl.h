@@ -14,6 +14,7 @@
 #include <iomanip>
 
 #include "Matrix.NEON.h"
+#include "Matrix.SSE.h"
 
 namespace Dream
 {

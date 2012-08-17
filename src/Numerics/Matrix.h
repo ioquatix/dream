@@ -126,7 +126,7 @@ namespace Dream
 			typedef _NumericT NumericT;
 
 		protected:
-			_NumericT _data[_R * _C];
+			_NumericT _data[_R * _C] __attribute__((aligned(16)));
 
 		public:
 			// Uninitialized constructor

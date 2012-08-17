@@ -42,6 +42,8 @@
 		7E1CFEE715D7C28A00CDC75C /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7AE6D148B680F008A9BD7 /* Camera.cpp */; };
 		7E1CFEE815D7C28E00CDC75C /* Projection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7AE72148B680F008A9BD7 /* Projection.cpp */; };
 		7E1CFEE915D7C2F200CDC75C /* Input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E4F578D14A2A39100A6DB0C /* Input.cpp */; };
+		7E24D5D915DBF7F300C67BAF /* Matrix.SSE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E24D5D715DBF7F300C67BAF /* Matrix.SSE.cpp */; };
+		7E24D5DB15DBF9D500C67BAF /* Matrix.SSE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E24D5D715DBF7F300C67BAF /* Matrix.SSE.cpp */; };
 		7E257E030FBEA5360060BD2E /* PixelBufferSaver-PNG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E257CBF0FBD38490060BD2E /* PixelBufferSaver-PNG.cpp */; };
 		7E257E040FBEA5370060BD2E /* PixelBufferSaver-PNG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E257CBF0FBD38490060BD2E /* PixelBufferSaver-PNG.cpp */; };
 		7E257E050FBEA5370060BD2E /* PixelBufferSaver-PNG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E257CBF0FBD38490060BD2E /* PixelBufferSaver-PNG.cpp */; };
@@ -439,6 +441,8 @@
 		7E14F82D142243E400AB80F1 /* Application.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = Application.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		7E14F82E1422467300AB80F1 /* DWindowDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DWindowDelegate.h; sourceTree = "<group>"; };
 		7E14F82F142248F200AB80F1 /* DOpenGLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DOpenGLView.h; sourceTree = "<group>"; };
+		7E24D5D715DBF7F300C67BAF /* Matrix.SSE.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Matrix.SSE.cpp; sourceTree = "<group>"; };
+		7E24D5D815DBF7F300C67BAF /* Matrix.SSE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Matrix.SSE.h; sourceTree = "<group>"; };
 		7E257CBE0FBD38490060BD2E /* PixelBufferSaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PixelBufferSaver.h; sourceTree = "<group>"; };
 		7E257CBF0FBD38490060BD2E /* PixelBufferSaver-PNG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "PixelBufferSaver-PNG.cpp"; sourceTree = "<group>"; };
 		7E37B1F90EB45C920037B8D0 /* Buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Buffer.cpp; sourceTree = "<group>"; };
@@ -818,6 +822,8 @@
 				7E3B8ABC0F9C09EF002B6541 /* Matrix.impl.h */,
 				7E9C140E15D53C6E00F5A9D8 /* Matrix.NEON.h */,
 				7ECE354915DA6F1D006E72D0 /* Matrix.NEON.cpp */,
+				7E24D5D815DBF7F300C67BAF /* Matrix.SSE.h */,
+				7E24D5D715DBF7F300C67BAF /* Matrix.SSE.cpp */,
 				7E82EC040EB9D09D0017567C /* Matrix.cpp */,
 				7E3B8ABD0F9C09F5002B6541 /* Quaternion.h */,
 				7E82EC010EB9D09D0017567C /* Quaternion.cpp */,
@@ -1367,6 +1373,7 @@
 				7E1CFEE715D7C28A00CDC75C /* Camera.cpp in Sources */,
 				7E1CFEE815D7C28E00CDC75C /* Projection.cpp in Sources */,
 				7E1CFEE915D7C2F200CDC75C /* Input.cpp in Sources */,
+				7E24D5D915DBF7F300C67BAF /* Matrix.SSE.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1677,6 +1684,7 @@
 				7E0F411515084BBD00F66DE0 /* HeightMap.cpp in Sources */,
 				7EEE48C1150E018F004C9A5B /* Axis.cpp in Sources */,
 				7E5187221580BFC0004352C0 /* MultiFingerInput.cpp in Sources */,
+				7E24D5DB15DBF9D500C67BAF /* Matrix.SSE.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

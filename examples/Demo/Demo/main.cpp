@@ -7,7 +7,6 @@
 //
 
 #include <Dream/Numerics/Matrix.h>
-#include <Dream/Numerics/Matrix.NEON.h>
 
 #include <Dream/Client/Client.h>
 #include <Dream/Client/Display/Application.h>
