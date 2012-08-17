@@ -23,6 +23,7 @@ Platform.new(:darwin_ios_simulator) do |config|
 		"CXX" => config.toolchain + "usr/bin/clang++",
 		"LD" => config.toolchain + "usr/bin/ld",
 		"CFLAGS" => "#{GLOBAL_CFLAGS} #{config.cflags}",
+		"CXXFLAGS" => "#{GLOBAL_CFLAGS} #{config.cflags} -std=c++0x -stdlib=libc++ -Wno-c++11-narrowing",
 		"LDFLAGS" => "#{config.cflags}"
 	}
 

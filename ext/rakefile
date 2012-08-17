@@ -261,4 +261,8 @@ task :list do
 			puts "	(depends on #{package.depends.join(', ')})"
 		end
 	end
+	
+	Platform.all.each do |platform|
+		puts "Platform: #{platform.name}"
+	end
 end
