@@ -176,7 +176,8 @@ namespace JointBlender {
 
 		glCullFace(GL_BACK);
 		glEnable(GL_CULL_FACE);
-		
+		glEnable(GL_DEPTH_TEST);
+
 		{
 			Shared<MeshT> mesh = new MeshT;
 			Generate::cylinder(*mesh, 10, 10, 50, 16, 3, false, false);

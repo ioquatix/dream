@@ -70,8 +70,8 @@ namespace Dream {
 						std::size_t i1 = i + j, j1 = (i + slices) + j;
 						std::size_t i2 = i + k, j2 = (i + slices) + k;
 
-						mesh << i1 << i2 << j2;
-						mesh << i1 << j2 << j1;
+						mesh << i1 << j1 << j2;
+						mesh << i1 << j2 << i2;
 					}
 				}
 			}
