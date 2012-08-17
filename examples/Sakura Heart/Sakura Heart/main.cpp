@@ -38,16 +38,16 @@ namespace SakuraHeart {
 	// The actual particle simulation/drawing code:
 	class HeartParticles : public ParticleRenderer<HeartParticles> {
 	public:
-		bool update_physics(Physics & physics, TimeT last_time, TimeT current_time, TimeT dt);
+		bool update_particle(Particle & particle, TimeT last_time, TimeT current_time, TimeT dt);
 		void add();
 	};
 	
-	bool HeartParticles::update_physics(Physics & physics, TimeT last_time, TimeT current_time, TimeT dt) {
+	bool HeartParticles::update_particle(Particle & particle, TimeT last_time, TimeT current_time, TimeT dt) {
 		const Vec3 gravity(0.0, 0.0, -9.8 / 2.0);
 		
-		if (physics.update_time(dt, gravity)) {
-			RealT alpha = physics.calculate_alpha(0.7);
-			physics.update_vertex_color(Vec3(0.2 * physics.color_modulation(2.0)) << alpha);
+		if (particle.update_time(dt, gravity)) {
+			RealT alpha = particle.calculate_alpha(0.7);
+			particle.update_vertex_color(Vec3(0.2 * particle.color_modulation(2.0)) << alpha);
 			
 			return true;
 		} else {
@@ -56,7 +56,7 @@ namespace SakuraHeart {
 	}
 	
 	void HeartParticles::add() {
-		const std::size_t DENSITY = 256;
+		const std::size_t DENSITY = 200;
 		
 		for (std::size_t i = 0; i < DENSITY; i += 1) {
 			RealT t = real_random(0, R360);
@@ -74,7 +74,7 @@ namespace SakuraHeart {
 			point[Y] += real_random(-0.5, 0.5);
 			point[Z] += real_random(-0.5, 0.5);
 			
-			Physics particle;
+			Particle particle;
 			
 			particle.velocity = Vec3(0.0, 0.0, 0.0);
 			particle.set_position(point, Vec3(-0.1, -0.1, 0.0), Vec3(0.0, 0.0, -1.0), 0.0);
@@ -82,7 +82,7 @@ namespace SakuraHeart {
 			particle.color = Vec3(1.0, 1.0, 1.0);
 			particle.set_random_mapping(8);
 			
-			_physics.push_back(particle);
+			_particles.push_back(particle);
 		}
 		
 		//logger()->log(LOG_DEBUG, LogBuffer() << "Particles: " << _physics.size());
