@@ -136,6 +136,11 @@ namespace Dream
 
 			Matrix (const Matrix<R, C, NumericT> & other);
 
+			template <unsigned S, unsigned T>
+			Matrix (const Matrix<S, T, NumericT> & other) {
+				set(other);
+			}
+
 			Matrix (const NumericT * data)
 			{
 				set(data);
@@ -151,6 +156,15 @@ namespace Dream
 			{
 				for (unsigned i = 0; i < R*C; i++) {
 					_data[i] = data[i];
+				}
+			}
+
+			template <unsigned S, unsigned T>
+			void set (const Matrix<S, T, NumericT> & other) {
+				for (std::size_t s = 0; s < S; s += 1) {
+					for (std::size_t t = 0; t < T; t += 1) {
+						at(s, t) = other.at(s, t);
+					}
 				}
 			}
 
