@@ -104,8 +104,11 @@ namespace Dream {
 				_scene_manager = new SceneManager(_context, _thread->loop(), loader);
 				_scene_manager->push_scene(_scene);
 
-				_thread->start();
-				_context->start();
+#ifdef DREAM_DEBUG
+				logger()->log(LOG_INFO, "Debugging mode active.");
+#else
+				logger()->log(LOG_INFO, "Debugging mode inactive.");
+#endif
 			}
 
 			void ApplicationDelegate::application_will_enter_background (IApplication * application)
@@ -115,16 +118,16 @@ namespace Dream {
 				EventInput suspend_event(EventInput::PAUSE);
 				_scene_manager->process_input(_context, suspend_event);
 
-				//_context->stop();
-				//_thread->stop();
+				_context->stop();
+				_thread->stop();
 			}
 
 			void ApplicationDelegate::application_did_enter_foreground (IApplication * application)
 			{
 				logger()->log(LOG_INFO, "Application entering foreground...");
 
-				//_thread->start();
-				//_context->start();
+				_thread->start();
+				_context->start();
 
 				EventInput resume_event(EventInput::RESUME);
 				_scene_manager->process_input(_context, resume_event);
@@ -133,6 +136,8 @@ namespace Dream {
 			void IApplication::run_scene(Ptr<IScene> scene, Ptr<Dictionary> config)
 			{
 				Ref<ApplicationDelegate> application_delegate = new ApplicationDelegate(scene, config);
+
+				DREAM_ASSERT(config);
 
 				IApplication::start(application_delegate);
 			}
