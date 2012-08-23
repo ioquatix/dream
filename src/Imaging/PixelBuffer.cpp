@@ -14,7 +14,7 @@
 
 namespace Dream {
 	namespace Imaging {
-		unsigned data_type_byte_size(ImageDataType type) {
+		std::size_t data_type_byte_size(ImageDataType type) {
 			switch (type) {
 			case UBYTE:
 			case BYTE:
@@ -101,7 +101,7 @@ namespace Dream {
 			return UBYTE; /* Suits most pixel formats */
 		}
 
-		unsigned IPixelBuffer::bytes_per_pixel () const {
+		std::size_t IPixelBuffer::bytes_per_pixel () const {
 			unsigned n = 1;
 			ImageDataType pixfmt;
 
@@ -202,7 +202,7 @@ namespace Dream {
 
 		void IMutablePixelBuffer::zero (PixelT px)
 		{
-			unsigned bps = bytes_per_pixel();
+			std::size_t bps = bytes_per_pixel();
 
 			DREAM_ASSERT(pixel_data() != NULL && "Cannot zero null buffer!");
 
@@ -233,14 +233,14 @@ namespace Dream {
 			//std::cout <<  (to+size) << ": " << this->size() << std::endl;
 			DREAM_ASSERT((to+size).less_than_or_equal(this->size()));
 
-			const unsigned pixel_size = this->bytes_per_pixel();
+			const std::size_t pixel_size = this->bytes_per_pixel();
 			PixelCoordinateT s, d;
 
 			const ByteT * src = buf.pixel_data();
 			ByteT * dst = this->pixel_data();
 
-			for (unsigned z = 0; z < size[Z]; z += 1)
-				for (unsigned y = 0; y < size[Y]; y += 1) {
+			for (std::size_t z = 0; z < size[Z]; z += 1)
+				for (std::size_t y = 0; y < size[Y]; y += 1) {
 					s[X] = 0; s[Y] = y; s[Z] = z;
 					d = s;
 

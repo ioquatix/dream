@@ -63,7 +63,7 @@ namespace Dream {
 			LUMINANCE_ALPHA = 0x190A
 		};
 
-		unsigned data_type_byte_size(ImageDataType type);
+		std::size_t data_type_byte_size(ImageDataType type);
 		unsigned data_type_channel_count(ImageDataType type);
 		unsigned pixel_format_channel_count(ImagePixelFormat type);
 
@@ -96,7 +96,7 @@ namespace Dream {
 			bool is_packed_format () const;
 			bool is_byte_order_reversed () const;
 
-			unsigned bytes_per_pixel () const;
+			std::size_t bytes_per_pixel () const;
 
 			// Helper: Returns the maximum value of an individual pixel
 			PixelT max_pixel_size () const {
@@ -123,7 +123,7 @@ namespace Dream {
 			// This may convert between the pixbuf format and the output pixel
 			// void read_pixel (const PixelCoordinateT &at, Vector<4, float> &output) const;
 			template <typename DataT>
-			void read_data_at (const unsigned &idx, DataT &val) const {
+			void read_data_at (const std::size_t &idx, DataT &val) const {
 				const ByteT *data = pixel_data();
 
 				val = *(DataT*)(&data[idx]);
@@ -137,7 +137,7 @@ namespace Dream {
 				std::size_t from = pixel_offset(at);
 				std::size_t bytes_per_component = bytes_per_pixel() / channel_count();
 
-				for (unsigned i = 0; i < D; i += 1) {
+				for (std::size_t i = 0; i < D; i += 1) {
 					read_data_at(from + (i * bytes_per_component), output[i]);
 				}
 			}
@@ -164,7 +164,7 @@ namespace Dream {
 			}
 
 			template <typename DataT>
-			void write_data_at (const unsigned &idx, const DataT &val)
+			void write_data_at (const std::size_t &idx, const DataT &val)
 			{
 				ByteT *data = pixel_data();
 
