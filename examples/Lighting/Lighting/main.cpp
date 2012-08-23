@@ -1,6 +1,6 @@
 //
 //  main.cpp
-//  Demo
+//  Lighting
 //
 //  Created by Samuel Williams on 16/09/11.
 //  Copyright 2011 Orion Transfer Ltd. All rights reserved.
@@ -33,7 +33,7 @@
 #include <Dream/Numerics/Quaternion.h>
 #include <Dream/Client/Graphics/ParticleRenderer.h>
 
-namespace Demo {
+namespace Lighting {
 	using namespace Dream;
 	using namespace Dream::Events;
 	using namespace Dream::Resources;
@@ -108,7 +108,7 @@ namespace Demo {
 		}
 	};
 	
-	class DemoScene : public Scene
+	class LightingScene : public Scene
 	{
 	protected:
 		// These are the locations of default attributes in the shader programs used:
@@ -150,7 +150,7 @@ namespace Demo {
 		RealT _rotation;
 
 	public:
-		virtual ~DemoScene ();
+		virtual ~LightingScene ();
 		
 		virtual void will_become_current (ISceneManager *);
 		virtual void will_revoke_current (ISceneManager *);
@@ -166,11 +166,11 @@ namespace Demo {
 		virtual void render_frame_for_time (TimeT time);
 	};
 	
-	DemoScene::~DemoScene ()
+	LightingScene::~LightingScene ()
 	{
 	}
 
-	void DemoScene::will_become_current(ISceneManager * manager)
+	void LightingScene::will_become_current(ISceneManager * manager)
 	{
 		Scene::will_become_current(manager);
 		
@@ -370,7 +370,7 @@ namespace Demo {
 		logger()->log(LOG_INFO, "Will become current.");
 	}
 	
-	void DemoScene::will_revoke_current (ISceneManager * manager)
+	void LightingScene::will_revoke_current (ISceneManager * manager)
 	{
 		Scene::will_revoke_current(manager);
 		
@@ -380,7 +380,7 @@ namespace Demo {
 		_textured_program = NULL;
 	}
 	
-	bool DemoScene::event(const EventInput &input) {
+	bool LightingScene::event(const EventInput &input) {
 		// Grab the cursor
 		Ref<IContext> context = manager()->display_context();
 		
@@ -399,7 +399,7 @@ namespace Demo {
 		return false;
 	}
 	
-	bool DemoScene::resize (const ResizeInput & input)
+	bool LightingScene::resize (const ResizeInput & input)
 	{
 		logger()->log(LOG_INFO, LogBuffer() << "Resizing to " << input.new_size());
 		
@@ -411,7 +411,7 @@ namespace Demo {
 		return Scene::resize(input);
 	}
 	
-	bool DemoScene::motion (const MotionInput & input)
+	bool LightingScene::motion (const MotionInput & input)
 	{
 		AlignedBox<2> bounds = input.bounds();
 		
@@ -432,7 +432,7 @@ namespace Demo {
 		return true;
 	}
 	
-	bool DemoScene::button (const ButtonInput & input)
+	bool LightingScene::button (const ButtonInput & input)
 	{
 		// Control the cursor mode with key 't'.
 		if (input.button_pressed('t')) {
@@ -464,7 +464,7 @@ namespace Demo {
 		return false;
 	}
 	
-	void DemoScene::render_frame_for_time (TimeT time) {
+	void LightingScene::render_frame_for_time (TimeT time) {
 		Scene::render_frame_for_time(time);
 		
 		_trail_particles->update(time);
@@ -578,63 +578,15 @@ namespace Demo {
 			glDepthMask(GL_TRUE);
 		}
 	}
-	
-	class DemoApplicationDelegate : public Object, implements IApplicationDelegate
-	{
-		protected:
-			Ref<Context> _context;
-		
-			virtual ~DemoApplicationDelegate ();
-			virtual void application_did_finish_launching (IApplication * application);
-			
-			virtual void application_will_enter_background (IApplication * application);
-			virtual void application_did_enter_foreground (IApplication * application);
-	};
-	
-	DemoApplicationDelegate::~DemoApplicationDelegate() {
-	}
-
-	void DemoApplicationDelegate::application_did_finish_launching (IApplication * application)
-	{		
-		Ref<Dictionary> config = new Dictionary;
-		_context = application->create_context(config);
-		
-		Ref<Thread> thread = new Events::Thread;
-		Ref<ILoader> loader = SceneManager::default_resource_loader();
-		
-		Ref<SceneManager> scene_manager = new SceneManager(_context, thread->loop(), loader);
-
-#ifdef DREAM_DEBUG
-		logger()->log(LOG_INFO, "Debugging mode active");
-#else
-		logger()->log(LOG_INFO, "Debugging mode inactive");
-#endif
-		
-		scene_manager->push_scene(new DemoScene);
-	}
-
-	void DemoApplicationDelegate::application_will_enter_background (IApplication * application)
-	{
-		logger()->log(LOG_INFO, "Entering background...");
-
-		_context->stop();
-	}
-	
-	void DemoApplicationDelegate::application_did_enter_foreground (IApplication * application)
-	{
-		logger()->log(LOG_INFO, "Entering foreground...");
-		
-		_context->start();
-	}
 }
 
 int main (int argc, const char * argv[])
 {
-	using namespace Demo;
+	using namespace Lighting;
 	using namespace Dream::Client::Display;
 
-	Ref<DemoApplicationDelegate> delegate = new DemoApplicationDelegate;
-	IApplication::start(delegate);
+	Ref<Dictionary> config = new Dictionary;
+	IApplication::run_scene(new Lighting::LightingScene, config);
 	
     return 0;
 }
