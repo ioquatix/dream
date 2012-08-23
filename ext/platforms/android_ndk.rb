@@ -13,9 +13,9 @@ Platform.new(:android_ndk) do |config|
 	android_ndk_toolchain = ENV["ANDROID_NDK_TOOLCHAIN"] || "arm-linux-androideabi-4.6.3"
 
 	android_ndk_build = ENV["ANDROID_NDK_BUILD"]
-	if PLATFORM =~ /darwin/
+	if RUBY_PLATFORM =~ /darwin/
 		android_ndk_build ||= "darwin-x86"
-	elsif PLATFORM =~ /linux/
+	elsif RUBY_PLATFORM =~ /linux/
 		android_ndk_build ||= "linux-x86"
 	end
 	

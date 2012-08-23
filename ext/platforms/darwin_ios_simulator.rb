@@ -27,5 +27,5 @@ Platform.new(:darwin_ios_simulator) do |config|
 		"LDFLAGS" => "#{config.cflags}"
 	}
 
-	config.available = PLATFORM.include?("darwin")
+	config.available = RUBY_PLATFORM.include?("darwin")
 end

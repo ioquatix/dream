@@ -17,5 +17,5 @@ Platform.new(:linux) do |config|
 		"LDFLAGS" => "#{config.cflags}"
 	}
 
-	config.available = PLATFORM.include?("linux") 
+	config.available = RUBY_PLATFORM.include?("linux") 
 end
