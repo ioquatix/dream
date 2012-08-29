@@ -20,20 +20,12 @@
 			name = "All Static Targets";
 			productName = Dream;
 		};
-		7ED2B0BB140FBC2D0017C006 /* Copy Headers */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 7ED2B0BC140FBC2D0017C006 /* Build configuration list for PBXAggregateTarget "Copy Headers" */;
-			buildPhases = (
-				7ED2B0BF140FBC360017C006 /* ShellScript */,
-			);
-			dependencies = (
-			);
-			name = "Copy Headers";
-			productName = "Copy Headers";
-		};
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		7E08536915DF541C0012C813 /* Cylinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E08536815DF541C0012C813 /* Cylinder.cpp */; };
+		7E08536A15DF541C0012C813 /* Cylinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E08536815DF541C0012C813 /* Cylinder.cpp */; };
+		7E08536B15DF541C0012C813 /* Cylinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E08536815DF541C0012C813 /* Cylinder.cpp */; };
 		7E0F411515084BBD00F66DE0 /* HeightMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E0F411315084BBD00F66DE0 /* HeightMap.cpp */; };
 		7E0F411615084BBD00F66DE0 /* HeightMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E0F411315084BBD00F66DE0 /* HeightMap.cpp */; };
 		7E0F411715084BBD00F66DE0 /* HeightMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E0F411315084BBD00F66DE0 /* HeightMap.cpp */; };
@@ -249,7 +241,6 @@
 		7EBC1E700FA515C000D2CA1D /* Average.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E82EC110EB9D1480017567C /* Average.cpp */; };
 		7EBC1E710FA515C000D2CA1D /* Assertion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EA914510EB43B330080E66D /* Assertion.cpp */; };
 		7EBC1E730FA515C000D2CA1D /* AlignedBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EC9867D0EC96DB000530A13 /* AlignedBox.cpp */; };
-		7EBC1F280FA5179E00D2CA1D /* UnitTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EBC1F270FA5179E00D2CA1D /* UnitTests.cpp */; };
 		7EBC22120FA7F6F100D2CA1D /* MultiFingerInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EBC22100FA7F6F100D2CA1D /* MultiFingerInput.cpp */; };
 		7EBC22140FA7F6F100D2CA1D /* MultiFingerInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EBC22100FA7F6F100D2CA1D /* MultiFingerInput.cpp */; };
 		7EBE51FF14D39E2F0054B478 /* FrameBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE51FD14D39E2F0054B478 /* FrameBuffer.cpp */; };
@@ -384,13 +375,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		7E75DF061421D4D000E39631 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7ED2B0BB140FBC2D0017C006;
-			remoteInfo = "Copy Headers";
-		};
 		7E800EFA11A930C600E6D994 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -412,30 +396,10 @@
 			remoteGlobalIDString = 7EB7BBB50F9B0DE400452BDE;
 			remoteInfo = "Dream-iPhone";
 		};
-		7ED2B151141BA3340017C006 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7ED2B0BB140FBC2D0017C006;
-			remoteInfo = "Copy Headers";
-		};
-		7ED2B153141BA3380017C006 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7ED2B0BB140FBC2D0017C006;
-			remoteInfo = "Copy Headers";
-		};
-		7ED2B155141BA33A0017C006 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7ED2B0BB140FBC2D0017C006;
-			remoteInfo = "Copy Headers";
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7E08536815DF541C0012C813 /* Cylinder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cylinder.cpp; sourceTree = "<group>"; };
 		7E0F411315084BBD00F66DE0 /* HeightMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HeightMap.cpp; sourceTree = "<group>"; };
 		7E0F411415084BBD00F66DE0 /* HeightMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeightMap.h; sourceTree = "<group>"; };
 		7E14F82D142243E400AB80F1 /* Application.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = Application.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -532,7 +496,6 @@
 		7E6F285A1229551000E51772 /* Mesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mesh.h; sourceTree = "<group>"; };
 		7E6F28971229560000E51772 /* RandomSequence.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RandomSequence.cpp; sourceTree = "<group>"; };
 		7E6F28981229560000E51772 /* RandomSequence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RandomSequence.h; sourceTree = "<group>"; };
-		7E6F28C012296D3700E51772 /* Base.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		7E6F293C122A6E5B00E51772 /* PerlinNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PerlinNoise.cpp; sourceTree = "<group>"; };
 		7E6F293D122A6E5B00E51772 /* PerlinNoise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PerlinNoise.h; sourceTree = "<group>"; };
 		7E7453BD155CC40000E2F980 /* Algorithm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Algorithm.h; sourceTree = "<group>"; };
@@ -557,9 +520,6 @@
 		7E9EA74B14271A3F00F8BC49 /* EAGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EAGLView.mm; sourceTree = "<group>"; };
 		7E9EA75414271A7500F8BC49 /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Application.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		7E9EA75514271A7600F8BC49 /* Application.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = Application.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		7EA2821E139A1BB000AB1E1F /* UnitTests.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = UnitTests.xcconfig; sourceTree = "<group>"; };
-		7EA2822A139A545500AB1E1F /* Library.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Library.xcconfig; sourceTree = "<group>"; };
-		7EA2822B139A549500AB1E1F /* Dream.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Dream.xcconfig; sourceTree = "<group>"; };
 		7EA4D10814EA380800D5C4C6 /* WorkQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WorkQueue.cpp; sourceTree = "<group>"; };
 		7EA4D10914EA380800D5C4C6 /* WorkQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WorkQueue.h; sourceTree = "<group>"; };
 		7EA911FC0EB414FB0080E66D /* Strings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Strings.cpp; sourceTree = "<group>"; };
@@ -572,6 +532,21 @@
 		7EA914510EB43B330080E66D /* Assertion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = Assertion.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		7EA9172D0EB44A240080E66D /* Endian.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Endian.cpp; sourceTree = "<group>"; };
 		7EAF95270ED141BD007E1BAD /* Intersection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Intersection.cpp; sourceTree = "<group>"; };
+		7EB05B4F15EE6B3E00511954 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
+		7EB05B5015EE6B3E00511954 /* Dream.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Dream.xcconfig; sourceTree = "<group>"; };
+		7EB05B5115EE6B3E00511954 /* Library.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Library.xcconfig; sourceTree = "<group>"; };
+		7EB05B5215EE6B3E00511954 /* UnitTests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = UnitTests.xcconfig; sourceTree = "<group>"; };
+		7EB05B5415EE6B3E00511954 /* Dream Icon (114x114).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Dream Icon (114x114).png"; sourceTree = "<group>"; };
+		7EB05B5515EE6B3E00511954 /* Dream Icon (144x144).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Dream Icon (144x144).png"; sourceTree = "<group>"; };
+		7EB05B5615EE6B3E00511954 /* Dream Icon (512x512).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Dream Icon (512x512).png"; sourceTree = "<group>"; };
+		7EB05B5715EE6B3E00511954 /* Dream Icon (57x57).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Dream Icon (57x57).png"; sourceTree = "<group>"; };
+		7EB05B5815EE6B3E00511954 /* Dream Icon (72x72).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Dream Icon (72x72).png"; sourceTree = "<group>"; };
+		7EB05B5915EE6B3E00511954 /* Dream Icon (Original).artx */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = "Dream Icon (Original).artx"; sourceTree = "<group>"; };
+		7EB05B5A15EE6B3E00511954 /* Dream Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "Dream Icon.icns"; sourceTree = "<group>"; };
+		7EB05B5B15EE6B3E00511954 /* Dream Icon.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Dream Icon.pdf"; sourceTree = "<group>"; };
+		7EB05B5C15EE6B3E00511954 /* Dream Logo (Original).artx */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = "Dream Logo (Original).artx"; sourceTree = "<group>"; };
+		7EB05B5D15EE6B3E00511954 /* Dream.iconset */ = {isa = PBXFileReference; lastKnownFileType = folder.iconset; path = Dream.iconset; sourceTree = "<group>"; };
+		7EB05B5F15EE6B3E00511954 /* UnitTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = UnitTests.cpp; sourceTree = "<group>"; };
 		7EB132C1123002D100372052 /* Path-Unix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Path-Unix.cpp"; sourceTree = "<group>"; };
 		7EB132D712300A0500372052 /* Path-Mac.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "Path-Mac.mm"; sourceTree = "<group>"; };
 		7EB4EDEA14EBA05800C69A1B /* Buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Buffer.cpp; sourceTree = "<group>"; };
@@ -585,7 +560,6 @@
 		7EBC15A40FA31F3500D2CA1D /* Scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Scene.cpp; sourceTree = "<group>"; };
 		7EBC15A50FA31F3500D2CA1D /* Scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Scene.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		7EBC1A280FA46D2400D2CA1D /* Loader-UIKit.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "Loader-UIKit.mm"; sourceTree = "<group>"; };
-		7EBC1F270FA5179E00D2CA1D /* UnitTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UnitTests.cpp; sourceTree = "<group>"; };
 		7EBC220F0FA7F6F100D2CA1D /* MultiFingerInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiFingerInput.h; sourceTree = "<group>"; };
 		7EBC22100FA7F6F100D2CA1D /* MultiFingerInput.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MultiFingerInput.cpp; sourceTree = "<group>"; };
 		7EBDB7860EFE6089004E9BC3 /* Dictionary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Dictionary.cpp; sourceTree = "<group>"; };
@@ -729,14 +703,14 @@
 			isa = PBXGroup;
 			children = (
 				7E3EA859118086DB00F6C40B /* README.md */,
-				08FB77AEFE84172EC02AAC07 /* src */,
-				7EBC1F240FA5178700D2CA1D /* inf */,
+				08FB77AEFE84172EC02AAC07 /* Source */,
+				7EBC1F240FA5178700D2CA1D /* Share */,
 				034768DFFF38A50411DB9C8B /* Products */,
 			);
 			name = Dream;
 			sourceTree = "<group>";
 		};
-		08FB77AEFE84172EC02AAC07 /* src */ = {
+		08FB77AEFE84172EC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
 				7E3B8A6F0F9C05F0002B6541 /* Dream.h */,
@@ -761,7 +735,8 @@
 				7EF7AE8A148B68E1008A9BD7 /* Text */,
 				7EA911CB0EB40F530080E66D /* Client */,
 			);
-			path = src;
+			name = Source;
+			path = source;
 			sourceTree = "<group>";
 		};
 		7E6481760EEDE15D00C24ABC /* Events */ = {
@@ -926,16 +901,51 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
-		7EBC1F240FA5178700D2CA1D /* inf */ = {
+		7EB05B4E15EE6B3E00511954 /* build */ = {
 			isa = PBXGroup;
 			children = (
-				7EBC1F270FA5179E00D2CA1D /* UnitTests.cpp */,
-				7E6F28C012296D3700E51772 /* Base.xcconfig */,
-				7EA2821E139A1BB000AB1E1F /* UnitTests.xcconfig */,
-				7EA2822A139A545500AB1E1F /* Library.xcconfig */,
-				7EA2822B139A549500AB1E1F /* Dream.xcconfig */,
+				7EB05B4F15EE6B3E00511954 /* Base.xcconfig */,
+				7EB05B5015EE6B3E00511954 /* Dream.xcconfig */,
+				7EB05B5115EE6B3E00511954 /* Library.xcconfig */,
+				7EB05B5215EE6B3E00511954 /* UnitTests.xcconfig */,
 			);
-			path = inf;
+			path = build;
+			sourceTree = "<group>";
+		};
+		7EB05B5315EE6B3E00511954 /* resources */ = {
+			isa = PBXGroup;
+			children = (
+				7EB05B5415EE6B3E00511954 /* Dream Icon (114x114).png */,
+				7EB05B5515EE6B3E00511954 /* Dream Icon (144x144).png */,
+				7EB05B5615EE6B3E00511954 /* Dream Icon (512x512).png */,
+				7EB05B5715EE6B3E00511954 /* Dream Icon (57x57).png */,
+				7EB05B5815EE6B3E00511954 /* Dream Icon (72x72).png */,
+				7EB05B5915EE6B3E00511954 /* Dream Icon (Original).artx */,
+				7EB05B5A15EE6B3E00511954 /* Dream Icon.icns */,
+				7EB05B5B15EE6B3E00511954 /* Dream Icon.pdf */,
+				7EB05B5C15EE6B3E00511954 /* Dream Logo (Original).artx */,
+				7EB05B5D15EE6B3E00511954 /* Dream.iconset */,
+			);
+			path = resources;
+			sourceTree = "<group>";
+		};
+		7EB05B5E15EE6B3E00511954 /* tests */ = {
+			isa = PBXGroup;
+			children = (
+				7EB05B5F15EE6B3E00511954 /* UnitTests.cpp */,
+			);
+			path = tests;
+			sourceTree = "<group>";
+		};
+		7EBC1F240FA5178700D2CA1D /* Share */ = {
+			isa = PBXGroup;
+			children = (
+				7EB05B4E15EE6B3E00511954 /* build */,
+				7EB05B5315EE6B3E00511954 /* resources */,
+				7EB05B5E15EE6B3E00511954 /* tests */,
+			);
+			name = Share;
+			path = share;
 			sourceTree = "<group>";
 		};
 		7EC04B430FBADEA60027A3DB /* Strings */ = {
@@ -1094,6 +1104,7 @@
 				7EDADD6C1538A09000FB6255 /* Planar.h */,
 				7EDADD6D1538A09000FB6255 /* Sphere.h */,
 				7EDADD6E1538A15300FB6255 /* Cylinder.h */,
+				7E08536815DF541C0012C813 /* Cylinder.cpp */,
 			);
 			path = Generate;
 			sourceTree = "<group>";
@@ -1162,7 +1173,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				7E75DF071421D4D000E39631 /* PBXTargetDependency */,
 			);
 			name = "Unit Tests";
 			productName = "Unit Tests";
@@ -1175,12 +1185,10 @@
 			buildPhases = (
 				7EB7BBB30F9B0DE400452BDE /* Sources */,
 				7EB7BBB40F9B0DE400452BDE /* Frameworks */,
-				7EBC25320FA8713300D2CA1D /* ShellScript */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				7ED2B154141BA3380017C006 /* PBXTargetDependency */,
 			);
 			name = "Dream-Darwin-iOS";
 			productName = "Dream-iPhone";
@@ -1193,12 +1201,10 @@
 			buildPhases = (
 				7EB7BBFC0F9B264700452BDE /* Sources */,
 				7EB7BBFD0F9B264700452BDE /* Frameworks */,
-				7EBC25340FA8714700D2CA1D /* ShellScript */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				7ED2B156141BA33A0017C006 /* PBXTargetDependency */,
 			);
 			name = "Dream-Darwin-iOS-Simulator";
 			productName = "Dream-iPhone-Simulator";
@@ -1211,12 +1217,10 @@
 			buildPhases = (
 				7EC86A250FAD70FD005DD627 /* Sources */,
 				7EC86A260FAD70FD005DD627 /* Frameworks */,
-				7EC86A340FAD7129005DD627 /* ShellScript */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				7ED2B152141BA3340017C006 /* PBXTargetDependency */,
 			);
 			name = "Dream-Darwin-OSX";
 			productName = "Dream-Darwin-Universal";
@@ -1248,7 +1252,6 @@
 			projectRoot = "";
 			targets = (
 				7EA912760EB41A080080E66D /* Unit Tests */,
-				7ED2B0BB140FBC2D0017C006 /* Copy Headers */,
 				7EC86A270FAD70FD005DD627 /* Dream-Darwin-OSX */,
 				7EB7BBB50F9B0DE400452BDE /* Dream-Darwin-iOS */,
 				7EB7BBFE0F9B264700452BDE /* Dream-Darwin-iOS-Simulator */,
@@ -1256,61 +1259,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		7EBC25320FA8713300D2CA1D /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd $PROJECT_DIR\n\ncp $BUILT_PRODUCTS_DIR/libDream-Darwin-iOS.a $SRCROOT/ext/darwin_ios/lib/libDream.a\n";
-		};
-		7EBC25340FA8714700D2CA1D /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd $PROJECT_DIR\n\ncp $BUILT_PRODUCTS_DIR/libDream-Darwin-iOS-Simulator.a $SRCROOT/ext/darwin_ios_simulator/lib/libDream.a\n";
-		};
-		7EC86A340FAD7129005DD627 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd $PROJECT_DIR\n\ncp $BUILT_PRODUCTS_DIR/libDream-Darwin-OSX.a $SRCROOT/ext/darwin_osx/lib/libDream.a\n";
-		};
-		7ED2B0BF140FBC360017C006 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd $PROJECT_DIR\n\nrake dream:copy_headers\nrake dream:update_revision\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		7EA912740EB41A080080E66D /* Sources */ = {
@@ -1349,7 +1297,6 @@
 				7EBC1E700FA515C000D2CA1D /* Average.cpp in Sources */,
 				7EBC1E710FA515C000D2CA1D /* Assertion.cpp in Sources */,
 				7EBC1E730FA515C000D2CA1D /* AlignedBox.cpp in Sources */,
-				7EBC1F280FA5179E00D2CA1D /* UnitTests.cpp in Sources */,
 				7E257E570FBEAC1F0060BD2E /* PixelBuffer.cpp in Sources */,
 				7EC2469F11832E3700DAFE5A /* Reference.cpp in Sources */,
 				7EC248B61185597300DAFE5A /* Network.cpp in Sources */,
@@ -1478,6 +1425,7 @@
 				7E0F411615084BBD00F66DE0 /* HeightMap.cpp in Sources */,
 				7EEE48C2150E018F004C9A5B /* Axis.cpp in Sources */,
 				7ECE354C15DA6FB0006E72D0 /* Matrix.NEON.cpp in Sources */,
+				7E08536A15DF541C0012C813 /* Cylinder.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1581,6 +1529,7 @@
 				7EB4EDF514EBD47100C69A1B /* VertexArray.cpp in Sources */,
 				7E0F411715084BBD00F66DE0 /* HeightMap.cpp in Sources */,
 				7EEE48C3150E018F004C9A5B /* Axis.cpp in Sources */,
+				7E08536B15DF541C0012C813 /* Cylinder.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1685,17 +1634,13 @@
 				7EEE48C1150E018F004C9A5B /* Axis.cpp in Sources */,
 				7E5187221580BFC0004352C0 /* MultiFingerInput.cpp in Sources */,
 				7E24D5DB15DBF9D500C67BAF /* Matrix.SSE.cpp in Sources */,
+				7E08536915DF541C0012C813 /* Cylinder.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		7E75DF071421D4D000E39631 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7ED2B0BB140FBC2D0017C006 /* Copy Headers */;
-			targetProxy = 7E75DF061421D4D000E39631 /* PBXContainerItemProxy */;
-		};
 		7E800EFB11A930C600E6D994 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 7EC86A270FAD70FD005DD627 /* Dream-Darwin-OSX */;
@@ -1711,26 +1656,12 @@
 			target = 7EB7BBB50F9B0DE400452BDE /* Dream-Darwin-iOS */;
 			targetProxy = 7E800EFE11A930C600E6D994 /* PBXContainerItemProxy */;
 		};
-		7ED2B152141BA3340017C006 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7ED2B0BB140FBC2D0017C006 /* Copy Headers */;
-			targetProxy = 7ED2B151141BA3340017C006 /* PBXContainerItemProxy */;
-		};
-		7ED2B154141BA3380017C006 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7ED2B0BB140FBC2D0017C006 /* Copy Headers */;
-			targetProxy = 7ED2B153141BA3380017C006 /* PBXContainerItemProxy */;
-		};
-		7ED2B156141BA33A0017C006 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7ED2B0BB140FBC2D0017C006 /* Copy Headers */;
-			targetProxy = 7ED2B155141BA33A0017C006 /* PBXContainerItemProxy */;
-		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		1DEB91B208733DA50010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7EB05B5115EE6B3E00511954 /* Library.xcconfig */;
 			buildSettings = {
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -1743,6 +1674,7 @@
 		};
 		1DEB91B308733DA50010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7EB05B5115EE6B3E00511954 /* Library.xcconfig */;
 			buildSettings = {
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_UNROLL_LOOPS = YES;
@@ -1770,7 +1702,7 @@
 		};
 		7EA912790EB41A080080E66D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7EA2821E139A1BB000AB1E1F /* UnitTests.xcconfig */;
+			baseConfigurationReference = 7EB05B5215EE6B3E00511954 /* UnitTests.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -1784,7 +1716,7 @@
 		};
 		7EA9127A0EB41A080080E66D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7EA2821E139A1BB000AB1E1F /* UnitTests.xcconfig */;
+			baseConfigurationReference = 7EB05B5215EE6B3E00511954 /* UnitTests.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -1798,7 +1730,6 @@
 		};
 		7EB7BBB90F9B0DE500452BDE /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7EA2822A139A545500AB1E1F /* Library.xcconfig */;
 			buildSettings = {
 				PRODUCT_NAME = "Dream-Darwin-iOS";
 				SDKROOT = iphoneos;
@@ -1808,7 +1739,6 @@
 		};
 		7EB7BBBA0F9B0DE500452BDE /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7EA2822A139A545500AB1E1F /* Library.xcconfig */;
 			buildSettings = {
 				PRODUCT_NAME = "Dream-Darwin-iOS";
 				SDKROOT = iphoneos;
@@ -1818,7 +1748,6 @@
 		};
 		7EB7BC000F9B264800452BDE /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7EA2822A139A545500AB1E1F /* Library.xcconfig */;
 			buildSettings = {
 				PRODUCT_NAME = "Dream-Darwin-iOS-Simulator";
 				SDKROOT = iphoneos;
@@ -1828,7 +1757,6 @@
 		};
 		7EB7BC010F9B264800452BDE /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7EA2822A139A545500AB1E1F /* Library.xcconfig */;
 			buildSettings = {
 				PRODUCT_NAME = "Dream-Darwin-iOS-Simulator";
 				SDKROOT = iphoneos;
@@ -1838,7 +1766,6 @@
 		};
 		7EC86A2B0FAD70FD005DD627 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7EA2822A139A545500AB1E1F /* Library.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COPY_PHASE_STRIP = NO;
@@ -1849,25 +1776,10 @@
 		};
 		7EC86A2C0FAD70FD005DD627 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7EA2822A139A545500AB1E1F /* Library.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				PRODUCT_NAME = "Dream-Darwin-OSX";
 				SDKROOT = macosx;
-			};
-			name = Release;
-		};
-		7ED2B0BD140FBC2D0017C006 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		7ED2B0BE140FBC2D0017C006 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -1924,15 +1836,6 @@
 			buildConfigurations = (
 				7EC86A2B0FAD70FD005DD627 /* Debug */,
 				7EC86A2C0FAD70FD005DD627 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		7ED2B0BC140FBC2D0017C006 /* Build configuration list for PBXAggregateTarget "Copy Headers" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				7ED2B0BD140FBC2D0017C006 /* Debug */,
-				7ED2B0BE140FBC2D0017C006 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

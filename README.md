@@ -1,5 +1,4 @@
-Dream
-=====
+# Dream #
 
 * Author: Samuel G. D. Williams (<http://www.oriontransfer.co.nz>)
 * Copyright (C) 2006, 2011 Samuel G. D. Williams.
@@ -21,8 +20,7 @@ For documentation and examples please see the main [project page][1].
 
 [1]: http://www.oriontransfer.co.nz/projects/dream
 
-Documentation
--------------
+## Documentation ##
 
 To generate documentation, make sure you have `doxygen` installed and run:
 
@@ -57,22 +55,8 @@ Secondly, build with CMake:
 	cd build
 	CC=clang CXX=clang++ cmake ..
 	make
-	
-Dependencies
-------------
 
-The following external dependencies are included and compiled statically for all supported platforms:
-
-* libjpeg
-* libpng
-* libfreetype
-* libvorbis
-* libogg
-
-For more information, see the `ext/README.md` directory.
-
-Compatibility
--------------
+## Compatibility ##
 
 This framework has been designed for cross-platform compilation. It currently has support for the following targets:
 
@@ -102,8 +86,7 @@ The bare minimum to build on linux:
 	cmake ../
 	make
 
-Coding Guidelines
------------------
+## Coding Guidelines ##
 
 ### File Variants ###
 
@@ -123,13 +106,11 @@ When an object has ownership of a resource, it should use a `Dream::Ref<Object>`
 
 When passing objects to a function, you don't need to incur the performance cost of memory management. Therefore, you should use `Dream::Ptr<Object>`. Return values should still be `Dream::Ref<Object>`. Return value optimization ensures that reference counting overhead is minimized.
 
-Related Links
--------------
+## Related Links ##
 
 * [Perspective Correct Texturing][http://chrishecker.com/Miscellaneous_Technical_Articles]
 
-License
--------
+## License ##
 
 Copyright (c) 2006, 2011 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
 

@@ -15,6 +15,8 @@ class FileProcessor
 		end
 	end
 	
+	attr :dry, true
+	
 	def wet!
 		@dry = false
 	end
@@ -72,7 +74,7 @@ class FileProcessor
 			result = yield path, lines
 			
 			if result
-				@buffers[path] = StringIO.new(result.join("\n"))
+				@buffers[path] = StringIO.new(result.join("\n") + "\n")
 			end
 		end
 	end
@@ -98,7 +100,7 @@ class FileProcessor
 			buffer.seek(0)
 			
 			if @dry
-				$stdout.write(buffer.read)
+				# $stdout.write(buffer.read)
 			else
 				backup_path = File.join(tmp_path, name)
 				FileUtils.mkdir_p(File.dirname(backup_path))
