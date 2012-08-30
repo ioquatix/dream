@@ -32,7 +32,7 @@ namespace Dream {
 				
 				}
 				
-				NSString * application_name()
+				static NSString * application_name()
 				{
 					NSDictionary * dict;
 					NSString * appName = 0;
