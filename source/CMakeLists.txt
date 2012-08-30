@@ -161,15 +161,15 @@ if(${DREAM_VARIANT} MATCHES "linux")
 endif()
 
 # % find . -name "*.cpp"
-add_library(dream STATIC
+add_library(Dream STATIC
 	${DREAM_SOURCE_FILES}
 )
 
-target_link_libraries(dream ${CORELIBS})
+target_link_libraries(Dream ${CORELIBS})
 
 install(
 	TARGETS
-		dream
+		Dream
 	ARCHIVE DESTINATION
 		lib
 )
