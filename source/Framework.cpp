@@ -7,6 +7,7 @@
 //
 //
 
+#include "Framework.h"
 #include "Revision.h"
 
 namespace Dream

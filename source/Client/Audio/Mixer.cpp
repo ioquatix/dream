@@ -352,7 +352,7 @@ namespace Dream
 				return global_mixer;
 			}
 
-			ALCdevice * _default_audio_device () {
+			static ALCdevice * _default_audio_device () {
 				static ALCdevice * device = NULL;
 
 				if (!device) {

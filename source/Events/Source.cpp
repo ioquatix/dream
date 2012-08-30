@@ -39,7 +39,7 @@ namespace Dream
 		{
 		}
 
-		void stop_run_loop_callback (Loop * event_loop, NotificationSource * note, Event enent)
+		static void stop_run_loop_callback (Loop * event_loop, NotificationSource * note, Event enent)
 		{
 			event_loop->stop();
 		}

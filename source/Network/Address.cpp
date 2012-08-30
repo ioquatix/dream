@@ -26,7 +26,7 @@ namespace Dream {
 		}
 
 		// Currently unused and untested
-		Address address_for_socket (int s, bool remote)
+		static Address address_for_socket (int s, bool remote)
 		{
 			addrinfo ai;
 			sockaddr_storage ss;

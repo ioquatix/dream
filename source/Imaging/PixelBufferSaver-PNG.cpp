@@ -39,7 +39,7 @@ namespace Dream
 			throw std::runtime_error(msg);
 		}
 
-		int png_color_type (ImagePixelFormat pixel_format)
+		static int png_color_type (ImagePixelFormat pixel_format)
 		{
 			switch (pixel_format) {
 			case GENERIC_1_CHANNEL:

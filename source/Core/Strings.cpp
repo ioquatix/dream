@@ -50,7 +50,7 @@ namespace Dream
 
 // MARK: -
 
-		StringT::value_type convert_to_digit(char c) {
+		static StringT::value_type convert_to_digit(char c) {
 			StringT::value_type d = c - '0';
 			if (d < 10) {
 				return d;
@@ -65,7 +65,7 @@ namespace Dream
 			throw std::range_error("Could not convert character to digit - out of range!");
 		}
 
-		char convert_to_character(StringT::value_type d) {
+		static char convert_to_character(StringT::value_type d) {
 			if (d < 10) {
 				return '0' + d;
 			} else if (d < 36) {

@@ -15,7 +15,7 @@ namespace Dream {
 // MARK: -
 // MARK: Startup Message
 
-			void _show_startup_message_if_needed()
+			static void _show_startup_message_if_needed()
 			{
 				static bool _startup_messages_displayed = false;
 

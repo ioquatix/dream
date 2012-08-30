@@ -49,10 +49,10 @@ namespace Dream {
 // MARK: -
 // MARK: JPEG Loader Code
 
-		void jpeg_dummy (j_decompress_ptr cinfo) {
+		static void jpeg_dummy (j_decompress_ptr cinfo) {
 		}
 
-		boolean jpeg_fill_input_buffer (j_decompress_ptr cinfo) {
+		static boolean jpeg_fill_input_buffer (j_decompress_ptr cinfo) {
 			// Force the jpeg library to stop reading if we run past the end of data
 			static JOCTET eoi[2] = {(JOCTET)0xff, (JOCTET)JPEG_EOI};
 			cinfo->src->next_input_byte = eoi;
@@ -66,7 +66,7 @@ namespace Dream {
 		 * uninteresting data (such as an APPn marker).
 		 */
 
-		void jpeg_skip_input_data (j_decompress_ptr cinfo, long num_bytes) {
+		static void jpeg_skip_input_data (j_decompress_ptr cinfo, long num_bytes) {
 			//DREAM_ASSERT(num_bytes < cinfo->src.bytes_in_buffer && "jpeglib tried to skip further than the end of file!!");
 
 			if (num_bytes > 0 && num_bytes < (long)cinfo->src->bytes_in_buffer) {
@@ -77,7 +77,7 @@ namespace Dream {
 			}
 		}
 
-		void jpeg_memory_src (j_decompress_ptr cinfo, const JOCTET * buffer, IndexT bufsize) {
+		static void jpeg_memory_src (j_decompress_ptr cinfo, const JOCTET * buffer, IndexT bufsize) {
 			if (cinfo->src == NULL) {
 				cinfo->src = (jpeg_source_mgr *) (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_PERMANENT, sizeof(jpeg_source_mgr));
 			}
@@ -94,7 +94,7 @@ namespace Dream {
 			cinfo->src->bytes_in_buffer = bufsize;
 		}
 
-		Ref<Image> load_jpeg_image (const Ptr<IData> data) {
+		static Ref<Image> load_jpeg_image (const Ptr<IData> data) {
 			jpeg_decompress_struct cinfo;
 			jpeg_error_mgr jerr;
 
@@ -154,7 +154,7 @@ namespace Dream {
 			throw std::runtime_error(msg);
 		}
 
-		Ref<Image> load_png_image (const Ptr<IData> data) {
+		static Ref<Image> load_png_image (const Ptr<IData> data) {
 			// Image formatting details
 			ImagePixelFormat format = ImagePixelFormat(0);
 			ImageDataType data_type = ImageDataType(0);

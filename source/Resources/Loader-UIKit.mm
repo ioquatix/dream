@@ -7,8 +7,9 @@
 //
 //
 
+#include "Loader.h"
+
 #import <UIKit/UIKit.h>
-#include "Loadable.h"
 
 namespace Dream {
 	namespace Resources {

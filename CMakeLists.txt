@@ -1,7 +1,7 @@
 # cmake -DCMAKE_PREFIX_PATH=../../build/darwin_osx/ ..
 
 cmake_minimum_required(VERSION 2.8.9)
-project(Dream)
+project(DREAM)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/config/modules")
 
@@ -24,8 +24,8 @@ find_package(PNG REQUIRED)
 # link_directories(${DREAM_PLATFORM}/lib)
 # include_directories(${DREAM_PLATFORM}/include ${DREAM_PLATFORM}/include/freetype2)
 
-set(CMAKE_C_FLAGS "-Wall -std=c99")
-set(CMAKE_CXX_FLAGS "-Wall -std=c++11 -stdlib=libc++")
+# set(CMAKE_C_FLAGS "-Wall -std=c99")
+# set(CMAKE_CXX_FLAGS "-Wall -std=c++11 -stdlib=libc++")
 
 add_subdirectory(source)
 add_subdirectory(share)

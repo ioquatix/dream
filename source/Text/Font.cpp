@@ -23,7 +23,7 @@ namespace Dream
 	{
 		const char * ft2_error_message(int code);
 
-		FT_Library freetype_library ()
+		static FT_Library freetype_library ()
 		{
 			using namespace std;
 			static FT_Library library = NULL;
@@ -38,8 +38,6 @@ namespace Dream
 
 			return library;
 		}
-
-		using namespace std;
 
 		void Font::Loader::register_loader_types (ILoader * loader) {
 			loader->set_loader_for_extension(this, "ttf");

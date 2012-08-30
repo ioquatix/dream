@@ -20,7 +20,7 @@ namespace Dream
 				loader->set_loader_for_extension(this, "wav");
 			}
 
-			ALenum data_format (ALint channel_count, ALint bits_per_sample)
+			static ALenum data_format (ALint channel_count, ALint bits_per_sample)
 			{
 				if (channel_count == 1 && bits_per_sample == 8)
 					return AL_FORMAT_MONO8;
@@ -36,12 +36,12 @@ namespace Dream
 
 			typedef Ref<Sound>(*DecoderT)(const Buffer *, ALint, ALint, ALfloat);
 
-			Ref<Sound> decode_linear_codec (const Buffer * buf, ALint channel_count, ALint bits_per_sample, ALfloat sample_frequency)
+			static Ref<Sound> decode_linear_codec (const Buffer * buf, ALint channel_count, ALint bits_per_sample, ALfloat sample_frequency)
 			{
 				return new Sound(data_format(channel_count, bits_per_sample), sample_frequency, buf);
 			}
 
-			Ref<Sound> decode_pcm8SCodec (const Buffer * buf, ALint channel_count, ALint bits_per_sample, ALfloat sample_frequency)
+			static Ref<Sound> decode_pcm8s_codec (const Buffer * buf, ALint channel_count, ALint bits_per_sample, ALfloat sample_frequency)
 			{
 				DynamicBuffer copy;
 				copy.assign(*buf);
@@ -56,7 +56,7 @@ namespace Dream
 			}
 
 			const Endian PCM16Endian = LITTLE;
-			Ref<Sound> decode_pcm16Codec (const Buffer * buf, ALint channel_count, ALint bits_per_sample, ALfloat sample_frequency)
+			static Ref<Sound> decode_pcm16_codec (const Buffer * buf, ALint channel_count, ALint bits_per_sample, ALfloat sample_frequency)
 			{
 				if (host_endian() == PCM16Endian) {
 					return new Sound(data_format(channel_count, bits_per_sample), sample_frequency, buf);
@@ -73,7 +73,7 @@ namespace Dream
 				}
 			}
 
-			Ref<Sound> load_wave_data (const Ptr<IData> data)
+			static Ref<Sound> load_wave_data (const Ptr<IData> data)
 			{
 				DecoderT decoder = NULL;
 				Shared<Buffer> buffer = data->buffer();
@@ -115,7 +115,7 @@ namespace Dream
 								decoder = decode_linear_codec;
 							else
 								// Use PCM16 decoder - will pass through if endian doesn't need to be converted.
-								decoder = decode_pcm16Codec;
+								decoder = decode_pcm16_codec;
 						} else if (audio_format == 7) {
 							//bits_per_sample *= 2;
 							//decoder = decode_ulaw_codec;

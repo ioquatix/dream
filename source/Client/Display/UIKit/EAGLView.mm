@@ -21,7 +21,7 @@ const int RENDER_THREAD_FINISHED = 1;
 
 @implementation EAGLView
 
-@synthesize context;
+@synthesize context = _context;
 
 // You must implement this method
 + (Class)layerClass
@@ -75,18 +75,18 @@ const int RENDER_THREAD_FINISHED = 1;
 	[self stop];
 
     [self deleteFramebuffer];    
-    [context release];
+    [_context release];
     
     [super dealloc];
 }
 
 - (void)setContext:(EAGLContext *)newContext
 {
-    if (context != newContext) {
+    if (_context != newContext) {
         [self deleteFramebuffer];
         
-        [context release];
-        context = [newContext retain];
+        [_context release];
+        _context = [newContext retain];
         
         [EAGLContext setCurrentContext:nil];
     }
@@ -94,8 +94,8 @@ const int RENDER_THREAD_FINISHED = 1;
 
 - (void)createFramebuffer
 {
-    if (context && !_default_framebuffer) {
-        [EAGLContext setCurrentContext:context];
+    if (_context && !_default_framebuffer) {
+        [EAGLContext setCurrentContext:_context];
         
         // Create default framebuffer object.
         glGenFramebuffers(1, &_default_framebuffer);
@@ -105,7 +105,7 @@ const int RENDER_THREAD_FINISHED = 1;
         glGenRenderbuffers(1, &_color_renderbuffer);
         glBindRenderbuffer(GL_RENDERBUFFER, _color_renderbuffer);
 		
-        [context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
+        [_context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
         glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_backing_width);
         glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_backing_height);
         
@@ -126,8 +126,8 @@ const int RENDER_THREAD_FINISHED = 1;
 
 - (void)deleteFramebuffer
 {
-    if (context) {
-        [EAGLContext setCurrentContext:context];
+    if (_context) {
+        [EAGLContext setCurrentContext:_context];
         
         if (_default_framebuffer) {
             glDeleteFramebuffers(1, &_default_framebuffer);
@@ -148,8 +148,8 @@ const int RENDER_THREAD_FINISHED = 1;
 
 - (void)makeCurrentContext
 {
-    if (context) {
-        [EAGLContext setCurrentContext:context];
+    if (_context) {
+        [EAGLContext setCurrentContext:_context];
         
 		if (_resize_buffers) {
 			[self deleteFramebuffer];
@@ -169,12 +169,12 @@ const int RENDER_THREAD_FINISHED = 1;
 {
     BOOL success = FALSE;
     
-    if (context) {
-        [EAGLContext setCurrentContext:context];
+    if (_context) {
+        [EAGLContext setCurrentContext:_context];
         
         glBindRenderbuffer(GL_RENDERBUFFER, _color_renderbuffer);
         
-        success = [context presentRenderbuffer:GL_RENDERBUFFER];
+        success = [_context presentRenderbuffer:GL_RENDERBUFFER];
     }
     
     return success;

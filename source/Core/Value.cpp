@@ -78,7 +78,7 @@ namespace Dream
 			return outs;
 		}
 
-		std::istream & operator>> (std::istream & ins, ITypedValue & value)
+		static std::istream & operator>> (std::istream & ins, ITypedValue & value)
 		{
 			value.read_from_stream(ins);
 

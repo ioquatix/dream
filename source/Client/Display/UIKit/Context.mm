@@ -60,7 +60,7 @@ namespace Dream
 					return Vec2u(frame.size.width * scale, frame.size.height * scale);
 				}
 				
-				const char * getSymbolicError (GLenum error) {
+				static const char * get_symbolic_error (GLenum error) {
 					switch (error) {
 						case GL_NO_ERROR:
 							return "No error has occurred.";

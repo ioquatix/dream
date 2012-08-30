@@ -8,6 +8,8 @@
 
 #include "Matrix.SSE.h"
 
+#ifdef __SSE2__
+
 #include <xmmintrin.h>
 
 namespace Dream {
@@ -40,3 +42,5 @@ namespace Dream {
 		//}
 	}
 }
+
+#endif

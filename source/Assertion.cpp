@@ -15,7 +15,7 @@
 // For testing
 #include "Core/CodeTest.h"
 
-void assertion_failure() {
+static void assertion_failure() {
 	return;
 }
 

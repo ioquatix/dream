@@ -44,7 +44,7 @@ namespace Dream
 		/// @returns READ_EVENT if file is open READ ONLY.
 		/// @returns WRITE_EVENT if file is open WRITE ONLY.
 		/// @returns READ_EVENT|WRITE_EVENT if file is READ/WRITE.
-		int events_for_file_descriptor (int fd)
+		static int events_for_file_descriptor (int fd)
 		{
 			if (fd == STDIN_FILENO) return READ_READY;
 

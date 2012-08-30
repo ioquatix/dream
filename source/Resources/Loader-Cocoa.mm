@@ -7,8 +7,9 @@
 //
 //
 
+#include "Loader.h"
+
 #import <Cocoa/Cocoa.h>
-#include "Loadable.h"
 
 namespace Dream {
 	namespace Resources {
