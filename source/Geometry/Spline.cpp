@@ -515,6 +515,9 @@ namespace Dream {
 		// MARK: -
 
 		// Explicit template instantiation
+		template class Spline<3>;
+		template class Spline<2>;
+
 		template class LinearSpline<3>;
 		template class LinearSpline<2>;
 

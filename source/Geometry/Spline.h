@@ -93,7 +93,6 @@ namespace Dream {
 
 			bool _closed;
 		public:
-
 			Spline ();
 			virtual ~Spline ();
 
