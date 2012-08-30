@@ -99,6 +99,8 @@ namespace Dream {
 				_context = application->create_context(_config);
 
 				_thread = new Events::Thread;
+				_thread->start();
+
 				Ref<ILoader> loader = SceneManager::default_resource_loader();
 
 				_scene_manager = new SceneManager(_context, _thread->loop(), loader);
@@ -119,14 +121,14 @@ namespace Dream {
 				_scene_manager->process_input(_context, suspend_event);
 
 				_context->stop();
-				_thread->stop();
+				//_thread->stop();
 			}
 
 			void ApplicationDelegate::application_did_enter_foreground (IApplication * application)
 			{
 				logger()->log(LOG_INFO, "Application entering foreground...");
 
-				_thread->start();
+				//_thread->start();
 				_context->start();
 
 				EventInput resume_event(EventInput::RESUME);
