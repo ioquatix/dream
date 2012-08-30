@@ -168,7 +168,7 @@ namespace Dream
 			void SceneManager::process_input (Ptr<IContext> context, const Input & input)
 			{
 				if (!process(input)) {
-					// Add the event to the thread-safe queue.
+					// Add the event to the thread-safe queue for processing by the scene:
 					_input_queue.process(input);
 				}
 			}
@@ -186,6 +186,9 @@ namespace Dream
 					_display_context->stop();
 
 					return true;
+				} else if (_current_scene) {
+					// Pass events directly to the scene:
+					return _current_scene->process(ipt);
 				}
 
 				return false;
