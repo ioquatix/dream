@@ -110,14 +110,14 @@ set(DREAM_SOURCE_FILES
 	./Text/TextBuffer.cpp
 )
 
-set(DREAM_VARIANT_LINUX_FILES
+set(DREAM_PLATFORM_LINUX_FILES
 	./Core/Path-Unix.cpp
 	./Core/Timer-Unix.cpp
 	
 	./Resources/Loader-Generic.cpp
 )
 
-set(DREAM_VARIANT_DARWIN_IOS_FILES
+set(DREAM_PLATFORM_DARWIN_IOS_FILES
 	./Core/Path-Mac.mm
 	./Core/Timer-CoreVideo.cpp
 	
@@ -130,7 +130,7 @@ set(DREAM_VARIANT_DARWIN_IOS_FILES
 	./Client/Display/UIKit/EAGLView.mm
 )
 
-set(DREAM_VARIANT_DARWIN_OSX_FILES
+set(DREAM_PLATFORM_DARWIN_OSX_FILES
 	./Core/Path-Mac.mm
 	./Core/Timer-CoreVideo.cpp
 	
@@ -143,21 +143,21 @@ set(DREAM_VARIANT_DARWIN_OSX_FILES
 	./Client/Display/Cocoa/DWindowDelegate.mm
 )
 
-message(STATUS "Configuring based on variant: " ${DREAM_VARIANT})
+message(STATUS "Configuring based on variant: " ${DREAM_PLATFORM})
 
-if(${DREAM_VARIANT} MATCHES "darwin_ios")
+if(${DREAM_PLATFORM} MATCHES "darwin_ios")
 	message(STATUS "Building 'darwin_ios' display context.")
-	set(DREAM_SOURCE_FILES ${DREAM_SOURCE_FILES} ${DREAM_VARIANT_DARWIN_IOS_FILES})
+	set(DREAM_SOURCE_FILES ${DREAM_SOURCE_FILES} ${DREAM_PLATFORM_DARWIN_IOS_FILES})
 endif()
 
-if(${DREAM_VARIANT} MATCHES "darwin_osx")
+if(${DREAM_PLATFORM} MATCHES "darwin_osx")
 	message(STATUS "Building 'darwin_osx' display context.")
-	set(DREAM_SOURCE_FILES ${DREAM_SOURCE_FILES} ${DREAM_VARIANT_DARWIN_OSX_FILES})
+	set(DREAM_SOURCE_FILES ${DREAM_SOURCE_FILES} ${DREAM_PLATFORM_DARWIN_OSX_FILES})
 endif()
 
-if(${DREAM_VARIANT} MATCHES "linux")
+if(${DREAM_PLATFORM} MATCHES "linux")
 	message(STATUS "Building 'darwin_osx' display context.")
-	set(DREAM_SOURCE_FILES ${DREAM_SOURCE_FILES} ${DREAM_VARIANT_LINUX_FILES})
+	set(DREAM_SOURCE_FILES ${DREAM_SOURCE_FILES} ${DREAM_PLATFORM_LINUX_FILES})
 endif()
 
 # % find . -name "*.cpp"

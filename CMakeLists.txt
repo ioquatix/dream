@@ -19,6 +19,10 @@ find_package(FreeType REQUIRED)
 find_package(JPEG REQUIRED)
 find_package(PNG REQUIRED)
 
+if(${DREAM_VARIANT} MATCHES "debug")
+  add_definitions(-DDREAM_DEBUG)
+endif()
+  
 # set(DREAM_PLATFORM ${PROJECT_SOURCE_DIR}/ext/linux)
 
 # link_directories(${DREAM_PLATFORM}/lib)
