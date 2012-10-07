@@ -1,7 +1,7 @@
 # Dream #
 
 * Author: Samuel G. D. Williams (<http://www.oriontransfer.co.nz>)
-* Copyright (C) 2006, 2011 Samuel G. D. Williams.
+* Copyright (C) 2006, 2012 Samuel G. D. Williams.
 * Released under the MIT license.
 
 Dream is a cross-platform game development framework. It is currently under heavy development. It has the following features:
@@ -16,9 +16,11 @@ Dream is a cross-platform game development framework. It is currently under heav
 * Positional audio using using OpenAL and Ogg Vorbis.
 * High performance graphics using OpenGL (Support for OpenGL3.2+ and OpenGL2.0ES+)
 
-For documentation and examples please see the main [project page][1].
+A [selection of examples][1] and a complete [cross-platform build environment][2] are available. For more details, please see the main [project page][3].
 
-[1]: http://www.oriontransfer.co.nz/projects/dream
+[1]: https://github.com/ioquatix/dream-examples
+[2]: https://github.com/ioquatix/dream-framework
+[3]: http://www.oriontransfer.co.nz/research/dream
 
 ## Documentation ##
 
@@ -28,37 +30,9 @@ To generate documentation, make sure you have `doxygen` installed and run:
 	
 The documentation can be found in `docs/html/index.html`.
 
-### Compiling examples on Mac OS X ###
-
-Firstly, execute the following using Terminal.app:
-
-	cd $DREAM/ext
-	rake fetch
-	rake build platform=dream_darwin
-
-Secondly, open Dream.xcodeproj, select "Dream-Darwin-MacOSX" target and build.
-
-Finally, open Demo.xcodeproj, select "Demo" target and run.
-
-### Compiling examples on Linux ###
-
-Firstly, execute the following commands using a shell:
-
-	cd $DREAM/ext
-	rake fetch
-	rake build platform=linux
-
-Secondly, build with CMake:
-
-	cd $DREAM
-	mkdir build
-	cd build
-	CC=clang CXX=clang++ cmake ..
-	make
-
 ## Compatibility ##
 
-This framework has been designed for cross-platform compilation. It currently has support for the following targets:
+This library has been designed for cross-platform compilation. It currently has support for the following targets:
 
 * Mac OS X [Full]
 * iPhone [Full]
@@ -70,21 +44,6 @@ Dream uses features from C++11, and therefore requires a C++11 compiler such as 
 
 [1]: http://clang.llvm.org/
 [2]: http://gcc.gnu.org/gcc-4.6/
-
-### Linux Build ###
-
-The bare minimum to build on linux:
-
-	sudo apt-get install rake curl zlibg1-dev
-	sudo gem install rexec
-	
-	cd $DREAM/ext
-	rake
-	
-	mkdir $DREAM/build
-	cd $DREAM/build
-	cmake ../
-	make
 
 ## Coding Guidelines ##
 
@@ -112,7 +71,7 @@ When passing objects to a function, you don't need to incur the performance cost
 
 ## License ##
 
-Copyright (c) 2006, 2011 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
+Copyright (c) 2006, 2012 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
