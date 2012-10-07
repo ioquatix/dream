@@ -12,6 +12,8 @@
 #include <sstream>
 #include <iostream>
 
+#include "Events/Logger.h"
+
 // For testing
 #include "Core/CodeTest.h"
 
@@ -21,6 +23,8 @@ static void assertion_failure() {
 
 namespace Dream
 {
+	using namespace Events::Logging;
+	
 	AssertionError::AssertionError (const char * expression, const char * file, unsigned line) throw () : _expression (expression), _file (file), _line (line)
 	{
 		using namespace std;
@@ -48,7 +52,11 @@ namespace Dream
 		if (!condition) {
 			assertion_failure();
 
-			throw AssertionError(expression, file, line);
+			AssertionError assertion_error(expression, file, line);
+
+			logger()->log(LOG_ERROR, assertion_error.what());
+
+			throw assertion_error;
 		}
 	}
 
