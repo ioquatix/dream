@@ -48,7 +48,7 @@ namespace Dream
 				void render(const Geometry::LineSegment<2> &);
 				void render(const Geometry::LineSegment<3> &);
 
-				void render(const Geometry::AlignedBox<2> &, RealT z = 0.0);
+				void render(const Geometry::AlignedBox<2> &, RealT z = 0.0, Layout layout = LINE_LOOP);
 				void render(const Geometry::AlignedBox<3> &);
 
 				void render_axis();
