@@ -305,6 +305,12 @@ namespace Dream
 			memcpy(this->_vector + offset, other, sizeof(NumericT) * count);
 		}
 
+		template <unsigned E, typename NumericT> template <typename OtherNumericT>
+		void Vector<E, NumericT>::set (const OtherNumericT * other) {
+			for (unsigned i = 0; i < E; i += 1)
+				this->_vector[i] = other[i];
+		}
+
 		template <unsigned E, typename NumericT> template <typename OtherT>
 		bool Vector<E, NumericT>::operator== (const OtherT & other) const
 		{

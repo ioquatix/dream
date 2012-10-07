@@ -217,6 +217,9 @@ namespace Dream
 			void set (const NumericT * data);
 			/// Copy count elements of raw data into the vector.
 			void set (const NumericT * other, unsigned count, unsigned offset = 0);
+			/// Copy raw data into the vector
+			template <typename OtherNumericT>
+			void set (const OtherNumericT * other);
 
 			/// Set the vector to the value of another of a different type and length.
 			/// Will only copy as much as possible.

@@ -136,8 +136,8 @@ namespace Dream
 
 			Matrix (const Matrix<R, C, NumericT> & other);
 
-			template <unsigned S, unsigned T>
-			Matrix (const Matrix<S, T, NumericT> & other) {
+			template <unsigned S, unsigned T, typename OtherNumericT>
+			Matrix (const Matrix<S, T, OtherNumericT> & other) {
 				set(other);
 			}
 
@@ -159,8 +159,8 @@ namespace Dream
 				}
 			}
 
-			template <unsigned S, unsigned T>
-			void set (const Matrix<S, T, NumericT> & other) {
+			template <unsigned S, unsigned T, typename OtherNumericT>
+			void set (const Matrix<S, T, OtherNumericT> & other) {
 				for (std::size_t s = 0; s < S; s += 1) {
 					for (std::size_t t = 0; t < T; t += 1) {
 						at(s, t) = other.at(s, t);
