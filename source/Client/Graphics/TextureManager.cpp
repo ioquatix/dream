@@ -32,6 +32,51 @@ namespace Dream {
 				}
 			}
 
+			const char * format_name (GLenum format) {
+				switch (format) {
+#ifdef GL_RED
+				case GL_RED:
+					return "GL_RED";
+#endif
+
+#ifdef GL_GREEN
+				case GL_GREEN:
+					return "GL_GREEN";
+#endif
+
+#ifdef GL_BLUE
+				case GL_BLUE:
+					return "GL_BLUE";
+#endif
+
+				case GL_ALPHA:
+					return "GL_ALPHA";
+
+				case GL_RGB:
+					return "GL_RGB";
+
+				case GL_RGBA:
+					return  "GL_RGBA";
+
+				case GL_LUMINANCE:
+					return "GL_LUMINANCE";
+
+				case GL_LUMINANCE_ALPHA:
+					return "GL_LUMINANCE_ALPHA";
+
+#ifdef GL_BGR
+				case GL_BGR:
+					return "GL_BGR";
+#endif
+
+				case GL_BGRA:
+					return "GL_BGRA";
+
+				default:
+					return "Unknown Format";
+				}
+			}
+
 			bool is_valid_texture_target (GLenum target)
 			{
 				switch (target) {
@@ -136,6 +181,10 @@ namespace Dream {
 			void Texture::load_pixel_data(const Vec3u & size, const ByteT * pixels, GLenum format, GLenum data_type) {
 				GLenum internal_format = _parameters.get_internal_format(format);
 				GLenum target = _parameters.get_target();
+
+#ifdef DREAM_DEBUG
+				//logger()->log(LOG_INFO, LogBuffer() << "load_pixel_data: " << size << " format: " << format_name(format) << " internal_format: " << format_name(internal_format));
+#endif
 
 #ifdef DREAM_OPENGLES2
 				// OpenGLES 2.0 only supports GL_ALPHA, GL_RGB, GL_RGBA, GL_LUMINANCE, or GL_LUMINANCE_ALPHA

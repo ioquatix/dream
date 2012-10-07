@@ -18,6 +18,8 @@ namespace Dream {
 			using Dream::Imaging::IPixelBuffer;
 
 			const char * target_name (GLenum target);
+			const char * format_name (GLenum format);
+
 			bool is_valid_texture_target (GLenum target);
 
 			/**
