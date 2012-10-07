@@ -74,9 +74,16 @@ namespace Dream {
 
 			static AlignedBox from_center_and_size (const VectorT &center, const VectorT &size)
 			{
-				AlignedBox r;
-				r.set_center_and_size(center, size);
-				return r;
+				AlignedBox box;
+				box.set_center_and_size(center, size);
+				return box;
+			}
+
+			static AlignedBox from_origin_and_size (const VectorT &origin, const VectorT &size)
+			{
+				AlignedBox box;
+				box.set_origin_and_size(origin, size);
+				return box;
 			}
 
 			// Bounds _min and _max must infact be minima and maxima.
