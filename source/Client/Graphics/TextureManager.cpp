@@ -58,11 +58,15 @@ namespace Dream {
 				case GL_RGBA:
 					return  "GL_RGBA";
 
+#ifdef GL_LUMINANCE
 				case GL_LUMINANCE:
 					return "GL_LUMINANCE";
+#endif
 
+#ifdef GL_LUMINANCE_ALPHA
 				case GL_LUMINANCE_ALPHA:
 					return "GL_LUMINANCE_ALPHA";
+#endif
 
 #ifdef GL_BGR
 				case GL_BGR:
