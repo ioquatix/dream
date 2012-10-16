@@ -22,9 +22,9 @@ namespace Dream
 			Vec3 u = s.cross(direction);
 
 			Mat44 m(ZERO);
-			m.set(0, 0, s);
-			m.set(1, 0, u);
-			m.set(2, 0, -direction);
+			m.set(0, 0, s, 4);
+			m.set(1, 0, u, 4);
+			m.set(2, 0, -direction, 4);
 			m.at(3, 3) = 1;
 
 			Mat44 t = Mat44::translating_matrix(-origin);
@@ -41,9 +41,9 @@ namespace Dream
 			Vec3 u = s.cross(_direction);
 
 			Mat44 m(ZERO);
-			m.set(0, 0, s);
-			m.set(1, 0, u);
-			m.set(2, 0, -_direction);
+			m.set(0, 0, s, 4);
+			m.set(1, 0, u, 4);
+			m.set(2, 0, -_direction, 4);
 			m.at(3, 3) = 1;
 
 			Mat44 t = Mat44::translating_matrix(-_origin);
