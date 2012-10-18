@@ -340,14 +340,15 @@ namespace Dream
 		{
 			TextLine * line = last_line();
 
-			std::string::const_iterator current = str.begin(), end = str.end();
+			auto current = str.begin(), end = str.end();
 
-			while (true) {
+			while (current != end) {
 				CodePointT codepoint = utf8::next(current, end);
 
 				if (codepoint == '\n') {
 					line = new TextLine(this);
 					_lines.push_back(line);
+
 					continue;
 				}
 
@@ -357,10 +358,6 @@ namespace Dream
 
 					DREAM_ASSERT(line->can_add_character(*current));
 					line->add_character(*current);
-				}
-
-				if (current == end) {
-					break;
 				}
 			}
 		}

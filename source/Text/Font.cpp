@@ -60,7 +60,7 @@ namespace Dream
 			if (err) {
 				throw LoadError(StringT("Error loading freetype font (") + p.to_local_path() + "): " + ft2_error_message(err));
 			} else {
-				_face = new Detail::FontFace(face, ALPHA);
+				_face = new Detail::FontFace(face, PixelFormat::A);
 			}
 
 			set_pixel_size(12);
@@ -77,7 +77,7 @@ namespace Dream
 			if (err) {
 				throw LoadError(StringT("Error loading freetype font:") + ft2_error_message(err));
 			} else {
-				_face = new Detail::FontFace(face, ALPHA);
+				_face = new Detail::FontFace(face, PixelFormat::A);
 			}
 
 			set_pixel_size(12);
@@ -121,7 +121,7 @@ namespace Dream
 		{
 			DREAM_ASSERT(_face != NULL);
 
-			Ref<Image> img = new Image(compute_bounding_box(text) << 1U, _face->pixel_format(), UBYTE);
+			Ref<Image> img = new Image(compute_bounding_box(text) << 1U, _face->pixel_format(), DataType::BYTE);
 			img->zero();
 
 			_face->process_text(text, img);

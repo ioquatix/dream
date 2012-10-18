@@ -14,75 +14,12 @@
 
 namespace Dream {
 	namespace Imaging {
-		std::size_t data_type_byte_size(ImageDataType type) {
-			switch (type) {
-			case UBYTE:
-			case BYTE:
-				return sizeof(char);     // GLbyte
-			case USHORT:
-			case SHORT:
-				return sizeof(short);     // GLshort
-			case UINT:
-			case INT:
-				return sizeof(long);     // GLint
-			case FLOAT:
-				return sizeof(float);     // GLfloat
-			case DOUBLE:
-				return sizeof(double);     //GLdouble
-			default:
-				return 0;
-			}
+		std::size_t data_type_byte_size(DataType data_type) {
+			return 0xFF & (unsigned)data_type;
 		}
 
-		unsigned data_type_channel_count (ImageDataType type) {
-			switch (type) {
-			case UBYTE_3_3_2:
-			case UBYTE_2_3_3_REV:
-			case USHORT_5_6_5:
-			case USHORT_5_6_5_REV:
-				return 3;
-
-			case USHORT_4_4_4_4:
-			case USHORT_5_5_5_1:
-			case USHORT_4_4_4_4_REV:
-			case USHORT_1_5_5_5_REV:
-			case UINT_8_8_8_8:
-			case UINT_10_10_10_2:
-			case UINT_8_8_8_8_REV:
-			case UINT_2_10_10_10_REV:
-				return 4;
-
-			default:
-				return 1;
-			}
-		}
-
-		unsigned pixel_format_channel_count (ImagePixelFormat type) {
-			switch (type) {
-			case GENERIC_1_CHANNEL:
-			case RED:
-			case GREEN:
-			case BLUE:
-			case ALPHA:     // Internal Format
-			case LUMINANCE:
-				return 1;
-
-			case GENERIC_2_CHANNEL:
-			case LUMINANCE_ALPHA:     // Internal Format
-				return 2;
-
-			case GENERIC_3_CHANNEL:
-			case RGB:     // Internal Format
-				return 3;
-
-			case GENERIC_4_CHANNEL:
-			case RGBA:     // Internal Format
-			case BGRA:
-				return 4;
-
-			default:
-				return 0;
-			}
+		unsigned pixel_format_channel_count (PixelFormat pixel_format) {
+			return 0xFF & (unsigned)pixel_format;
 		}
 
 // MARK: -
@@ -97,92 +34,17 @@ namespace Dream {
 			return px;
 		}
 
-		ImageDataType IPixelBuffer::pixel_data_type () const
+		DataType IPixelBuffer::pixel_data_type () const
 		{
-			return UBYTE; /* Suits most pixel formats */
+			return DataType::BYTE;
 		}
 
 		std::size_t IPixelBuffer::bytes_per_pixel () const {
-			unsigned n = 1;
-			ImageDataType pixfmt;
-
-			if (is_packed_format()) {
-				pixfmt = packed_type();
-				// Packed formats only use one element (n = 1)
-			} else {
-				pixfmt = pixel_data_type();
-				n = pixel_format_channel_count(pixel_format());
-			}
-
-			DREAM_ASSERT((data_type_byte_size(pixfmt) * n) > 0 && "bytes_per_pixel is obviously incorrect!");
-			return data_type_byte_size(pixfmt) * n;
+			return data_type_byte_size(pixel_data_type()) * pixel_format_channel_count(pixel_format());
 		}
 
 		unsigned IPixelBuffer::channel_count () const {
 			return pixel_format_channel_count (pixel_format());
-		}
-
-		// Components read from MSB to LSB
-		// (ie, host-ordered data formats rather than byte ordered formats).
-		bool IPixelBuffer::is_byte_order_reversed () const {
-			switch (pixel_data_type()) {
-			case UBYTE_2_3_3_REV:
-			case USHORT_5_6_5_REV:
-			case USHORT_4_4_4_4_REV:
-			case USHORT_1_5_5_5_REV:
-			case UINT_8_8_8_8_REV:
-			case UINT_2_10_10_10_REV:
-				return true;
-			default:
-				return false;
-			}
-		}
-
-		bool IPixelBuffer::is_packed_format () const {
-			switch (pixel_data_type()) {
-			case UBYTE_3_3_2:
-			case USHORT_4_4_4_4:
-			case USHORT_5_5_5_1:
-			case UINT_8_8_8_8:
-			case UINT_10_10_10_2:
-			case USHORT_5_6_5:
-
-			case UBYTE_2_3_3_REV:
-			case USHORT_5_6_5_REV:
-			case USHORT_4_4_4_4_REV:
-			case USHORT_1_5_5_5_REV:
-			case UINT_8_8_8_8_REV:
-			case UINT_2_10_10_10_REV:
-				return true;
-
-			default:
-				return false;
-			}
-		}
-
-		ImageDataType IPixelBuffer::packed_type () const {
-			switch (pixel_data_type()) {
-			case UBYTE_3_3_2:
-			case UBYTE_2_3_3_REV:
-				return UBYTE;
-
-			case USHORT_4_4_4_4:
-			case USHORT_5_5_5_1:
-			case USHORT_5_6_5:
-			case USHORT_5_6_5_REV:
-			case USHORT_4_4_4_4_REV:
-			case USHORT_1_5_5_5_REV:
-				return USHORT;
-
-			case UINT_8_8_8_8:
-			case UINT_10_10_10_2:
-			case UINT_8_8_8_8_REV:
-			case UINT_2_10_10_10_REV:
-				return UINT;
-
-			default:
-				return ImageDataType(0);
-			}
 		}
 
 // MARK: -
@@ -217,10 +79,8 @@ namespace Dream {
 		}
 
 		// Copy from buf to this
-		void IMutablePixelBuffer::copy_pixels_from (const IPixelBuffer & buf, const PixelCoordinateT &from, const PixelCoordinateT &to,
-		                                            const PixelCoordinateT &size, CopyFlags copy_flags)
+		void IMutablePixelBuffer::copy_pixels_from (const IPixelBuffer & buf, const PixelCoordinateT &from, const PixelCoordinateT &to, const PixelCoordinateT &size, CopyFlags copy_flags)
 		{
-			DREAM_ASSERT(!is_packed_format() && "Packed pixel formats not supported for reading!");
 			DREAM_ASSERT(this->channel_count() == buf.channel_count());
 			DREAM_ASSERT(this->pixel_data_type() == buf.pixel_data_type());
 

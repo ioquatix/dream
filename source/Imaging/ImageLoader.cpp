@@ -98,8 +98,8 @@ namespace Dream {
 			jpeg_decompress_struct cinfo;
 			jpeg_error_mgr jerr;
 
-			ImagePixelFormat format = ImagePixelFormat(0);
-			ImageDataType data_type = UBYTE;
+			PixelFormat format = PixelFormat(0);
+			DataType data_type = DataType::BYTE;
 
 			Ref<Image> result_image;
 			Shared<Buffer> buffer = data->buffer();
@@ -123,10 +123,10 @@ namespace Dream {
 				unsigned row_width = 0;
 				if (cinfo.jpeg_color_space == JCS_GRAYSCALE) {
 					row_width = width;
-					format = LUMINANCE;
+					format = PixelFormat::L;
 				} else {
 					row_width = 3 * width;
-					format = RGB;
+					format = PixelFormat::RGB;
 				}
 
 				result_image = new Image(PixelCoordinateT(width, height, 1), format, data_type);
@@ -156,8 +156,8 @@ namespace Dream {
 
 		static Ref<Image> load_png_image (const Ptr<IData> data) {
 			// Image formatting details
-			ImagePixelFormat format = ImagePixelFormat(0);
-			ImageDataType data_type = ImageDataType(0);
+			PixelFormat format = PixelFormat(0);
+			DataType data_type = DataType(0);
 
 			DataFile df(data);
 			Ref<Image> result_image;
@@ -209,21 +209,21 @@ namespace Dream {
 
 				// Figure out image format
 				if (color_type == PNG_COLOR_TYPE_RGB) {
-					format = RGB;
+					format = PixelFormat::RGB;
 				} else if (color_type == PNG_COLOR_TYPE_RGB_ALPHA) {
-					format = RGBA;
+					format = PixelFormat::RGBA;
 				} else if (color_type == PNG_COLOR_TYPE_GRAY_ALPHA) {
-					format = LUMINANCE_ALPHA;
+					format = PixelFormat::LA;
 				} else if (color_type == PNG_COLOR_TYPE_GRAY) {
-					format = LUMINANCE;
+					format = PixelFormat::L;
 				}
 
 				// Figure out bit depth
 				if (bit_depth == 16) {
 					// It is possible to convert to 8bpp using: png_set_strip_16 (png_reader);
-					data_type = USHORT;
+					data_type = DataType::SHORT;
 				} else if (bit_depth == 8) {
-					data_type = UBYTE;
+					data_type = DataType::BYTE;
 				} else {
 					std::stringstream s; s << "PNG: Bit depth of " << bit_depth << " not supported!" << std::endl;
 					throw std::runtime_error(s.str());

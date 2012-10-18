@@ -32,7 +32,7 @@ namespace Dream
 				FT_BitmapGlyph bm = (FT_BitmapGlyph)glyph;
 
 				if (bm->bitmap.buffer != NULL) {
-					UnbufferedImage char_img(ALPHA, UBYTE);
+					UnbufferedImage char_img(PixelFormat::A, DataType::BYTE);
 
 					// Retrieve the bitmap
 					char_img.set_data(bm->bitmap.buffer, vec<unsigned>(bm->bitmap.width, bm->bitmap.rows, 1));
@@ -81,7 +81,7 @@ namespace Dream
 
 // MARK: -
 
-			FontFace::FontFace (FT_Face _face, ImagePixelFormat _fmt) : _face(_face), _pixel_format(_fmt)
+			FontFace::FontFace (FT_Face _face, PixelFormat _fmt) : _face(_face), _pixel_format(_fmt)
 			{
 			}
 
@@ -130,7 +130,7 @@ namespace Dream
 				return _face;
 			}
 
-			ImagePixelFormat FontFace::pixel_format ()
+			PixelFormat FontFace::pixel_format ()
 			{
 				return _pixel_format;
 			}

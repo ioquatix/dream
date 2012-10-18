@@ -17,6 +17,9 @@ namespace Dream {
 		namespace Graphics {
 			using Dream::Imaging::IPixelBuffer;
 
+			GLenum texture_pixel_format(Imaging::PixelFormat pixel_format);
+			GLenum texture_data_type(Imaging::DataType data_type);
+
 			const char * target_name (GLenum target);
 			const char * format_name (GLenum format);
 

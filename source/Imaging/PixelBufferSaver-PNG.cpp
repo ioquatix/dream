@@ -39,26 +39,22 @@ namespace Dream
 			throw std::runtime_error(msg);
 		}
 
-		static int png_color_type (ImagePixelFormat pixel_format)
+		static int png_color_type (PixelFormat pixel_format)
 		{
 			switch (pixel_format) {
-			case GENERIC_1_CHANNEL:
-			case RED:
-			case GREEN:
-			case BLUE:
-			case LUMINANCE:
-			case ALPHA:
-				return PNG_COLOR_TYPE_GRAY;
-			case GENERIC_2_CHANNEL:
-			case LUMINANCE_ALPHA:
-				return PNG_COLOR_TYPE_GRAY_ALPHA;
-			case GENERIC_3_CHANNEL:
-			case RGB:
-				return PNG_COLOR_TYPE_RGB;
-			case GENERIC_4_CHANNEL:
-			case RGBA:
-			case BGRA:
-				return PNG_COLOR_TYPE_RGBA;
+				case PixelFormat::R:
+				case PixelFormat::G:
+				case PixelFormat::B:
+				case PixelFormat::A:
+				case PixelFormat::L:
+					return PNG_COLOR_TYPE_GRAY;
+				case PixelFormat::LA:
+					return PNG_COLOR_TYPE_GRAY_ALPHA;
+				case PixelFormat::RGB:
+					return PNG_COLOR_TYPE_RGB;
+				case PixelFormat::RGBA:
+				case PixelFormat::BGRA:
+					return PNG_COLOR_TYPE_RGBA;
 			}
 
 			return -1;
@@ -68,7 +64,6 @@ namespace Dream
 		{
 			Vec3u size = pixel_buffer->size();
 
-			DREAM_ASSERT(!pixel_buffer->is_packed_format());
 			DREAM_ASSERT(size[Z] == 1);
 
 			Shared<DynamicBuffer> result_data(new DynamicBuffer);
@@ -122,7 +117,7 @@ namespace Dream
 #ifdef ENABLE_TESTING
 
 		UNIT_TEST(PixelBufferSaver) {
-			Ref<IPixelBuffer> pixel_buffer = new Image(vec(100.0, 100.0, 1.0), RGB, UBYTE);
+			Ref<IPixelBuffer> pixel_buffer = new Image(vec(100.0, 100.0, 1.0), PixelFormat::RGB, DataType::BYTE);
 			testing("PNG");
 
 			Ref<IData> png_data = save_pixel_buffer_as_png(pixel_buffer.get());

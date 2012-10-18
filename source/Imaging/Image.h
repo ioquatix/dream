@@ -20,20 +20,20 @@ namespace Dream {
 
 		class ImageBase : implements IPixelBuffer {
 		protected:
-			ImagePixelFormat _format;
-			ImageDataType _data_type;
+			PixelFormat _format;
+			DataType _data_type;
 			PixelCoordinateT _size;
 
 		public:
-			ImageBase () : _format(ImagePixelFormat(0)), _data_type(ImageDataType(0)), _size(ZERO) {}
+			ImageBase () : _format(PixelFormat(0)), _data_type(DataType(0)), _size(ZERO) {}
 
 			//Accessors
-			virtual ImagePixelFormat pixel_format () const
+			virtual PixelFormat pixel_format () const
 			{
 				return _format;
 			}
 
-			virtual ImageDataType pixel_data_type () const
+			virtual DataType pixel_data_type () const
 			{
 				return _data_type;
 			}
@@ -49,10 +49,10 @@ namespace Dream {
 			const ByteT *_data;
 
 		public:
-			UnbufferedImage (ImagePixelFormat format, ImageDataType data_type);
-			UnbufferedImage (const ByteT *data, const PixelCoordinateT &size, ImagePixelFormat format, ImageDataType data_type);
+			UnbufferedImage (PixelFormat format, DataType data_type);
+			UnbufferedImage (const ByteT *data, const PixelCoordinateT &size, PixelFormat format, DataType data_type);
 
-			void set_format (ImagePixelFormat format, ImageDataType data_type);
+			void set_format (PixelFormat format, DataType data_type);
 			void set_data (const ByteT *data, const PixelCoordinateT &size);
 
 			virtual const ByteT* pixel_data () const
@@ -75,7 +75,7 @@ namespace Dream {
 		public:
 			Image();
 
-			Image(const PixelCoordinateT &size, ImagePixelFormat format, ImageDataType data_type);
+			Image(const PixelCoordinateT &size, PixelFormat format, DataType data_type);
 
 			virtual ~Image ();
 
@@ -84,11 +84,11 @@ namespace Dream {
 			virtual ByteT * pixel_data();
 
 			/// Offset and Length are in pixels
-			void set_data (const PixelCoordinateT &size, ImagePixelFormat format, ImageDataType data_type, const ByteT * buffer);
+			void set_data (const PixelCoordinateT &size, PixelFormat format, DataType data_type, const ByteT * buffer);
 			void set_data (IndexT offset, IndexT length, const ByteT* buffer);
 
 			/// Sets up the internal buffers for handing data for the specified size, format and data_type.
-			void allocate (const Vec3u & size, ImagePixelFormat format, ImageDataType data_type);
+			void allocate (const Vec3u & size, PixelFormat format, DataType data_type);
 
 		protected:
 			static Ref<Image> load_from_data (const Ptr<IData> data);

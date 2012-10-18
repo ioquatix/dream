@@ -17,56 +17,35 @@ namespace Dream {
 	namespace Imaging {
 		using namespace Dream::Numerics;
 
-		/// Pixel data type.
-		/// These should be compatible with the equiv. OpenGL types
-		enum ImageDataType {
-			BYTE = 0x1400,
-			UBYTE = 0x1401,
-			SHORT = 0x1402,
-			USHORT = 0x1403,
-			INT = 0x1404,
-			UINT = 0x1405,
-			FLOAT = 0x1406,
-			DOUBLE = 0x140A,
-
-			// Packed data types:
-			UBYTE_3_3_2 = 0x8032,
-			USHORT_4_4_4_4 = 0x8033,
-			USHORT_5_5_5_1 = 0x8034,
-			UINT_8_8_8_8 = 0x8035,
-			UINT_10_10_10_2 = 0x8036,
-			UBYTE_2_3_3_REV = 0x8362,
-			USHORT_5_6_5 = 0x8363,
-			USHORT_5_6_5_REV = 0x8364,
-			USHORT_4_4_4_4_REV = 0x8365,
-			USHORT_1_5_5_5_REV = 0x8366,
-			UINT_8_8_8_8_REV = 0x8367,
-			UINT_2_10_10_10_REV = 0x8368
+		/// Pixel component data type. All data types are assumed to be unsigned.
+		enum class DataType : unsigned {
+			BYTE = 0x0101,
+			SHORT = 0x0202,
+			INTEGER = 0x0304,
+			FLOAT = 0x0404,
 		};
-
+		
 		/// Image pixel formats.
-		enum ImagePixelFormat {
-			// Generic pixel formats:
-			GENERIC_1_CHANNEL = 1,
-			GENERIC_2_CHANNEL = 2,
-			GENERIC_3_CHANNEL = 3,
-			GENERIC_4_CHANNEL = 4,
+		enum class PixelFormat : unsigned {
+			// Single channel formats:
+			R = 0x0101,
+			G = 0x0201,
+			B = 0x0301,
+			A = 0x0401,
 
-			// These types map to GL_ enumerations:
-			RED = 0x1903,
-			GREEN = 0x1904,
-			BLUE = 0x1905,
-			ALPHA = 0x1906,
-			RGB = 0x1907,
-			RGBA = 0x1908,
-			BGRA = 0x80E1,
-			LUMINANCE = 0x1909,
-			LUMINANCE_ALPHA = 0x190A
+			// Full colour formats:
+			RGB = 0x0503,
+			RGBA = 0x0604,
+			BGRA = 0x0704,
+
+			// Luminance formats:
+			L = 0x0801,
+			LA = 0x0902,
 		};
 
-		std::size_t data_type_byte_size(ImageDataType type);
-		unsigned data_type_channel_count(ImageDataType type);
-		unsigned pixel_format_channel_count(ImagePixelFormat type);
+		std::size_t data_type_byte_size(DataType type);
+		unsigned data_type_channel_count(DataType type);
+		unsigned pixel_format_channel_count(PixelFormat type);
 
 		// This type is guaranteed to be big enough to hold even RGBA16.
 		// This is useful when you want a generic representation of a pixel
@@ -76,26 +55,12 @@ namespace Dream {
 
 		class IPixelBuffer : implements IObject {
 		public:
-			enum Component {
-				RED = 0,
-				GREEN = 1,
-				BLUE = 2,
-				ALPHA = 3,
-				INTENSITY = 4,
-				LUMINANCE = 5
-			};
-
-			virtual ImagePixelFormat pixel_format () const abstract; // eg GL_RGBA
-			virtual ImageDataType pixel_data_type () const; // eg GL_UNSIGNED_BYTE
+			virtual PixelFormat pixel_format () const abstract;
+			virtual DataType pixel_data_type () const;
 
 			std::size_t pixel_data_length () const { return size().product() * bytes_per_pixel(); }
 
-			// Returns the equivalent pixel type, ie GL_UNSIGNED_INT_8_8_8_8 -> GL_UNSIGNED_INT
-			ImageDataType packed_type () const;
 			unsigned channel_count () const;
-
-			bool is_packed_format () const;
-			bool is_byte_order_reversed () const;
 
 			std::size_t bytes_per_pixel () const;
 
@@ -133,8 +98,6 @@ namespace Dream {
 			// This does not do _any_ sanity checking what-so-ever.
 			template <unsigned D, typename NumericT>
 			void read_pixel (const PixelCoordinateT &at, Vector<D, NumericT> &output) const {
-				DREAM_ASSERT(!is_packed_format() && "Packed pixel formats not supported for reading!");
-
 				std::size_t from = pixel_offset(at);
 				std::size_t bytes_per_component = bytes_per_pixel() / channel_count();
 
@@ -178,8 +141,6 @@ namespace Dream {
 			// void write_pixel (const PixelCoordinateT &at, const Vector<4, float> &input);
 			template <unsigned D, typename NumericT>
 			void write_pixel (const PixelCoordinateT &at, const Vector<D, NumericT> &input) {
-				DREAM_ASSERT(!is_packed_format() && "Packed pixel formats not supported for reading!");
-
 				std::size_t from = pixel_offset(at);
 				std::size_t bytes_per_component = bytes_per_pixel() / channel_count();
 
@@ -196,7 +157,7 @@ namespace Dream {
 			void copy_pixels_from(const IPixelBuffer& buf, const PixelCoordinateT &from, const PixelCoordinateT &to, const PixelCoordinateT &size, CopyFlags copy_flags = CopyNormal);
 
 			void copy_pixels_from(const IPixelBuffer& buf, const PixelCoordinateT &to, CopyFlags copy_flags = CopyNormal) {
-				copy_pixels_from(buf, Vec3u(0, 0, 0), to, buf.size(), copy_flags);
+				copy_pixels_from(buf, ZERO, to, buf.size(), copy_flags);
 			}
 		};
 	}

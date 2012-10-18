@@ -55,10 +55,10 @@ namespace Dream
 				GlyphMapT _glyph_cache;
 
 				FT_Face _face;
-				ImagePixelFormat _pixel_format; //ALPHA or INTENSITY
+				PixelFormat _pixel_format; //ALPHA or INTENSITY
 
 			public:
-				FontFace (FT_Face _face, ImagePixelFormat _fmt);
+				FontFace (FT_Face _face, PixelFormat _fmt);
 				virtual ~FontFace ();
 
 				bool has_kerning ();
@@ -71,7 +71,7 @@ namespace Dream
 				FT_UInt get_char_index (FT_UInt c);
 				FT_Face face ();
 
-				ImagePixelFormat pixel_format ();
+				PixelFormat pixel_format ();
 
 				FontGlyph * load_glyph_for_index (FT_UInt c);
 

@@ -11,6 +11,70 @@
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
+			GLenum texture_pixel_format(Imaging::PixelFormat pixel_format) {
+				using Imaging::PixelFormat;
+
+				switch (pixel_format) {
+#ifdef DREAM_OPENGLES2
+					case PixelFormat::R:
+					case PixelFormat::G:
+					case PixelFormat::B:
+						return GL_ALPHA;
+#else
+					case PixelFormat::R:
+						return GL_RED;
+					case PixelFormat::G:
+						return GL_GREEN;
+					case PixelFormat::B:
+						return GL_BLUE;
+#endif
+					case PixelFormat::L:
+#ifdef GL_LUMINANCE
+						return GL_LUMINANCE;
+#else
+						return GL_RED;
+#endif
+
+					case PixelFormat::LA:
+#ifdef GL_LUMINANCE_ALPHA
+						return GL_LUMINANCE_ALPHA;
+#else
+						return GL_RG;
+#endif
+
+					case PixelFormat::A:
+						return GL_ALPHA;
+					case PixelFormat::RGB:
+						return GL_RGB;
+					case PixelFormat::RGBA:
+						return GL_RGBA;
+
+					default:
+						return GL_INVALID_ENUM;
+				}
+			}
+
+			GLenum texture_data_type(Imaging::DataType data_type) {
+				using Imaging::DataType;
+
+				switch (data_type) {
+					case DataType::BYTE:
+						return GL_UNSIGNED_BYTE;
+
+					case DataType::SHORT:
+						return GL_UNSIGNED_SHORT;
+
+					case DataType::INTEGER:
+						return GL_UNSIGNED_INT;
+
+					case DataType::FLOAT:
+						return GL_FLOAT;
+
+					default:
+						return GL_INVALID_ENUM;
+				}
+			}
+
 			const GLenum INVALID_TARGET = 0;
 			const GLuint INVALID_TEXTURE = (GLuint)-1;
 
@@ -233,7 +297,10 @@ namespace Dream {
 			}
 
 			void TextureManager::Binding::update(Ptr<IPixelBuffer> pixel_buffer) {
-				_texture->load_pixel_data(pixel_buffer->size(), pixel_buffer->pixel_data(), pixel_buffer->pixel_format(), pixel_buffer->pixel_data_type());
+				GLenum pixel_format = texture_pixel_format(pixel_buffer->pixel_format());
+				GLenum data_type = texture_data_type(pixel_buffer->pixel_data_type());
+				
+				_texture->load_pixel_data(pixel_buffer->size(), pixel_buffer->pixel_data(), pixel_format, data_type);
 			}
 
 			void TextureManager::Binding::update(const TextureParameters & parameters, Ptr<IPixelBuffer> pixel_buffer) {

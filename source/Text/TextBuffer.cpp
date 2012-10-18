@@ -67,9 +67,9 @@ namespace Dream
 					Vec2u text_block_size = text_block.calculate_size();
 
 					if (_image)
-						_image->allocate(text_block_size << 1, LUMINANCE, UBYTE);
+						_image->allocate(text_block_size << 1, PixelFormat::L, DataType::BYTE);
 					else
-						_image = new Image(text_block_size << 1, LUMINANCE, UBYTE);
+						_image = new Image(text_block_size << 1, PixelFormat::L, DataType::BYTE);
 
 					_image->clear();
 

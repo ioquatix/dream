@@ -12,16 +12,16 @@
 
 namespace Dream {
 	namespace Imaging {
-		UnbufferedImage::UnbufferedImage(ImagePixelFormat format, ImageDataType data_type) : _data(NULL) {
+		UnbufferedImage::UnbufferedImage(PixelFormat format, DataType data_type) : _data(NULL) {
 			set_format(format, data_type);
 		}
 
-		UnbufferedImage::UnbufferedImage(const ByteT *data, const PixelCoordinateT &size, ImagePixelFormat format, ImageDataType data_type) : _data(NULL) { // black image of size
+		UnbufferedImage::UnbufferedImage(const ByteT *data, const PixelCoordinateT &size, PixelFormat format, DataType data_type) : _data(NULL) { // black image of size
 			set_format(format, data_type);
 			set_data(data, size);
 		}
 
-		void UnbufferedImage::set_format(ImagePixelFormat format, ImageDataType data_type) {
+		void UnbufferedImage::set_format(PixelFormat format, DataType data_type) {
 			_format = format;
 			_data_type = data_type;
 		}
@@ -46,7 +46,7 @@ namespace Dream {
 		{
 		}
 
-		Image::Image (const PixelCoordinateT &size, ImagePixelFormat format, ImageDataType data_type)
+		Image::Image (const PixelCoordinateT &size, PixelFormat format, DataType data_type)
 		{
 			allocate(size, format, data_type);
 		}
@@ -55,7 +55,7 @@ namespace Dream {
 		{
 		}
 
-		void Image::allocate (const Vec3u & size, ImagePixelFormat format, ImageDataType data_type)
+		void Image::allocate (const Vec3u & size, PixelFormat format, DataType data_type)
 		{
 			_size = size;
 			_format = format;
@@ -74,7 +74,7 @@ namespace Dream {
 			return _data.begin();
 		}
 
-		void Image::set_data (const PixelCoordinateT &size, ImagePixelFormat format, ImageDataType data_type, const ByteT * buffer)
+		void Image::set_data (const PixelCoordinateT &size, PixelFormat format, DataType data_type, const ByteT * buffer)
 		{
 			allocate(size, format, data_type);
 
