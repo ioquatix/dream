@@ -62,7 +62,7 @@ namespace Dream
 				_count = other._count;
 			}
 
-			void set_image (Ref<IMutablePixelBuffer> _img)
+			void set_image (Ptr<IMutablePixelBuffer> _img)
 			{
 				img = _img;
 			}
@@ -195,15 +195,15 @@ namespace Dream
 			return true;
 		}
 
-		void TextLine::composite_to_image (Ref<IMutablePixelBuffer> img, Vec2u pen, CharacterBoxes * boxes)
+		void TextLine::composite_to_image (Ptr<IMutablePixelBuffer> img, Vec2u pen, CharacterBoxes * boxes)
 		{
 			TextLineRenderer r(_block->_face, _block->kerning_enabled());
 
 			r.set_image(img);
 			r.set_origin(pen);
 
-			foreach (chr, _chars) {
-				AlignedBox2u box = r.process_character(*chr);
+			for (auto character : _chars) {
+				AlignedBox2u box = r.process_character(character);
 
 				if (boxes) boxes->push_back(box);
 			}
@@ -320,8 +320,8 @@ namespace Dream
 
 		void TextBlock::clear ()
 		{
-			foreach (line, _lines) {
-				delete *line;
+			for (auto line : _lines) {
+				delete line;
 			}
 
 			_lines.clear();
@@ -352,12 +352,12 @@ namespace Dream
 					continue;
 				}
 
-				if (!line->add_character(*current)) {
+				if (!line->add_character(codepoint)) {
 					line = new TextLine(this);
 					_lines.push_back(line);
 
-					DREAM_ASSERT(line->can_add_character(*current));
-					line->add_character(*current);
+					DREAM_ASSERT(line->can_add_character(codepoint));
+					line->add_character(codepoint);
 				}
 			}
 		}
@@ -379,7 +379,7 @@ namespace Dream
 			return str;
 		}
 
-		void TextBlock::render (Ref<IMutablePixelBuffer> pbuf, CharacterBoxes * boxes)
+		void TextBlock::render (Ptr<IMutablePixelBuffer> pbuf, CharacterBoxes * boxes)
 		{
 			Vec2u pen(ZERO);
 			Vec2u origin = pbuf->size().reduce() * text_origin();
