@@ -61,6 +61,9 @@ namespace Dream {
 		ImageHeightMap::ImageHeightMap (Ref<IPixelBuffer> image) : _image(image) {
 		}
 
+		ImageHeightMap::~ImageHeightMap () {
+		}
+
 		RealT ImageHeightMap::height (const Vec2 &at) {
 			//std::size_t byteOffset = sizeof(pixel_t) - _image->bytesPerPixel();
 			PixelT max = _image->max_pixel_size();
@@ -75,6 +78,9 @@ namespace Dream {
 		}
 
 		BilinearHeightMap::BilinearHeightMap (HeightMap *input) : _input(input) {
+		}
+
+		BilinearHeightMap::~BilinearHeightMap () {
 		}
 
 		RealT BilinearHeightMap::height (const Vec2 &_at) {
@@ -105,11 +111,18 @@ namespace Dream {
 		ScaleHeightMap::ScaleHeightMap (HeightMap *input, Vec2 scale) : _input(input), _scale(scale) {
 		}
 
+		ScaleHeightMap::~ScaleHeightMap () {
+
+		}
+
 		RealT ScaleHeightMap::height (const Vec2 &at) {
 			return _input->height(at * _scale);
 		}
 
 		OffsetHeightMap::OffsetHeightMap (HeightMap *input, Vec2 offset) : _input(input), _offset(offset) {
+		}
+
+		OffsetHeightMap::~OffsetHeightMap () {
 		}
 
 		RealT OffsetHeightMap::height (const Vec2 &at) {
