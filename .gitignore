@@ -1,5 +1,5 @@
 .DS_Store
-build/
+build-*/
 docs/
 ext/packages/*/*.tar.gz
 ext/packages/*/*/
