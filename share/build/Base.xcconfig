@@ -1,0 +1,52 @@
+//
+//  Base.xcconfig
+//  This file is part of the "Dream" project, and is released under the MIT license.
+//
+//  Created by Samuel Williams on 29/08/10.
+//  Copyright (c) 2010 Samuel Williams. All rights reserved.
+//
+
+BUILD_VARIANT[sdk=macosx*]=darwin_osx
+BUILD_VARIANT[sdk=iphoneos*]=darwin_ios
+BUILD_VARIANT[sdk=iphonesimulator*]=darwin_ios_simulator
+
+DREAM_PLATFORM=$(DREAM_ROOT)/build/$(BUILD_VARIANT)/
+
+VALID_ARCHS[sdk=macosx*]=i386 x86_64
+VALID_ARCHS[sdk=iphoneos*]=armv6 armv7
+VALID_ARCHS[sdk=iphonesimulator*]=i386
+
+ARCHS=$(VALID_ARCHS)
+
+DEBUG_CFLAGS[variant=debug]=-DDREAM_DEBUG
+DEBUG_CFLAGS[variant=release]=-DDREAM_RELEASE
+
+OTHER_CFLAGS[sdk=macosx*]=-DDREAM_VARIANT=$(BUILD_VARIANT) $(DEBUG_CFLAGS)
+OTHER_CFLAGS[sdk=iphoneos*]=-DDREAM_VARIANT=$(BUILD_VARIANT) $(DEBUG_CFLAGS)
+OTHER_CFLAGS[sdk=iphonesimulator*]=-DDREAM_VARIANT=$(BUILD_VARIANT) $(DEBUG_CFLAGS)
+
+OTHER_LDFLAGS[sdk=macosx*]=$(EXT_LIBS) -framework OpenGL -framework OpenAL -framework Foundation -framework Cocoa -framework AppKit -framework CoreVideo -framework CoreServices
+OTHER_LDFLAGS[sdk=iphone*]=$(EXT_LIBS) -framework QuartzCore -framework OpenGLES -framework OpenAL -framework CoreGraphics -framework Foundation -framework UIKit
+
+HEADER_SEARCH_PATHS="$(DREAM_PLATFORM)/include" "$(DREAM_PLATFORM)/include/freetype2" $(LOCAL_HEADER_SEARCH_PATHS)
+LIBRARY_SEARCH_PATHS="$(DREAM_PLATFORM)/lib" $(LOCAL_LIBRARY_SEARCH_PATHS)
+
+// Use C++0x11 features
+GCC_VERSION=com.apple.compilers.llvm.clang.1_0
+CLANG_CXX_LANGUAGE_STANDARD=c++11
+CLANG_CXX_LIBRARY=libc++
+
+// Avoid probems with C++ visibility
+GCC_INLINES_ARE_PRIVATE_EXTERN=NO
+GCC_SYMBOLS_PRIVATE_EXTERN=NO
+
+// Faster execution for floating-point heavy code.
+GCC_THUMB_SUPPORT=NO
+
+GCC_DYNAMIC_NO_PIC[sdk=iphoneos*]=NO
+GCC_DYNAMIC_NO_PIC[sdk=macosx]=YES
+
+// General optimisations, should give you about +10FPS depending on workload.
+GCC_OPTIMIZATION_LEVEL[variant=release]=3
+GCC_UNROLL_LOOPS[variant=release]=YES
+LLVM_LTO[variant=release]=YES
