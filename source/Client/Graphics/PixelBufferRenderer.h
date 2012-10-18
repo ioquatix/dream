@@ -24,6 +24,7 @@ namespace Dream {
 				// typedef std::map<Ref<IPixelBuffer>, Ref<Texture>> TextureCacheT;
 				typedef std::map<Ptr<IPixelBuffer>, Ref<Texture>> TextureCacheT;
 				TextureCacheT _texture_cache;
+				std::vector<Ref<Texture>> _available_textures;
 
 				Ref<Texture> fetch(Ptr<IPixelBuffer> pixel_buffer, bool invalidate = false);
 				TextureParameters _texture_parameters;

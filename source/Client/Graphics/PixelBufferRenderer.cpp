@@ -48,10 +48,21 @@ namespace Dream {
 					// Return the cached texture:
 					return cache->second;
 				} else {
-					logger()->log(LOG_DEBUG, LogBuffer() << "Fetch " << pixel_buffer << ": allocating new texture");
+					//logger()->log(LOG_DEBUG, LogBuffer() << "Fetch " << pixel_buffer << ": allocating new texture");
 
-					// Create a new texture with the pixel buffer:
-					Ref<Texture> texture = _texture_manager->allocate(_texture_parameters, pixel_buffer);
+					Ref<Texture> texture;
+
+					if (_available_textures.size() > 0) {
+						texture = _available_textures.back();
+						_available_textures.pop_back();
+						
+						auto & binding = _texture_manager->bind(texture);
+						binding.update(_texture_parameters, pixel_buffer);
+					} else {
+						// Create a new texture with the pixel buffer:
+						texture = _texture_manager->allocate(_texture_parameters, pixel_buffer);
+					}
+
 					_texture_cache[pixel_buffer] = texture;
 
 					return texture;
@@ -108,7 +119,12 @@ namespace Dream {
 			}
 
 			void PixelBufferRenderer::invalidate(Ptr<IPixelBuffer> pixel_buffer) {
-				_texture_cache.erase(pixel_buffer);
+				auto iterator = _texture_cache.find(pixel_buffer);
+
+				if (iterator != _texture_cache.end()) {
+					_available_textures.push_back(iterator->second);
+					_texture_cache.erase(iterator);
+				}
 			}
 		}
 	}
