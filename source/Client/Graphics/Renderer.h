@@ -61,9 +61,9 @@ namespace Dream {
 				Ref<Renderer::Viewport> viewport;
 
 				// These are essentially helper methods to load shader programs:
-				GLuint compile_shader_of_type (GLenum type, StringT name);
-				Ref<Program> load_program(StringT name);
-				Ref<Texture> load_texture(const TextureParameters & parameters, StringT name);
+				GLuint compile_shader_of_type (GLenum type, const Path & path);
+				Ref<Program> load_program(const Path & path);
+				Ref<Texture> load_texture(const TextureParameters & parameters, const Path & path);
 			};
 		}
 	}

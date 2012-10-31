@@ -43,7 +43,7 @@ namespace Dream {
 			RendererState::~RendererState() {
 			}
 
-			GLuint RendererState::compile_shader_of_type (GLenum type, StringT name) {
+			GLuint RendererState::compile_shader_of_type (GLenum type, const Path & name) {
 				Ref<IData> data = resource_loader->data_for_resource(name);
 
 				if (data) {
@@ -54,12 +54,12 @@ namespace Dream {
 				}
 			}
 
-			Ref<Program> RendererState::load_program(StringT name) {
-				GLuint vertex_shader = compile_shader_of_type(GL_VERTEX_SHADER, name + ".vertex-shader");
+			Ref<Program> RendererState::load_program(const Path & name) {
+				GLuint vertex_shader = compile_shader_of_type(GL_VERTEX_SHADER, name.with_extension("vertex-shader"));
 #ifndef DREAM_OPENGLES2
-				GLuint geometry_shader = compile_shader_of_type(GL_GEOMETRY_SHADER, name + ".geometry-shader");
+				GLuint geometry_shader = compile_shader_of_type(GL_GEOMETRY_SHADER, name.with_extension("geometry-shader"));
 #endif
-				GLuint fragment_shader = compile_shader_of_type(GL_FRAGMENT_SHADER, name + ".fragment-shader");
+				GLuint fragment_shader = compile_shader_of_type(GL_FRAGMENT_SHADER, name.with_extension("fragment-shader"));
 
 				Ref<Program> program = new Program;
 
@@ -83,7 +83,7 @@ namespace Dream {
 				return program;
 			}
 
-			Ref<Texture> RendererState::load_texture(const TextureParameters & parameters, StringT name) {
+			Ref<Texture> RendererState::load_texture(const TextureParameters & parameters, const Path & name) {
 				Ref<IPixelBuffer> image = resource_loader->load<IPixelBuffer>(name);
 
 				if (image) {

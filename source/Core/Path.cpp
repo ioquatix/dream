@@ -85,27 +85,27 @@ namespace Dream
 			return Path(result);
 		}
 
-		Path::NameInfo Path::split_file_name () const {
-			NameInfo name_info;
-			const StringT & name = _components.back();
+		Path::NameComponents Path::last_name_components () const {
+			NameComponents name;
+			const StringT & last_component = _components.back();
 
-			if (!name.empty()) {
-				std::size_t pos = name.find('.');
+			if (!last_component.empty()) {
+				std::size_t pos = last_component.find('.');
 
 				if (pos != StringT::npos) {
-					name_info.basename = StringT(&name[0], pos);
+					name.basename = StringT(&last_component[0], pos);
 
 					pos++; // Skip over the dot
-					name_info.extension = StringT(&name[pos], name.size() - pos);
+					name.extension = StringT(&last_component[pos], last_component.size() - pos);
 				} else {
-					name_info.basename = name;
+					name.basename = last_component;
 				}
 			}
 
-			return name_info;
+			return name;
 		}
 
-		Path Path::dirname (std::size_t n) const {
+		Path Path::parent_path (std::size_t n) const {
 			ComponentsT result;
 
 			if (n < _components.size()) {
@@ -117,6 +117,15 @@ namespace Dream
 			return Path(result);
 		}
 
+		Path Path::with_extension(const StringT & extension) const {
+			Path copy = this->parent_path();
+
+			NameComponents name = this->last_name_components();
+			name.extension = extension;
+
+			return copy + name;
+		}
+
 		Path Path::operator+(const Path & other) const {
 			ComponentsT result(_components);
 			result.insert(result.end(), other._components.begin(), other._components.end());
@@ -124,9 +133,9 @@ namespace Dream
 			return Path(result);
 		}
 
-		Path Path::operator+(const NameInfo & other) const {
+		Path Path::operator+(const NameComponents & other) const {
 			ComponentsT result(_components);
-			result.push_back(other.basename + other.extension);
+			result.push_back(other.basename + '.' + other.extension);
 
 			return Path(result);
 		}
@@ -181,10 +190,10 @@ namespace Dream
 
 			Path p4("files/image.jpeg"), p5("bob"), p6("/dole");
 
-			Path::NameInfo name_info = p4.split_file_name();
+			Path::NameComponents name_components = p4.last_name_components();
 
-			check(name_info.basename == "image") << p4 << " has correct basename; got " << name_info.basename;
-			check(name_info.extension == "jpeg") << p4 << " has correct extension; got " << name_info.extension;
+			check(name_components.basename == "image") << p4 << " has correct basename; got " << name_components.basename;
+			check(name_components.extension == "jpeg") << p4 << " has correct extension; got " << name_components.extension;
 			check((p5 + p4) == "bob/files/image.jpeg") << p5 << " + " << p4 << " gave correct result";
 
 			Path p7 = p1 + "../john.png";

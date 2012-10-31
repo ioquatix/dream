@@ -101,9 +101,9 @@ namespace Dream {
 		}
 
 		Path Loader::path_for_resource (Path p) const {
-			Path::NameInfo name_info = p.split_file_name();
+			Path::NameComponents name_components = p.last_name_components();
 
-			return path_for_resource(name_info.basename, name_info.extension, p.dirname());
+			return path_for_resource(name_components.basename, name_components.extension, p.parent_path());
 		}
 
 		void Loader::resources_for_type(StringT ext, Path subdir, std::vector<Path> &paths) const {
@@ -113,7 +113,7 @@ namespace Dream {
 				Path::DirectoryListingT entries = full_path.list(Path::STORAGE);
 
 				for (std::size_t i = 0; i < entries.size(); i++) {
-					if (Path(entries[i]).split_file_name().extension == ext)
+					if (Path(entries[i]).last_name_components().extension == ext)
 						paths.push_back(entries[i]);
 				}
 			}
@@ -135,7 +135,7 @@ namespace Dream {
 				for (std::size_t i = 0; i < entries.size(); i++) {
 					//std::cerr << "Looking at: " << entries[i] << std::endl;
 
-					if (Path(entries[i]).split_file_name().basename == name) {
+					if (Path(entries[i]).last_name_components().basename == name) {
 						//std::cerr << "\t_found: " << entries[i] << std::endl;
 						resource_paths.push_back(entries[i]);
 					}
@@ -174,7 +174,7 @@ namespace Dream {
 				return Ref<Object>();
 			}
 
-			StringT ext = p.split_file_name().extension;
+			StringT ext = p.last_name_components().extension;
 			Ptr<ILoadable> loader = loader_for_extension(ext);
 
 			if (!loader) {

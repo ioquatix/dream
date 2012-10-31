@@ -26,7 +26,7 @@ namespace Dream
 
 			typedef std::vector<StringT> DirectoryListingT;
 			typedef std::vector<StringT> ComponentsT;
-			struct NameInfo {
+			struct NameComponents {
 				StringT basename;
 				StringT extension;
 			};
@@ -63,13 +63,13 @@ namespace Dream
 			// Remove "." and ".."
 			Path simplify() const;
 
-			NameInfo split_file_name() const;
+			NameComponents last_name_components() const;
 
 			/// Pop n components off the path
-			Path dirname (std::size_t n = 1) const;
+			Path parent_path (std::size_t n = 1) const;
 
 			Path operator+(const Path & other) const;
-			Path operator+(const NameInfo & other) const;
+			Path operator+(const NameComponents & other) const;
 
 			bool operator<(const Path & other) const;
 			bool operator==(const Path & other) const;
@@ -80,13 +80,13 @@ namespace Dream
 				// Include directories:
 				DIRECTORY = 1 << 0,
 
-				    // Regular readable files:
-				    STORAGE = 1 << 2,
+				// Regular readable files:
+				STORAGE = 1 << 2,
 
-				    // Include entries that start with dots:
-				    HIDDEN = 1 << 8,
+				// Include entries that start with dots:
+				HIDDEN = 1 << 8,
 
-				    ANY = 0xFFFFFFFF,
+				ANY = 0xFFFFFFFF,
 			};
 
 			// ** Local File Operations **
@@ -107,6 +107,8 @@ namespace Dream
 			static Path current_working_directory ();
 
 			DirectoryListingT list (FileType filter) const;
+
+			Path with_extension(const StringT & extension) const;
 		};
 
 		std::ostream & operator<<(std::ostream & output, const Path & path);
