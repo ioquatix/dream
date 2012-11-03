@@ -83,8 +83,8 @@ namespace Dream {
 			class Texture;
 
 			struct TextureBinding {
-				Ref<Texture> texture;
 				std::size_t unit;
+				Ref<Texture> texture;
 			};
 
 			typedef std::vector<TextureBinding> TextureBindingsT;
