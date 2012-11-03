@@ -43,8 +43,8 @@ namespace Dream {
 			MatrixT to_origin() const {
 				MatrixT transform = IDENTITY;
 
-				transform = transform * MatrixT::translating_matrix(-_translation);
 				transform = transform * _rotation.conjugated_quaternion().rotating_matrix();
+				transform = transform * MatrixT::translating_matrix(-_translation);
 
 				return transform;
 			}
@@ -52,8 +52,8 @@ namespace Dream {
 			MatrixT from_origin() const {
 				MatrixT transform = IDENTITY;
 
-				transform = transform * _rotation.rotating_matrix();
 				transform = transform * MatrixT::translating_matrix(_translation);
+				transform = transform * _rotation.rotating_matrix();
 
 				//return transform.translated_matrix(_translation);
 				return transform;
