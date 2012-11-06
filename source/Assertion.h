@@ -13,12 +13,12 @@
 #include <string>
 #include <exception>
 
-//#ifdef DREAM_DEBUG
-/// Similar to assert, however will throw an AssertionError on failure.
+#ifdef DREAM_RELEASE
+	#define DREAM_ASSERT(e)
+#else
+	/// Similar to assert, however will throw an AssertionError on failure.
 	#define DREAM_ASSERT(e) ::Dream::AssertionError::assert_handler(e, # e, __FILE__, __LINE__)
-//#else
-//	#define DREAM_ASSERT(e)
-//#endif
+#endif
 
 namespace Dream
 {
