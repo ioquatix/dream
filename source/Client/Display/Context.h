@@ -19,6 +19,7 @@
 #include "../../Events/Input.h"
 
 #include <vector>
+#include <stdexcept>
 
 namespace Dream {
 	namespace Client {
@@ -38,6 +39,8 @@ namespace Dream {
 			};
 
 			class IContext;
+
+			typedef std::runtime_error ContextInitializationError;
 
 			class IContextDelegate : implements IObject {
 			public:

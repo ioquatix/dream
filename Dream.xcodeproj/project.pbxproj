@@ -170,6 +170,10 @@
 		7E3EA859118086DB00F6C40B /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		7E3F2C010EF366230051D321 /* Console.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Console.cpp; sourceTree = "<group>"; };
 		7E3F2D460EF3C32F0051D321 /* Network.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Network.cpp; sourceTree = "<group>"; };
+		7E4045041648F0BA00DE2A9D /* Application.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
+		7E4045051648F0BA00DE2A9D /* Application.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Application.cpp; sourceTree = "<group>"; };
+		7E4045061648F0BA00DE2A9D /* Context.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Context.h; sourceTree = "<group>"; };
+		7E4045071648F0BA00DE2A9D /* Context.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Context.cpp; sourceTree = "<group>"; };
 		7E43EDA812C83C2B0000BD51 /* System.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = System.h; sourceTree = "<group>"; };
 		7E43EDA912C83C2B0000BD51 /* System.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = System.cpp; sourceTree = "<group>"; };
 		7E4D76E50F9858D800ECC0E5 /* Framework.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Framework.cpp; sourceTree = "<group>"; };
@@ -406,6 +410,17 @@
 			);
 			name = Source;
 			path = source;
+			sourceTree = "<group>";
+		};
+		7E4045021648F09600DE2A9D /* X11 */ = {
+			isa = PBXGroup;
+			children = (
+				7E4045041648F0BA00DE2A9D /* Application.h */,
+				7E4045051648F0BA00DE2A9D /* Application.cpp */,
+				7E4045061648F0BA00DE2A9D /* Context.h */,
+				7E4045071648F0BA00DE2A9D /* Context.cpp */,
+			);
+			path = X11;
 			sourceTree = "<group>";
 		};
 		7E6481760EEDE15D00C24ABC /* Events */ = {
@@ -647,6 +662,7 @@
 				7EBC15A40FA31F3500D2CA1D /* Scene.cpp */,
 				7EF8EBFE1420401B00FE753A /* Cocoa */,
 				7E9EA743142719CA00F8BC49 /* UIKit */,
+				7E4045021648F09600DE2A9D /* X11 */,
 				7EA0A13214CD2D5900B43C61 /* Android */,
 			);
 			path = Display;
