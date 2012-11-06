@@ -115,6 +115,9 @@ set(DREAM_PLATFORM_LINUX_FILES
 	./Core/Timer-Unix.cpp
 	
 	./Resources/Loader-Generic.cpp
+
+	./Client/Display/X11/Application.cpp
+	./Client/Display/X11/Context.cpp
 )
 
 set(DREAM_PLATFORM_DARWIN_IOS_FILES
