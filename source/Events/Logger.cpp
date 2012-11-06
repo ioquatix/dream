@@ -156,7 +156,10 @@ namespace Dream
 			if (i != _thread_names.end()) {
 				return i->second;
 			} else {
-				return (std::stringstream() << std::this_thread::get_id()).str();
+				std::stringstream buffer;
+				buffer << std::this_thread::get_id();
+
+				return buffer.str();
 			}
 		}
 
