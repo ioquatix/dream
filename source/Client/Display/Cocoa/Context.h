@@ -19,7 +19,7 @@
 #import <CoreVideo/CoreVideo.h>
 #import <CoreVideo/CVDisplayLink.h>
 
-#import <condition_variable>
+#include <condition_variable>
 
 @class DWindowDelegate;
 @class DOpenGLView;

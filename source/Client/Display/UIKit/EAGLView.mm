@@ -9,8 +9,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
 
-#import "EAGLView.h"
-#import "../../../Events/Logger.h"
+#include "EAGLView.h"
+#include "../../../Events/Logger.h"
 
 @interface EAGLView (Private)
 - (void)createFramebuffer;

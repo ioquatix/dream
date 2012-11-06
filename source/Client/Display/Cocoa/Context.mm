@@ -12,7 +12,7 @@
 #import "DWindowDelegate.h"
 #import "DOpenGLView.h"
 
-#import <mutex>
+#include <mutex>
 
 @interface NSAppleMenuController : NSObject
 - (void)controlMenu:(NSMenu *)aMenu;

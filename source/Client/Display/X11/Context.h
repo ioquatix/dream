@@ -21,7 +21,7 @@ extern "C" {
 	#include <GL/glxext.h>
 }
 
-#import <condition_variable>
+#include <condition_variable>
 
 namespace Dream
 {
