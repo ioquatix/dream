@@ -4,7 +4,8 @@ cmake_minimum_required(VERSION 2.8.9)
 
 project(Dream)
 
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/config/modules")
+# Standalone build modules:
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/share/cmake/modules")
 
 #
 # Dream Client Build Options
@@ -23,7 +24,7 @@ find_package(PNG REQUIRED)
 if(${DREAM_VARIANT} MATCHES "debug")
   add_definitions(-DDREAM_DEBUG)
 endif()
-  
+
 add_subdirectory(source)
 add_subdirectory(share)
 
