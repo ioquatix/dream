@@ -11,7 +11,7 @@ include_directories(
 )
 
 # The standard libraries to link with:
-set(CORELIBS freetype jpeg png ogg vorbis ${OPENGL_LIBRARY} ${OPENAL_LIBRARY})
+set(CORE_LIBRARIES ${OPENGL_LIBRARY} ${OPENAL_LIBRARY} ${OGG_LIBRARY} ${VORBIS_LIBRARY} ${FREETYPE_LIBRARY} ${JPEG_LIBRARY} ${PNG_LIBRARY})
 
 set(DREAM_SOURCE_FILES
 	./Assertion.cpp
@@ -168,7 +168,7 @@ add_library(Dream STATIC
 	${DREAM_SOURCE_FILES}
 )
 
-target_link_libraries(Dream ${CORELIBS})
+target_link_libraries(Dream ${CORE_LIBRARIES})
 
 install(
 	TARGETS

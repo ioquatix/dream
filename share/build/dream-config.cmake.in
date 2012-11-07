@@ -1,0 +1,13 @@
+
+include(FindPackageHandleStandardArgs)
+
+find_path(DREAM_INCLUDE_DIR "Dream/Dream.h")
+find_library(DREAM_LIBRARY NAMES "Dream")
+
+set(DREAM_LIBRARIES ${DREAM_LIBRARY})
+
+if(DREAM_INCLUDE_DIR AND DREAM_LIBRARY)
+	set(DREAM_FOUND TRUE)
+endif()
+
+find_package_handle_standard_args(Dream DEFAULT_MSG DREAM_LIBRARIES DREAM_INCLUDE_DIR)
