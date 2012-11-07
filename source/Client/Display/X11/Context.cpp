@@ -64,7 +64,7 @@ namespace Dream
 					window_attributes.background_pixel = 0;
 					window_attributes.border_pixel = 0;
 					window_attributes.colormap = XCreateColormap(_display, root_window, visual_info->visual, AllocNone);
-					window_attributes.event_mask = StructureNotifyMask | ExposureMask | KeyPressMask;
+					window_attributes.event_mask = ExposureMask | KeyPressMask | KeyReleaseMask | PointerMotionMask | ButtonPressMask | ButtonReleaseMask  | StructureNotifyMask;
 					unsigned long mask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
 
 					_window = XCreateWindow(_display, root_window, 0, 0, size[WIDTH], size[HEIGHT], 0, visual_info->depth, InputOutput, visual_info->visual, mask, &window_attributes);
@@ -142,6 +142,45 @@ namespace Dream
 					}
 
 					_renderer_thread->start();
+
+					// Show the window.
+					XMapWindow(_display, _window);
+
+					XFlush(_display);
+
+					display_event_loop();
+				}
+
+				void WindowContext::display_event_loop() {
+					_done = false;
+
+					while (!_done) {
+						while (XPending(_display) > 0) {
+							XEvent event;
+							XNextEvent(_display, &event);
+
+							switch (event.type) {
+								// Keyboard Events:
+								case ButtonPress: {
+									Key key(DefaultKeyboard, event.xbutton.button);
+									ButtonInput button_input(key, Pressed);
+
+									process(button_input);
+								}
+
+								case ButtonRelease: {
+									Key key(DefaultKeyboard, event.xbutton.button);
+									ButtonInput button_input(key, Released);
+
+									process(button_input);
+								}
+							};
+						}
+					}
+				}
+
+				void WindowContext::cancel_display_event_loop() {
+					_done = true;
 				}
 
 				void WindowContext::stop() {

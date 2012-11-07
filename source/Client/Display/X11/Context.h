@@ -50,6 +50,10 @@ namespace Dream
 					void setup_graphics_context(Ptr<Dictionary> config, Vec2u size);
 					void flush_buffers();
 
+					bool _done;
+					void display_event_loop();
+					void cancel_display_event_loop();
+
 				public:
 					WindowContext(Ptr<Dictionary> config);
 					virtual ~WindowContext();
