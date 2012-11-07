@@ -25,6 +25,28 @@ if(${DREAM_VARIANT} MATCHES "debug")
   add_definitions(-DDREAM_DEBUG)
 endif()
 
+# Required headers:
+include_directories(
+	${OPENGL_INCLUDE_DIR}
+	${OPENAL_INCLUDE_DIR}
+	${OGG_INCLUDE_DIR}
+	${VOBIS_INCLUDE_DIR}
+	${FREETYPE_INCLUDE_DIRS}
+	${JPEG_INCLUDE_DIR}
+	${PNG_INCLUDE_DIR}
+)
+
+# The standard libraries to link with:
+set(CORE_LIBRARIES
+	${OPENGL_LIBRARY}
+	${OPENAL_LIBRARY}
+	${OGG_LIBRARY}
+	${VORBIS_LIBRARY}
+	${FREETYPE_LIBRARY}
+	${JPEG_LIBRARY}
+	${PNG_LIBRARY}
+)
+
 add_subdirectory(source)
 add_subdirectory(share)
 
