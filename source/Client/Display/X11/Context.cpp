@@ -25,13 +25,15 @@ namespace Dream
 
 				void WindowContext::setup_graphics_context(Ptr<Dictionary> config, Vec2u size)
 				{
+					DREAM_ASSERT(_display != nullptr);
+
 					int frame_buffer_attributes[] = {
-						GLX_RGBA,
-						GLX_RED_SIZE, 1,
-						GLX_GREEN_SIZE, 1,
-						GLX_BLUE_SIZE, 1,
-						GLX_DOUBLEBUFFER,
-						GLX_DEPTH_SIZE, 1,
+						GLX_RENDER_TYPE, GLX_RGBA_BIT,
+						GLX_RED_SIZE, 8,
+						GLX_GREEN_SIZE, 8,
+						GLX_BLUE_SIZE, 8,
+						GLX_DEPTH_SIZE, 24,
+						GLX_DOUBLEBUFFER, True,
 						None
 					};
 
@@ -39,15 +41,24 @@ namespace Dream
 					XWindow root_window = RootWindow(_display, screen_number);
 
 					int count = 0;
-					GLXFBConfig * frame_buffer_config = glXChooseFBConfig(_display, screen_number, NULL, &count);
+					GLXFBConfig * frame_buffer_configs = glXChooseFBConfig(_display, screen_number, frame_buffer_attributes, &count);
 
-					if (!frame_buffer_config)
+					if (!frame_buffer_configs || count == 0)
 						throw ContextInitializationError("No valid frame buffer configurations found!");
 
-					XVisualInfo * visual_info = glXChooseVisual(_display, screen_number, frame_buffer_attributes);
+					XVisualInfo * visual_info = glXGetVisualFromFBConfig(_display, frame_buffer_configs[0]);
 
 					if (!visual_info)
 						throw ContextInitializationError("Couldn't get a visual buffer.");
+
+					int context_attributes[] = {
+						GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
+						GLX_CONTEXT_MINOR_VERSION_ARB, 2,
+						GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
+						None
+					};
+
+					_glx_context = glXCreateContextAttribsARB(_display, frame_buffer_configs[0], NULL, true, context_attributes);
 
 					XSetWindowAttributes window_attributes;
 					window_attributes.background_pixel = 0;
@@ -58,15 +69,7 @@ namespace Dream
 
 					_window = XCreateWindow(_display, root_window, 0, 0, size[WIDTH], size[HEIGHT], 0, visual_info->depth, InputOutput, visual_info->visual, mask, &window_attributes);
 
-					int context_attributes[] = {
-						GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
-						GLX_CONTEXT_MINOR_VERSION_ARB, 2,
-						GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
-						None
-					};
-
-					_glx_context = glXCreateContextAttribsARB(_display, frame_buffer_config[0], nullptr, true, context_attributes);
-					_glx_window = glXCreateWindow(_display, *frame_buffer_config, _window, nullptr);
+					_glx_window = glXCreateWindow(_display, frame_buffer_configs[0], _window, NULL);
 
 					glXMakeCurrent(_display, _glx_window, _glx_context);
 
@@ -95,7 +98,7 @@ namespace Dream
 					config->get("Context.XDisplay", _display);
 
 					if (!_display) {
-						XOpenDisplay(nullptr);
+						_display = XOpenDisplay(nullptr);
 					}
 
 					setup_graphics_context(config, initial_size);
@@ -137,6 +140,8 @@ namespace Dream
 						_renderer_timer = new Events::TimerSource(std::bind(&WindowContext::render_frame, this), 1.0/60.0, true, true);
 						_renderer_thread->loop()->schedule_timer(_renderer_timer);
 					}
+
+					_renderer_thread->start();
 				}
 
 				void WindowContext::stop() {
