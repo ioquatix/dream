@@ -148,18 +148,18 @@ set(DREAM_PLATFORM_DARWIN_OSX_FILES
 
 message(STATUS "Configuring based on variant: " ${DREAM_PLATFORM})
 
-if(${DREAM_PLATFORM} MATCHES "darwin_ios")
-	message(STATUS "Building 'darwin_ios' display context.")
+if(${DREAM_PLATFORM} MATCHES "darwin-ios")
+	message(STATUS "Building 'darwin-ios' display context.")
 	set(DREAM_SOURCE_FILES ${DREAM_SOURCE_FILES} ${DREAM_PLATFORM_DARWIN_IOS_FILES})
 endif()
 
-if(${DREAM_PLATFORM} MATCHES "darwin_osx")
-	message(STATUS "Building 'darwin_osx' display context.")
+if(${DREAM_PLATFORM} MATCHES "darwin-osx")
+	message(STATUS "Building 'darwin-osx' display context.")
 	set(DREAM_SOURCE_FILES ${DREAM_SOURCE_FILES} ${DREAM_PLATFORM_DARWIN_OSX_FILES})
 endif()
 
 if(${DREAM_PLATFORM} MATCHES "linux")
-	message(STATUS "Building 'darwin_osx' display context.")
+	message(STATUS "Building 'linux' display context.")
 	set(DREAM_SOURCE_FILES ${DREAM_SOURCE_FILES} ${DREAM_PLATFORM_LINUX_FILES})
 endif()
 
