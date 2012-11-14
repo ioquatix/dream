@@ -15,7 +15,7 @@ namespace Dream {
 				using Imaging::PixelFormat;
 
 				switch (pixel_format) {
-#ifdef DREAM_OPENGLES2
+#if defined(DREAM_OPENGLES2)
 					case PixelFormat::R:
 					case PixelFormat::G:
 					case PixelFormat::B:
@@ -29,14 +29,14 @@ namespace Dream {
 						return GL_BLUE;
 #endif
 					case PixelFormat::L:
-#ifdef GL_LUMINANCE
+#if defined(GL_LUMINANCE)
 						return GL_LUMINANCE;
 #else
 						return GL_RED;
 #endif
 
 					case PixelFormat::LA:
-#ifdef GL_LUMINANCE_ALPHA
+#if defined(GL_LUMINANCE_ALPHA)
 						return GL_LUMINANCE_ALPHA;
 #else
 						return GL_RG;
@@ -48,6 +48,13 @@ namespace Dream {
 						return GL_RGB;
 					case PixelFormat::RGBA:
 						return GL_RGBA;
+
+#if defined(GL_BGRA)
+					case PixelFormat::BGRA:
+						return GL_BGRA;
+#elif defined(GL_BGRA_EXT)
+						return GL_BGRA_EXT;
+#endif
 
 					default:
 						return GL_INVALID_ENUM;
