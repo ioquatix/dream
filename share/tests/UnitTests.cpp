@@ -6,7 +6,7 @@
 //  Copyright (c) 2006 Samuel Williams. All rights reserved.
 //
 
-#include <Dream/Core/CodeTest.h>
+#include "CodeTest.h"
 #include <iostream>
 
 int main (int argc, char** args)

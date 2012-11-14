@@ -37,7 +37,6 @@
 		7EA4FA82162ECB5600530A89 /* Mixer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E92B4410F369D470028676D /* Mixer.cpp */; };
 		7EA4FA83162ECB5600530A89 /* Sound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E92B4500F36DB6E0028676D /* Sound.cpp */; };
 		7EA4FA84162ECB5600530A89 /* Stream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E696FF4107C0AE4007D2740 /* Stream.cpp */; };
-		7EA4FA85162ECB5600530A89 /* OggResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E696FFB107C140F007D2740 /* OggResource.cpp */; };
 		7EA4FA86162ECDA600530A89 /* Font.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7AE8B148B68E1008A9BD7 /* Font.cpp */; };
 		7EA4FA87162ECDA600530A89 /* FontFace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7AE8D148B68E1008A9BD7 /* FontFace.cpp */; };
 		7EA4FA88162ECDA600530A89 /* TextBlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7AE8F148B68E1008A9BD7 /* TextBlock.cpp */; };
@@ -50,6 +49,7 @@
 		7EA4FA8F162ED03400530A89 /* Loader-Generic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EC4524F0EE7E39B000D47C2 /* Loader-Generic.cpp */; };
 		7EB133D312302AA300372052 /* Path-Unix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB132C1123002D100372052 /* Path-Unix.cpp */; };
 		7EB5FFE112CD9FEC00B704E3 /* Fader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB5FFDD12CD9FEC00B704E3 /* Fader.cpp */; };
+		7EB69B3916533E7000F930BA /* OggResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E696FFB107C140F007D2740 /* OggResource.cpp */; };
 		7EBC1E330FA515C000D2CA1D /* Vector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E82EBFF0EB9D09D0017567C /* Vector.cpp */; };
 		7EBC1E340FA515C000D2CA1D /* Value.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EA912000EB414FB0080E66D /* Value.cpp */; };
 		7EBC1E350FA515C000D2CA1D /* URI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E37B21D0EB4721F0037B8D0 /* URI.cpp */; };
@@ -972,7 +972,6 @@
 				7EA4FA82162ECB5600530A89 /* Mixer.cpp in Sources */,
 				7EA4FA83162ECB5600530A89 /* Sound.cpp in Sources */,
 				7EA4FA84162ECB5600530A89 /* Stream.cpp in Sources */,
-				7EA4FA85162ECB5600530A89 /* OggResource.cpp in Sources */,
 				7EA4FA86162ECDA600530A89 /* Font.cpp in Sources */,
 				7EA4FA87162ECDA600530A89 /* FontFace.cpp in Sources */,
 				7EA4FA88162ECDA600530A89 /* TextBlock.cpp in Sources */,
@@ -983,6 +982,7 @@
 				7EA4FA8D162ED02E00530A89 /* Loadable.cpp in Sources */,
 				7EA4FA8E162ED03400530A89 /* Loader.cpp in Sources */,
 				7EA4FA8F162ED03400530A89 /* Loader-Generic.cpp in Sources */,
+				7EB69B3916533E7000F930BA /* OggResource.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

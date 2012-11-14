@@ -6,9 +6,9 @@
 //  Copyright (c) 2010 Samuel Williams. All rights reserved.
 //
 
-BUILD_VARIANT[sdk=macosx*]=darwin_osx
-BUILD_VARIANT[sdk=iphoneos*]=darwin_ios
-BUILD_VARIANT[sdk=iphonesimulator*]=darwin_ios_simulator
+BUILD_VARIANT[sdk=macosx*]=darwin-osx
+BUILD_VARIANT[sdk=iphoneos*]=darwin-ios
+BUILD_VARIANT[sdk=iphonesimulator*]=darwin-ios-simulator
 
 DREAM_PLATFORM=$(DREAM_ROOT)/build/$(BUILD_VARIANT)/
 

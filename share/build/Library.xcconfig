@@ -6,6 +6,6 @@
 //  Copyright (c) 2011 Samuel Williams. All rights reserved.
 //
 
-DREAM_ROOT=$(SRCROOT)/../../../
+DREAM_ROOT=$(SRCROOT)/support
 
 #include "Base.xcconfig"
