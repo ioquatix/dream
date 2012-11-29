@@ -39,7 +39,7 @@ namespace Dream
 		{
 		}
 
-		IndexT ObjectSet::size () const
+		std::size_t ObjectSet::size () const
 		{
 			return _objects.size() - _free_indices.size();
 		}
@@ -169,7 +169,7 @@ namespace Dream
 
 		void ObjectSet::Iterator::move_forward ()
 		{
-			IndexT top = _object_context->_objects.size () - 1;
+			std::size_t top = _object_context->_objects.size () - 1;
 
 			do {
 				if (_index == top) {

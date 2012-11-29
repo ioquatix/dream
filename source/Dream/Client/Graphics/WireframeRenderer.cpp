@@ -40,21 +40,21 @@ namespace Dream {
 				}
 			}
 
-			void WireframeRenderer::render(const Geometry::LineSegment<2> & segment) {
+			void WireframeRenderer::render(const LineSegment<2> & segment) {
 				std::vector<Vec3> line;
 				line.push_back(segment.start() << 0.0);
 				line.push_back(segment.end() << 0.0);
 				render(line);
 			}
 
-			void WireframeRenderer::render(const Geometry::LineSegment<3> & segment) {
+			void WireframeRenderer::render(const LineSegment<3> & segment) {
 				std::vector<Vec3> line;
 				line.push_back(segment.start());
 				line.push_back(segment.end());
 				render(line);
 			}
 
-			void WireframeRenderer::render(const Geometry::AlignedBox<2> & box, RealT z, Layout layout) {
+			void WireframeRenderer::render(const AlignedBox<2> & box, RealT z, Layout layout) {
 				std::vector<Vec3> edges;
 				edges.push_back(box.corner(Vec2b(false, false)) << z);
 				edges.push_back(box.corner(Vec2b(true, false)) << z);
@@ -64,7 +64,7 @@ namespace Dream {
 				render(edges, layout);
 			}
 
-			void WireframeRenderer::render(const Geometry::AlignedBox<3> & box) {
+			void WireframeRenderer::render(const AlignedBox<3> & box) {
 				AlignedBox<2> profile(box.min().reduce(), box.max().reduce());
 
 				render(profile, box.min()[Z]);

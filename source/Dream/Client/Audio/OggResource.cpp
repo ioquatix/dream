@@ -128,7 +128,7 @@ namespace Dream
 			bool OggStream::load_next_buffer (Ptr<Source> source, ALuint buffer)
 			{
 				ByteT chunk[ChunkSize];
-				IndexT size = 0;
+				std::size_t size = 0;
 				int section, result = 0;
 
 				while (size < ChunkSize) {

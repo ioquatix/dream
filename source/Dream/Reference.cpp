@@ -11,8 +11,6 @@
 
 #include <set>
 
-// For testing
-#include "Core/CodeTest.h"
 
 namespace Dream {
 	SharedObject::SharedObject () : _count(0) {

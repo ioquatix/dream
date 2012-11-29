@@ -11,13 +11,14 @@
 #define _DREAM_RENDERER_POINTCAMERA_H
 
 #include "Camera.h"
-#include "../Geometry/Line.h"
+
+#include <Euclid/Geometry/Line.h>
 
 namespace Dream
 {
 	namespace Renderer
 	{
-		using namespace Dream::Geometry;
+		using Euclid::Geometry::Line3;
 
 		class PointCamera : public Object, implements ICamera {
 		protected:
@@ -34,7 +35,7 @@ namespace Dream
 			void set_origin (const Vec3 &origin) { _origin = origin; }
 			void set_up (const Vec3 &up) { _up = up; }
 
-			void set (const Line<3> &l);
+			void set (const Line3 &l);
 
 			virtual Mat44 view_matrix () const;
 		};

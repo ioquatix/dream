@@ -10,20 +10,16 @@
 #ifndef _DREAM_EVENTS_FADER_H
 #define _DREAM_EVENTS_FADER_H
 
-#include "../Numerics/Numerics.h"
-#include "../Numerics/Interpolate.h"
 #include "Source.h"
 
 namespace Dream
 {
 	namespace Events
 	{
-		using namespace Dream::Numerics;
-
 		class IKnob {
 		public:
 			virtual ~IKnob ();
-			virtual void update (RealT time) abstract;
+			virtual void update (TimeT time) abstract;
 		};
 
 		/**

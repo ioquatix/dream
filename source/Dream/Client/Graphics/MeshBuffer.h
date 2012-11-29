@@ -10,11 +10,13 @@
 #define _DREAM_CLIENT_GRAPHICS_MESHBUFFER_H
 
 #include "VertexArray.h"
-#include "../../Geometry/Mesh.h"
+#include <Euclid/Geometry/Mesh.h>
 
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
+			using Euclid::Geometry::Mesh;
+
 			template <typename MeshT>
 			class MeshBuffer : public Object {
 			protected:

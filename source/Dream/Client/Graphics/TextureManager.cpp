@@ -8,9 +8,14 @@
 
 #include "TextureManager.h"
 
+#include <Euclid/Numerics/Numerics.h>
+
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
+
+			using namespace Euclid::Numerics::Constants;
+
 			GLenum texture_pixel_format(Imaging::PixelFormat pixel_format) {
 				using Imaging::PixelFormat;
 

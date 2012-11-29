@@ -110,7 +110,7 @@ namespace Dream {
 
 			template <class T, typename U>
 			void VertexArray::Attributes::associate(GLuint index, U T::* member, bool normalized) {
-				_binding.set_attribute(index, U::ELEMENTS, GLTypeTraits<typename U::ElementT>::TYPE, normalized, sizeof(T), member_offset(member));
+				_binding.set_attribute(index, std::tuple_size<typename U::array>::value, GLTypeTraits<typename std::tuple_element<0, typename U::array>::type>::TYPE, normalized, sizeof(T), member_offset(member));
 
 				// We assume that the attributes are enabled by default:
 				_binding.enable(index);

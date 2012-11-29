@@ -170,7 +170,7 @@ namespace Dream
 				return typeid(ValueT);
 			}
 
-			virtual IndexT size () const
+			virtual std::size_t size () const
 			{
 				return sizeof(ValueT);
 			}
@@ -331,7 +331,7 @@ namespace Dream
 
 			const ITypedValue * typed_value () const;
 
-			static Value read_from_buffer (const Buffer & buf, IndexT & offset);
+			static Value read_from_buffer (const Buffer & buf, std::size_t & offset);
 			void append_to_buffer (ResizableBuffer & buf) const;
 		};
 

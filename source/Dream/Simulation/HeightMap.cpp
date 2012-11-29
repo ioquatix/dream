@@ -91,15 +91,17 @@ namespace Dream {
 			//return _input->height(at);
 			RealT s[4];
 
-			Vec2 t (at), j;
-			t.floor();
+			Vec2 t = at.truncate(), j;
+
+			Vec2 jitter[] = {
+				Vec2{0, 0}, Vec2{0, 1}, Vec2{1, 0}, Vec2{1, 1}
+			};
 
 			for (std::size_t i = 0; i < 4; ++i) {
-				s[i] = _input->height((t + j));
-				j.increment(Vec2(2, 2));
+				s[i] = _input->height((t + jitter[i]));
 			}
 
-			Vec2 f (at.copy().frac());
+			Vec2 f = at.fraction();
 			//std::cout << "Frac: " << f << std::endl;
 			RealT a = linear_interpolate(f[X], s[0], s[1]);
 			RealT b = linear_interpolate(f[X], s[2], s[3]);

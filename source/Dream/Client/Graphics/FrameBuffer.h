@@ -12,12 +12,18 @@
 #include "Graphics.h"
 #include "TextureManager.h"
 
+#include <Euclid/Numerics/Vector.h>
+
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
+			using Euclid::Numerics::WIDTH;
+			using Euclid::Numerics::HEIGHT;
+			using Euclid::Numerics::Vec2u;
+
 			/** A renderbuffer object is newly introduced for offscreen rendering. It allows to render a scene directly to a renderbuffer object, instead of rendering to a texture object. Renderbuffer is simply a data storage object containing a single image of a renderable internal format. It is used to store OpenGL logical buffers that do not have corresponding texture format, such as stencil or depth buffer.
 			 */
-			class RenderBuffer : private NonCopyable {
+			class RenderBuffer : private NonCopyable {				
 			protected:
 				friend class FrameBuffer;
 

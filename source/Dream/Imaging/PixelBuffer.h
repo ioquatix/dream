@@ -11,11 +11,12 @@
 #define _DREAM_IMAGING_PIXELBUFFER_H
 
 #include "../Framework.h"
-#include "../Numerics/Vector.h"
+
+#include <Euclid/Numerics/Vector.h>
 
 namespace Dream {
 	namespace Imaging {
-		using namespace Dream::Numerics;
+		using namespace Euclid::Numerics;
 
 		/// Pixel component data type. All data types are assumed to be unsigned.
 		enum class DataType : unsigned {

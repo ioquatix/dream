@@ -347,8 +347,8 @@ namespace Dream {
 
 		bool ClientSocket::connect (const AddressesT & addresses)
 		{
-			foreach (address, addresses) {
-				if (connect(*address))
+			for (auto address : addresses) {
+				if (connect(address))
 					return true;
 			}
 
@@ -365,7 +365,7 @@ namespace Dream {
 #ifdef ENABLE_TESTING
 
 		bool global_message_sent;
-		IndexT global_message_length_sent, global_message_length_received;
+		std::size_t global_message_length_sent, global_message_length_received;
 		bool global_client_connected;
 		bool global_message_received;
 

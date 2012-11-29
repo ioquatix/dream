@@ -63,7 +63,7 @@ namespace Dream
 			ObjectSet ();
 			virtual ~ObjectSet ();
 
-			IndexT size () const;
+			std::size_t size () const;
 
 			// O(1)
 			ObjectID fetch (IdentT identity);

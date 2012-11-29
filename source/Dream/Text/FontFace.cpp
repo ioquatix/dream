@@ -35,7 +35,7 @@ namespace Dream
 					UnbufferedImage char_img(PixelFormat::A, DataType::BYTE);
 
 					// Retrieve the bitmap
-					char_img.set_data(bm->bitmap.buffer, vec<unsigned>(bm->bitmap.width, bm->bitmap.rows, 1));
+					char_img.set_data(bm->bitmap.buffer, Vec3u(bm->bitmap.width, bm->bitmap.rows, 1));
 
 					// Composite the character bitmap into the destination image
 					img->copy_pixels_from(char_img, origin << 0, CopyFlip);
@@ -89,8 +89,8 @@ namespace Dream
 			{
 				int count = 0;
 
-				foreach(glyph, _glyph_cache) {
-					delete glyph->second;
+				for (auto glyph : _glyph_cache) {
+					delete glyph.second;
 					count += 1;
 				}
 

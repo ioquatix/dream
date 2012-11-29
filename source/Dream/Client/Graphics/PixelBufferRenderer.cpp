@@ -11,6 +11,8 @@
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
+			using namespace Euclid::Numerics::Constants;
+
 			PixelBufferRenderer::PixelBufferRenderer(Ptr<TextureManager> texture_manager) : _texture_manager(texture_manager) {
 				DREAM_ASSERT(texture_manager);
 

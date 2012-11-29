@@ -12,7 +12,8 @@
 
 #include "Font.h"
 #include "FontFace.h"
-#include "../Geometry/AlignedBox.h"
+
+#include <Euclid/Geometry/AlignedBox.h>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -22,7 +23,7 @@ namespace Dream
 {
 	namespace Text
 	{
-		using Geometry::AlignedBox2u;
+		using Euclid::Geometry::AlignedBox2u;
 
 		enum TextDirection {
 			LR = 1,
@@ -95,7 +96,7 @@ namespace Dream
 		class TextLine {
 			TextBlock * _block;
 
-			unsigned _width;
+			std::size_t _width;
 			std::string _chars;
 
 			TextLineRenderer * _renderer;
@@ -105,7 +106,7 @@ namespace Dream
 			virtual ~TextLine ();
 
 			const std::string & text () const { return _chars; }
-			unsigned width () const { return _width; }
+			std::size_t width () const { return _width; }
 
 			bool can_add_character (CodePointT c) const;
 

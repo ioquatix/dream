@@ -12,18 +12,20 @@
 
 #include "Thread.h"
 #include "../Core/Timer.h"
-#include "../Numerics/Vector.h"
-#include "../Geometry/AlignedBox.h"
 
 #include <map>
+#include <Euclid/Numerics/Vector.h>
+#include <Euclid/Geometry/AlignedBox.h>
 
 namespace Dream
 {
 	namespace Events
 	{
 		using namespace Dream::Core;
-		using namespace Dream::Numerics;
-		using namespace Dream::Geometry;
+
+		using Euclid::Numerics::Vec3;
+		using Euclid::Numerics::Vec2u;
+		using Euclid::Geometry::AlignedBox2;
 
 		typedef unsigned DeviceT;
 		typedef unsigned ButtonT;
@@ -198,10 +200,10 @@ namespace Dream
 			Vec3 _position, _motion;
 
 			// The bounds of the view/screen which handled the motion input.
-			AlignedBox<2> _bounds;
+			AlignedBox2 _bounds;
 
 		public:
-			MotionInput(const Key &key, const StateT &state, const Vec3 &position, const Vec3 &motion, const AlignedBox<2> & bounds);
+			MotionInput(const Key &key, const StateT &state, const Vec3 &position, const Vec3 &motion, const AlignedBox2 & bounds);
 			MotionInput(const MotionInput & other);
 
 			virtual ~MotionInput ();
@@ -212,10 +214,10 @@ namespace Dream
 			const Vec3 previous_position () const { return _position - _motion; }
 			const Vec3 motion () const { return _motion; }
 
-			const AlignedBox<2> & bounds() const { return _bounds; }
+			const AlignedBox2 & bounds() const { return _bounds; }
 
 			// Updated bounds must be within the coordinate system provided by the current input event.
-			MotionInput input_by_refining_bounds(const AlignedBox<2> & updated_bounds);
+			MotionInput input_by_refining_bounds(const AlignedBox2 & updated_bounds);
 
 			const Key & key () const { return _key; }
 			const StateT & state () const { return _state; }

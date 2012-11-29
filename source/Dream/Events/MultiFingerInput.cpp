@@ -49,8 +49,8 @@ namespace Dream
 			FingerTracking ft;
 			ft.button = allocate_button();
 			ft.position = position;
-			ft.motion.zero();
-
+			ft.motion = 0;
+			
 			if (DEBUG) logger()->log(LOG_DEBUG, LogBuffer() << "Begin motion for finger: " << finger);
 
 			return (_fingers[finger] = ft);

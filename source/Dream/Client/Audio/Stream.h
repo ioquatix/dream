@@ -80,10 +80,10 @@ namespace Dream
 
 				/// Play the stream and linearly interpolate the current gain to the given.
 				/// When the fade is complete, the loop is stopped.
-				void fade_out (Ptr<Events::Loop> loop, TimeT duration = 0.1, RealT gain = 0.0);
+				void fade_out (Ptr<Events::Loop> loop, TimeT duration = 0.1, GainT gain = 0.0);
 
 				/// Play the stream and linearly interpolate the current gain to the given gain.
-				void fade_in (Ptr<Events::Loop> loop, TimeT duration = 0.1, RealT gain = 1.0);
+				void fade_in (Ptr<Events::Loop> loop, TimeT duration = 0.1, GainT gain = 1.0);
 
 				TimeT seconds_per_buffer () const;
 

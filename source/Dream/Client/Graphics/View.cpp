@@ -10,6 +10,8 @@
 #include "WireframeRenderer.h"
 #include "../Display/Scene.h"
 
+#include <Euclid/Numerics/Vector.IO.h>
+
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
@@ -135,10 +137,10 @@ namespace Dream {
 			void View::init () {
 				_bounds = AlignedBox2(ZERO);
 				_rotation = 0;
-				_offset.zero();
-				_orientation.zero();
-				_scale.zero();
-				_size.zero();
+				_offset = 0;
+				_orientation = 0;
+				_scale = 0;
+				_size = 0;
 			}
 
 			void View::dump_structure (std::ostream & outp, unsigned indent) {
@@ -147,11 +149,11 @@ namespace Dream {
 				string space(indent, '\t');
 
 				outp << space << "View" << endl;
-				outp << space << "Enabled = " << _enabled << " Bounds = " << _bounds << " Rotation = " << _rotation << " Subviews = " << _subviews.size() << endl;
+				//outp << space << "Enabled = " << _enabled << " Bounds = " << _bounds << " Rotation = " << _rotation << " Subviews = " << _subviews.size() << endl;
 				outp << space << "Size = " << _size << " Scale = " << _scale << " Offset = " << _offset << " Orientation = " << _orientation << endl;
 
-				foreach (sv, _subviews) {
-					(*sv)->dump_structure(outp, indent + 1);
+				for (auto subview : _subviews) {
+					subview->dump_structure(outp, indent + 1);
 				}
 			}
 
@@ -210,12 +212,12 @@ namespace Dream {
 				if (first && intersects_with(point))
 					views.push_back(this);
 
-				foreach(sv, _subviews) {
-					if ((*sv)->intersects_with(point)) {
-						views.push_back((*sv).get());
+				for (auto subview : _subviews) {
+					if (subview->intersects_with(point)) {
+						views.push_back(subview.get());
 
 						// Descend into child view
-						(*sv)->views_to_point(point, views, false);
+						subview->views_to_point(point, views, false);
 
 						break;
 					}
@@ -248,8 +250,8 @@ namespace Dream {
 
 				render_view(scene, time);
 
-				foreach(sv, _subviews) {
-					(*sv)->render_frame_for_time(scene, time);
+				for (auto subview : _subviews) {
+					subview->render_frame_for_time(scene, time);
 				}
 
 				if (_rotation != 0) {
@@ -258,21 +260,21 @@ namespace Dream {
 			}
 
 			void View::did_become_current (ISceneManager * manager, IScene * scene) {
-				foreach(sv, _subviews) {
-					(*sv)->did_become_current(manager, scene);
+				for (auto subview : _subviews) {
+					subview->did_become_current(manager, scene);
 				}
 			}
 
 			void View::will_revoke_current (ISceneManager * manager, IScene * scene) {
-				foreach(sv, _subviews) {
-					(*sv)->will_revoke_current(manager, scene);
+				for (auto subview : _subviews) {
+					subview->will_revoke_current(manager, scene);
 				}
 			}
 
 			bool View::resize(const ResizeInput &input) {
 				if (is_principal_view()) {
 					// We need to resize the entire box.
-					_bounds.min().zero();
+					_bounds.min() = 0;
 
 					LogBuffer buffer;
 					buffer << "Resizing principal from " << _bounds.origin() << "; " << _bounds.size();
@@ -292,8 +294,8 @@ namespace Dream {
 				bool result = false;
 
 				// Propagate resize input down
-				foreach(sv, _subviews) {
-					result = result || (*sv)->resize(input);
+				for (auto subview : _subviews) {
+					result = result || subview->resize(input);
 				}
 
 				return result;
@@ -304,8 +306,8 @@ namespace Dream {
 
 				bool handled = false;
 
-				foreach(sv, _subviews) {
-					handled = handled || (*sv)->button(input);
+				for (auto subview : _subviews) {
+					handled = handled || subview->button(input);
 				}
 
 				return handled;
@@ -330,16 +332,16 @@ namespace Dream {
 			void View::enable () {
 				_enabled = true;
 
-				foreach(sv, _subviews) {
-					(*sv)->enable();
+				for (auto subview : _subviews) {
+					subview->enable();
 				}
 			}
 
 			void View::disable () {
 				_enabled = false;
 
-				foreach(sv, _subviews) {
-					(*sv)->disable();
+				for (auto subview : _subviews) {
+					subview->disable();
 				}
 			}
 

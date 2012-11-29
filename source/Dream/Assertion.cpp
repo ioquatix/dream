@@ -14,9 +14,6 @@
 
 #include "Events/Logger.h"
 
-// For testing
-#include "Core/CodeTest.h"
-
 static void assertion_failure() {
 	return;
 }

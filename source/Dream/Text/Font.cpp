@@ -129,7 +129,7 @@ namespace Dream
 			return img;
 		}
 
-		IndexT Font::single_line_offset ()
+		std::size_t Font::single_line_offset ()
 		{
 			return _face->line_offset();
 		}

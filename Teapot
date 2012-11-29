@@ -1,0 +1,14 @@
+
+package "unit-test"
+package "euclid"
+
+package "ogg"
+package "vorbis"
+
+package "png"
+package "jpeg"
+
+package "freetype"
+
+package "dream", :local => "./"
+

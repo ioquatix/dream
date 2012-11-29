@@ -9,8 +9,6 @@
 
 #include "Timer.h"
 
-#include "../Numerics/Number.h"
-
 #include <ctime>
 #include <sys/time.h>
 
@@ -111,9 +109,7 @@ namespace Dream {
 // MARK: -
 // MARK: class TimerStatistics
 
-		using namespace Dream::Numerics;
-
-		TimerStatistics::TimerStatistics () : _duration(0), _min(std::numeric_limits<RealT>::max()), _max(0), _count(0)
+		TimerStatistics::TimerStatistics () : _duration(0), _min(std::numeric_limits<TimeT>::max()), _max(0), _count(0)
 		{
 		}
 
@@ -136,7 +132,7 @@ namespace Dream {
 			_perform_reset = true;
 
 			// Reset minimum and maximum durations:
-			_min = std::numeric_limits<RealT>::max();
+			_min = std::numeric_limits<TimeT>::max();
 			_max = 0.0;
 		}
 

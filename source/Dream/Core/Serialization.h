@@ -62,7 +62,7 @@ namespace Dream
 		public:
 			typedef typename TypeIdentifierValueTraits<Index>::TypeT TypeT;
 
-			static TypeT read_from_buffer (const Buffer & buf, IndexT & offset)
+			static TypeT read_from_buffer (const Buffer & buf, std::size_t & offset)
 			{
 				TypeT value;
 				offset += buf.read(offset, value);
@@ -75,7 +75,7 @@ namespace Dream
 				buf.append(sizeof(TypeT), (const ByteT *)&converted_value);
 			}
 
-			//static void write_to_buffer (const ResizableBuffer & buf, IndexT & offset, const TypeT & value)
+			//static void write_to_buffer (const ResizableBuffer & buf, std::size_t & offset, const TypeT & value)
 			//{
 			//	TypeT value = order_read(value, host_endian(), library_endian());
 			//	buf.write(offset, value);
@@ -92,7 +92,7 @@ namespace Dream
 		public:
 			typedef StringT TypeT;
 
-			static TypeT read_from_buffer (const Buffer & buf, IndexT & offset)
+			static TypeT read_from_buffer (const Buffer & buf, std::size_t & offset)
 			{
 				uint32_t length;
 

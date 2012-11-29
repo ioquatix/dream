@@ -10,13 +10,14 @@
 #ifndef _DREAM_RENDERER_H
 #define _DREAM_RENDERER_H
 
-#include "../Numerics/Numerics.h"
+#include "../Framework.h"
+#include <Euclid/Numerics/Numerics.h>
 
 namespace Dream
 {
 	namespace Renderer
 	{
-		using namespace Dream::Numerics;
+		using namespace Euclid::Numerics::Constants;
 	}
 }
 

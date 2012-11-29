@@ -84,9 +84,9 @@ namespace Dream {
 		Server::~Server ()
 		{
 			if (_event_loop) {
-				foreach(server_socket, _server_sockets)
+				for (auto server_socket : _server_sockets)
 				{
-					_event_loop->stop_monitoring_file_descriptor(*server_socket);
+					_event_loop->stop_monitoring_file_descriptor(server_socket);
 				}
 			}
 		}
@@ -95,8 +95,8 @@ namespace Dream {
 		{
 			AddressesT server_addresses = Address::interface_addresses_for_service(service, sock_type);
 
-			foreach(addr, server_addresses) {
-				Ref<ServerSocket> server_socket(new ServerSocket(*addr));
+			for (auto address : server_addresses) {
+				Ref<ServerSocket> server_socket(new ServerSocket(address));
 				server_socket->connection_callback = std::bind(&Server::connection_callback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
 
 				_server_sockets.push_back(server_socket);

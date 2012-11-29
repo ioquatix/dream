@@ -16,12 +16,19 @@
 #include "../../Core/Timer.h"
 #include "../../Core/Algorithm.h"
 
+#include <Euclid/Numerics/Vector.h>
+
 namespace Dream
 {
 	namespace Client
 	{
 		namespace Graphics
 		{
+			using namespace Euclid::Numerics::Constants;
+			using Euclid::Numerics::Vec2;
+			using Euclid::Numerics::Vec3;
+			using Euclid::Numerics::Vec4;
+
 			/// Setup an array of indices for rendering quadrilaterals as triangles
 			template <typename IndexT>
 			std::size_t setup_triangle_indicies(std::size_t count, std::vector<IndexT> & indices) {
@@ -112,15 +119,15 @@ namespace Dream
 					}
 
 					void set_position(Vec3 center, Vec3 up, Vec3 forward, RealT rotation) {
-						using Dream::Numerics::Mat44;
+						using namespace Euclid::Numerics;
 
 						position = center;
 
 						if (rotation != 0.0) {
-							up = Mat44::rotating_matrix(rotation, forward) * up;
+							up = Mat44(rotate(radians(rotation), forward)) * up;
 						}
 
-						Mat44 transform = Mat44::rotating_matrix(R90, forward);
+						Mat44 transform = rotate(R90, forward);
 						for (std::size_t i = 0; i < 4; i += 1) {
 							_vertices[i].position = position;
 							_vertices[i].offset = up;
@@ -147,7 +154,7 @@ namespace Dream
 					}
 
 					RealT color_modulation(RealT factor = 1.0) const {
-						return Math::sin(color_modulator * R360 * factor);
+						return radians(color_modulator * R360 * factor).sin();
 					}
 
 					inline bool update_time (RealT dt, const Vec3 & force = ZERO) {

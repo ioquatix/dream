@@ -10,19 +10,20 @@
 #define _DREAM_CLIENT_GRAPHICS_VIEW_H
 
 #include "Graphics.h"
-#include "../../Numerics/Vector.h"
-#include "../../Numerics/Matrix.h"
-#include "../../Geometry/Line.h"
-#include "../../Geometry/AlignedBox.h"
 #include "../../Text/Font.h"
 #include "../../Text/TextBuffer.h"
 
 #include "Renderer.h"
 #include "PixelBufferRenderer.h"
 
+#include <Euclid/Geometry/AlignedBox.h>
+
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
+			using namespace Euclid::Numerics::Constants;
+			using Euclid::Geometry::AlignedBox;
+
 			/** Implements the basic structure of user interface layout and display.
 			*/
 			class View : public Object, implements INode {

@@ -15,6 +15,10 @@
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
+
+			using Euclid::Numerics::Vec2;
+			using Euclid::Numerics::Vec2b;
+
 			/// Efficiently render pixel buffers as textured quads. Rendering pixel buffers is a common operation especially for user interfaces, text, certain graphical effects, etc. The PixelBufferRenderer provides an efficient implementation of this operation that avoids uploading pixel buffers to textures if they haven't changed.
 			class PixelBufferRenderer : public Object {
 			protected:

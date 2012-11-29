@@ -61,7 +61,7 @@ namespace Dream {
 		class Address {
 		private:
 			void copy_from_address (const Address &);
-			void set_address_data (const sockaddr *, IndexT size);
+			void set_address_data (const sockaddr *, std::size_t size);
 			void copy_from_address_info (const addrinfo *);
 			int name_info_for_address(std::string *, std::string *, int) const;
 
@@ -86,7 +86,7 @@ namespace Dream {
 			Address ();
 
 			/// Construct from another address and a <tt>sockaddr *</tt>. This is used when receiving a connection, for example, from the bind system call.
-			Address (const Address & copy, sockaddr * sa, IndexT size);
+			Address (const Address & copy, sockaddr * sa, std::size_t size);
 			/// Construct from an addrinfo struct. This is used when using the new style APIs such as getaddrinfo.
 			Address (const addrinfo *);
 
@@ -99,7 +99,7 @@ namespace Dream {
 			bool is_valid () const;
 
 			/// The size of the actual address data.
-			IndexT address_data_size () const;
+			std::size_t address_data_size () const;
 			/// A pointer to the <tt>sockaddr *</tt>
 			sockaddr * address_data ();
 			/// A const pointer to the <tt>sockaddr *</tt>

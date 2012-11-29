@@ -11,9 +11,14 @@
 
 #include "Graphics.h"
 
+#include <Euclid/Numerics/Vector.h>
+
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
+			using Euclid::Numerics::Vector;
+			using Euclid::Numerics::Matrix;
+			
 			/*
 			void test() {
 			    Ref<Program> program = ...;

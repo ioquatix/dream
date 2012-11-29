@@ -14,19 +14,20 @@
 
 #include "../../Core/Dictionary.h"
 #include "../../Core/Strings.h"
-#include "../../Numerics/Vector.h"
 #include "../../Events/Loop.h"
 #include "../../Events/Input.h"
 
 #include <vector>
 #include <stdexcept>
+#include <Euclid/Numerics/Vector.h>
 
 namespace Dream {
 	namespace Client {
 		namespace Display {
 			using namespace Dream::Core;
-			using namespace Dream::Numerics;
 			using namespace Dream::Events;
+
+			using Euclid::Numerics::Vec2u;
 
 // MARK: -
 

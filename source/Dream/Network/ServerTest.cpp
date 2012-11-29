@@ -11,8 +11,9 @@
 #include "Message.h"
 #include "Server.h"
 
-#include "../Numerics/Average.h"
 #include <functional>
+
+#include <Euclid/Numerics/Average.h>
 
 #ifdef ENABLE_TESTING
 

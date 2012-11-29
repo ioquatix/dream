@@ -144,7 +144,7 @@ namespace Dream {
 		}
 
 		bool MessageReceiver::receive_from_socket (ClientSocket * socket) {
-			IndexT sz = 1;
+			std::size_t sz = 1;
 
 			// Read as much data as possible:
 			while (sz > 0 && !_message->data_complete()) {

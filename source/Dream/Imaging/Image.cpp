@@ -83,7 +83,7 @@ namespace Dream {
 			}
 		}
 
-		void Image::set_data (IndexT offset, IndexT length, const ByteT* buffer)
+		void Image::set_data (std::size_t offset, std::size_t length, const ByteT* buffer)
 		{
 			_data.assign(buffer, buffer + length, offset);
 		}

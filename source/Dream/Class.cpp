@@ -12,9 +12,6 @@
 #include "Core/Strings.h"
 #include "Core/Timer.h"
 
-// For testing
-#include "Core/CodeTest.h"
-
 #include <map>
 
 namespace Dream

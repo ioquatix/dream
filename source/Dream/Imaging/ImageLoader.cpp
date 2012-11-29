@@ -70,14 +70,14 @@ namespace Dream {
 			//DREAM_ASSERT(num_bytes < cinfo->src.bytes_in_buffer && "jpeglib tried to skip further than the end of file!!");
 
 			if (num_bytes > 0 && num_bytes < (long)cinfo->src->bytes_in_buffer) {
-				cinfo->src->next_input_byte += (IndexT) num_bytes;
-				cinfo->src->bytes_in_buffer -= (IndexT) num_bytes;
+				cinfo->src->next_input_byte += (std::size_t) num_bytes;
+				cinfo->src->bytes_in_buffer -= (std::size_t) num_bytes;
 			} else {
 				jpeg_fill_input_buffer(cinfo);
 			}
 		}
 
-		static void jpeg_memory_src (j_decompress_ptr cinfo, const JOCTET * buffer, IndexT bufsize) {
+		static void jpeg_memory_src (j_decompress_ptr cinfo, const JOCTET * buffer, std::size_t bufsize) {
 			if (cinfo->src == NULL) {
 				cinfo->src = (jpeg_source_mgr *) (*cinfo->mem->alloc_small)((j_common_ptr)cinfo, JPOOL_PERMANENT, sizeof(jpeg_source_mgr));
 			}

@@ -12,17 +12,18 @@
 
 // This is a private header, and should not be used as public API.
 
-#include "../Numerics/Vector.h"
 #include "Input.h"
 
 #include <map>
 #include <vector>
 
+#include <Euclid/Numerics/Vector.h>
+
 namespace Dream
 {
 	namespace Events
 	{
-		using Dream::Numerics::Vec3;
+		using Euclid::Numerics::Vec3;
 
 		typedef intptr_t FingerID;
 

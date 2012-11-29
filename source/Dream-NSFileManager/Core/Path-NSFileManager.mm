@@ -9,7 +9,6 @@
 
 #include "Path.h"
 #include "System.h"
-#include "../Events/Logger.h"
 
 #include <Foundation/NSError.h>
 #include <Foundation/NSFileManager.h>
@@ -28,8 +27,6 @@ namespace Dream
 {
 	namespace Core
 	{
-		using namespace Events::Logging;
-		
 		Path::FileType Path::file_status() const {
 			NSAutoreleasePool * pool = [NSAutoreleasePool new];			
 
@@ -87,7 +84,7 @@ namespace Dream
 			NSString * entry;
 			while (entry = [directory nextObject]) {
 				StringT filename([entry UTF8String]);
-				
+
 				if (filter) {
 					Path fullPath = *this + filename;
 					
@@ -111,14 +108,14 @@ namespace Dream
 			StringT path = to_local_path();
 			
 			if (::remove(path.c_str()) != 0)
-				logger()->system_error(__func__);
+				SystemError::check(__func__);
 		}
 		
 		void Path::move (const Path & new_name) const {
 			StringT from = to_local_path(), to = new_name.to_local_path();
 			
 			if (rename(from.c_str(), to.c_str()) != 0)
-				logger()->system_error(__func__);
+				SystemError::check(__func__);
 		}
 		
 		Path Path::temporary_file_path() {

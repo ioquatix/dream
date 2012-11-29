@@ -19,7 +19,7 @@
 namespace Dream {
 	namespace Network {
 		/// The message header contains the type and length of the message that has been sent or received.
-		struct PACKED MessageHeader {
+		struct alignas(32) MessageHeader {
 			/// The length in bytes.
 			Core::Ordered<uint32_t> length;
 			/// The packet type.
@@ -66,9 +66,9 @@ namespace Dream {
 
 			/// Read structured data out of the message buffer.
 			template <typename type_t>
-			bool read (type_t & s, IndexT offset = 0) const {
+			bool read (type_t & s, std::size_t offset = 0) const {
 				offset += header_length();
-				IndexT sz = sizeof(type_t);
+				std::size_t sz = sizeof(type_t);
 
 				if (offset + sz > _packet.size()) {
 					return false;
@@ -81,8 +81,8 @@ namespace Dream {
 			/// Write structured data into the message buffer.
 			template <typename type_t>
 			void insert (type_t & s) {
-				IndexT offset = _packet.size();
-				IndexT sz = sizeof(type_t);
+				std::size_t offset = _packet.size();
+				std::size_t sz = sizeof(type_t);
 
 				// Make room at the end
 				_packet.resize(offset + sz);

@@ -86,19 +86,19 @@ namespace Dream
 				alSourcef(_source_id, AL_PITCH, pitch);
 			}
 
-			void Source::set_gain (float gain)
+			void Source::set_gain (GainT gain)
 			{
 				alSourcef(_source_id, AL_GAIN, gain);
 			}
 
 			void Source::set_position (const Vec3 & position)
 			{
-				alSourcefv(_source_id, AL_POSITION, position.value());
+				alSourcefv(_source_id, AL_POSITION, position.data());
 			}
 
 			void Source::set_velocity (const Vec3 & velocity)
 			{
-				alSourcefv(_source_id, AL_VELOCITY, velocity.value());
+				alSourcefv(_source_id, AL_VELOCITY, velocity.data());
 			}
 
 			float Source::pitch ()
@@ -110,7 +110,7 @@ namespace Dream
 				return value;
 			}
 
-			float Source::gain ()
+			GainT Source::gain ()
 			{
 				float value;
 
@@ -123,7 +123,7 @@ namespace Dream
 			{
 				Vec3 value;
 
-				alGetSourcefv(_source_id, AL_POSITION, (ALfloat *)value.value());
+				alGetSourcefv(_source_id, AL_POSITION, (ALfloat *)value.data());
 
 				return value;
 			}
@@ -132,7 +132,7 @@ namespace Dream
 			{
 				Vec3 value;
 
-				alGetSourcefv(_source_id, AL_VELOCITY, (ALfloat *)value.value());
+				alGetSourcefv(_source_id, AL_VELOCITY, (ALfloat *)value.data());
 
 				return value;
 			}
@@ -155,7 +155,7 @@ namespace Dream
 				return offset;
 			}
 
-			IndexT Source::byte_offset ()
+			std::size_t Source::byte_offset ()
 			{
 				ALint offset = 0;
 
@@ -298,17 +298,17 @@ namespace Dream
 				<< " " << buffers_processed << std::endl;
 
 				Vec3 position, velocity, direction;
-				al_get_sourcefv(_source_id, AL_POSITION, (ALfloat *)position.value());
-				al_get_sourcefv(_source_id, AL_VELOCITY, (ALfloat *)velocity.value());
-				al_get_sourcefv(_source_id, AL_DIRECTION, (ALfloat *)direction.value());
+				al_get_sourcefv(_source_id, AL_POSITION, (ALfloat *)position.data());
+				al_get_sourcefv(_source_id, AL_VELOCITY, (ALfloat *)velocity.data());
+				al_get_sourcefv(_source_id, AL_DIRECTION, (ALfloat *)direction.data());
 
 				std::cout << "Pos: " << position << " Vel: " << velocity << " Dir: " << direction << std::endl;
 
 				al_get_listenerf(AL_GAIN, &gain);
-				al_get_listenerfv(AL_POSITION, (ALfloat *)position.value());
-				al_get_listenerfv(AL_VELOCITY, (ALfloat *)velocity.value());
+				al_get_listenerfv(AL_POSITION, (ALfloat *)position.data());
+				al_get_listenerfv(AL_VELOCITY, (ALfloat *)velocity.data());
 				Vector<6,float> orientation;
-				al_get_listenerfv(AL_ORIENTATION, (ALfloat *)orientation.value());
+				al_get_listenerfv(AL_ORIENTATION, (ALfloat *)orientation.data());
 
 				std::cout << "Listener State: " << gain << " " << position << " " << velocity << " " << orientation << std::endl;
 				*/
@@ -381,8 +381,8 @@ namespace Dream
 				logger()->log(LOG_INFO, buffer);
 
 				//al_distance_model(AL_LINEAR_DISTANCE);
-				set_listener_position(Vec3(ZERO));
-				set_listener_velocity(Vec3(ZERO));
+				set_listener_position(0);
+				set_listener_velocity(0);
 				set_listener_orientation(Vec3(0.0, 0.0, -1.0), Vec3(0.0, 1.0, 0.0));
 
 				DREAM_ASSERT(result && "Failed to initialize audio hardware!?");
@@ -409,12 +409,12 @@ namespace Dream
 
 			void Mixer::set_listener_position (const Vec3 & position)
 			{
-				alListenerfv(AL_POSITION, position.value());
+				alListenerfv(AL_POSITION, position.data());
 			}
 
 			void Mixer::set_listener_velocity (const Vec3 & velocity)
 			{
-				alListenerfv(AL_VELOCITY, velocity.value());
+				alListenerfv(AL_VELOCITY, velocity.data());
 			}
 
 			Ref<Source> Mixer::create_source ()
@@ -424,12 +424,12 @@ namespace Dream
 
 			void Mixer::set_listener_orientation (const Vec3 & looking_at, const Vec3 & up)
 			{
-				Vector<6, float> o;
+				Euclid::Numerics::Vector<6, float> orientation;
 
-				o.set(looking_at.value(), 3);
-				o.set(up.value(), 3, 3);
+				orientation.set(looking_at.data(), 3);
+				orientation.set(up.data(), 3, 3);
 
-				alListenerfv(AL_ORIENTATION, o.value());
+				alListenerfv(AL_ORIENTATION, orientation.data());
 			}
 		}
 	}

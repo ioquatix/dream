@@ -12,11 +12,10 @@
 
 #include "../Client.h"
 #include "../../Core/System.h"
-#include "../../Numerics/Numerics.h"
-#include "../../Numerics/Vector.h"
-#include "../../Numerics/Quaternion.h"
-
 #include "../../Events/Fader.h"
+
+#include <Euclid/Numerics/Vector.h>
+#include <Euclid/Numerics/Interpolate.h>
 
 #if defined(TARGET_OS_LINUX)
 #include <AL/al.h>
@@ -35,11 +34,13 @@ namespace Dream
 		namespace Audio
 		{
 			using namespace Dream::Core;
-			using namespace Dream::Numerics;
+			using Euclid::Numerics::Vec3;
 			using namespace Dream::Events;
 
 			class Sound;
 			class IStreamable;
+
+			typedef double GainT;
 
 			class AudioError {
 			protected:
@@ -67,18 +68,18 @@ namespace Dream
 				void set_parameter(ALenum parameter, float value);
 
 				void set_pitch (float pitch);
-				void set_gain (float gain);
+				void set_gain (GainT gain);
 				void set_position (const Vec3 &);
 				void set_velocity (const Vec3 &);
 
 				float pitch ();
-				float gain ();
+				GainT gain ();
 				Vec3 position ();
 				Vec3 velocity ();
 
 				ALint sample_offset ();
 				TimeT time_offset ();
-				IndexT byte_offset ();
+				std::size_t byte_offset ();
 
 				void set_local ();
 
@@ -121,9 +122,9 @@ namespace Dream
 				{
 				}
 
-				virtual void update (RealT time)
+				virtual void update (TimeT time)
 				{
-					ValueT value = linear_interpolate(time, _begin, _end);
+					ValueT value = Euclid::Numerics::linear_interpolate(time, _begin, _end);
 					_source->set_parameter(_parameter, value);
 				}
 			};

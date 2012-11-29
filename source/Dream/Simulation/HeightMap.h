@@ -11,13 +11,14 @@
 #define _DREAM_SIMULATION_HEIGHTMAP_H
 
 #include "../Framework.h"
-#include "../Numerics/Vector.h"
-#include "../Numerics/Interpolate.h"
 #include "../Imaging/PixelBuffer.h"
+
+#include <Euclid/Numerics/Vector.h>
+#include <Euclid/Numerics/Interpolate.h>
 
 namespace Dream {
 	namespace Simulation {
-		using namespace Numerics;
+		using namespace Euclid::Numerics;
 		using namespace Imaging;
 
 		class HeightMap {

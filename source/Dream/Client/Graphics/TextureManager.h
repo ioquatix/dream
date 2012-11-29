@@ -12,10 +12,13 @@
 #include "../../Imaging/PixelBuffer.h"
 #include "Graphics.h"
 
+#include <Euclid/Numerics/Vector.h>
+
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
 			using Dream::Imaging::IPixelBuffer;
+			using Euclid::Numerics::Vec3u;
 
 			GLenum texture_pixel_format(Imaging::PixelFormat pixel_format);
 			GLenum texture_data_type(Imaging::DataType data_type);

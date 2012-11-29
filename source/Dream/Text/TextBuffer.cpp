@@ -14,6 +14,8 @@ namespace Dream
 {
 	namespace Text
 	{
+		using namespace Euclid::Numerics::Constants;
+
 // MARK: -
 
 		TextBuffer::TextBuffer (Ref<Font> font) : _font(font), _text_updated(true), _use_static_size(false)
@@ -30,7 +32,7 @@ namespace Dream
 		}
 
 		void TextBuffer::set_dynamic_size () {
-			_size.zero();
+			_size = 0;
 			_use_static_size = false;
 		}
 

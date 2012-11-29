@@ -79,7 +79,7 @@ namespace Dream
 
 // MARK: -
 
-		MotionInput::MotionInput(const Key &key, const StateT &state, const Vec3 &position, const Vec3 &motion, const AlignedBox<2> & bounds) : _key(key), _state(state), _motion(motion), _bounds(bounds)
+		MotionInput::MotionInput(const Key &key, const StateT &state, const Vec3 &position, const Vec3 &motion, const AlignedBox2 & bounds) : _key(key), _state(state), _motion(motion), _bounds(bounds)
 		{
 			// We ensure that _position is within the coordinate system provided by bounds
 			// Normally this is the origin, but a Viewport may provide a different coordinate system.
@@ -97,7 +97,7 @@ namespace Dream
 		MotionInput::~MotionInput () {
 		}
 
-		MotionInput MotionInput::input_by_refining_bounds(const AlignedBox<2> & updated_bounds) {
+		MotionInput MotionInput::input_by_refining_bounds(const AlignedBox2 & updated_bounds) {
 			return MotionInput(_key, _state, _position, _motion, updated_bounds);
 		}
 
@@ -124,8 +124,8 @@ namespace Dream
 		{
 			std::vector<Input*> * items = _queue.fetch();
 
-			foreach(input, *items) {
-				delete *input;
+			for (auto input : *items) {
+				delete input;
 			}
 		}
 
@@ -161,10 +161,10 @@ namespace Dream
 		{
 			std::vector<Input*> * items = _queue.fetch();
 
-			foreach(input, *items) {
-				handler->process(**input);
+			for (auto input : *items) {
+				handler->process(*input);
 
-				delete *input;
+				delete input;
 			}
 		}
 	}

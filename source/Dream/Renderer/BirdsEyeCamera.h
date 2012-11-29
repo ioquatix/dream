@@ -12,10 +12,14 @@
 
 #include "Camera.h"
 
+#include <Euclid/Numerics/Angle.h>
+
 namespace Dream
 {
 	namespace Renderer
 	{
+		using Euclid::Numerics::Radians;
+
 		class BirdsEyeCamera : public Object, implements ICamera {
 		protected:
 			Vec3 _up;
@@ -27,7 +31,7 @@ namespace Dream
 			Vec3 _center;
 
 			RealT _distance;
-			RealT _twist, _azimuth, _incidence;
+			Radians<> _twist, _azimuth, _incidence;
 
 			Vec3 _multiplier;
 
@@ -55,19 +59,19 @@ namespace Dream
 			}
 
 			void set_distance (const RealT& amnt, bool relative = false);
-			const RealT& distance () const { return _distance; }
+			const RealT & distance () const { return _distance; }
 
 			void set_twist (const RealT& amnt, bool relative = false);
-			const RealT& twist () const { return _twist; }
+			const Radians<> & twist () const { return _twist; }
 
 			void set_azimuth (const RealT& amnt, bool relative = false);
-			const RealT& azimuth () const { return _azimuth; }
+			const Radians<> & azimuth () const { return _azimuth; }
 
 			void set_multiplier (const Vec3 &m);
 			const Vec3 &multiplier ();
 
 			void set_incidence (const RealT &amnt, bool relative = false);
-			const RealT& incidence () const { return _incidence; }
+			const Radians<> & incidence () const { return _incidence; }
 
 			void set_up (const Vec3 &up);
 			const Vec3 & up () const { return _up; }

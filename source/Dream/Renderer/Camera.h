@@ -11,14 +11,16 @@
 #define _DREAM_RENDERER_CAMERA_H
 
 #include "Renderer.h"
-#include "../Numerics/Matrix.h"
 #include "../Events/Input.h"
+
+#include <Euclid/Numerics/Matrix.h>
 
 namespace Dream
 {
 	namespace Renderer
 	{
 		using namespace Dream::Events;
+		using Euclid::Numerics::Mat44;
 
 		class ICamera : implements IObject, implements IInputHandler {
 		public:

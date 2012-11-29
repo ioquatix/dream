@@ -162,7 +162,7 @@ namespace Dream
 					_delegate->stream_did_stop(this);
 			}
 
-			void Stream::fade_out (Ptr<Events::Loop> loop, TimeT duration, RealT gain)
+			void Stream::fade_out (Ptr<Events::Loop> loop, TimeT duration, GainT gain)
 			{
 				if (_fader)
 					_fader->cancel();
@@ -175,7 +175,7 @@ namespace Dream
 				loop->schedule_timer(_fader);
 			}
 
-			void Stream::fade_in (Ptr<Events::Loop> loop, TimeT duration, RealT gain)
+			void Stream::fade_in (Ptr<Events::Loop> loop, TimeT duration, GainT gain)
 			{
 				// This will cancel any existing fader
 				play(loop);

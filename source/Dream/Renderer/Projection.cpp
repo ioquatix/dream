@@ -9,10 +9,16 @@
 #include "Projection.h"
 #include "Viewport.h"
 
+#include <Euclid/Numerics/Vector.Ratios.h>
+#include <Euclid/Numerics/Matrix.Projections.h>
+
 namespace Dream
 {
 	namespace Renderer
 	{
+		using namespace Euclid::Numerics;
+		using namespace Euclid::Geometry;
+
 		IProjection::~IProjection () {
 		}
 
@@ -27,7 +33,7 @@ namespace Dream
 		}
 
 		Mat44 OrthographicProjection::projection_matrix_for_viewport(const IViewport & viewport) {
-			return orthographic_matrix<RealT>(_box.center(), _box.size());
+			return orthographic_projection_matrix(_box);
 		}
 
 		void OrthographicProjection::set_box(const AlignedBox<3> & box) {
@@ -43,8 +49,9 @@ namespace Dream
 
 		Mat44 ScaledOrthographicProjection::projection_matrix_for_viewport(const IViewport & viewport) {
 			Vec3 scaled_size = _box.size();
-			RealT desired_aspect_ratio = scaled_size.reduce().aspect_ratio();
-			RealT aspect_ratio = viewport.bounds().size().aspect_ratio();
+			
+			RealT desired_aspect_ratio = ratios(scaled_size.reduce()).aspect_ratio();
+			RealT aspect_ratio = ratios(viewport.bounds().size()).aspect_ratio();
 
 			if (desired_aspect_ratio < aspect_ratio) {
 				scaled_size[X] = scaled_size[Y] * aspect_ratio;
@@ -52,7 +59,7 @@ namespace Dream
 				scaled_size[Y] = scaled_size[X] * (1.0 / aspect_ratio);
 			}
 
-			return orthographic_matrix<RealT>(_box.center(), scaled_size);
+			return orthographic_projection_matrix(_box.center(), scaled_size);
 		}
 
 		PerspectiveProjection::PerspectiveProjection(RealT field_of_view, RealT near, RealT far) : _field_of_view(field_of_view), _near(near), _far(far) {
@@ -62,7 +69,7 @@ namespace Dream
 			const Vec2 & size = viewport.bounds().size();
 			RealT aspect_ratio = size[X] / size[Y];
 
-			return perspective_matrix<RealT>(_field_of_view, aspect_ratio, _near, _far);
+			return perspective_projection_matrix(_field_of_view, aspect_ratio, _near, _far);
 		}
 
 		void PerspectiveProjection::set_field_of_view(RealT field_of_view) {

@@ -10,8 +10,6 @@
 #include "Scene.h"
 #include "Context.h"
 
-#include "../../Geometry/AlignedBox.h"
-
 // Resource loader
 #include "../../Imaging/Image.h"
 #include "../../Text/Font.h"
@@ -20,6 +18,7 @@
 
 #include <numeric>
 #include <algorithm>
+#include <iomanip>
 
 namespace Dream
 {

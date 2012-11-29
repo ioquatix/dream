@@ -10,11 +10,14 @@
 #include "BirdsEyeCamera.h"
 #include "../Events/Logger.h"
 
+#include <Euclid/Numerics/Vector.IO.h>
+
 namespace Dream {
 	namespace Renderer {
 		using namespace Events::Logging;
+		using namespace Euclid::Numerics;
 
-		BirdsEyeCamera::BirdsEyeCamera() : _up(0.0, 0.0, 1.0), _right(1.0, 0.0, 0.0), _center(ZERO), _multiplier(IDENTITY, 1), _reverse(false), _invalid(true) {
+		BirdsEyeCamera::BirdsEyeCamera() : _up(0.0, 0.0, 1.0), _right(1.0, 0.0, 0.0), _center(ZERO), _twist(0), _azimuth(R45), _incidence(R45), _multiplier(1), _reverse(false), _invalid(true) {
 			_distance = 100;
 			_azimuth = R45;
 			_incidence = R45;
@@ -27,11 +30,11 @@ namespace Dream {
 		}
 
 		void BirdsEyeCamera::regenerate () {
-			_forward = _up.cross(_right);
+			_forward = cross_product(_up, _right);
 
 			logger()->log(LOG_DEBUG, LogBuffer() << "Forward: " << _forward);
 
-			_right = -_up.cross(_forward);
+			_right = -cross_product(_up, _forward);
 
 			logger()->log(LOG_DEBUG, LogBuffer() << "Right: " << _right);
 			logger()->log(LOG_DEBUG, LogBuffer() << "Up: " << _up);
@@ -45,15 +48,17 @@ namespace Dream {
 				Vec3 world_up(0.0, 1.0, 0.0), world_forward(0.0, 0.0, -1.0);
 				Vec3 far = _forward * _distance;
 
-				Mat44 m(IDENTITY);
-				m = m.rotating_matrix(_up, world_up, _forward);
-				m = m.translated_matrix(far);
-				m = m.rotated_matrix(_incidence, _right);
-				m = m.rotated_matrix(_azimuth, _up);
-				m = m.translated_matrix(-_center);
-				m = m.rotated_matrix(_twist, _up);
-				
-				_view_matrix_cache = m;
+				_view_matrix_cache = rotate(_up, world_up, _forward) << translate(far) << rotate(_incidence, _right) << rotate(_azimuth, _up) << translate(-_center) << rotate(_twist, _up);
+
+				/*			
+				 m = m.rotating_matrix(_up, world_up, _forward);
+				 m = m.translated_matrix(far);
+				 m = m.rotated_matrix(_incidence, _right);
+				 m = m.rotated_matrix(_azimuth, _up);
+				 m = m.translated_matrix(-_center);
+				 m = m.rotated_matrix(_twist, _up);
+				 */
+
 				_invalid = false;
 			}
 
@@ -68,7 +73,7 @@ namespace Dream {
 			const Vec3 & d = input.motion();
 
 			if (input.button_pressed_or_dragged(MouseLeftButton)) {
-				RealT k = -1.0, i = Math::mod(_incidence, R360);
+				RealT k = -1.0, i = number(_incidence.value).modulo(R360);
 
 				if (i < 0) i += R360;
 

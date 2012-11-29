@@ -11,8 +11,6 @@
 #define _DREAM_CLIENT_GRAPHICS_GRAPHICS_H
 
 #include "../Client.h"
-
-#include "../../Numerics/Numerics.h"
 #include "../Display/Scene.h"
 
 #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
@@ -45,7 +43,6 @@ namespace Dream
 	{
 		namespace Graphics
 		{
-			using namespace Dream::Numerics;
 			using namespace Dream::Client::Display;
 
 			void check_graphics_error();

@@ -10,8 +10,6 @@
 #ifndef _DREAM_SIMULATION_PATHFINDER_H
 #define _DREAM_SIMULATION_PATHFINDER_H
 
-#include "../Numerics/Numerics.h"
-
 #include <queue>
 #include <vector>
 #include <set>
@@ -40,7 +38,7 @@ namespace Dream {
 		    };
 		*/
 
-		template <typename _InterfaceT, typename _StepT, typename _CostT = Numerics::RealT>
+		template <typename _InterfaceT, typename _StepT, typename _CostT = float>
 		class PathFinder {
 		public:
 			typedef _InterfaceT InterfaceT;
@@ -134,8 +132,8 @@ namespace Dream {
 					open_pop();
 				}
 
-				foreach(closed_node, _closed) {
-					delete *closed_node;
+				for (auto closed_node : _closed) {
+					delete closed_node;
 				}
 			}
 

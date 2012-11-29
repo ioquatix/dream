@@ -13,7 +13,7 @@ namespace Dream
 {
 	namespace Core
 	{
-		inline IndexT size_of_type_identifier (TypeIdentifierT tid)
+		inline std::size_t size_of_type_identifier (TypeIdentifierT tid)
 		{
 			return tid & 0x0F;
 		}
@@ -71,7 +71,7 @@ namespace Dream
 		void Dictionary::deserialize (Ref<IData> data)
 		{
 			Shared<Buffer> buffer = data->buffer();
-			IndexT offset = 0;
+			std::size_t offset = 0;
 
 			while (offset < buffer->size()) {
 				KeyT key = TypeSerialization<TI_STRING>::read_from_buffer(*buffer, offset);

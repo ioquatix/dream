@@ -42,14 +42,14 @@ namespace Dream
 			virtual ~Buffer ();
 
 			/// Access data at a particular location. Range checked.
-			const ByteT * at (IndexT loc) const;
+			const ByteT * at (std::size_t loc) const;
 
 			/// Read a variable out of the buffer
-			void read (IndexT offset, IndexT size, ByteT * value) const;
+			void read (std::size_t offset, std::size_t size, ByteT * value) const;
 
 			/// Helper to read values of specific type
 			template <typename t>
-			IndexT read (IndexT offset, t & value) const
+			std::size_t read (std::size_t offset, t & value) const
 			{
 				read(offset, sizeof(t), (ByteT *)&value);
 
@@ -57,27 +57,27 @@ namespace Dream
 			}
 
 			template <typename t>
-			IndexT read (IndexT offset, t & value, Endian src_type, Endian dst_type) const
+			std::size_t read (std::size_t offset, t & value, Endian src_type, Endian dst_type) const
 			{
-				IndexT cnt = read(offset, value);
+				std::size_t cnt = read(offset, value);
 				endian_decode(value, src_type, dst_type);
 				return cnt;
 			}
 
 			template <typename t>
-			IndexT read (IndexT offset, t & value, Endian src_type) const
+			std::size_t read (std::size_t offset, t & value, Endian src_type) const
 			{
 				return read(offset, value, src_type, host_endian());
 			}
 
 			/// Access data at a particular location. Not range checked.
-			const ByteT & operator[] (IndexT idx) const;
+			const ByteT & operator[] (std::size_t idx) const;
 
 			/// Returns true if size() == 0, otherwise false.
 			bool empty () const;
 
 			/// Returns the length of data stored in the buffer.
-			virtual IndexT size () const abstract;
+			virtual std::size_t size () const abstract;
 
 			/// Returns the address of the first byte in the buffer.
 			virtual const ByteT * begin () const abstract;
@@ -120,24 +120,24 @@ namespace Dream
 			ByteT * end ();
 
 			/// Access data at a particular location. Range checked.
-			ByteT * at (IndexT loc);
+			ByteT * at (std::size_t loc);
 			/// Access data at a particular location. Not range checked.
-			ByteT & operator[] (IndexT idx);
+			ByteT & operator[] (std::size_t idx);
 
 			/// Copy count copies of value into the buffer at the specified offset.
-			void assign (IndexT count, const ByteT & value, IndexT offset = 0);
+			void assign (std::size_t count, const ByteT & value, std::size_t offset = 0);
 			/// Copy data from another range of bytes at the specified offset.
-			void assign (const ByteT * other_begin, const ByteT * other_end, IndexT offset = 0);
+			void assign (const ByteT * other_begin, const ByteT * other_end, std::size_t offset = 0);
 			/// Assign data from another buffer
-			void assign (const Buffer & other, IndexT offset = 0);
+			void assign (const Buffer & other, std::size_t offset = 0);
 			/// Copy a slice of data from another buffer
-			void assign (const Buffer & other, IndexT other_offset, IndexT other_size, IndexT offset = 0);
+			void assign (const Buffer & other, std::size_t other_offset, std::size_t other_size, std::size_t offset = 0);
 			/// Copy a c-style string into the buffer
-			void assign (const char * string, IndexT offset = 0);
+			void assign (const char * string, std::size_t offset = 0);
 
 			/// Write a specific value into the buffer at the specified offset.
 			template <typename AnyT>
-			IndexT write (const AnyT & value, IndexT offset)
+			std::size_t write (const AnyT & value, std::size_t offset)
 			{
 				assign((const ByteT *)value, (const ByteT *)value + sizeof(AnyT), offset);
 
@@ -153,19 +153,19 @@ namespace Dream
 			virtual ~ResizableBuffer ();
 
 			/// The currently allocated capacity of the buffer. Can be changed by calling reserve().
-			virtual IndexT capacity () const abstract;
+			virtual std::size_t capacity () const abstract;
 
 			/// Reserve/allocate more capacity if required. Will release capacity if size is smaller than current capacity.
-			virtual void reserve (IndexT size) abstract;
+			virtual void reserve (std::size_t size) abstract;
 
 			/// Change the size of the buffer. Will allocate more capacity if required.
-			virtual void resize (IndexT size) abstract;
+			virtual void resize (std::size_t size) abstract;
 
 			/// Increase the size of the buffer by the given size.
-			void expand (IndexT amount);
+			void expand (std::size_t amount);
 
 			/// Appends a set number of bytes to the end of the buffer
-			void append (IndexT size, const ByteT * data);
+			void append (std::size_t size, const ByteT * data);
 
 			// Helper for appending primitive types.
 			template <typename t>
@@ -205,7 +205,7 @@ namespace Dream
 		 DynamicBuffer, would copy the data.
 		 */
 		class StaticBuffer : public Buffer {
-			IndexT _size;
+			std::size_t _size;
 			const ByteT * _buf;
 
 		public:
@@ -214,13 +214,13 @@ namespace Dream
 			static StaticBuffer for_cstring (const char * str, bool include_null_byte = true);
 
 			/// Allocate the data with a sequence of bytes, buf, of specified size.
-			StaticBuffer (const ByteT * buf, const IndexT & size);
+			StaticBuffer (const ByteT * buf, const std::size_t & size);
 
 			// Standard copy constructer is fine.
 
 			virtual ~StaticBuffer ();
 
-			virtual IndexT size () const;
+			virtual std::size_t size () const;
 			virtual const ByteT * begin () const;
 		};
 
@@ -232,7 +232,7 @@ namespace Dream
 		 */
 		class FileBuffer : public Buffer, private NonCopyable {
 		protected:
-			IndexT _size;
+			std::size_t _size;
 			void * _buf;
 
 		public:
@@ -241,7 +241,7 @@ namespace Dream
 
 			virtual ~FileBuffer ();
 
-			virtual IndexT size () const;
+			virtual std::size_t size () const;
 			virtual const ByteT * begin () const;
 		};
 
@@ -251,10 +251,10 @@ namespace Dream
 		 This buffer provides maximum flexibility when dealing with data which may change its size, and is almost API compatible with <tt>std::vector<unsigned char></tt>, but has optimizations for data buffering. This can provide up to 30% increase in performance when dealing with a lot of data.
 		 */
 		class DynamicBuffer : public ResizableBuffer, private NonCopyable {
-			IndexT _capacity, _size;
+			std::size_t _capacity, _size;
 			ByteT * _buf;
 
-			void allocate (IndexT size);
+			void allocate (std::size_t size);
 			void deallocate ();
 		public:
 			/// Construct an empty buffer.
@@ -262,19 +262,19 @@ namespace Dream
 
 			/// Construct a pre-sized buffer.
 			/// If reserved is true, the size refers to capacity i.e. equivalent of calling reserve(size).
-			DynamicBuffer (IndexT size, bool reserved = false);
+			DynamicBuffer (std::size_t size, bool reserved = false);
 
 			virtual ~DynamicBuffer ();
 
-			virtual IndexT capacity () const;
+			virtual std::size_t capacity () const;
 			/// The current size of the data stored in the buffer. This will always be <= capacity().
-			virtual IndexT size () const;
+			virtual std::size_t size () const;
 
 			/// Set the size of the buffer to 0. Capacity is not changed.
 			void clear ();
 
-			virtual void reserve (IndexT size);
-			virtual void resize (IndexT size);
+			virtual void reserve (std::size_t size);
+			virtual void resize (std::size_t size);
 
 			virtual ByteT * begin ();
 			virtual const ByteT * begin () const;
@@ -304,9 +304,9 @@ namespace Dream
 		 This class will copy its data. Therefore, you may want to consider StaticBuffer if you don't want to copy the data.
 		 */
 		class PackedBuffer : public MutableBuffer, private NonCopyable {
-			IndexT _size;
+			std::size_t _size;
 
-			PackedBuffer (IndexT size);
+			PackedBuffer (std::size_t size);
 
 			ByteT * data ();
 			const ByteT * data () const;
@@ -315,9 +315,9 @@ namespace Dream
 			virtual ~PackedBuffer ();
 
 			/// Create a new buffer.
-			static PackedBuffer * new_buffer (IndexT size);
+			static PackedBuffer * new_buffer (std::size_t size);
 
-			virtual IndexT size () const;
+			virtual std::size_t size () const;
 
 			virtual ByteT * begin ();
 			virtual const ByteT * begin () const;

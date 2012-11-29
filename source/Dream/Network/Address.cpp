@@ -68,7 +68,7 @@ namespace Dream {
 			_address_data_size = 0;
 		}
 
-		Address::Address (const Address & copy, sockaddr * sa, IndexT size)
+		Address::Address (const Address & copy, sockaddr * sa, std::size_t size)
 		{
 			copy_from_address(copy);
 			set_address_data(sa, size);
@@ -97,7 +97,7 @@ namespace Dream {
 			return *this;
 		}
 
-		IndexT Address::address_data_size () const
+		std::size_t Address::address_data_size () const
 		{
 			return _address_data_size;
 		}
@@ -132,7 +132,7 @@ namespace Dream {
 			return _protocol;
 		}
 
-		void Address::set_address_data(const sockaddr * sa, IndexT size) {
+		void Address::set_address_data(const sockaddr * sa, std::size_t size) {
 			DREAM_ASSERT(sa != NULL); // wtf?
 			DREAM_ASSERT(size <= sizeof(_address_data));
 

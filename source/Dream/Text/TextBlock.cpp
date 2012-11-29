@@ -10,8 +10,6 @@
 #include "TextBlock.h"
 #include "FontFace.h"
 
-#include "../Numerics/Matrix.h"
-#include "../Numerics/Vector.h"
 #include "../Core/Strings.h"
 
 namespace Dream
@@ -69,12 +67,12 @@ namespace Dream
 
 			void set_origin(Vec2u _pen)
 			{
-				pen = vec<unsigned>(_pen[X] << 6, _pen[Y] << 6);
+				pen = Vec2u(_pen[X] << 6, _pen[Y] << 6);
 			}
 
 			Vec2u origin()
 			{
-				return vec<unsigned>(pen[X] >> 6, pen[Y] >> 6);
+				return Vec2u(pen[X] >> 6, pen[Y] >> 6);
 			}
 
 			const Vec2u & extents()
@@ -217,8 +215,8 @@ namespace Dream
 			clear();
 
 			_line_width = 0;
-			_horizontal_padding.zero();
-			_vertical_padding.zero();
+			_horizontal_padding = 0;
+			_vertical_padding = 0;
 
 			set_kerning(true);
 			set_text_direction(LR, TB);
@@ -226,8 +224,8 @@ namespace Dream
 
 		TextBlock::~TextBlock ()
 		{
-			foreach (line, _lines) {
-				delete *line;
+			for (auto line : _lines) {
+				delete line;
 			}
 		}
 
@@ -325,7 +323,7 @@ namespace Dream
 			}
 
 			_lines.clear();
-			_extents.zero();
+			_extents = 0;
 
 			_lines.push_back(new TextLine(this));
 		}
@@ -372,8 +370,8 @@ namespace Dream
 		{
 			std::string str;
 
-			foreach (line, _lines) {
-				str += (*line)->text();
+			for (auto line : _lines) {
+				str += line->text();
 			}
 
 			return str;
@@ -396,13 +394,13 @@ namespace Dream
 
 			//std::cout << "Text Origin: " << text_origin() << std::endl;
 
-			foreach (line, _lines) {
+			for (auto line : _lines) {
 				if (_line_direction == TB) {
 					//std::cerr << "Line Origin: " << origin - pen << std::endl;
-					(*line)->composite_to_image(pbuf, origin - pen, boxes);
+					line->composite_to_image(pbuf, origin - pen, boxes);
 				} else {
 					//std::cerr << "Line Origin: " << pen << std::endl;
-					(*line)->composite_to_image(pbuf, pen, boxes);
+					line->composite_to_image(pbuf, pen, boxes);
 				}
 
 				// Set pen to next line
@@ -421,9 +419,9 @@ namespace Dream
 				result[X] = line_width();
 			} else {
 				result[X] = 0;
-				foreach (line, _lines) {
+				for (auto line : _lines) {
 					//std::wcout << "'" << (*line)->text() << "' " << (*line)->width() << "(" << result[X] << ")" << std::endl;
-					result[X] = std::max(result[X], (*line)->width());
+					result[X] = std::max(result[X], line->width());
 				}
 			}
 
@@ -435,7 +433,7 @@ namespace Dream
 			if (_lines.size())
 				result[Y] -= _face->descender_offset();
 
-			result += vec<unsigned>(_horizontal_padding.sum(), _vertical_padding.sum());
+			result += Vec2u(_horizontal_padding.sum(), _vertical_padding.sum());
 
 			return result;
 		}

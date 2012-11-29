@@ -27,7 +27,6 @@ namespace Dream
 		namespace Display
 		{
 			using namespace Dream::Core;
-			using namespace Dream::Numerics;
 
 			using Dream::Resources::ILoader;
 			using namespace Dream::Events;

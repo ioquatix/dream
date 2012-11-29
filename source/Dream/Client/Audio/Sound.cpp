@@ -47,7 +47,7 @@ namespace Dream
 				copy.assign(*buf);
 
 				int8_t *d = (int8_t *)copy.begin();
-				IndexT i;
+				std::size_t i;
 
 				for (i = 0; i < copy.size(); i++)
 					d[i] += (int8_t) 128;
@@ -78,7 +78,7 @@ namespace Dream
 				DecoderT decoder = NULL;
 				Shared<Buffer> buffer = data->buffer();
 
-				IndexT i = 4;
+				std::size_t i = 4;
 
 				uint32_t chunk_length;
 				int32_t magic;

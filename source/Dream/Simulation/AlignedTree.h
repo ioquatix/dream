@@ -10,15 +10,24 @@
 #ifndef _DREAM_ALIGNED_TREE_H
 #define _DREAM_ALIGNED_TREE_H
 
-#include "../Numerics/Vector.h"
-#include "../Geometry/AlignedBox.h"
-
 #include <vector>
 #include <set>
 #include <iostream>
 
+#include <Euclid/Numerics/Vector.h>
+#include <Euclid/Geometry/AlignedBox.h>
+
 namespace Dream {
 	namespace Geometry {
+		using namespace Euclid::Geometry::Constants;
+
+		using Euclid::Numerics::Vector;
+		using Euclid::Numerics::Vec2;
+		using Euclid::Numerics::Vec3;
+
+		using Euclid::Geometry::AlignedBox;
+		using Euclid::Geometry::LineSegment;
+
 		// An aligned tree is a generic name for either a quad-tree or an oct-tree
 		//	AlignedTree<QuadrantTraits> or AlignedTree<OctantTraits> respectively
 
@@ -41,8 +50,8 @@ namespace Dream {
 			}
 
 			static unsigned index_for_partition(const Vec2 &point, const Vec2 &center);
-			static Vec2 normal_origin_for_partition_index(const IndexT &i);
-			static Vec2 offset_origin_for_partition_index(const IndexT &i);
+			static Vec2 normal_origin_for_partition_index(const std::size_t &i);
+			static Vec2 offset_origin_for_partition_index(const std::size_t &i);
 
 			enum PartitionLocation {
 				BottomLeft = 0,
@@ -68,8 +77,8 @@ namespace Dream {
 			}
 
 			static unsigned index_for_partition(const Vec3 &point, const Vec3 &center);
-			static Vec3 normal_origin_for_partition_index(const IndexT &i);
-			static Vec3 offset_origin_for_partition_index(const IndexT &i);
+			static Vec3 normal_origin_for_partition_index(const std::size_t &i);
+			static Vec3 offset_origin_for_partition_index(const std::size_t &i);
 
 			enum PartitionLocation {
 				BottomLeftNear = 0,
@@ -213,8 +222,8 @@ namespace Dream {
 					ObjectSetT resort;
 					std::swap(_objects, resort);
 
-					foreach(object, resort) {
-						this->insert(*object);
+					for (auto object : resort) {
+						this->insert(object);
 					}
 				}
 
@@ -322,11 +331,11 @@ namespace Dream {
 
 					ObjectSetT selection;
 
-					foreach(o, _objects) {
-						SpaceT b = TraitsT::calculate_bounding_box(*o);
+					for(auto object : _objects) {
+						SpaceT b = TraitsT::calculate_bounding_box(object);
 
 						if (b.intersects_with(rect)) {
-							selection.insert(*o);
+							selection.insert(object);
 						}
 					}
 

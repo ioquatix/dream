@@ -54,7 +54,7 @@ namespace Dream
 			if (event == TIMEOUT) {
 				_count += 1;
 
-				RealT time = RealT(_count) / RealT(_steps);
+				TimeT time = TimeT(_count) / TimeT(_steps);
 
 				_knob->update(time);
 

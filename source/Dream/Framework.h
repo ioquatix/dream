@@ -28,15 +28,6 @@
 #define abstract = 0
 #define implements virtual public
 
-#ifdef __GNUC__
-#define PACKED __attribute__((__packed__))
-#else
-#error Cannot define PACKED. Please supply a macro for packing structs.
-#endif
-
-// Collection should typically avoid being a function call to avoid unnessary overhead.
-#define foreach(iterator, collection) for (decltype((collection).begin()) iterator = (collection).begin(); iterator != (collection).end(); ++iterator)
-
 /**
     Dream is a framework for creating and enhancing C++ applications.
 
@@ -47,23 +38,13 @@ namespace Dream
 {
 // MARK: -
 // MARK: Types
-
-	typedef std::size_t IndexT;
 	typedef unsigned char ByteT;
 
 	/// Represents a open file.
 	typedef int FileDescriptorT;
-
-	const char * build_date ();
-	const char * build_platform ();
-	const char * build_revision ();
 }
 
 #include "Assertion.h"
 #include "Class.h"
-
-#ifdef ENABLE_TESTING
-#include "Core/CodeTest.h"
-#endif
 
 #endif

@@ -55,8 +55,8 @@ namespace Dream {
 			// logger()->log(LOG_INFO, LogBuffer() << "Loader being deallocated: " << this);
 
 			double total_size = 0.0;
-			foreach(cache, _data_cache) {
-				total_size += cache->second->size();
+			for (auto cache : _data_cache) {
+				total_size += cache.second->size();
 			}
 
 			total_size /= (1024 * 1024);
@@ -94,9 +94,9 @@ namespace Dream {
 
 		void Loader::preload_resources (std::vector<Path> & paths)
 		{
-			foreach (path, paths)
+			for (auto path : paths)
 			{
-				preload_resource(*path);
+				preload_resource(path);
 			}
 		}
 
@@ -144,8 +144,8 @@ namespace Dream {
 				if (resource_paths.size() > 1) {
 					logger()->log(LOG_WARN, LogBuffer() << "Multiple paths found for resource: " << name << " in " << full_path);
 
-					foreach(path, resource_paths) {
-						logger()->log(LOG_WARN, LogBuffer() << "\t" << *path);
+					for (auto path : resource_paths) {
+						logger()->log(LOG_WARN, LogBuffer() << "\t" << path);
 					}
 				}
 

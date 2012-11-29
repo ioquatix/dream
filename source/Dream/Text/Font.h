@@ -60,7 +60,7 @@ namespace Dream
 			const Detail::FontFace * font_face () const;
 
 			void set_pixel_size (unsigned sz);
-			IndexT single_line_offset ();
+			std::size_t single_line_offset ();
 
 			// utf8 encoding is assumed.
 			Ref<Image> render_text (const std::string & text);

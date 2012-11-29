@@ -14,7 +14,8 @@
 #include "ShaderManager.h"
 #include "MeshBuffer.h"
 
-#include "../../Geometry/AlignedBox.h"
+#include <Euclid/Geometry/AlignedBox.h>
+#include <Euclid/Geometry/Line.h>
 
 namespace Dream
 {
@@ -22,7 +23,7 @@ namespace Dream
 	{
 		namespace Graphics
 		{
-			using namespace Dream::Numerics;
+			using namespace Euclid::Geometry;
 
 			/// These primatives are really designed for debugging purposes.
 			class WireframeRenderer : public Object {
@@ -45,11 +46,11 @@ namespace Dream
 
 				void render(const std::vector<Vec3> &, Layout layout = LINE_LOOP);
 
-				void render(const Geometry::LineSegment<2> &);
-				void render(const Geometry::LineSegment<3> &);
+				void render(const LineSegment<2> &);
+				void render(const LineSegment<3> &);
 
-				void render(const Geometry::AlignedBox<2> &, RealT z = 0.0, Layout layout = LINE_LOOP);
-				void render(const Geometry::AlignedBox<3> &);
+				void render(const AlignedBox<2> &, RealT z = 0.0, Layout layout = LINE_LOOP);
+				void render(const AlignedBox<3> &);
 
 				void render_axis();
 			};

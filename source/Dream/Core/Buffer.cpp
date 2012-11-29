@@ -38,13 +38,13 @@ namespace Dream
 			return size() == 0;
 		}
 
-		const ByteT * Buffer::at (IndexT loc) const
+		const ByteT * Buffer::at (std::size_t loc) const
 		{
 			DREAM_ASSERT(loc <= size());
 			return begin() + loc;
 		}
 
-		void Buffer::read (IndexT offset, IndexT size, ByteT * value) const
+		void Buffer::read (std::size_t offset, std::size_t size, ByteT * value) const
 		{
 			memcpy(value, at(offset), size);
 		}
@@ -54,7 +54,7 @@ namespace Dream
 			return begin() + size();
 		}
 
-		const ByteT & Buffer::operator[] (IndexT idx) const
+		const ByteT & Buffer::operator[] (std::size_t idx) const
 		{
 			return begin()[idx];
 		}
@@ -181,7 +181,7 @@ namespace Dream
 			const uint32_t C1 = 52845;
 			const uint32_t C2 = 22719;
 
-			IndexT s = size();
+			std::size_t s = size();
 			const ByteT * b = begin();
 
 			for (unsigned i = 0; i < s; i += 1) {
@@ -233,7 +233,7 @@ namespace Dream
 		{
 		}
 
-		ByteT * MutableBuffer::at (IndexT loc)
+		ByteT * MutableBuffer::at (std::size_t loc)
 		{
 			DREAM_ASSERT(loc < size());
 			return begin() + loc;
@@ -244,38 +244,38 @@ namespace Dream
 			return begin() + size();
 		}
 
-		ByteT & MutableBuffer::operator[] (IndexT idx)
+		ByteT & MutableBuffer::operator[] (std::size_t idx)
 		{
 			return begin()[idx];
 		}
 
-		void MutableBuffer::assign (IndexT count, const ByteT & value, IndexT offset)
+		void MutableBuffer::assign (std::size_t count, const ByteT & value, std::size_t offset)
 		{
 			DREAM_ASSERT((count + offset) <= size());
 
 			memset(begin() + offset, value, count);
 		}
 
-		void MutableBuffer::assign (const ByteT * other_begin, const ByteT * other_end, IndexT offset)
+		void MutableBuffer::assign (const ByteT * other_begin, const ByteT * other_end, std::size_t offset)
 		{
 			DREAM_ASSERT((other_end - other_begin) + offset <= size());
 
 			memcpy(begin() + offset, other_begin, other_end - other_begin);
 		}
 
-		void MutableBuffer::assign (const Buffer & other, IndexT offset)
+		void MutableBuffer::assign (const Buffer & other, std::size_t offset)
 		{
 			assign(other.begin(), other.end(), offset);
 		}
 
-		void MutableBuffer::assign (const Buffer & other, IndexT other_offset, IndexT other_size, IndexT offset)
+		void MutableBuffer::assign (const Buffer & other, std::size_t other_offset, std::size_t other_size, std::size_t offset)
 		{
 			assign(other.begin() + other_offset, other.begin() + other_offset + other_size, offset);
 		}
 
-		void MutableBuffer::assign (const char * string, IndexT offset)
+		void MutableBuffer::assign (const char * string, std::size_t offset)
 		{
-			IndexT len = strlen(string);
+			std::size_t len = strlen(string);
 			assign((const ByteT *)string, (const ByteT *)string + len, offset);
 		}
 
@@ -286,12 +286,12 @@ namespace Dream
 		{
 		}
 
-		void ResizableBuffer::expand (IndexT amount)
+		void ResizableBuffer::expand (std::size_t amount)
 		{
 			resize(size() + amount);
 		}
 
-		void ResizableBuffer::append (IndexT size, const ByteT * data)
+		void ResizableBuffer::append (std::size_t size, const ByteT * data)
 		{
 			expand(size);
 
@@ -306,7 +306,7 @@ namespace Dream
 			return StaticBuffer((const ByteT*)str, strlen(str) + (int)include_null_byte);
 		}
 
-		StaticBuffer::StaticBuffer (const ByteT * buf, const IndexT & size) : _size(size), _buf(buf)
+		StaticBuffer::StaticBuffer (const ByteT * buf, const std::size_t & size) : _size(size), _buf(buf)
 		{
 		}
 
@@ -314,7 +314,7 @@ namespace Dream
 		{
 		}
 
-		IndexT StaticBuffer::size () const
+		std::size_t StaticBuffer::size () const
 		{
 			return _size;
 		}
@@ -347,7 +347,7 @@ namespace Dream
 			munmap(_buf, _size);
 		}
 
-		IndexT FileBuffer::size () const
+		std::size_t FileBuffer::size () const
 		{
 			return _size;
 		}
@@ -360,7 +360,7 @@ namespace Dream
 // MARK: -
 // MARK: class DynamicBuffer
 
-		void DynamicBuffer::allocate (IndexT size)
+		void DynamicBuffer::allocate (std::size_t size)
 		{
 			if (size != _capacity) {
 				_buf = (ByteT*)realloc(_buf, size);
@@ -384,7 +384,7 @@ namespace Dream
 		{
 		}
 
-		DynamicBuffer::DynamicBuffer (IndexT size, bool reserved) : _buf (NULL)
+		DynamicBuffer::DynamicBuffer (std::size_t size, bool reserved) : _buf (NULL)
 		{
 			allocate(size);
 
@@ -399,12 +399,12 @@ namespace Dream
 			deallocate();
 		}
 
-		IndexT DynamicBuffer::capacity () const
+		std::size_t DynamicBuffer::capacity () const
 		{
 			return _capacity;
 		}
 
-		IndexT DynamicBuffer::size () const
+		std::size_t DynamicBuffer::size () const
 		{
 			return _size;
 		}
@@ -414,12 +414,12 @@ namespace Dream
 			deallocate();
 		}
 
-		void DynamicBuffer::reserve (IndexT size)
+		void DynamicBuffer::reserve (std::size_t size)
 		{
 			allocate(size);
 		}
 
-		void DynamicBuffer::resize (IndexT size)
+		void DynamicBuffer::resize (std::size_t size)
 		{
 			if (size > _capacity) {
 				allocate(size);
@@ -441,7 +441,7 @@ namespace Dream
 // MARK: -
 // MARK: class PackedData
 
-		PackedBuffer::PackedBuffer (IndexT size) : _size (size)
+		PackedBuffer::PackedBuffer (std::size_t size) : _size (size)
 		{
 		}
 
@@ -460,16 +460,16 @@ namespace Dream
 			return (const ByteT*)this + sizeof(*this);
 		}
 
-		PackedBuffer * PackedBuffer::new_buffer (IndexT size)
+		PackedBuffer * PackedBuffer::new_buffer (std::size_t size)
 		{
-			IndexT total = sizeof(PackedBuffer) + size;
+			std::size_t total = sizeof(PackedBuffer) + size;
 			void * data = malloc(total);
 			PackedBuffer * buffer = new(data) PackedBuffer(size);
 
 			return buffer;
 		}
 
-		IndexT PackedBuffer::size () const
+		std::size_t PackedBuffer::size () const
 		{
 			return _size;
 		}
@@ -526,7 +526,7 @@ namespace Dream
 
 			testing("Assigning Data");
 
-			IndexT prev_capacity = a.capacity();
+			std::size_t prev_capacity = a.capacity();
 			a.resize(data_length);
 			a.assign((const ByteT*)data, (const ByteT*)data + data_length);
 

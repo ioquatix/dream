@@ -10,15 +10,16 @@
 #define _DREAM_RENDERER_PROJECTION_H
 
 #include "Renderer.h"
-#include "../Numerics/Matrix.h"
-#include "../Geometry/AlignedBox.h"
+
+#include <Euclid/Numerics/Matrix.h>
+#include <Euclid/Geometry/AlignedBox.h>
 
 namespace Dream
 {
 	namespace Renderer
 	{
-		using namespace Dream::Numerics;
-		using namespace Dream::Geometry;
+		using Euclid::Numerics::Mat44;
+		using Euclid::Geometry::AlignedBox;
 
 		class IViewport;
 

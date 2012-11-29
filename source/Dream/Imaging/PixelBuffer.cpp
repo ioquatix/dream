@@ -72,7 +72,7 @@ namespace Dream {
 			if (px == 0) {
 				bzero(pixel_data(), pixel_data_length());
 			} else {
-				for (IndexT s = 0; s < pixel_data_length(); s += bps) {
+				for (std::size_t s = 0; s < pixel_data_length(); s += bps) {
 					write (px, pixel_data() + s, bps);
 				}
 			}

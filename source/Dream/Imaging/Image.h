@@ -85,7 +85,7 @@ namespace Dream {
 
 			/// Offset and Length are in pixels
 			void set_data (const PixelCoordinateT &size, PixelFormat format, DataType data_type, const ByteT * buffer);
-			void set_data (IndexT offset, IndexT length, const ByteT* buffer);
+			void set_data (std::size_t offset, std::size_t length, const ByteT* buffer);
 
 			/// Sets up the internal buffers for handing data for the specified size, format and data_type.
 			void allocate (const Vec3u & size, PixelFormat format, DataType data_type);

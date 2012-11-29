@@ -153,7 +153,7 @@ namespace Dream
 			return ins;
 		}
 
-		Value Value::read_from_buffer (const Buffer & buf, IndexT & offset)
+		Value Value::read_from_buffer (const Buffer & buf, std::size_t & offset)
 		{
 			TypeIdentifierT type_identifier;
 
