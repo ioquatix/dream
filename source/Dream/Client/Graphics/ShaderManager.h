@@ -158,17 +158,17 @@ namespace Dream {
 
 					template <typename LocationT, unsigned E, typename T>
 					void set_uniform(LocationT name, const Vector<E, T> & vector) {
-						GLUniformTraits<E>::set(location_of(name), 1, vector.value());
+						GLUniformTraits<E>::set(location_of(name), 1, vector.data());
 					}
 
 					template <typename LocationT, unsigned E, typename T, unsigned N>
 					void set_uniform(LocationT name, const Vector<E, T>(&vector)[N]) {
-						GLUniformTraits<E>::set(location_of(name), N, vector[0].value());
+						GLUniformTraits<E>::set(location_of(name), N, vector[0].data());
 					}
 
 					template <typename LocationT, unsigned R, unsigned C, typename T>
 					void set_uniform(LocationT name, const Matrix<R, C, T> & matrix, bool transpose = false) {
-						GLUniformMatrixTraits<R, C>::set(location_of(name), 1, transpose, matrix.value());
+						GLUniformMatrixTraits<R, C>::set(location_of(name), 1, transpose, matrix.data());
 					}
 				};
 
