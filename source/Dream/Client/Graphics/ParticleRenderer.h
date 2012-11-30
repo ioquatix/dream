@@ -28,6 +28,7 @@ namespace Dream
 			using Euclid::Numerics::Vec2;
 			using Euclid::Numerics::Vec3;
 			using Euclid::Numerics::Vec4;
+			using Euclid::Numerics::radians;
 
 			/// Setup an array of indices for rendering quadrilaterals as triangles
 			template <typename IndexT>
