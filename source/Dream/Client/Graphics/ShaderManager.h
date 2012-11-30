@@ -16,19 +16,20 @@
 namespace Dream {
 	namespace Client {
 		namespace Graphics {
+			using namespace Euclid::Numerics::Constants;
 			using Euclid::Numerics::Vector;
 			using Euclid::Numerics::Matrix;
-			
+
 			/*
-			void test() {
-			    Ref<Program> program = ...;
-			    Shared<UniformBuffer> lighting_buffer;
+			 void test() {
+			 Ref<Program> program = ...;
+			 Shared<UniformBuffer> lighting_buffer;
 
-			    UniformBuffer::Binding uniform_binding(0);
+			 UniformBuffer::Binding uniform_binding(0);
 
-			    program->set_uniform_block(uniform_binding);
-			    buffer->bind_range(uniform_binding);
-			}
+			 program->set_uniform_block(uniform_binding);
+			 buffer->bind_range(uniform_binding);
+			 }
 			 */
 
 #ifndef DREAM_OPENGLES2
@@ -81,12 +82,12 @@ namespace Dream {
 				};
 			};
 #endif
-			
-			template <unsigned E>
+
+			template <dimension E>
 			class GLUniformTraits {
 			};
 
-			template <unsigned R, unsigned C>
+			template <dimension R, dimension C>
 			class GLUniformMatrixTraits {
 			};
 
@@ -156,17 +157,17 @@ namespace Dream {
 						glUniform1i(location_of(name), unit);
 					}
 
-					template <typename LocationT, unsigned E, typename T>
+					template <typename LocationT, dimension E, typename T>
 					void set_uniform(LocationT name, const Vector<E, T> & vector) {
 						GLUniformTraits<E>::set(location_of(name), 1, vector.data());
 					}
 
-					template <typename LocationT, unsigned E, typename T, unsigned N>
+					template <typename LocationT, dimension E, typename T, dimension N>
 					void set_uniform(LocationT name, const Vector<E, T>(&vector)[N]) {
 						GLUniformTraits<E>::set(location_of(name), N, vector[0].data());
 					}
 
-					template <typename LocationT, unsigned R, unsigned C, typename T>
+					template <typename LocationT, dimension R, dimension C, typename T>
 					void set_uniform(LocationT name, const Matrix<R, C, T> & matrix, bool transpose = false) {
 						GLUniformMatrixTraits<R, C>::set(location_of(name), 1, transpose, matrix.data());
 					}
@@ -200,8 +201,8 @@ namespace Dream {
 				GLenum compile(GLenum type, const Buffer * buffer);
 			};
 
-// MARK: -
-// MARK: Uniform Specialisations
+			// MARK: -
+			// MARK: Uniform Specialisations
 
 			template <>
 			class GLUniformTraits<1>{
@@ -211,7 +212,7 @@ namespace Dream {
 					glUniform1uiv(location, count, value);
 				}
 #endif
-				
+
 				static void set(GLint location, const GLsizei count, const GLint * value) {
 					glUniform1iv(location, count, value);
 				}
@@ -229,7 +230,7 @@ namespace Dream {
 					glUniform2uiv(location, count, value);
 				}
 #endif
-				
+
 				static void set(GLint location, const GLsizei count, const GLint * value) {
 					glUniform2iv(location, count, value);
 				}
@@ -265,7 +266,7 @@ namespace Dream {
 					glUniform4uiv(location, count, value);
 				}
 #endif
-				
+
 				static void set(GLint location, const GLsizei count, const GLint * value) {
 					glUniform4iv(location, count, value);
 				}
@@ -308,7 +309,7 @@ namespace Dream {
 				}
 			};
 #endif
-			
+
 			template <>
 			class GLUniformMatrixTraits<3, 3>{
 			public:
@@ -342,7 +343,7 @@ namespace Dream {
 				}
 			};
 #endif
-			
+
 			template <>
 			class GLUniformMatrixTraits<4, 4>{
 			public:
