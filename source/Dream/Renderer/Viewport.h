@@ -12,12 +12,19 @@
 #include "Projection.h"
 #include "Camera.h"
 
+#include <Euclid/Geometry/Eye.h>
+
 namespace Dream
 {
 	namespace Renderer
 	{
+		using Euclid::Numerics::Vec2;
+		using Euclid::Geometry::Eye;
+
 		class IViewport : implements IObject {
 		public:
+			virtual ~IViewport();
+
 			virtual Mat44 view_matrix() const abstract;
 			virtual Mat44 projection_matrix() const abstract;
 			virtual AlignedBox<2> bounds() const abstract;
@@ -26,7 +33,7 @@ namespace Dream
 				return projection_matrix() * view_matrix();
 			}
 
-			//ViewportEyeSpace convert_to_object_space(const Vec2 & point);
+			Eye<> convert_to_object_space(const Vec2 & point);
 		};
 
 		class Viewport : public Object, implements IViewport {

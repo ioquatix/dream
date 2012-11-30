@@ -12,8 +12,17 @@ namespace Dream
 {
 	namespace Renderer
 	{
+		IViewport::~IViewport()
+		{
 
-// MARK: -
+		}
+
+		Eye<> IViewport::convert_to_object_space(const Vec2 & point)
+		{
+			auto transformation = Euclid::Geometry::eye_transformation(projection_matrix(), view_matrix());
+
+			return transformation.convert_from_viewport_space_to_object_space(bounds(), point);
+		}
 
 		Viewport::Viewport(Ptr<ICamera> camera, Ptr<IProjection> projection) : _bounds_changed(true), _bounds(ZERO, ZERO), _camera(camera), _projection(projection) {
 		}
