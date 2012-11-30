@@ -52,6 +52,22 @@ namespace Dream
 			virtual const char * what () const throw ();
 		};
 
+		// Some useful output helpers:
+		template <typename ItemT>
+		std::ostream & operator<< (std::ostream & output, std::vector<ItemT> items) {
+			output << "[";
+
+			if (items.size() >= 2)
+				std::copy(items.begin(), items.end() - 1, std::ostream_iterator<ItemT>(output, ", "));
+
+			if (items.size() >= 1)
+				output << items.back();
+
+			output << "]";
+
+			return output;
+		}
+
 		/** Abstract typed value base. Provides a basic set of functionality for dealing with values of unknown type.
 		 */
 		class ITypedValue : public SharedObject {
