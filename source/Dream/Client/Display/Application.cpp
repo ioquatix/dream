@@ -22,11 +22,8 @@ namespace Dream {
 				if (_startup_messages_displayed == false) {
 					_startup_messages_displayed = true;
 
-					std::cout << "Dream Framework. Copyright © 2006-2011 Samuel Williams. All Rights Reserved." << std::endl;
+					std::cout << "Dream Framework. Copyright © 2006-2012 Samuel Williams. All Rights Reserved." << std::endl;
 					std::cout << "For more information visit http://www.oriontransfer.co.nz/research/dream" << std::endl;
-					std::cout << "Build Revision: " << build_revision() << std::endl;
-					std::cout << "Compiled at: " << build_date() << std::endl;
-					std::cout << "Compiled on: " << build_platform() << std::endl;
 				}
 			}
 

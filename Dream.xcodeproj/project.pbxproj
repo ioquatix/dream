@@ -339,17 +339,17 @@
 				7EC2B9C01667557500F3D545 /* Assertion.cpp */,
 				7EC2B9C31667557500F3D545 /* Class.h */,
 				7EC2B9C21667557500F3D545 /* Class.cpp */,
+				7EC2BA3E1667557500F3D545 /* Reference.h */,
+				7EC2BA3D1667557500F3D545 /* Reference.cpp */,
 				7EC2B9EF1667557500F3D545 /* Core */,
 				7EC2BA131667557500F3D545 /* Events */,
 				7EC2BA4B1667557500F3D545 /* Resources */,
 				7EC2BA291667557500F3D545 /* Imaging */,
-				7EC2B9C41667557500F3D545 /* Client */,
 				7EC2BA311667557500F3D545 /* Network */,
-				7EC2BA3D1667557500F3D545 /* Reference.cpp */,
-				7EC2BA3E1667557500F3D545 /* Reference.h */,
 				7EC2BA3F1667557500F3D545 /* Renderer */,
 				7EC2BA511667557500F3D545 /* Simulation */,
 				7EC2BA581667557500F3D545 /* Text */,
+				7EC2B9C41667557500F3D545 /* Client */,
 			);
 			path = Dream;
 			sourceTree = "<group>";
@@ -357,9 +357,9 @@
 		7EC2B9C41667557500F3D545 /* Client */ = {
 			isa = PBXGroup;
 			children = (
-				7EC2B9C51667557500F3D545 /* Audio */,
 				7EC2B9CE1667557500F3D545 /* Client.h */,
 				7EC2B9CF1667557500F3D545 /* Display */,
+				7EC2B9C51667557500F3D545 /* Audio */,
 				7EC2B9D61667557500F3D545 /* Graphics */,
 			);
 			path = Client;
@@ -383,12 +383,12 @@
 		7EC2B9CF1667557500F3D545 /* Display */ = {
 			isa = PBXGroup;
 			children = (
-				7EC2B9D01667557500F3D545 /* Application.cpp */,
 				7EC2B9D11667557500F3D545 /* Application.h */,
-				7EC2B9D21667557500F3D545 /* Context.cpp */,
+				7EC2B9D01667557500F3D545 /* Application.cpp */,
 				7EC2B9D31667557500F3D545 /* Context.h */,
-				7EC2B9D41667557500F3D545 /* Scene.cpp */,
+				7EC2B9D21667557500F3D545 /* Context.cpp */,
 				7EC2B9D51667557500F3D545 /* Scene.h */,
+				7EC2B9D41667557500F3D545 /* Scene.cpp */,
 			);
 			path = Display;
 			sourceTree = "<group>";

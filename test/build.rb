@@ -1,5 +1,5 @@
 
-add_executable("euclid-test-runner") do
+add_executable("dream-test-runner") do
 	configure do
 		linkflags ["-lUnitTest", "-lEuclid", "-lDream"]
 	end

@@ -9,6 +9,11 @@ package "png"
 package "jpeg"
 
 package "freetype"
+environment[:buildflags] = [->{"-I#{install_prefix}/include/freetype2"}]
 
 package "dream", :local => "./"
+
+platform "darwin-osx"
+platform "darwin-ios"
+platform "darwin-ios-simulator"
 

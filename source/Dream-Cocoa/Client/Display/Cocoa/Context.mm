@@ -13,6 +13,7 @@
 #import "DOpenGLView.h"
 
 #include <mutex>
+#include <iomanip>
 
 @interface NSAppleMenuController : NSObject
 - (void)controlMenu:(NSMenu *)aMenu;
@@ -26,14 +27,12 @@ namespace Dream
 		{
 			namespace Cocoa
 			{
-				
 				using namespace Events::Logging;
-								
-// MARK: -
-							
+				using namespace Euclid::Numerics::Constants;
+				
 				// This is the renderer output callback function
 				CVReturn ViewContext::display_link_callback(CVDisplayLinkRef display_link, const CVTimeStamp* now, const CVTimeStamp* output_time, CVOptionFlags flags_in, CVOptionFlags* flags_out, void* display_link_context)
-				{					
+				{
 					ViewContext * context = (ViewContext*)display_link_context;
 					
 					return context->display_link_callback(display_link, now, output_time, flags_in, flags_out);
@@ -41,7 +40,7 @@ namespace Dream
 				
 				// This is the renderer output callback function
 				CVReturn ViewContext::display_link_callback(CVDisplayLinkRef display_link, const CVTimeStamp* now, const CVTimeStamp* output_time, CVOptionFlags flags_in, CVOptionFlags* flags_out)
-				{					
+				{
 					if (!_initialized) {
 						logger()->set_thread_name("Renderer");
 						
@@ -50,7 +49,7 @@ namespace Dream
 					
 					TimeT hostClockFrequency = CVGetHostClockFrequency();
 					
-					if (_skip_frame) {						
+					if (_skip_frame) {
 						_skip_frame -= 1;
 						// Eat the first frame (or subsequent frames), which may not be an entire time slice.
 						return kCVReturnSuccess;

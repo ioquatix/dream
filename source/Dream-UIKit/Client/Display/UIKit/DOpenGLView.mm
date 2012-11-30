@@ -10,6 +10,7 @@
 #include "Context.h"
 
 using namespace Dream::Client::Display;
+using namespace Euclid::Numerics;
 
 @interface DOpenGLView(Private)
 - (void) initializeKeyboard;
@@ -26,12 +27,12 @@ static Vec3 position_in_view (UIView * view, UITouch * touch)
 	return Vec3(locationInView.x, bounds.size.height - locationInView.y, 0);
 }
 
-static AlignedBox<2> bounds_from_frame (CGRect frame)
+static AlignedBox2 bounds_from_frame (CGRect frame)
 {
 	Vec2 origin(frame.origin.x, frame.origin.y);
 	Vec2 size(frame.size.width, frame.size.height);
 	
-	AlignedBox<2> bounds(origin, origin + size);
+	AlignedBox2 bounds(origin, origin + size);
 	
 	return bounds;
 }
